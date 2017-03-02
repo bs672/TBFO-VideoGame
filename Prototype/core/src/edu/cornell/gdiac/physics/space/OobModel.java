@@ -17,19 +17,19 @@ public class OobModel extends WheelObstacle {
 
     // Physics constants
     /** The density of the character */
-    private static final float Oob_DENSITY = 1.0f;
+    private static final float OOB_DENSITY = 1.0f;
     /** The factor to multiply by the input */
-    private static final float Oob_FORCE = 20.0f;
+    private static final float OOB_FORCE = 20.0f;
     /** The amount to slow the character down */
-    private static final float Oob_DAMPING = 10.0f;
+    private static final float OOB_DAMPING = 10.0f;
     /** The Oob is a slippery one */
-    private static final float Oob_FRICTION = 0.0f;
+    private static final float OOB_FRICTION = 0.0f;
     /** The maximum character speed */
-    private static final float Oob_MAXSPEED = 5.0f;
+    private static final float OOB_MAXSPEED = 5.0f;
     /** minimum speed while floating through space */
-    private static final float Oob_MINSPEED = 1.0f;
+    private static final float OOB_MINSPEED = 1.0f;
     /** The impulse for the character jump */
-    private static final float Oob_JUMP = 5.5f;
+    private static final float OOB_JUMP = 5.5f;
     /** Cooldown (in animation frames) for jumping */
     private static final int JUMP_COOLDOWN = 30;
     /** Identifier to allow us to track the sensor in ContactListener */
@@ -129,7 +129,7 @@ public class OobModel extends WheelObstacle {
      * @return how much force to apply to get the Oob moving
      */
     public float getForce() {
-        return Oob_FORCE;
+        return OOB_FORCE;
     }
 
     /**
@@ -138,7 +138,7 @@ public class OobModel extends WheelObstacle {
      * @return ow hard the brakes are applied to get a Oob to stop moving
      */
     public float getDamping() {
-        return Oob_DAMPING;
+        return OOB_DAMPING;
     }
 
     /**
@@ -149,7 +149,7 @@ public class OobModel extends WheelObstacle {
      * @return the upper limit on Oob left-right movement.
      */
     public float getMaxSpeed() {
-        return Oob_MAXSPEED;
+        return OOB_MAXSPEED;
     }
 
     /**
@@ -189,8 +189,8 @@ public class OobModel extends WheelObstacle {
      */
     public OobModel(float x, float y, float radius) {
         super(x,y,radius);
-        setDensity(Oob_DENSITY);
-//        setFriction(Oob_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
+        setDensity(OOB_DENSITY);
+//        setFriction(OOB_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
         setFixedRotation(true);
 
         // Gameplay attributes
@@ -225,7 +225,7 @@ public class OobModel extends WheelObstacle {
         // we create a thin sensor under his feet, which reports
         // collisions with the world but has no collision response.
         FixtureDef sensorDef = new FixtureDef();
-        sensorDef.density = Oob_DENSITY;
+        sensorDef.density = OOB_DENSITY;
         sensorDef.isSensor = true;
         sensorShape = new PolygonShape();
         sensorShape.setRadius(getRadius());
@@ -249,14 +249,14 @@ public class OobModel extends WheelObstacle {
         }
 
         // Don't want to be moving. Damp out player motion
-        if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > Oob_MINSPEED)) {
+        if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
             forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
             body.applyForce(forceCache,getPosition(),true);
         }
 
         // Velocity too high, clamp it
         if (movement.len() >= getMaxSpeed()) {
-            setMovement(new Vector2(movement.cpy().nor().scl(Oob_MAXSPEED)));
+            setMovement(new Vector2(movement.cpy().nor().scl(OOB_MAXSPEED)));
         } else {
             forceCache.set(getMovement().x,getMovement().y);
             body.applyForce(forceCache,getPosition(),true);
@@ -264,7 +264,7 @@ public class OobModel extends WheelObstacle {
 
         // Jump!
         if (isJumping()) {
-            forceCache.set(Oob_JUMP*radDirection.x, Oob_JUMP*radDirection.y);
+            forceCache.set(OOB_JUMP*radDirection.x, OOB_JUMP*radDirection.y);
             body.applyLinearImpulse(forceCache,getPosition(),true);
         }
     }
