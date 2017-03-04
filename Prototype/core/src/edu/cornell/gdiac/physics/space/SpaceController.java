@@ -24,7 +24,8 @@ public class SpaceController extends WorldController implements ContactListener 
     private static final String OOB_FILE  = "space/oob.png";
     /** The texture file for the spinning barrier */
     private static final String PLANET_FILE = "space/planet.png";
-    /** The texture file for the bullet */
+    /** The texture file for the walls */
+    private static final String WALL_FILE = "space/wall.png";
     /** Texture file for background image */
     private static final String BACKG_FILE = "space/space-background2.png"; //https://images4.alphacoders.com/106/106826.jpg
 
@@ -41,8 +42,9 @@ public class SpaceController extends WorldController implements ContactListener 
 
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
-    /** Texture asset for the spinning barrier */
     private TextureRegion planetTexture;
+    /** Texture asset for the spinning barrier */
+    private TextureRegion wallTexture;
     /** Texture asset for background image */
     private TextureRegion backgroundTexture;
 
@@ -72,6 +74,8 @@ public class SpaceController extends WorldController implements ContactListener 
         assets.add(PLANET_FILE);
         manager.load(BACKG_FILE, Texture.class);
         assets.add(BACKG_FILE);
+        manager.load(WALL_FILE, Texture.class);
+        assets.add(WALL_FILE);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -101,6 +105,7 @@ public class SpaceController extends WorldController implements ContactListener 
         avatarTexture = createTexture(manager,OOB_FILE,false);
         planetTexture = createTexture(manager,PLANET_FILE,false);
         backgroundTexture = createTexture(manager,BACKG_FILE,false);
+        wallTexture = createTexture(manager, WALL_FILE, false);
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -241,7 +246,7 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.setTexture(earthTile);
+            obj.setTexture(wallTexture);
             obj.setName(wname+ii);
             addObject(obj);
         }
