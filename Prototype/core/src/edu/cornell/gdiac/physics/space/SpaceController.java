@@ -13,9 +13,6 @@ import edu.cornell.gdiac.physics.obstacle.BoxObstacle;
 import edu.cornell.gdiac.physics.obstacle.Obstacle;
 import edu.cornell.gdiac.physics.obstacle.PolygonObstacle;
 import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
-import edu.cornell.gdiac.physics.platform.DudeModel;
-import edu.cornell.gdiac.physics.platform.RopeBridge;
-import edu.cornell.gdiac.physics.platform.Spinner;
 import edu.cornell.gdiac.util.SoundController;
 
 /**
@@ -23,13 +20,10 @@ import edu.cornell.gdiac.util.SoundController;
  */
 public class SpaceController extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
-    private static final String DUDE_FILE  = "platform/dude.png";
+    private static final String OOB_FILE  = "space/oob.png";
     /** The texture file for the spinning barrier */
-    private static final String BARRIER_FILE = "platform/barrier.png";
+    private static final String PLANET_FILE = "space/planet.png";
     /** The texture file for the bullet */
-    private static final String BULLET_FILE  = "platform/bullet.png";
-    /** The texture file for the bridge plank */
-    private static final String ROPE_FILE  = "platform/ropebridge.png";
 
     /** The sound file for a jump */
     private static final String JUMP_FILE = "platform/jump.mp3";
@@ -45,11 +39,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
     /** Texture asset for the spinning barrier */
-    private TextureRegion barrierTexture;
-    /** Texture asset for the bullet */
-    private TextureRegion bulletTexture;
-    /** Texture asset for the bridge plank */
-    private TextureRegion bridgeTexture;
+    private TextureRegion planetTexture;
 
     /** Track asset loading from all instances and subclasses */
     private AssetState platformAssetState = AssetState.EMPTY;
@@ -70,14 +60,10 @@ public class SpaceController extends WorldController implements ContactListener 
         }
 
         platformAssetState = AssetState.LOADING;
-        manager.load(DUDE_FILE, Texture.class);
-        assets.add(DUDE_FILE);
-        manager.load(BARRIER_FILE, Texture.class);
-        assets.add(BARRIER_FILE);
-        manager.load(BULLET_FILE, Texture.class);
-        assets.add(BULLET_FILE);
-        manager.load(ROPE_FILE, Texture.class);
-        assets.add(ROPE_FILE);
+        manager.load(OOB_FILE, Texture.class);
+        assets.add(OOB_FILE);
+        manager.load(PLANET_FILE, Texture.class);
+        assets.add(PLANET_FILE);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -104,10 +90,8 @@ public class SpaceController extends WorldController implements ContactListener 
             return;
         }
 
-        avatarTexture = createTexture(manager,DUDE_FILE,false);
-        barrierTexture = createTexture(manager,BARRIER_FILE,false);
-        bulletTexture = createTexture(manager,BULLET_FILE,false);
-        bridgeTexture = createTexture(manager,ROPE_FILE,false);
+        avatarTexture = createTexture(manager,OOB_FILE,false);
+        planetTexture = createTexture(manager,PLANET_FILE,false);
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -262,29 +246,20 @@ public class SpaceController extends WorldController implements ContactListener 
             addObject(obj);
         }
 
-        // Create dude
-        dwidth  = avatarTexture.getRegionWidth()/scale.x;
-        dheight = avatarTexture.getRegionHeight()/scale.y;
+        // Create Oob
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
+        System.out.println("HERE");
         addObject(avatar);
 
-        // Create rope bridge
-        dwidth  = bridgeTexture.getRegionWidth()/scale.x;
-        dheight = bridgeTexture.getRegionHeight()/scale.y;
-        RopeBridge bridge = new RopeBridge(BRIDGE_POS.x, BRIDGE_POS.y, BRIDGE_WIDTH, dwidth, dheight);
-        bridge.setTexture(bridgeTexture);
-        bridge.setDrawScale(scale);
-        addObject(bridge);
-
         // Create spinning platform
-        dwidth  = barrierTexture.getRegionWidth()/scale.x;
-        dheight = barrierTexture.getRegionHeight()/scale.y;
-        Spinner spinPlatform = new Spinner(SPIN_POS.x,SPIN_POS.y,dwidth,dheight);
-        spinPlatform.setDrawScale(scale);
-        spinPlatform.setTexture(barrierTexture);
-        addObject(spinPlatform);
+//        dwidth  = barrierTexture.getRegionWidth()/scale.x;
+//        dheight = barrierTexture.getRegionHeight()/scale.y;
+//        Spinner spinPlatform = new Spinner(SPIN_POS.x,SPIN_POS.y,dwidth,dheight);
+//        spinPlatform.setDrawScale(scale);
+//        spinPlatform.setTexture(barrierTexture);
+//        addObject(spinPlatform);
     }
 
     /**
@@ -294,7 +269,7 @@ public class SpaceController extends WorldController implements ContactListener 
      * to switch to a new game mode.  If not, the update proceeds
      * normally.
      *
-     * @param delta Number of seconds since last animation frame
+     * @param dt Number of seconds since last animation frame
      *
      * @return whether to process the update loop
      */
@@ -319,7 +294,7 @@ public class SpaceController extends WorldController implements ContactListener 
      * This method is called after input is read, but before collisions are resolved.
      * The very last thing that it should do is apply forces to the appropriate objects.
      *
-     * @param delta Number of seconds since last animation frame
+     * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
         // Process actions in object model

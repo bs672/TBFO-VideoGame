@@ -134,10 +134,12 @@ public class GDXRoot extends Game implements ScreenListener {
 				controllers[ii].setScreenListener(this);
 				controllers[ii].setCanvas(canvas);
 			}
+			System.out.println("HERE");
 			controllers[current].reset();
 			setScreen(controllers[current]);
 			
 			loading.dispose();
+			System.out.println("HERE");
 			loading = null;
 		} else if (exitCode == WorldController.EXIT_NEXT) {
 			current = (current+1) % controllers.length;
