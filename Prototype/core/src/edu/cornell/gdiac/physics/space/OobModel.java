@@ -246,7 +246,10 @@ public class OobModel extends WheelObstacle {
             return;
         }
         // Don't want to be moving. Damp out player motion
-        if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
+        if (getMovement().isZero()) {
+            body.setLinearVelocity(0,0);
+        }
+        else if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
             forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
             body.applyForce(forceCache,getPosition(),true);
         }
@@ -278,11 +281,6 @@ public class OobModel extends WheelObstacle {
             isJumping = true;
         else
             isJumping = false;
-        if (isJumping()) {
-            jumpCooldown = JUMP_COOLDOWN;
-        } else {
-            jumpCooldown = Math.max(0, jumpCooldown - 1);
-        }
 
         super.update(dt);
     }
