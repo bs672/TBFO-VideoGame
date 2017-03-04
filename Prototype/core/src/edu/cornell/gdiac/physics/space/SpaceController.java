@@ -37,6 +37,10 @@ public class SpaceController extends WorldController implements ContactListener 
     private static final String PEW_FILE = "platform/pew.mp3";
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "platform/plop.mp3";
+    /** The initial position of Oob */
+    private static Vector2 OOB_POS = new Vector2(2.5f, 5.0f);
+    /** Oob's initial radius */
+    private static float OOB_RADIUS = 2.0f;
 
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
@@ -261,7 +265,7 @@ public class SpaceController extends WorldController implements ContactListener 
         // Create dude
         dwidth  = avatarTexture.getRegionWidth()/scale.x;
         dheight = avatarTexture.getRegionHeight()/scale.y;
-        avatar = new DudeModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
+        avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
         addObject(avatar);
@@ -319,14 +323,9 @@ public class SpaceController extends WorldController implements ContactListener 
      */
     public void update(float dt) {
         // Process actions in object model
-        avatar.setMovement(InputController.getInstance().getHorizontal() *avatar.getForce());
+        Vector2 mvmtDir = new Vector2(InputController.getInstance().getHorizontal() *avatar.getForce(), InputController.getInstance().getVertical() *avatar.getForce());
+        avatar.setMovement(mvmtDir);
         avatar.setJumping(InputController.getInstance().didPrimary());
-        avatar.setShooting(InputController.getInstance().didSecondary());
-
-        // Add a bullet if we fire
-        if (avatar.isShooting()) {
-            createBullet();
-        }
 
         avatar.applyForce();
         if (avatar.isJumping()) {
