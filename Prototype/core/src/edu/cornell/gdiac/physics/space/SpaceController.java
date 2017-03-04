@@ -143,6 +143,14 @@ public class SpaceController extends WorldController implements ContactListener 
             {0.0f,0.0f, 0.0f, 0.2f, 32.0f, 0.2f, 32.0f, 0.0f},
     };
 
+    private static final float[][] PLANETS = {
+            {8.0f, 4.5f, 2.0f},
+            {8.0f, 13.5f, 2.0f},
+            {24.0f, 4.5f, 2.0f},
+            {24.0f, 13.5f, 2.0f},
+            {16.0f, 9.0f, 2.0f}
+    };
+
     /** The outlines of all of the platforms */
 //    private static final float[][] PLATFORMS = {
 //            { 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f},
@@ -243,6 +251,20 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setDrawScale(scale);
             obj.setTexture(earthTile);
             obj.setName(wname+ii);
+            addObject(obj);
+        }
+
+        String pname = "planet";
+        for (int ii = 0; ii <PLANETS.length; ii++){
+            WheelObstacle obj;
+            obj = new WheelObstacle(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2]);
+            obj.setBodyType(BodyDef.BodyType.StaticBody);
+            obj.setDensity(BASIC_DENSITY);
+            obj.setFriction(BASIC_FRICTION);
+            obj.setRestitution(BASIC_RESTITUTION);
+            obj.setDrawScale(scale);
+            obj.setTexture(planetTexture);
+            obj.setName(pname+ii);
             addObject(obj);
         }
 //
