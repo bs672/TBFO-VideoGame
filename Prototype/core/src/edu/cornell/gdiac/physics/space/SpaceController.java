@@ -134,25 +134,28 @@ public class SpaceController extends WorldController implements ContactListener 
     // In an actual game, this information would go in a data file.
     // Wall vertices
     private static final float[][] WALLS = {
-            {16.0f, 18.0f, 16.0f, 17.0f,  1.0f, 17.0f,
-                    1.0f,  0.0f,  0.0f,  0.0f,  0.0f, 18.0f},
-            {32.0f, 18.0f, 32.0f,  0.0f, 31.0f,  0.0f,
-                    31.0f, 17.0f, 16.0f, 17.0f, 16.0f, 18.0f}
+            {0.0f,0.0f, 0.0f, 18.0f, 0.2f, 18.0f, 0.2f,  0.0f},
+
+            {0.0f,18.0f, 32.0f, 18.0f, 32.0f, 17.8f, 0.0f, 17.8f},
+
+            {31.8f,18.0f, 32.0f, 18.0f, 32.0f, 0.0f, 31.8f, 0.0f},
+
+            {0.0f,0.0f, 0.0f, 0.2f, 32.0f, 0.2f, 32.0f, 0.0f},
     };
 
     /** The outlines of all of the platforms */
-    private static final float[][] PLATFORMS = {
-            { 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f},
-            { 6.0f, 4.0f, 9.0f, 4.0f, 9.0f, 2.5f, 6.0f, 2.5f},
-            {23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
-            {26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
-            {29.0f, 7.0f,31.0f, 7.0f,31.0f, 6.5f,29.0f, 6.5f},
-            {24.0f, 8.5f,27.0f, 8.5f,27.0f, 8.0f,24.0f, 8.0f},
-            {29.0f,10.0f,31.0f,10.0f,31.0f, 9.5f,29.0f, 9.5f},
-            {23.0f,11.5f,27.0f,11.5f,27.0f,11.0f,23.0f,11.0f},
-            {19.0f,12.5f,23.0f,12.5f,23.0f,12.0f,19.0f,12.0f},
-            { 1.0f,12.5f, 7.0f,12.5f, 7.0f,12.0f, 1.0f,12.0f}
-    };
+//    private static final float[][] PLATFORMS = {
+//            { 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f},
+//            { 6.0f, 4.0f, 9.0f, 4.0f, 9.0f, 2.5f, 6.0f, 2.5f},
+//            {23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
+//            {26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
+//            {29.0f, 7.0f,31.0f, 7.0f,31.0f, 6.5f,29.0f, 6.5f},
+//            {24.0f, 8.5f,27.0f, 8.5f,27.0f, 8.0f,24.0f, 8.0f},
+//            {29.0f,10.0f,31.0f,10.0f,31.0f, 9.5f,29.0f, 9.5f},
+//            {23.0f,11.5f,27.0f,11.5f,27.0f,11.0f,23.0f,11.0f},
+//            {19.0f,12.5f,23.0f,12.5f,23.0f,12.0f,19.0f,12.0f},
+//            { 1.0f,12.5f, 7.0f,12.5f, 7.0f,12.0f, 1.0f,12.0f}
+//    };
 
     // Other game objects
     /** The goal door position */
@@ -215,19 +218,19 @@ public class SpaceController extends WorldController implements ContactListener 
      * Lays out the game geography.
      */
     private void populateLevel() {
-        // Add level goal
-        float dwidth  = goalTile.getRegionWidth()/scale.x;
-        float dheight = goalTile.getRegionHeight()/scale.y;
-        goalDoor = new BoxObstacle(GOAL_POS.x,GOAL_POS.y,dwidth,dheight);
-        goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
-        goalDoor.setDensity(0.0f);
-        goalDoor.setFriction(0.0f);
-        goalDoor.setRestitution(0.0f);
-        goalDoor.setSensor(true);
-        goalDoor.setDrawScale(scale);
-        goalDoor.setTexture(goalTile);
-        goalDoor.setName("goal");
-        addObject(goalDoor);
+//        // Add level goal
+//        float dwidth  = goalTile.getRegionWidth()/scale.x;
+//        float dheight = goalTile.getRegionHeight()/scale.y;
+//        goalDoor = new BoxObstacle(GOAL_POS.x,GOAL_POS.y,dwidth,dheight);
+//        goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
+//        goalDoor.setDensity(0.0f);
+//        goalDoor.setFriction(0.0f);
+//        goalDoor.setRestitution(0.0f);
+//        goalDoor.setSensor(true);
+//        goalDoor.setDrawScale(scale);
+//        goalDoor.setTexture(goalTile);
+//        goalDoor.setName("goal");
+//        addObject(goalDoor);
 
         String wname = "wall";
         for (int ii = 0; ii < WALLS.length; ii++) {
@@ -242,20 +245,20 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setName(wname+ii);
             addObject(obj);
         }
-
-        String pname = "platform";
-        for (int ii = 0; ii < PLATFORMS.length; ii++) {
-            PolygonObstacle obj;
-            obj = new PolygonObstacle(PLATFORMS[ii], 0, 0);
-            obj.setBodyType(BodyDef.BodyType.StaticBody);
-            obj.setDensity(BASIC_DENSITY);
-            obj.setFriction(BASIC_FRICTION);
-            obj.setRestitution(BASIC_RESTITUTION);
-            obj.setDrawScale(scale);
-            obj.setTexture(earthTile);
-            obj.setName(pname+ii);
-            addObject(obj);
-        }
+//
+//        String pname = "platform";
+//        for (int ii = 0; ii < PLATFORMS.length; ii++) {
+//            PolygonObstacle obj;
+//            obj = new PolygonObstacle(PLATFORMS[ii], 0, 0);
+//            obj.setBodyType(BodyDef.BodyType.StaticBody);
+//            obj.setDensity(BASIC_DENSITY);
+//            obj.setFriction(BASIC_FRICTION);
+//            obj.setRestitution(BASIC_RESTITUTION);
+//            obj.setDrawScale(scale);
+//            obj.setTexture(earthTile);
+//            obj.setName(pname+ii);
+//            addObject(obj);
+//        }
 
         // Create Oob
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);

@@ -369,6 +369,17 @@ public class PolygonObstacle extends SimpleObstacle {
 		}
 	}
 
+    /**
+     * Draws the physics object.
+     *
+     * @param canvas Drawing context
+     */
+    public void drawinvis(GameCanvas canvas) {
+        if (region != null) {
+            canvas.draw(region,new Color(0,0,0,0),0,0,getX()*drawScale.x,getY()*drawScale.y,getAngle(),1,1);
+        }
+    }
+
 	/**
 	 * Draws the outline of the physics body.
 	 *
