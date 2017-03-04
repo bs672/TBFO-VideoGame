@@ -139,13 +139,13 @@ public class SpaceController extends WorldController implements ContactListener 
     // In an actual game, this information would go in a data file.
     // Wall vertices
     private static final float[][] WALLS = {
-            {0.0f,0.0f, 0.0f, 18.0f, 0.2f, 18.0f, 0.2f,  0.0f},
+            {0.0f,0.0f, 0.0f, 18.0f, 0.1f, 18.0f, 0.1f,  0.0f},
 
-            {0.0f,18.0f, 32.0f, 18.0f, 32.0f, 17.8f, 0.0f, 17.8f},
+            {0.0f,18.0f, 32.0f, 18.0f, 32.0f, 17.9f, 0.0f, 17.9f},
 
-            {31.8f,18.0f, 32.0f, 18.0f, 32.0f, 0.0f, 31.8f, 0.0f},
+            {31.9f,18.0f, 32.0f, 18.0f, 32.0f, 0.0f, 31.9f, 0.0f},
 
-            {0.0f,0.0f, 0.0f, 0.2f, 32.0f, 0.2f, 32.0f, 0.0f},
+            {0.0f,0.0f, 0.0f, 0.1f, 32.0f, 0.1f, 32.0f, 0.0f},
     };
 
     private static final float[][] PLANETS = {
