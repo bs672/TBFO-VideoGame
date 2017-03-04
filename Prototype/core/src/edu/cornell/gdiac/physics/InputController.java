@@ -213,15 +213,15 @@ public class InputController {
 		pausePressed = (secondary && pausePressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
 		// Directional controls
 		horizontal = (secondary ? horizontal : 0.0f);
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.getDeltaX()>0)) {
 			horizontal = 1.0f;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.getDeltaX()<0)) {
 			horizontal = -1.0f;
 		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
 			jump = true;
 		}
 		// Mouse results
