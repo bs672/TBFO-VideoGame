@@ -309,6 +309,29 @@ public class SpaceController extends WorldController implements ContactListener 
         // If we use sound, we must remember this.
         SoundController.getInstance().update();
     }
+//
+//    /**
+//     * Add a new bullet to the world and send it in the right direction.
+//     */
+//    private void createBullet() {
+//        float offset = (avatar.isFacingRight() ? BULLET_OFFSET : -BULLET_OFFSET);
+//        float radius = bulletTexture.getRegionWidth()/(2.0f*scale.x);
+//        WheelObstacle bullet = new WheelObstacle(avatar.getX()+offset, avatar.getY(), radius);
+//
+//        bullet.setName("bullet");
+//        bullet.setDensity(HEAVY_DENSITY);
+//        bullet.setDrawScale(scale);
+//        bullet.setTexture(bulletTexture);
+//        bullet.setBullet(true);
+//        bullet.setGravityScale(0);
+//
+//        // Compute position and velocity
+//        float speed  = (avatar.isFacingRight() ? BULLET_SPEED : -BULLET_SPEED);
+//        bullet.setVX(speed);
+//        addQueuedObject(bullet);
+//
+//        SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+//    }
 
     /**
      * Remove a new bullet from the world.
