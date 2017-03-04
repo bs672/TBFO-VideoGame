@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import edu.cornell.gdiac.physics.GameCanvas;
+import edu.cornell.gdiac.physics.InputController;
 import edu.cornell.gdiac.physics.obstacle.CapsuleObstacle;
 import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
 
@@ -189,10 +190,10 @@ public class OobModel extends WheelObstacle {
         setDensity(OOB_DENSITY);
 //        setFriction(OOB_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
         setFixedRotation(true);
+        setBodyType(BodyDef.BodyType.StaticBody);
 
         // Gameplay attributes
         isGrounded = false;
-        isJumping = false;
 
         jumpCooldown = 0;
         setName("Oob");
@@ -275,6 +276,10 @@ public class OobModel extends WheelObstacle {
      */
     public void update(float dt) {
         // Apply cooldowns
+        if(InputController.getInstance().getJump())
+            isJumping = true;
+        else
+            isJumping = false;
         if (isJumping()) {
             jumpCooldown = JUMP_COOLDOWN;
         } else {

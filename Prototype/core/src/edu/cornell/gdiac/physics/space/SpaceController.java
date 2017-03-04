@@ -34,7 +34,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(2.5f, 5.0f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = 2.0f;
+    private static float OOB_RADIUS = 1.0f;
 
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
@@ -158,6 +158,8 @@ public class SpaceController extends WorldController implements ContactListener 
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
+    /** Reference to current planet Oob's on */
+    private WheelObstacle currentPlanent;
     /** Reference to the goalDoor (for collision detection) */
     private BoxObstacle goalDoor;
 
