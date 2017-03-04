@@ -190,7 +190,6 @@ public class OobModel extends WheelObstacle {
         setDensity(OOB_DENSITY);
 //        setFriction(OOB_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
         setFixedRotation(true);
-        setBodyType(BodyDef.BodyType.StaticBody);
 
         // Gameplay attributes
         isGrounded = false;
@@ -262,7 +261,8 @@ public class OobModel extends WheelObstacle {
 
         // Jump!
         if (isJumping()) {
-            forceCache.set(OOB_JUMP*radDirection.x, OOB_JUMP*radDirection.y);
+//            forceCache.set(OOB_JUMP*radDirection.x, OOB_JUMP*radDirection.y);
+            forceCache.set(0, OOB_JUMP*OOB_FORCE);
             body.applyLinearImpulse(forceCache,getPosition(),true);
         }
     }

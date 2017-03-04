@@ -310,7 +310,7 @@ public class SpaceController extends WorldController implements ContactListener 
         // Process actions in object model
         Vector2 mvmtDir = new Vector2(InputController.getInstance().getHorizontal() *avatar.getForce(), 0 *avatar.getForce());
         avatar.setMovement(mvmtDir);
-        avatar.setJumping(InputController.getInstance().didPrimary());
+        avatar.setJumping(InputController.getInstance().getJump());
 
         avatar.applyForce();
         if (avatar.isJumping()) {
