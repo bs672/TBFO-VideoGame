@@ -221,6 +221,7 @@ public class OobModel extends WheelObstacle {
         // To determine whether or not the Oob is on the ground,
         // we create a thin sensor under his feet, which reports
         // collisions with the world but has no collision response.
+        body.setGravityScale(0);
         FixtureDef sensorDef = new FixtureDef();
         sensorDef.density = OOB_DENSITY;
         sensorDef.isSensor = true;
@@ -244,7 +245,6 @@ public class OobModel extends WheelObstacle {
         if (!isActive()) {
             return;
         }
-
         // Don't want to be moving. Damp out player motion
         if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
             forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
@@ -252,12 +252,10 @@ public class OobModel extends WheelObstacle {
         }
 
         // Velocity too high, clamp it
-        if (movement.len() >= getMaxSpeed()) {
+        if (movement.len() >= getMaxSpeed())
             setMovement(new Vector2(movement.cpy().nor().scl(OOB_MAXSPEED)));
-        } else {
-            forceCache.set(getMovement().x,getMovement().y);
-            body.applyForce(forceCache,getPosition(),true);
-        }
+        forceCache.set(getMovement().x,getMovement().y);
+        body.applyLinearImpulse(forceCache,getPosition(),true);
 
         // Jump!
         if (isJumping()) {

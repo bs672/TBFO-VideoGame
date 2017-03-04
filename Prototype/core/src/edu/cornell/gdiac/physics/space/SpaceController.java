@@ -261,6 +261,7 @@ public class SpaceController extends WorldController implements ContactListener 
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
+        avatar.setBodyType(BodyDef.BodyType.DynamicBody);
         addObject(avatar);
 
         // Create spinning platform
