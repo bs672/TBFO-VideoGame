@@ -315,7 +315,7 @@ public class RocketController extends WorldController implements ContactListener
 	 * This method is called after input is read, but before collisions are resolved.
 	 * The very last thing that it should do is apply forces to the appropriate objects.
 	 *
-	 * @param delta Number of seconds since last animation frame
+	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
 		
@@ -323,9 +323,9 @@ public class RocketController extends WorldController implements ContactListener
 		// Read from the input and add the force to the rocket model
 		// Then apply the force using the method you modified in RocketObject
 		float hori = InputController.getInstance().getHorizontal();
-		float vert = InputController.getInstance().getVertical();
+//		float vert = InputController.getInstance().getVertical();
 		rocket.setFX(hori * rocket.getThrust());
-		rocket.setFY(vert * rocket.getThrust());
+//		rocket.setFY(vert * rocket.getThrust());
 		rocket.applyForce();
 		//#endregion
 		
@@ -409,7 +409,7 @@ public class RocketController extends WorldController implements ContactListener
 	 * prevents this from happening.
 	 *
 	 * @param  contact  	The two bodies that collided
-	 * @param  oldManfold  	The collision manifold before contact
+	 * @param  oldManifold  	The collision manifold before contact
 	 */
 
 	public void preSolve(Contact contact, Manifold oldManifold) {

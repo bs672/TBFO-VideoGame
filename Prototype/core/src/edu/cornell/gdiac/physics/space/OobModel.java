@@ -227,7 +227,6 @@ public class OobModel extends WheelObstacle {
         sensorShape = new CircleShape();
         sensorShape.setRadius(getRadius());
         sensorDef.shape = sensorShape;
-        System.out.println("HERE");
 
         sensorFixture = body.createFixture(sensorDef);
         sensorFixture.setUserData(getSensorName());

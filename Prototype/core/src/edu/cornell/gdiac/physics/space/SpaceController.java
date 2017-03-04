@@ -250,7 +250,6 @@ public class SpaceController extends WorldController implements ContactListener 
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
-        System.out.println("HERE");
         addObject(avatar);
 
         // Create spinning platform
@@ -298,7 +297,7 @@ public class SpaceController extends WorldController implements ContactListener 
      */
     public void update(float dt) {
         // Process actions in object model
-        Vector2 mvmtDir = new Vector2(InputController.getInstance().getHorizontal() *avatar.getForce(), InputController.getInstance().getVertical() *avatar.getForce());
+        Vector2 mvmtDir = new Vector2(InputController.getInstance().getHorizontal() *avatar.getForce(), 0 *avatar.getForce());
         avatar.setMovement(mvmtDir);
         avatar.setJumping(InputController.getInstance().didPrimary());
 
