@@ -2,6 +2,7 @@ package edu.cornell.gdiac.physics.space;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -24,6 +25,8 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The texture file for the spinning barrier */
     private static final String PLANET_FILE = "space/planet.png";
     /** The texture file for the bullet */
+    /** Texture file for background image */
+    private static final String BACKG_FILE = "space/space-background2.png"; //https://images4.alphacoders.com/106/106826.jpg
 
     /** The sound file for a jump */
     private static final String JUMP_FILE = "platform/jump.mp3";
@@ -40,6 +43,9 @@ public class SpaceController extends WorldController implements ContactListener 
     private TextureRegion avatarTexture;
     /** Texture asset for the spinning barrier */
     private TextureRegion planetTexture;
+    /** Texture asset for background image */
+    private TextureRegion backgroundTexture;
+
 
     /** Track asset loading from all instances and subclasses */
     private AssetState platformAssetState = AssetState.EMPTY;
@@ -64,6 +70,8 @@ public class SpaceController extends WorldController implements ContactListener 
         assets.add(OOB_FILE);
         manager.load(PLANET_FILE, Texture.class);
         assets.add(PLANET_FILE);
+        manager.load(BACKG_FILE, Texture.class);
+        assets.add(BACKG_FILE);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -92,6 +100,7 @@ public class SpaceController extends WorldController implements ContactListener 
 
         avatarTexture = createTexture(manager,OOB_FILE,false);
         planetTexture = createTexture(manager,PLANET_FILE,false);
+        backgroundTexture = createTexture(manager,BACKG_FILE,false);
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -429,5 +438,43 @@ public class SpaceController extends WorldController implements ContactListener 
     public void postSolve(Contact contact, ContactImpulse impulse) {}
     /** Unused ContactListener method */
     public void preSolve(Contact contact, Manifold oldManifold) {}
+
+
+    /**
+     * Draw the physics objects together with foreground and background
+     *
+     * This is completely overridden to support custom background and foreground art.
+     *
+     * @param dt Timing values from parent loop
+     */
+    public void draw(float dt) {
+        canvas.clear();
+
+        // Draw background unscaled.
+        canvas.begin();
+        canvas.draw(backgroundTexture, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.end();
+
+        canvas.begin();
+        for(Obstacle obj : objects) {
+            obj.draw(canvas);
+        }
+        canvas.end();
+
+        if (isDebug()) {
+            canvas.beginDebug();
+            for(Obstacle obj : objects) {
+                obj.drawDebug(canvas);
+            }
+            canvas.endDebug();
+        }
+
+//        // Draw foreground last.
+//        canvas.begin();
+//        canvas.draw(foregroundTexture, FORE_COLOR,  0, 0, canvas.getWidth(), canvas.getHeight());
+//        selector.draw(canvas);
+//        canvas.end();
+    }
+
 
 }
