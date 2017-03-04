@@ -54,6 +54,13 @@ public class InputController {
 	private boolean pausePressed;
 	private boolean pausePrevious;
 
+	private boolean primePressed;
+	private boolean primePrevious;
+	private boolean debugPressed;
+	private boolean debugPrevious;
+	private boolean exitPressed;
+	private boolean exitPrevious;
+
 	/** How much did we move horizontally? */
 	private float horizontal;
 	/** How much did we move vertically? */
@@ -89,6 +96,18 @@ public class InputController {
 
 	public boolean didPause() {
 		return pausePressed && !resetPrevious;
+	}
+
+	public boolean didExit(){
+		return exitPressed && !exitPrevious;
+	}
+
+	public boolean didDebug(){
+		return debugPressed && !debugPrevious;
+	}
+
+	public boolean didPrimary(){
+		return primePressed && !primePrevious;
 	}
 
 	/**
@@ -134,6 +153,10 @@ public class InputController {
 		// Helps us ignore buttons that are held down
 		resetPrevious  = resetPressed;
 		pausePrevious = pausePressed;
+
+		exitPrevious = exitPressed;
+		pausePrevious = pausePressed;
+		primePrevious = primePressed;
 		
 		// Check to see if a GamePad is connected
 		if (xbox.isConnected()) {
