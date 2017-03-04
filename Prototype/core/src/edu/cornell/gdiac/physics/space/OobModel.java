@@ -2,10 +2,7 @@ package edu.cornell.gdiac.physics.space;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import edu.cornell.gdiac.physics.GameCanvas;
 import edu.cornell.gdiac.physics.obstacle.CapsuleObstacle;
 import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
@@ -45,7 +42,7 @@ public class OobModel extends WheelObstacle {
     private boolean isGrounded;
     /** Ground sensor to represent our feet */
     private Fixture sensorFixture;
-    private PolygonShape sensorShape;
+    private CircleShape sensorShape;
 
     /** Cache for internal force calculations */
     private Vector2 forceCache = new Vector2();
@@ -227,9 +224,10 @@ public class OobModel extends WheelObstacle {
         FixtureDef sensorDef = new FixtureDef();
         sensorDef.density = OOB_DENSITY;
         sensorDef.isSensor = true;
-        sensorShape = new PolygonShape();
+        sensorShape = new CircleShape();
         sensorShape.setRadius(getRadius());
         sensorDef.shape = sensorShape;
+        System.out.println("HERE");
 
         sensorFixture = body.createFixture(sensorDef);
         sensorFixture.setUserData(getSensorName());
@@ -305,7 +303,7 @@ public class OobModel extends WheelObstacle {
      */
     public void drawDebug(GameCanvas canvas) {
         super.drawDebug(canvas);
-        canvas.drawPhysics(sensorShape,Color.RED,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
+//        canvas.drawPhysics(sensorShape,Color.RED,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
     }
 
 }
