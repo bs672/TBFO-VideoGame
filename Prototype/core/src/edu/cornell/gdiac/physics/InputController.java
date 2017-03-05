@@ -61,6 +61,7 @@ public class InputController {
 	private boolean exitPressed;
 	private boolean exitPrevious;
 
+	private boolean pressed;
 	/** How much did we move horizontally? */
 	private float horizontal;
 	/** How much did we move vertically? */
@@ -82,6 +83,8 @@ public class InputController {
 	 *
 	 * @return the amount of sideways movement. 
 	 */
+
+	public boolean isPressed() {return pressed;}
 	public float getHorizontal() {
 		return horizontal;
 	}
@@ -213,15 +216,20 @@ public class InputController {
 		pausePressed = (secondary && pausePressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
 		// Directional controls
 		horizontal = (secondary ? horizontal : 0.0f);
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.getDeltaX()>0)) {
 			horizontal = 1.0f;
+			pressed = true;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.getDeltaX()<0)) {
 			horizontal = -1.0f;
+			pressed = true;
+		}
+		else{
+			pressed = false;
 		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) || jump) {
 			jump = true;
 		}
 		// Mouse results

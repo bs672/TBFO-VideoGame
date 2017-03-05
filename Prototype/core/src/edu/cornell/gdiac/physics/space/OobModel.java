@@ -258,7 +258,7 @@ public class OobModel extends WheelObstacle {
         // Jump!
         if (isJumping()) {
 //            forceCache.set(OOB_JUMP*radDirection.x, OOB_JUMP*radDirection.y);
-            forceCache.set(0, OOB_JUMP*OOB_FORCE);
+            forceCache.set(0, OOB_JUMP*OOB_FORCE/5);
             body.applyLinearImpulse(forceCache,getPosition(),true);
         }
     }
@@ -276,11 +276,6 @@ public class OobModel extends WheelObstacle {
             isJumping = true;
         else
             isJumping = false;
-        if (isJumping()) {
-            jumpCooldown = JUMP_COOLDOWN;
-        } else {
-            jumpCooldown = Math.max(0, jumpCooldown - 1);
-        }
 
         super.update(dt);
     }
