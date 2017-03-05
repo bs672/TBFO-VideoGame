@@ -229,7 +229,7 @@ public class InputController {
 		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
 			jump = true;
 		}
 		// Mouse results
