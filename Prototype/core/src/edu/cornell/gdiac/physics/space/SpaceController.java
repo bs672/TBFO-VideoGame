@@ -184,7 +184,7 @@ public class SpaceController extends WorldController implements ContactListener 
     private OobModel avatar;
     /** Reference to current planet Oob's on */
 
-    private WheelObstacle currentPlanent;
+    private WheelObstacle currentPlanet;
     /** List of all live planets */
     private Array<WheelObstacle> planets;
 
