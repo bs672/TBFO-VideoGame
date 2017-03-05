@@ -42,6 +42,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Oob's initial radius */
     private static float OOB_RADIUS = 1.0f;
 
+    private static final float EPSILON = 0.1f;
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
     /** Planet texture */
@@ -293,6 +294,7 @@ public class SpaceController extends WorldController implements ContactListener 
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
+        currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
         addObject(avatar);
 
         // Create spinning platform
@@ -340,6 +342,7 @@ public class SpaceController extends WorldController implements ContactListener 
      */
     public void update(float dt) {
         // Process actions in object model
+
         Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
         int closestPlanet = 0;
         Vector2 radDir;
@@ -363,27 +366,51 @@ public class SpaceController extends WorldController implements ContactListener 
             else if (InputController.getInstance().getHorizontal() == -1) {
                 avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
                 avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
-            }
-        }
-        else
-            avatar.setMovement(new Vector2(0,0));
-        avatar.setJumping(InputController.getInstance().getJump());
 
-//        avatar.applyForce();
+        if(currentPlanet!=null) {
+            Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+            int closestPlanet = 0;
+            Vector2 radDir;
+            for (int i = 0; i < planets.size; i++) {
+                radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
+                if (radDir.len() < smallestRad.len()) {
+                    smallestRad = radDir.cpy();
+                    closestPlanet = i;
+                }
+
+            }
+            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
+                smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
+                Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(0.05f);
+                if (InputController.getInstance().getJump()) {
+                    avatar.setMovement(smallestRad);
+                    currentPlanet = null;
+                } else if (InputController.getInstance().getHorizontal() == 1) {
+                    avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
+                    avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
+                    avatar.setMovement(new Vector2(0, 0));
+                } else if (InputController.getInstance().getHorizontal() == -1) {
+                    avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
+                    avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
+                    avatar.setMovement(new Vector2(0, 0));
+                }
+            } else
+                avatar.setMovement(new Vector2(0, 0));
+        }
+        avatar.applyForce();
         if (avatar.isJumping()) {
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
         }
 
         // If we use sound, we must remember this.
         SoundController.getInstance().update();
-        int currentPlanetNumber;
-        if (currentPlanet==null) {
-            for (int ii = 0; ii < PLANETS.length; ii++) {
-                Vector2 planet = new Vector2(PLANETS[ii][0], PLANETS[ii][1]);
-                planet = planet.sub(avatar.getX(), avatar.getY());
-                if (avatar.getRadius()+PLANETS[ii][2]<planet.len()){
-                    currentPlanetNumber = ii;
 
+        if (currentPlanet==null) {
+            for (int ii = 0; ii < planets.size; ii++) {
+                Vector2 planet = new Vector2(planets.get(ii).getCentroid());
+                planet = planet.sub(avatar.getCentroid());
+                if (avatar.getRadius()+planets.get(ii).getRadius()<=planet.len()){
+                    currentPlanet = planets.get(ii);
                     break;
                 }
             }
