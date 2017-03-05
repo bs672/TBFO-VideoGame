@@ -26,7 +26,7 @@ import edu.cornell.gdiac.util.*;
  * a controller via the new XBox360Controller class.
  */
 public class InputController {
-	// Sensitivity for moving crosshair with gameplay
+	// Sensitivity for moving cursar with gameplay
 	private static final float GP_ACCELERATE = 1.0f;
 	private static final float GP_MAX_SPEED  = 10.0f;
 	private static final float GP_THRESHOLD  = 0.01f;
@@ -66,11 +66,11 @@ public class InputController {
 	private float horizontal;
 	/** How much did we move vertically? */
 	private boolean jump;
-	/** The crosshair position (for raddoll) */
-	private Vector2 crosshair;
-	/** The crosshair cache (for using as a return value) */
+	/** The cursar position (for raddoll) */
+	private Vector2 cursar;
+	/** The cursar cache (for using as a return value) */
 	private Vector2 crosscache;
-	/** For the gamepad crosshair control */
+	/** For the gamepad cursar control */
 	private float momentum;
 	
 	/** An X-Box controller (if it is connected) */
@@ -125,7 +125,7 @@ public class InputController {
 	 * @return the current position of the crosshairs on the screen.
 	 */
 	public Vector2 getCrossHair() {
-		return crosscache.set(crosshair);
+		return crosscache.set(cursar);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class InputController {
 	public InputController() { 
 		// If we have a game-pad for id, then use it.
 		xbox = new XBox360Controller(0);
-		crosshair = new Vector2();
+		cursar = new Vector2();
 		crosscache = new Vector2();
 	}
 
@@ -146,9 +146,9 @@ public class InputController {
 	 *
 	 * The method provides both the input bounds and the drawing scale.  It needs
 	 * the drawing scale to convert screen coordinates to world coordinates.  The
-	 * bounds are for the crosshair.  They cannot go outside of this zone.
+	 * bounds are for the cursar.  They cannot go outside of this zone.
 	 *
-	 * @param bounds The input bounds for the crosshair.  
+	 * @param bounds The input bounds for the cursar.
 	 * @param scale  The drawing scale
 	 */
 	public void readInput(Rectangle bounds, Vector2 scale) {
@@ -175,9 +175,9 @@ public class InputController {
 	 *
 	 * The method provides both the input bounds and the drawing scale.  It needs
 	 * the drawing scale to convert screen coordinates to world coordinates.  The
-	 * bounds are for the crosshair.  They cannot go outside of this zone.
+	 * bounds are for the cursar.  They cannot go outside of this zone.
 	 *
-	 * @param bounds The input bounds for the crosshair.  
+	 * @param bounds The input bounds for the cursar.
 	 * @param scale  The drawing scale
 	 */
 	private void readGamepad(Rectangle bounds, Vector2 scale) {
@@ -194,7 +194,7 @@ public class InputController {
 			momentum = Math.min(momentum, GP_MAX_SPEED);
 			crosscache.scl(momentum);
 			crosscache.scl(1/scale.x,1/scale.y);
-			crosshair.add(crosscache);
+			cursar.add(crosscache);
 		} else {
 			momentum = 0;
 		}
@@ -216,11 +216,11 @@ public class InputController {
 		pausePressed = (secondary && pausePressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
 		// Directional controls
 		horizontal = (secondary ? horizontal : 0.0f);
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (Gdx.input.getDeltaX()>0)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
 			horizontal = 1.0f;
 			pressed = true;
 		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || (Gdx.input.getDeltaX()<0)) {
+		else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			horizontal = -1.0f;
 			pressed = true;
 		}
@@ -229,13 +229,13 @@ public class InputController {
 		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) || jump) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
 			jump = true;
 		}
 		// Mouse results
-		crosshair.set(Gdx.input.getX(), Gdx.input.getY());
-		crosshair.scl(1 / scale.x, -1 / scale.y);
-		crosshair.y += bounds.height;
+		cursar.set(Gdx.input.getX(), Gdx.input.getY());
+		cursar.scl(1 / scale.x, -1 / scale.y);
+		cursar.y += bounds.height;
 		clampPosition(bounds);
 	}
 	
@@ -246,7 +246,12 @@ public class InputController {
 	 * for the gamepad controls.
 	 */
 	private void clampPosition(Rectangle bounds) {
-		crosshair.x = Math.max(bounds.x, Math.min(bounds.x+bounds.width, crosshair.x));
-		crosshair.y = Math.max(bounds.y, Math.min(bounds.y+bounds.height, crosshair.y));
+		cursar.x = Math.max(bounds.x, Math.min(bounds.x+bounds.width, cursar.x));
+		cursar.y = Math.max(bounds.y, Math.min(bounds.y+bounds.height, cursar.y));
 	}
+
+
+
+
+
 }
