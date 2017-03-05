@@ -358,6 +358,7 @@ public class SpaceController extends WorldController implements ContactListener 
                 smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
                 Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(0.05f);
                 if (InputController.getInstance().getJump()) {
+                    SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
                     avatar.setMovement(smallestRad);
                     currentPlanet = null;
                     avatar.applyForce();
@@ -376,9 +377,6 @@ public class SpaceController extends WorldController implements ContactListener 
                 avatar.setMovement(new Vector2(0, 0));
         }
         avatar.applyForce();
-        if (avatar.isJumping()) {
-            SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        }
 
         // If we use sound, we must remember this.
         SoundController.getInstance().update();
