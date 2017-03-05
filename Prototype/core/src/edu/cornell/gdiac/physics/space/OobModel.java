@@ -25,7 +25,7 @@ public class OobModel extends WheelObstacle {
     /** The maximum character speed */
     private static final float OOB_MAXSPEED = 5.0f;
     /** minimum speed while floating through space */
-    private static final float OOB_MINSPEED = 1.0f;
+    private static final float OOB_MINSPEED = 2.0f;
     /** The impulse for the character jump */
     private static final float OOB_JUMP = 5.5f;
     /** Cooldown (in animation frames) for jumping */
@@ -249,7 +249,7 @@ public class OobModel extends WheelObstacle {
             return;
         }
         // Don't want to be moving. Damp out player motion
-        if(getLinearVelocity().len() > 1.0) {
+        if(getLinearVelocity().len() > OOB_MINSPEED) {
             forceCache.set(-getDamping() * getVX(), -getDamping() * getVY());
             body.applyForce(forceCache, getPosition(), true);
         }
