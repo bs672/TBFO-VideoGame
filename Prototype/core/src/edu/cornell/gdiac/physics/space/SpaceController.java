@@ -48,6 +48,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Texture asset for background image */
     private TextureRegion backgroundTexture;
 
+    private boolean jumping = false;
 
     /** Track asset loading from all instances and subclasses */
     private AssetState platformAssetState = AssetState.EMPTY;
@@ -184,7 +185,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Reference to the character avatar */
     private OobModel avatar;
     /** Reference to current planet Oob's on */
-    private WheelObstacle currentPlanent;
+    private WheelObstacle currentPlanet;
     /** Reference to the goalDoor (for collision detection) */
     private BoxObstacle goalDoor;
 
@@ -350,6 +351,19 @@ public class SpaceController extends WorldController implements ContactListener 
 
         // If we use sound, we must remember this.
         SoundController.getInstance().update();
+        int currentPlanetNumber;
+        if (currentPlanet==null) {
+            for (int ii = 0; ii < PLANETS.length; ii++) {
+                Vector2 planet = new Vector2(PLANETS[ii][0], PLANETS[ii][1]);
+                planet = planet.sub(avatar.getX(), avatar.getY());
+                if (avatar.getRadius()+PLANETS[ii][2]<planet.len()){
+                    currentPlanetNumber = ii;
+
+                    break;
+                }
+            }
+        }
+        //need to set currentPlanet to currentPlanetNumber
     }
 //
 //    /**
