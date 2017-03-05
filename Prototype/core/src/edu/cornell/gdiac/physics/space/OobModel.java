@@ -249,7 +249,7 @@ public class OobModel extends WheelObstacle {
         if (getMovement().isZero()) {
             body.setLinearVelocity(0,0);
         }
-        else if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
+        else if ((!getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
             forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
             body.applyForce(forceCache,getPosition(),true);
         }
@@ -263,7 +263,7 @@ public class OobModel extends WheelObstacle {
         // Jump!
         if (isJumping()) {
 //            forceCache.set(OOB_JUMP*radDirection.x, OOB_JUMP*radDirection.y);
-            forceCache.set(0, OOB_JUMP*OOB_FORCE);
+            forceCache.set(0, OOB_JUMP*OOB_FORCE/5);
             body.applyLinearImpulse(forceCache,getPosition(),true);
         }
     }

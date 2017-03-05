@@ -231,7 +231,6 @@ public class InputController {
 		jump = (secondary ? jump : false);
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) || jump) {
 			jump = true;
-			pressed = true;
 		}
 		// Mouse results
 		crosshair.set(Gdx.input.getX(), Gdx.input.getY());
