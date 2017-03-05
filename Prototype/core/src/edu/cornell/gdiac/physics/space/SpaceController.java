@@ -150,10 +150,10 @@ public class SpaceController extends WorldController implements ContactListener 
 
     private static final float[][] PLANETS = {
             {8.0f, 4.5f, 1.6f},
-            {8.0f, 13.5f, 1.6f},
-            {24.0f, 4.5f, 1.6f},
-            {24.0f, 13.5f, 1.6f},
-            {16.0f, 9.0f, 1.6f}
+            {5.0f, 12.5f, 1.6f},
+            {27.0f, 4.5f, 1.6f},
+            {25.0f, 12.5f, 1.6f},
+            {18.0f, 4.0f, 1.6f}
     };
 
     /** The outlines of all of the platforms */
