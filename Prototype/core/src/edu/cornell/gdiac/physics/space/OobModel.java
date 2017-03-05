@@ -246,10 +246,8 @@ public class OobModel extends WheelObstacle {
             return;
         }
         // Don't want to be moving. Damp out player motion
-        if ((isGrounded() && !getMovement().isZero()) || (!isGrounded() && movement.len() > OOB_MINSPEED)) {
-            forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
-            body.applyForce(forceCache,getPosition(),true);
-        }
+        forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
+        body.applyForce(forceCache,getPosition(),true);
 
         // Velocity too high, clamp it
         if (movement.len() >= getMaxSpeed())
