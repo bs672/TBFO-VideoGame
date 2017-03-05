@@ -246,21 +246,13 @@ public class OobModel extends WheelObstacle {
             return;
         }
         // Don't want to be moving. Damp out player motion
-        forceCache.set(-getDamping()*getVX(),-getDamping()*getVY());
-        body.applyForce(forceCache,getPosition(),true);
-
-        // Velocity too high, clamp it
-        if (movement.len() >= getMaxSpeed())
-            setMovement(new Vector2(movement.cpy().nor().scl(OOB_MAXSPEED)));
-        forceCache.set(getMovement().x,getMovement().y);
-        body.applyLinearImpulse(forceCache,getPosition(),true);
-
-        // Jump!
-        if (isJumping()) {
-//            forceCache.set(OOB_JUMP*radDirection.x, OOB_JUMP*radDirection.y);
-            forceCache.set(0, OOB_JUMP*OOB_FORCE/5);
-            body.applyLinearImpulse(forceCache,getPosition(),true);
+        if(getLinearVelocity().len() > 1.0) {
+            forceCache.set(-getDamping() * getVX(), -getDamping() * getVY());
+            body.applyForce(forceCache, getPosition(), true);
         }
+
+        forceCache.set(getMovement().x*OOB_FORCE,getMovement().y*OOB_FORCE);
+        body.applyLinearImpulse(forceCache,getPosition(),true);
     }
 
     /**

@@ -368,6 +368,8 @@ public class SpaceController extends WorldController implements ContactListener 
                     avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
                     avatar.setMovement(new Vector2(0, 0));
                 }
+                else
+                    avatar.setMovement(new Vector2(0, 0));
             } else
                 avatar.setMovement(new Vector2(0, 0));
         }
@@ -380,14 +382,18 @@ public class SpaceController extends WorldController implements ContactListener 
         SoundController.getInstance().update();
 
         if (currentPlanet==null) {
-            for (int ii = 0; ii < planets.size; ii++) {
-                Vector2 planet = new Vector2(planets.get(ii).getCentroid());
-                planet = planet.sub(avatar.getCentroid());
-                if (avatar.getRadius()+planets.get(ii).getRadius()<=planet.len()){
-                    currentPlanet = planets.get(ii);
-                    break;
+            Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+            int closestPlanet = 0;
+            Vector2 radDir;
+            for (int i = 0; i < planets.size; i++) {
+                radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
+                if (radDir.len() < smallestRad.len()) {
+                    smallestRad = radDir.cpy();
+                    closestPlanet = i;
                 }
             }
+            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON)
+                currentPlanet = planets.get(closestPlanet);
         }
         //need to set currentPlanet to currentPlanetNumber
     }
