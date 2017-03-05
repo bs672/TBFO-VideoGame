@@ -42,7 +42,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Oob's initial radius */
     private static float OOB_RADIUS = 1.0f;
 
-    private static final float EPSILON = 0.1f;
+    private static final float EPSILON = 0.01f;
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
     /** Planet texture */
@@ -354,11 +354,13 @@ public class SpaceController extends WorldController implements ContactListener 
                 }
             }
             if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
+                avatar.applyForceZero();
                 smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
                 Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(0.05f);
                 if (InputController.getInstance().getJump()) {
                     avatar.setMovement(smallestRad);
                     currentPlanet = null;
+                    avatar.applyForce();
                 } else if (InputController.getInstance().getHorizontal() == 1) {
                     avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
                     avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
