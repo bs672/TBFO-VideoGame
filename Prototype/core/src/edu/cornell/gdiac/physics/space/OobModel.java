@@ -17,7 +17,7 @@ public class OobModel extends WheelObstacle {
     /** The density of the character */
     private static final float OOB_DENSITY = 1.0f;
     /** The factor to multiply by the input */
-    private static final float OOB_FORCE = 20.0f;
+    private static final float OOB_FORCE = 10.0f;
     /** The amount to slow the character down */
     private static final float OOB_DAMPING = 10.0f;
     /** The Oob is a slippery one */
@@ -235,6 +235,9 @@ public class OobModel extends WheelObstacle {
         return true;
     }
 
+    public void applyForceZero() {
+        body.setLinearVelocity(0, 0);
+    }
 
     /**
      * Applies the force to the body of this Oob
