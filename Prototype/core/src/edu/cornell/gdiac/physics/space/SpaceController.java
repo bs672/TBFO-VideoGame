@@ -1,5 +1,6 @@
 package edu.cornell.gdiac.physics.space;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.physics.InputController;
 import edu.cornell.gdiac.physics.WorldController;
@@ -15,6 +18,7 @@ import edu.cornell.gdiac.physics.obstacle.Obstacle;
 import edu.cornell.gdiac.physics.obstacle.PolygonObstacle;
 import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
 import edu.cornell.gdiac.util.SoundController;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Matt Loughney on 2/28/2017.
@@ -24,8 +28,6 @@ public class SpaceController extends WorldController implements ContactListener 
     private static final String OOB_FILE  = "space/oob.png";
     /** The texture file for the spinning barrier */
     private static final String PLANET_FILE = "space/planet.png";
-    /** The texture file for the walls */
-    private static final String WALL_FILE = "space/wall.png";
     /** Texture file for background image */
     private static final String BACKG_FILE = "space/space-background2.png"; //https://images4.alphacoders.com/106/106826.jpg
 
@@ -36,15 +38,14 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "platform/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(2.5f, 5.0f);
+    private static Vector2 OOB_POS = new Vector2(8f, 5.5f);
     /** Oob's initial radius */
     private static float OOB_RADIUS = 1.0f;
 
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
+    /** Planet texture */
     private TextureRegion planetTexture;
-    /** Texture asset for the spinning barrier */
-    private TextureRegion wallTexture;
     /** Texture asset for background image */
     private TextureRegion backgroundTexture;
 
@@ -75,8 +76,6 @@ public class SpaceController extends WorldController implements ContactListener 
         assets.add(PLANET_FILE);
         manager.load(BACKG_FILE, Texture.class);
         assets.add(BACKG_FILE);
-        manager.load(WALL_FILE, Texture.class);
-        assets.add(WALL_FILE);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -106,7 +105,6 @@ public class SpaceController extends WorldController implements ContactListener 
         avatarTexture = createTexture(manager,OOB_FILE,false);
         planetTexture = createTexture(manager,PLANET_FILE,false);
         backgroundTexture = createTexture(manager,BACKG_FILE,false);
-        wallTexture = createTexture(manager, WALL_FILE, false);
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -185,9 +183,10 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Reference to the character avatar */
     private OobModel avatar;
     /** Reference to current planet Oob's on */
-    private WheelObstacle currentPlanet;
-    /** Reference to the goalDoor (for collision detection) */
-    private BoxObstacle goalDoor;
+
+    private WheelObstacle currentPlanent;
+    /** List of all live planets */
+    private Array<WheelObstacle> planets;
 
     /** Mark set to handle more sophisticated collision callbacks */
     protected ObjectSet<Fixture> sensorFixtures;
@@ -204,6 +203,7 @@ public class SpaceController extends WorldController implements ContactListener 
         setFailure(false);
         world.setContactListener(this);
         sensorFixtures = new ObjectSet<Fixture>();
+        planets = new Array<WheelObstacle>();
     }
 
     /**
@@ -255,7 +255,6 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.setTexture(wallTexture);
             obj.setName(wname+ii);
             addObject(obj);
         }
@@ -272,6 +271,7 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setTexture(planetTexture);
             obj.setName(pname+ii);
             addObject(obj);
+            planets.add(obj);
         }
 //
 //        String pname = "platform";
@@ -340,11 +340,33 @@ public class SpaceController extends WorldController implements ContactListener 
      */
     public void update(float dt) {
         // Process actions in object model
-        Vector2 mvmtDir = new Vector2(InputController.getInstance().getHorizontal() * avatar.getForce(), 0 * avatar.getForce());
-        avatar.setMovement(mvmtDir);
+        Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+        int closestPlanet = 0;
+        Vector2 radDir;
+        for(int i = 0; i < planets.size; i++) {
+            radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
+            if(radDir.len() < smallestRad.len()) {
+                smallestRad = radDir.cpy();
+                closestPlanet = i;
+            }
+        }
+        if(smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + 0.5f) {
+            smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
+            Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(0.05f);
+            if (InputController.getInstance().getHorizontal() == 1) {
+                avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
+                avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
+            }
+            else if (InputController.getInstance().getHorizontal() == -1) {
+                avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
+                avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
+            }
+        }
+        else
+            avatar.setMovement(new Vector2(0,0));
         avatar.setJumping(InputController.getInstance().getJump());
 
-        avatar.applyForce();
+//        avatar.applyForce();
         if (avatar.isJumping()) {
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
         }
@@ -440,10 +462,10 @@ public class SpaceController extends WorldController implements ContactListener 
             }
 
             // Check for win condition
-            if ((bd1 == avatar   && bd2 == goalDoor) ||
-                    (bd1 == goalDoor && bd2 == avatar)) {
-                setComplete(true);
-            }
+//            if ((bd1 == avatar   && bd2 == goalDoor) ||
+//                    (bd1 == goalDoor && bd2 == avatar)) {
+//                setComplete(true);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
