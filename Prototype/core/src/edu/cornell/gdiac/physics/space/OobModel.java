@@ -19,7 +19,7 @@ public class OobModel extends WheelObstacle {
     /** The factor to multiply by the input */
     private static final float OOB_FORCE = 10.0f;
     /** The amount to slow the character down */
-    private static final float OOB_DAMPING = 10.0f;
+    private static final float OOB_DAMPING = 5.0f;
     /** The Oob is a slippery one */
     private static final float OOB_FRICTION = 0.0f;
     /** The maximum character speed */

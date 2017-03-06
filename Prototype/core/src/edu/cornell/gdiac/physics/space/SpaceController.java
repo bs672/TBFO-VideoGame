@@ -5,6 +5,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -156,30 +158,6 @@ public class SpaceController extends WorldController implements ContactListener 
             {18.0f, 4.0f, 1.6f}
     };
 
-    /** The outlines of all of the platforms */
-//    private static final float[][] PLATFORMS = {
-//            { 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f},
-//            { 6.0f, 4.0f, 9.0f, 4.0f, 9.0f, 2.5f, 6.0f, 2.5f},
-//            {23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
-//            {26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
-//            {29.0f, 7.0f,31.0f, 7.0f,31.0f, 6.5f,29.0f, 6.5f},
-//            {24.0f, 8.5f,27.0f, 8.5f,27.0f, 8.0f,24.0f, 8.0f},
-//            {29.0f,10.0f,31.0f,10.0f,31.0f, 9.5f,29.0f, 9.5f},
-//            {23.0f,11.5f,27.0f,11.5f,27.0f,11.0f,23.0f,11.0f},
-//            {19.0f,12.5f,23.0f,12.5f,23.0f,12.0f,19.0f,12.0f},
-//            { 1.0f,12.5f, 7.0f,12.5f, 7.0f,12.0f, 1.0f,12.0f}
-//    };
-
-    // Other game objects
-    /** The goal door position */
-    private static Vector2 GOAL_POS = new Vector2(4.0f,14.0f);
-    /** The position of the spinning barrier */
-    private static Vector2 SPIN_POS = new Vector2(13.0f,12.5f);
-    /** The initial position of the dude */
-    private static Vector2 DUDE_POS = new Vector2(2.5f, 5.0f);
-    /** The position of the rope bridge */
-    private static Vector2 BRIDGE_POS  = new Vector2(9.0f, 3.8f);
-
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -191,6 +169,8 @@ public class SpaceController extends WorldController implements ContactListener 
 
     /** Mark set to handle more sophisticated collision callbacks */
     protected ObjectSet<Fixture> sensorFixtures;
+    /** the font for the mass text on each object */
+    private BitmapFont massFont;
 
     /**
      * Creates and initialize a new instance of the platformer game
@@ -205,6 +185,8 @@ public class SpaceController extends WorldController implements ContactListener 
         world.setContactListener(this);
         sensorFixtures = new ObjectSet<Fixture>();
         planets = new Array<WheelObstacle>();
+        massFont = new BitmapFont();
+        massFont.getData().setScale(2);
     }
 
     /**
@@ -545,6 +527,13 @@ public class SpaceController extends WorldController implements ContactListener 
             }
             canvas.endDebug();
         }
+        canvas.begin();
+        for(int i = 0; i < planets.size; i++) {
+            canvas.drawText(Integer.toString((int)(Math.pow(planets.get(i).getRadius(), 2)*Math.PI)), massFont, planets.get(i).getX()*32 - 8, planets.get(i).getY()*32 + 15);
+        }
+        canvas.drawText(Integer.toString((int)(Math.pow(avatar.getRadius(), 2)*Math.PI)), massFont, avatar.getX()*32 - 8, avatar.getY()*32 + 15);
+        canvas.end();
+
 
 //        // Draw foreground last.
 //        canvas.begin();
