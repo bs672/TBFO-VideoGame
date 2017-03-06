@@ -206,6 +206,7 @@ public class SpaceController extends WorldController implements ContactListener 
         }
         objects.clear();
         addQueue.clear();
+        planets.clear();
         world.dispose();
 
         world = new World(gravity,false);
