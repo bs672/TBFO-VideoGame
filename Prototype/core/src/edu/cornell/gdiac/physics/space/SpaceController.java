@@ -333,6 +333,14 @@ public class SpaceController extends WorldController implements ContactListener 
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        if (InputController.getInstance().getChange()){
+            if (control == 1){
+                control = 0;
+            }
+            else{
+                control = 1;
+            }
+        }
         // Process actions in object model
 
         //If Oob is landed on a planet

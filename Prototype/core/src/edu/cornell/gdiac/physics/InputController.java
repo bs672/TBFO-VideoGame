@@ -68,6 +68,8 @@ public class InputController {
 	private boolean jump;
 
 	private boolean mouseJump;
+
+	private boolean change;
 	/** The cursar position (for raddoll) */
 	private Vector2 cursar;
 	/** The cursar cache (for using as a return value) */
@@ -96,6 +98,8 @@ public class InputController {
 	public boolean getJump() {return jump; }
 
 	public boolean getMouseJump() {return mouseJump; }
+
+	public boolean getChange() {return change;}
 
 	public boolean didReset() {
 		return resetPressed && !resetPrevious;
@@ -231,6 +235,13 @@ public class InputController {
 		else{
 			pressed = false;
 		}
+		//Changing modes, JUST FOR DEMO
+		if((Gdx.input.isKeyPressed(Input.Keys.M))){
+			change = true;
+		}
+		else{
+			change = false;
+		}
 
 		jump = (secondary ? jump : false);
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -250,6 +261,7 @@ public class InputController {
 		cursar.scl(1 / scale.x, -1 / scale.y);
 		cursar.y += bounds.height;
 		clampPosition(bounds);
+
 	}
 	
 	/**
