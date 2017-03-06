@@ -381,7 +381,7 @@ public class SpaceController extends WorldController implements ContactListener 
                 avatar.applyForceZero();
                 smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
                 Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
-                if (InputController.getInstance().getJump()) {
+                if (jump) {
                     SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
                     avatar.setMovement(smallestRad);
                     currentPlanet = null;
@@ -403,10 +403,10 @@ public class SpaceController extends WorldController implements ContactListener 
                     Vector2 newSmallestRad = new Vector2(smallestRad).scl((cloPl.getRadius() + avatar.getRadius())/oldDist);
                     avatar.setX(cloPl.getX() + newSmallestRad.x);
                     avatar.setY(cloPl.getY() + newSmallestRad.y);
-                    if (InputController.getInstance().getHorizontal() == 1) {
+                    if (moveDirection == 1) {
                         avatar.setX(cloPl.getX() + smallestRad.x + mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y + mvmtDir.y);
-                    } else if (InputController.getInstance().getHorizontal() == -1) {
+                    } else if (moveDirection == -1) {
                         avatar.setX(cloPl.getX() + smallestRad.x - mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y - mvmtDir.y);
                     }
