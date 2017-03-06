@@ -26,6 +26,10 @@ public class WheelObstacle extends SimpleObstacle {
 	protected CircleShape shape;
 	/** A cache value for the fixture (for resizing) */
 	private Fixture geometry;
+
+	public float getMass() {
+		return (float)(Math.PI * Math.pow(getRadius(), 2));
+	}
 	
 	/**
 	 * Returns the radius of this circle

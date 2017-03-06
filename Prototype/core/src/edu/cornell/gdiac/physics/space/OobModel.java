@@ -48,18 +48,8 @@ public class OobModel extends WheelObstacle {
     /** Cache for internal force calculations */
     private Vector2 forceCache = new Vector2();
 
-    /** health */
-    private float mass;
     /** radial vector from center of planet */
     private Vector2 radDirection;
-
-    public float getMass() {
-        return mass;
-    }
-
-    public void setMass(float value) {
-        mass = value;
-    }
 
     /**
      * Returns left/right movement of this character.
@@ -273,15 +263,6 @@ public class OobModel extends WheelObstacle {
             isJumping = false;
 
         super.update(dt);
-    }
-
-    /**
-     * Draws the physics object.
-     *
-     * @param canvas Drawing context
-     */
-    public void draw(GameCanvas canvas) {
-        canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),1.0f,1.0f);
     }
 
     /**
