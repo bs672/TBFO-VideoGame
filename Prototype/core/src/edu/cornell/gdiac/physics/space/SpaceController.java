@@ -1,22 +1,16 @@
 package edu.cornell.gdiac.physics.space;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.physics.InputController;
 import edu.cornell.gdiac.physics.WorldController;
-import edu.cornell.gdiac.physics.obstacle.BoxObstacle;
 import edu.cornell.gdiac.physics.obstacle.Obstacle;
 import edu.cornell.gdiac.physics.obstacle.PolygonObstacle;
 import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
@@ -337,7 +331,7 @@ public class SpaceController extends WorldController implements ContactListener 
             Vector2 radDir;
             for (int i = 0; i < planets.size; i++) {
                 radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len()) {
+                if (radDir.len() < smallestRad.len() && radDir.len() < planets.get(i).getRadius() + avatar.getRadius() + EPSILON) {
                     smallestRad = radDir.cpy();
                     closestPlanet = i;
                 }
@@ -345,7 +339,6 @@ public class SpaceController extends WorldController implements ContactListener 
             if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
                 avatar.applyForceZero();
                 smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
-                Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
                 if (InputController.getInstance().getJump()) {
                     SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
                     avatar.setMovement(smallestRad);
@@ -355,7 +348,6 @@ public class SpaceController extends WorldController implements ContactListener 
                 else {
                     float rad = planets.get(closestPlanet).getRadius();
                     float oldAvatarRad = avatar.getRadius();
-                    float oldDist = smallestRad.len();
                     WheelObstacle cloPl = planets.get(closestPlanet);
                     if(rad > MIN_RADIUS){
                         float oldOobMass = avatar.getMass();
@@ -365,9 +357,7 @@ public class SpaceController extends WorldController implements ContactListener 
                         cloPl.scalePicScale(new Vector2(cloPl.getRadius() / rad, cloPl.getRadius() / rad));
                         avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
                     }
-                    Vector2 newSmallestRad = new Vector2(smallestRad).scl((cloPl.getRadius() + avatar.getRadius())/oldDist);
-                    avatar.setX(cloPl.getX() + newSmallestRad.x);
-                    avatar.setY(cloPl.getY() + newSmallestRad.y);
+                    Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1f/(15*avatar.getRadius()));
                     if (InputController.getInstance().getHorizontal() == 1) {
                         avatar.setX(cloPl.getX() + smallestRad.x + mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y + mvmtDir.y);
@@ -375,6 +365,10 @@ public class SpaceController extends WorldController implements ContactListener 
                         avatar.setX(cloPl.getX() + smallestRad.x - mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y - mvmtDir.y);
                     }
+                    smallestRad = new Vector2(avatar.getX() - cloPl.getX(), avatar.getY() - cloPl.getY());
+                    smallestRad.scl((avatar.getRadius() + cloPl.getRadius())/smallestRad.len());
+                    avatar.setX(cloPl.getX() + smallestRad.x);
+                    avatar.setY(cloPl.getY() + smallestRad.y);
                     avatar.setMovement(new Vector2(0, 0));
                 }
             } else
@@ -391,7 +385,7 @@ public class SpaceController extends WorldController implements ContactListener 
             Vector2 radDir;
             for (int i = 0; i < planets.size; i++) {
                 radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len()) {
+                if (radDir.len() < smallestRad.len() && radDir.len() < planets.get(i).getRadius() + avatar.getRadius() + EPSILON) {
                     smallestRad = radDir.cpy();
                     closestPlanet = i;
                 }
