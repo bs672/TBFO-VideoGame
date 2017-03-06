@@ -361,15 +361,16 @@ public class SpaceController extends WorldController implements ContactListener 
                 float angle = mouse.angle();
                 Vector2 oob = avatar.getPosition();
                 oob.sub(planets.get(closestPlanet).getPosition());
-                System.out.println(oob.x);
-                System.out.println(oob.y);
                 float angle2 = oob.angle();
-                if((angle - angle2)%360 <= 180 && (angle - angle2)%360 > 0){
+                System.out.println(angle);
+                System.out.println(angle2);
+                if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
                     moveDirection = -1;
                 }
-                else if((angle - angle2)%360 > 180){
+                else if((angle - angle2+360)%360 > 180 && (angle - angle2+360)%360<359){
                     moveDirection = 1;
                 }
+                System.out.println(moveDirection);
                 jump = InputController.getInstance().getMouseJump();
             }
             else{
