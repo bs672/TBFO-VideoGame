@@ -350,6 +350,11 @@ public class SpaceController extends WorldController implements ContactListener 
                     avatar.applyForce();
                 }
                 else {
+                    float rad = planets.get(closestPlanet).getRadius();
+                    if(rad>MIN_RADIUS){
+                        planets.get(closestPlanet).setRadius(rad - SIPHON);
+                        avatar.setRadius(avatar.getRadius() + SIPHON);
+                    }
                     if (InputController.getInstance().getHorizontal() == 1) {
                         avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
                         avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
@@ -357,17 +362,7 @@ public class SpaceController extends WorldController implements ContactListener 
                         avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
                         avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
                     }
-                    float rad = planets.get(closestPlanet).getRadius();
-                    if(rad>MIN_RADIUS){
-                        float oldLen = avatar.getRadius()+rad;
-                        planets.get(closestPlanet).setRadius(rad - SIPHON);
-                        float newLen = avatar.getRadius()+planets.get(closestPlanet).getRadius();
-                        avatar.setX(avatar.getX() * newLen/oldLen);
-                        avatar.setY(avatar.getY() * newLen/oldLen);
-                        avatar.setMovement(new Vector2(0, 0));
-                    }
-
-
+                    avatar.setMovement(new Vector2(0, 0));
                 }
             } else
                 avatar.setMovement(new Vector2(0, 0));
