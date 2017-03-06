@@ -263,11 +263,11 @@ public class RagdollController extends WorldController {
 	    // Move an object if touched
 		InputController input = InputController.getInstance();
 	    if (/*input.didTertiary() &&*/ !selector.isSelected()) {
-	        selector.select(input.getCrossHair().x,input.getCrossHair().y);
+	        selector.select(input.getCursor().x,input.getCursor().y);
 	    } else if (/*!input.didTertiary() &&*/ selector.isSelected()) {
 	        selector.deselect();
 	    } else {
-	        selector.moveTo(input.getCrossHair().x,input.getCrossHair().y);
+	        selector.moveTo(input.getCursor().x,input.getCursor().y);
 	    }
 
 	    // Play a sound for each bubble
