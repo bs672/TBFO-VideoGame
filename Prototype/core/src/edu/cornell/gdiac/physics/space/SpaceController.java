@@ -44,6 +44,10 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Oob's initial radius */
     private static float OOB_RADIUS = 1.0f;
 
+    private static final float SIPHON = 0.005f;
+
+    private static final float MIN_RADIUS = 0.5f;
+
     private static final float EPSILON = 0.01f;
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
@@ -344,17 +348,27 @@ public class SpaceController extends WorldController implements ContactListener 
                     avatar.setMovement(smallestRad);
                     currentPlanet = null;
                     avatar.applyForce();
-                } else if (InputController.getInstance().getHorizontal() == 1) {
-                    avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
-                    avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
-                    avatar.setMovement(new Vector2(0, 0));
-                } else if (InputController.getInstance().getHorizontal() == -1) {
-                    avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
-                    avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
-                    avatar.setMovement(new Vector2(0, 0));
                 }
-                else
-                    avatar.setMovement(new Vector2(0, 0));
+                else {
+                    if (InputController.getInstance().getHorizontal() == 1) {
+                        avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
+                        avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
+                    } else if (InputController.getInstance().getHorizontal() == -1) {
+                        avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
+                        avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
+                    }
+                    float rad = planets.get(closestPlanet).getRadius();
+                    if(rad>MIN_RADIUS){
+                        float oldLen = avatar.getRadius()+rad;
+                        planets.get(closestPlanet).setRadius(rad - SIPHON);
+                        float newLen = avatar.getRadius()+planets.get(closestPlanet).getRadius();
+                        avatar.setX(avatar.getX() * newLen/oldLen);
+                        avatar.setY(avatar.getY() * newLen/oldLen);
+                        avatar.setMovement(new Vector2(0, 0));
+                    }
+
+
+                }
             } else
                 avatar.setMovement(new Vector2(0, 0));
         }
