@@ -41,8 +41,14 @@ public abstract class SimpleObstacle extends Obstacle {
 
 	/** The texture origin for drawing */
 	protected Vector2 origin;
+
+	/** The width and height scale for the texture */
+	protected  Vector2 picScale = new Vector2(1f,1f);
 	
 	/// BodyDef Methods
+	public void scalePicScale(Vector2 v) { picScale.x *= v.x; picScale.y *= v.y; }
+
+	public Vector2 getPicScale() {return picScale; }
 	/**
 	 * Returns the body type for Box2D physics
 	 *
@@ -776,7 +782,7 @@ public abstract class SimpleObstacle extends Obstacle {
 	 */
 	public void draw(GameCanvas canvas) {
 		if (texture != null) {
-			canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,getAngle(),1,1);
+			canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,getAngle(),picScale.x, picScale.y);
 		}
 	}
 	
@@ -877,7 +883,7 @@ public abstract class SimpleObstacle extends Obstacle {
 	 * primary purpose is to adjust changes to the fixture, which have to take place 
 	 * after collision.
 	 *
-	 * @param dt Timing values from parent loop
+	 * @param delta Timing values from parent loop
 	 */
 	public void update(float delta) {
 		// Recreate the fixture object if dimensions changed.

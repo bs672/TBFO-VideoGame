@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -352,9 +353,14 @@ public class SpaceController extends WorldController implements ContactListener 
                 }
                 else {
                     float rad = planets.get(closestPlanet).getRadius();
-                    if(rad>MIN_RADIUS){
+                    float oldAvatarRad = avatar.getRadius();
+                    if(rad > MIN_RADIUS){
                         planets.get(closestPlanet).setRadius(rad - SIPHON);
                         avatar.setRadius(avatar.getRadius() + SIPHON);
+                        float newRad = planets.get(closestPlanet).getRadius();
+                        planets.get(closestPlanet).scalePicScale(new Vector2(newRad / rad, newRad / rad));
+                        avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
+                        System.out.println(avatar.getRadius() + " " + oldAvatarRad);
                     }
                     if (InputController.getInstance().getHorizontal() == 1) {
                         avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
