@@ -50,6 +50,9 @@ public class SpaceController extends WorldController implements ContactListener 
     private static final float MIN_RADIUS = 0.5f;
 
     private static final float EPSILON = 0.01f;
+
+    //control = 0 is keyboard, control = 1 is mouse
+    private int control = 1;
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
     /** Planet texture */
@@ -330,10 +333,17 @@ public class SpaceController extends WorldController implements ContactListener 
      */
     public void update(float dt) {
         // Process actions in object model
+
+        //If Oob is landed on a planet
+
         if(currentPlanet!=null) {
+
+
             Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
             int closestPlanet = 0;
             Vector2 radDir;
+
+            //Loop to get closest planet
             for (int i = 0; i < planets.size; i++) {
                 radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
                 if (radDir.len() < smallestRad.len()) {
@@ -341,11 +351,36 @@ public class SpaceController extends WorldController implements ContactListener 
                     closestPlanet = i;
                 }
             }
+            //determines mouse or keyboard controls
+            boolean jump = false;
+            float moveDirection = 0;
+            if (control==1){
+                Vector2 mouse = InputController.getInstance().getCursor();
+                mouse = mouse.sub(planets.get(closestPlanet).getPosition());
+                float angle = mouse.angle();
+                Vector2 oob = avatar.getPosition();
+                oob.sub(planets.get(closestPlanet).getPosition());
+                System.out.println(oob.x);
+                System.out.println(oob.y);
+                float angle2 = oob.angle();
+                if((angle - angle2)%360 <= 180 && (angle - angle2)%360 > 0){
+                    moveDirection = -1;
+                }
+                else if((angle - angle2)%360 > 180){
+                    moveDirection = 1;
+                }
+                jump = InputController.getInstance().getMouseJump();
+            }
+            else{
+                jump = InputController.getInstance().getJump();
+                moveDirection = InputController.getInstance().getHorizontal();
+            }
+
             if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
                 avatar.applyForceZero();
                 smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
                 Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(0.05f);
-                if (InputController.getInstance().getJump()) {
+                if (jump) {
                     SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
                     avatar.setMovement(smallestRad);
                     currentPlanet = null;
@@ -362,10 +397,10 @@ public class SpaceController extends WorldController implements ContactListener 
                         avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
                         System.out.println(avatar.getRadius() + " " + oldAvatarRad);
                     }
-                    if (InputController.getInstance().getHorizontal() == 1) {
+                    if (moveDirection == 1) {
                         avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x + mvmtDir.x);
                         avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y + mvmtDir.y);
-                    } else if (InputController.getInstance().getHorizontal() == -1) {
+                    } else if (moveDirection == -1) {
                         avatar.setX(planets.get(closestPlanet).getX() + smallestRad.x - mvmtDir.x);
                         avatar.setY(planets.get(closestPlanet).getY() + smallestRad.y - mvmtDir.y);
                     }
