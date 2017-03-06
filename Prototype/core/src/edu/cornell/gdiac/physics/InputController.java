@@ -66,6 +66,10 @@ public class InputController {
 	private float horizontal;
 	/** How much did we move vertically? */
 	private boolean jump;
+
+	private boolean mouseJump;
+
+	private boolean change;
 	/** The cursar position (for raddoll) */
 	private Vector2 cursar;
 	/** The cursar cache (for using as a return value) */
@@ -92,6 +96,10 @@ public class InputController {
 	//Returns whether Oob is jumping
 
 	public boolean getJump() {return jump; }
+
+	public boolean getMouseJump() {return mouseJump; }
+
+	public boolean getChange() {return change;}
 
 	public boolean didReset() {
 		return resetPressed && !resetPrevious;
@@ -124,7 +132,7 @@ public class InputController {
 	 *
 	 * @return the current position of the crosshairs on the screen.
 	 */
-	public Vector2 getCrossHair() {
+	public Vector2 getCursor() {
 		return crosscache.set(cursar);
 	}
 	
@@ -227,16 +235,33 @@ public class InputController {
 		else{
 			pressed = false;
 		}
+		//Changing modes, JUST FOR DEMO
+		if((Gdx.input.isKeyJustPressed(Input.Keys.M))){
+			change = true;
+		}
+		else{
+			change = false;
+		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) ||(Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			jump = true;
+		}
+		else{
+			jump = false;
+		}
+		if((Gdx.input.isButtonPressed(Input.Buttons.LEFT))){
+			mouseJump = true;
+		}
+		else{
+			mouseJump = false;
 		}
 		// Mouse results
 		cursar.set(Gdx.input.getX(), Gdx.input.getY());
 		cursar.scl(1 / scale.x, -1 / scale.y);
 		cursar.y += bounds.height;
 		clampPosition(bounds);
+
 	}
 	
 	/**

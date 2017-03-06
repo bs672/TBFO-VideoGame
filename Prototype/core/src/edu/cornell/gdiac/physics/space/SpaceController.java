@@ -44,6 +44,9 @@ public class SpaceController extends WorldController implements ContactListener 
     private static final float MIN_RADIUS = 1f;
 
     private static final float EPSILON = 0.01f;
+
+    //control = 0 is keyboard, control = 1 is mouse
+    private int control = 1;
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
     /** Planet texture */
@@ -324,11 +327,26 @@ public class SpaceController extends WorldController implements ContactListener 
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        if (InputController.getInstance().getChange()){
+            if (control == 1){
+                control = 0;
+            }
+            else{
+                control = 1;
+            }
+        }
         // Process actions in object model
+
+        //If Oob is landed on a planet
+
         if(currentPlanet!=null) {
+
+
             Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
             int closestPlanet = 0;
             Vector2 radDir;
+
+            //Loop to get closest planet
             for (int i = 0; i < planets.size; i++) {
                 radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
                 if (radDir.len() < smallestRad.len() && radDir.len() < planets.get(i).getRadius() + avatar.getRadius() + EPSILON) {
@@ -336,10 +354,34 @@ public class SpaceController extends WorldController implements ContactListener 
                     closestPlanet = i;
                 }
             }
+            //determines mouse or keyboard controls
+            boolean jump = false;
+            float moveDirection = 0;
+            if (control==1){
+                Vector2 mouse = InputController.getInstance().getCursor();
+                mouse = mouse.sub(planets.get(closestPlanet).getPosition());
+                float angle = mouse.angle();
+                Vector2 oob = avatar.getPosition();
+                oob.sub(planets.get(closestPlanet).getPosition());
+                float angle2 = oob.angle();
+                if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
+                    moveDirection = -1;
+                }
+                else if((angle - angle2+360)%360 > 180 && (angle - angle2+360)%360<359){
+                    moveDirection = 1;
+                }
+                jump = InputController.getInstance().getMouseJump();
+            }
+            else{
+                jump = InputController.getInstance().getJump();
+                moveDirection = InputController.getInstance().getHorizontal();
+            }
+
             if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
                 avatar.applyForceZero();
                 smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
-                if (InputController.getInstance().getJump()) {
+                Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
+                if (jump) {
                     SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
                     avatar.setMovement(smallestRad);
                     currentPlanet = null;
@@ -357,11 +399,10 @@ public class SpaceController extends WorldController implements ContactListener 
                         cloPl.scalePicScale(new Vector2(cloPl.getRadius() / rad, cloPl.getRadius() / rad));
                         avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
                     }
-                    Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1f/(15*avatar.getRadius()));
-                    if (InputController.getInstance().getHorizontal() == 1) {
+                    if (moveDirection == 1) {
                         avatar.setX(cloPl.getX() + smallestRad.x + mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y + mvmtDir.y);
-                    } else if (InputController.getInstance().getHorizontal() == -1) {
+                    } else if (moveDirection == -1) {
                         avatar.setX(cloPl.getX() + smallestRad.x - mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y - mvmtDir.y);
                     }
