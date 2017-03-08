@@ -46,7 +46,7 @@ import edu.cornell.gdiac.util.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "space/space-background.png"; //https://images4.alphacoders.com/106/106826.jpg
+	private static final String BACKGROUND_FILE = "space/background_720.png";
 	private static final String PROGRESS_FILE = "space/progressbar.png";
 	private static final String PLAY_BTN_FILE = "space/play.png";
 	
@@ -270,7 +270,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 */
 	private void draw() {
 		canvas.begin();
-		canvas.draw(background, 0, 0);
+        canvas.draw(background, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {

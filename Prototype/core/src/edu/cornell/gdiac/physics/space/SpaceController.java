@@ -22,11 +22,19 @@ import com.badlogic.gdx.utils.Array;
  */
 public class SpaceController extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
-    private static final String OOB_FILE  = "space/oob.png";
-    /** The texture file for the spinning barrier */
-    private static final String PLANET_FILE = "space/planet.png";
+    private static final String OOB_FILE  = "space/Oob_normal.png";
+    /** The texture file for the planets */
+    private static final String BLUE_P = "space/blue_planet_102.png";
+    /** The texture file for the planets */
+    private static final String GREEN_P = "space/green_planet_102.png";
+    /** The texture file for the planets */
+    private static final String ORANGE_P = "space/orange_planet_102.png";
+    /** The texture file for the planets */
+    private static final String ORNG_RED_P = "space/orange_red_planet_102.png";
+    /** The texture file for the planets */
+    private static final String RED_P = "space/red_planet_102.png";
     /** Texture file for background image */
-    private static final String BACKG_FILE = "space/space-background2.png"; //https://images4.alphacoders.com/106/106826.jpg
+    private static final String BACKG_FILE = "space/background_720.png";
 
     /** The sound file for a jump */
     private static final String JUMP_FILE = "platform/jump.mp3";
@@ -50,7 +58,15 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
     /** Planet texture */
-    private TextureRegion planetTexture;
+    private TextureRegion blue_P_Texture;
+    /** Planet texture */
+    private TextureRegion green_P_Texture;
+    /** Planet texture */
+    private TextureRegion orange_P_Texture;
+    /** Planet texture */
+    private TextureRegion orange_red_P_Texture;
+    /** Planet texture */
+    private TextureRegion red_P_Texture;
     /** Texture asset for background image */
     private TextureRegion backgroundTexture;
 
@@ -77,8 +93,16 @@ public class SpaceController extends WorldController implements ContactListener 
         platformAssetState = AssetState.LOADING;
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
-        manager.load(PLANET_FILE, Texture.class);
-        assets.add(PLANET_FILE);
+        manager.load(BLUE_P, Texture.class);
+        assets.add(BLUE_P);
+        manager.load(GREEN_P, Texture.class);
+        assets.add(GREEN_P);
+        manager.load(ORANGE_P, Texture.class);
+        assets.add(ORANGE_P);
+        manager.load(ORNG_RED_P, Texture.class);
+        assets.add(ORNG_RED_P);
+        manager.load(RED_P, Texture.class);
+        assets.add(RED_P);
         manager.load(BACKG_FILE, Texture.class);
         assets.add(BACKG_FILE);
 
@@ -108,7 +132,11 @@ public class SpaceController extends WorldController implements ContactListener 
         }
 
         avatarTexture = createTexture(manager,OOB_FILE,false);
-        planetTexture = createTexture(manager,PLANET_FILE,false);
+        blue_P_Texture = createTexture(manager,BLUE_P,false);
+        green_P_Texture = createTexture(manager,GREEN_P,false);
+        orange_P_Texture = createTexture(manager,ORANGE_P,false);
+        orange_red_P_Texture = createTexture(manager,ORNG_RED_P,false);
+        red_P_Texture = createTexture(manager,RED_P,false);
         backgroundTexture = createTexture(manager,BACKG_FILE,false);
 
         SoundController sounds = SoundController.getInstance();
@@ -164,7 +192,6 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Reference to the character avatar */
     private OobModel avatar;
     /** Reference to current planet Oob's on */
-
     private WheelObstacle currentPlanet;
     /** List of all live planets */
     private Array<WheelObstacle> planets;
@@ -253,9 +280,14 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setDensity(BASIC_DENSITY);
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
-            obj.setDrawScale(scale);
+            obj.setDrawScale(scale.scl(1f));
             obj.scalePicScale(new Vector2((float)(PLANETS[ii][2]/1.6),(float)(PLANETS[ii][2]/1.6)));
-            obj.setTexture(planetTexture);
+            if (ii%5 == 0) {obj.setTexture(blue_P_Texture); }
+            if (ii%5 == 1) {obj.setTexture(green_P_Texture); }
+            if (ii%5 == 2) {obj.setTexture(orange_P_Texture); }
+            if (ii%5 == 3) {obj.setTexture(orange_red_P_Texture); }
+            if (ii%5 == 4) {obj.setTexture(red_P_Texture); }
+
             obj.setName(pname+ii);
             addObject(obj);
             planets.add(obj);
@@ -277,7 +309,7 @@ public class SpaceController extends WorldController implements ContactListener 
 
         // Create Oob
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
-        avatar.setDrawScale(scale);
+        avatar.setDrawScale(scale.scl(1f));
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
