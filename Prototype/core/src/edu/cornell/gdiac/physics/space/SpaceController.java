@@ -47,7 +47,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Oob's initial radius */
     private static float OOB_RADIUS = 1.0f;
 
-    private static final float SIPHON = 0.05f;
+    private static final float SIPHON = 0.02f;
 
     private static final float MIN_RADIUS = 1f;
 
@@ -259,18 +259,18 @@ public class SpaceController extends WorldController implements ContactListener 
 //        goalDoor.setName("goal");
 //        addObject(goalDoor);
 
-        String wname = "wall";
-        for (int ii = 0; ii < WALLS.length; ii++) {
-            PolygonObstacle obj;
-            obj = new PolygonObstacle(WALLS[ii], 0, 0);
-            obj.setBodyType(BodyDef.BodyType.StaticBody);
-            obj.setDensity(BASIC_DENSITY);
-            obj.setFriction(BASIC_FRICTION);
-            obj.setRestitution(BASIC_RESTITUTION);
-            obj.setDrawScale(scale);
-            obj.setName(wname+ii);
-            addObject(obj);
-        }
+//        String wname = "wall";
+//        for (int ii = 0; ii < WALLS.length; ii++) {
+//            PolygonObstacle obj;
+//            obj = new PolygonObstacle(WALLS[ii], 0, 0);
+//            obj.setBodyType(BodyDef.BodyType.StaticBody);
+//            obj.setDensity(BASIC_DENSITY);
+//            obj.setFriction(BASIC_FRICTION);
+//            obj.setRestitution(BASIC_RESTITUTION);
+//            obj.setDrawScale(scale);
+//            obj.setName(wname+ii);
+//            addObject(obj);
+//        }
 
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.length; ii++){
@@ -280,7 +280,7 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setDensity(BASIC_DENSITY);
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
-            obj.setDrawScale(scale.scl(1f));
+            obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2((float)(PLANETS[ii][2]/1.6),(float)(PLANETS[ii][2]/1.6)));
             if (ii%5 == 0) {obj.setTexture(blue_P_Texture); }
             if (ii%5 == 1) {obj.setTexture(green_P_Texture); }
@@ -309,7 +309,7 @@ public class SpaceController extends WorldController implements ContactListener 
 
         // Create Oob
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
-        avatar.setDrawScale(scale.scl(1f));
+        avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
@@ -371,6 +371,9 @@ public class SpaceController extends WorldController implements ContactListener 
 
         //If Oob is landed on a planet
 
+        if(avatar.getX() < 0 || avatar.getX() > 32 || avatar.getY() < 0 || avatar.getY() > 18)
+            reset();
+
         if(currentPlanet!=null) {
 
 
@@ -415,7 +418,7 @@ public class SpaceController extends WorldController implements ContactListener 
                 Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
                 if (jump) {
                     SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-                    avatar.setMovement(smallestRad);
+                    avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
                     currentPlanet = null;
                     avatar.applyForce();
                 }
