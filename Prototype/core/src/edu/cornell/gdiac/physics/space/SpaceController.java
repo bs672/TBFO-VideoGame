@@ -441,6 +441,7 @@ public class SpaceController extends WorldController implements ContactListener 
                         avatar.setX(cloPl.getX() + smallestRad.x - mvmtDir.x);
                         avatar.setY(cloPl.getY() + smallestRad.y - mvmtDir.y);
                     }
+                    avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
                     smallestRad = new Vector2(avatar.getX() - cloPl.getX(), avatar.getY() - cloPl.getY());
                     smallestRad.scl((avatar.getRadius() + cloPl.getRadius())/smallestRad.len());
                     avatar.setX(cloPl.getX() + smallestRad.x);
