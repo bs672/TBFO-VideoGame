@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class SpaceController extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
-    private static final String OOB_FILE  = "space/Oob_normal.png";
+    private static final String OOB_FILE  = "space/Oob_full.png";
     /** The texture file for the planets */
     private static final String BLUE_P = "space/blue_planet_102.png";
     /** The texture file for the planets */
@@ -45,7 +45,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(8f, 5.5f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = 1.0f;
+    private static float OOB_RADIUS = .3f;
 
     private static final float SIPHON = 0.02f;
 
@@ -313,6 +313,7 @@ public class SpaceController extends WorldController implements ContactListener 
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
+        avatar.scalePicScale(new Vector2(.2f,.2f));
         addObject(avatar);
 
         // Create spinning platform
