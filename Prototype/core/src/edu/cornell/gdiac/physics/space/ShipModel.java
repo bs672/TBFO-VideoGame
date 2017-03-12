@@ -1,5 +1,6 @@
 package edu.cornell.gdiac.physics.space;
 
+import com.badlogic.gdx.math.Vector2;
 import edu.cornell.gdiac.physics.GameCanvas;
 import edu.cornell.gdiac.physics.obstacle.CapsuleObstacle;
 
@@ -13,8 +14,11 @@ public class ShipModel extends CapsuleObstacle{
 
     private static final float DAMPING = 5.0f;
     private static final float SPEED = 3.0f;
+    private Vector2 movement;
 
-    //TODO type of the planet
+
+    //TODO type of the ship
+    //Type 0 is default
     private static int type;
 
     public void setType(int val){type = val;}

@@ -192,9 +192,9 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Reference to the character avatar */
     private OobModel avatar;
     /** Reference to current planet Oob's on */
-    private WheelObstacle currentPlanet;
+    private PlanetModel currentPlanet;
     /** List of all live planets */
-    private Array<WheelObstacle> planets;
+    private Array<PlanetModel> planets;
 
     /** Mark set to handle more sophisticated collision callbacks */
     protected ObjectSet<Fixture> sensorFixtures;
@@ -213,7 +213,7 @@ public class SpaceController extends WorldController implements ContactListener 
         setFailure(false);
         world.setContactListener(this);
         sensorFixtures = new ObjectSet<Fixture>();
-        planets = new Array<WheelObstacle>();
+        planets = new Array<PlanetModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
     }
@@ -274,8 +274,8 @@ public class SpaceController extends WorldController implements ContactListener 
 
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.length; ii++){
-            WheelObstacle obj;
-            obj = new WheelObstacle(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2]);
+            PlanetModel obj;
+            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], 0);
             obj.setBodyType(BodyDef.BodyType.StaticBody);
             obj.setDensity(BASIC_DENSITY);
             obj.setFriction(BASIC_FRICTION);

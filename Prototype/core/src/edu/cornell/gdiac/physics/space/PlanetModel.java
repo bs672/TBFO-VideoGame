@@ -13,6 +13,7 @@ public class PlanetModel extends WheelObstacle{
     private static final float PLANET_DENSITY = 1.0f;
 
     //TODO type of the planet
+    //Type 0 is default
     private static int type;
 
     public void setType(int val){type = val;}
