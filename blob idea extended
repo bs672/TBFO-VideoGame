@@ -1,0 +1,391 @@
+package edu.cornell.gdiac.physics.space;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import edu.cornell.gdiac.physics.GameCanvas;
+import edu.cornell.gdiac.physics.InputController;
+import edu.cornell.gdiac.physics.obstacle.CapsuleObstacle;
+import edu.cornell.gdiac.physics.obstacle.ComplexObstacle;
+import edu.cornell.gdiac.physics.obstacle.SimpleObstacle;
+import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
+
+/**
+ * Created by Matt Loughney on 2/28/2017.
+ */
+public class OobModel extends ComplexObstacle {
+
+    // Physics constants
+    /** The density of the character */
+    private static final float OOB_DENSITY = 1.0f;
+    /** The factor to multiply by the input */
+    private static final float OOB_FORCE = 10.0f;
+    /** The amount to slow the character down */
+    private static final float OOB_DAMPING = 5.0f;
+    /** The Oob is a slippery one */
+    private static final float OOB_FRICTION = 0.0f;
+    /** The maximum character speed */
+    private static final float OOB_MAXSPEED = 5.0f;
+    /** minimum speed while floating through space */
+    private static final float OOB_MINSPEED = 2.0f;
+    /** The impulse for the character jump */
+    private static final float OOB_JUMP = 5.5f;
+    /** Cooldown (in animation frames) for jumping */
+    private static final int JUMP_COOLDOWN = 30;
+    /** Identifier to allow us to track the sensor in ContactListener */
+    private static final String SENSOR_NAME = "OobGroundSensor";
+
+    private static final int BLOBS = 15;
+
+    /** The current horizontal movement of the character */
+    private Vector2 movement;
+    /** How long until we can jump again */
+    private int jumpCooldown;
+    /** Whether we are actively jumping */
+    private boolean isJumping;
+    /** Whether our feet are on the ground */
+    private boolean isGrounded;
+    /** Ground sensor to represent our feet */
+    private Fixture sensorFixture;
+    private CircleShape sensorShape;
+
+    /** Cache for internal force calculations */
+    private Vector2 forceCache = new Vector2();
+
+    /** radial vector from center of planet */
+    private Vector2 radDirection;
+
+    private float radius;
+
+    private World world;
+
+
+    /** The texture file for the character avatar (no animation) */
+    private static final String OOB_FILE  = "space/oob.png";
+    /** Texture asset for character avatar */
+
+
+    /**
+     * Returns left/right movement of this character.
+     *
+     * This is the result of input times Oob force.
+     *
+     * @return left/right movement of this character.
+     */
+    public Vector2 getMovement() {
+        return movement;
+    }
+
+    /**
+     * Sets vector movement of this character.
+     *
+     * This is the result of input times Oob force.
+     *
+     * @param value left/right movement of this character.
+     */
+    public void setMovement(Vector2 value) {
+        movement = value;
+    }
+
+    /**
+     * Returns true if the Oob is actively jumping.
+     *
+     * @return true if the Oob is actively jumping.
+     */
+    public boolean isJumping() {
+        return isJumping && jumpCooldown <= 0;
+    }
+
+    /**
+     * Sets whether the Oob is actively jumping.
+     *
+     * @param value whether the Oob is actively jumping.
+     */
+    public void setJumping(boolean value) {
+        isJumping = value;
+    }
+
+    /**
+     * Returns true if the Oob is on the ground.
+     *
+     * @return true if the Oob is on the ground.
+     */
+    public boolean isGrounded() {
+        return isGrounded;
+    }
+
+    /**
+     * Sets whether the Oob is on the ground.
+     *
+     * @param value whether the Oob is on the ground.
+     */
+    public void setGrounded(boolean value) {
+        isGrounded = value;
+    }
+
+    /**
+     * Returns how much force to apply to get Oob moving
+     *
+     * Multiply this by the input to get the movement value.
+     *
+     * @return how much force to apply to get the Oob moving
+     */
+    public float getForce() {
+        return OOB_FORCE;
+    }
+
+    /**
+     * Returns ow hard the brakes are applied to get a Oob to stop moving
+     *
+     * @return ow hard the brakes are applied to get a Oob to stop moving
+     */
+    public float getDamping() {
+        return OOB_DAMPING;
+    }
+
+    /**
+     * Returns the upper limit on Oob left-right movement.
+     *
+     * This does NOT apply to vertical movement.
+     *
+     * @return the upper limit on Oob left-right movement.
+     */
+    public float getMaxSpeed() {
+        return OOB_MAXSPEED;
+    }
+
+    /**
+     * Returns the name of the ground sensor
+     *
+     * This is used by ContactListener
+     *
+     * @return the name of the ground sensor
+     */
+    public String getSensorName() {
+        return SENSOR_NAME;
+    }
+
+    public float getX() {
+        return (body != null ? body.getPosition().x : super.getX());
+    }
+
+    /**
+     * Sets the x-coordinate for this physics body
+     *
+     * This method affects the root body of this composite structure only.  If you want
+     * to set the value for any of the child obstacles, iterate over the children.
+     *
+     * @param value  the x-coordinate for this physics body
+     */
+    public void setX(float value) {
+        if (body != null) {
+            positionCache.set(value,body.getPosition().y);
+            body.setTransform(positionCache,body.getAngle());
+        } else {
+            super.setX(value);
+        }
+    }
+
+    /**
+     * Returns the y-coordinate for this physics body
+     *
+     * This method affects the root body of this composite structure only.  If you want
+     * to set the value for any of the child obstacles, iterate over the children.
+     *
+     * @return the y-coordinate for this physics body
+     */
+    public float getY() {
+        return (body != null ? body.getPosition().y : super.getY());
+    }
+
+    /**
+     * Sets the y-coordinate for this physics body
+     *
+     * This method affects the root body of this composite structure only.  If you want
+     * to set the value for any of the child obstacles, iterate over the children.
+     *
+     * @param value  the y-coordinate for this physics body
+     */
+    public void setY(float value) {
+        if (body != null) {
+            positionCache.set(body.getPosition().x,value);
+            body.setTransform(positionCache,body.getAngle());
+        } else {
+            super.setY(value);
+        }
+    }
+
+
+    /**
+     * Creates a new Oob avatar at the given position.
+     *
+     * The size is expressed in physics units NOT pixels.  In order for
+     * drawing to work properly, you MUST set the drawScale. The drawScale
+     * converts the physics units to pixels.
+     *
+     * @param x  		Initial x position of the avatar center
+     * @param y  		Initial y position of the avatar center
+     * @param radius		The object radius in physics units
+     */
+    public OobModel(float x, float y, float radius, World world) {
+        super(x, y);
+        this.world = world;
+        this.radius = radius;
+        // Gameplay attributes
+        isGrounded = false;
+        jumpCooldown = 0;
+    }
+    public void init() {
+
+        // Create central blob
+        WheelObstacle centerBlob = new WheelObstacle(getX(), getY(), 0.25f);
+        centerBlob.setDensity(OOB_DENSITY);
+        centerBlob.setRestitution(0.4f);
+        centerBlob.setFriction(0.5f);
+        bodies.add(centerBlob);
+
+        // Create outer blobs
+        for (int i = 0; i < BLOBS; i++) {
+            double angle = (2 * Math.PI) / (i * BLOBS);
+            float blobX = (float) (getX() + radius * Math.cos(angle));
+            float blobY = (float) (getY() + radius * Math.sin(angle));
+            WheelObstacle blob = new WheelObstacle(blobX, blobY, 0.25f);
+            blob.setDensity(OOB_DENSITY);
+            blob.setRestitution(0.4f);
+            blob.setFriction(0.5f);
+            bodies.add(blob);
+        }
+    }
+
+    public boolean createJoints(World world) {
+        assert bodies.size > 0;
+
+        for (int i = 1; i <= BLOBS; i++) {
+            // Connect all outer blobs to center
+            DistanceJointDef jointDef = new DistanceJointDef();
+            jointDef.bodyA = bodies.get(0).getBody();
+            jointDef.bodyB = bodies.get(i).getBody();
+            jointDef.length = radius;
+            jointDef.collideConnected = true;
+            jointDef.frequencyHz = 5.0f;
+            jointDef.dampingRatio = 0.5f;
+            Joint joint = world.createJoint(jointDef);
+            joints.add(joint);
+
+            // Connect the outer blobs to each other
+            jointDef.bodyA = bodies.get(i).getBody();
+            jointDef.bodyB = bodies.get((i+1)%BLOBS).getBody();
+            jointDef.collideConnected = true;
+            jointDef.frequencyHz = 5.0f;
+            jointDef.dampingRatio = 0.5f;
+            Joint joint2 = world.createJoint(jointDef);
+            joints.add(joint2);
+        }
+        return true;
+    }
+
+    public void setTextures(TextureRegion avatarTexture) {
+        if (bodies.size == 0) {
+            init();
+        }
+        else {
+            ((WheelObstacle)bodies.get(0)).setTexture(avatarTexture);
+        }
+    }
+
+    public WheelObstacle getOob() {
+        return ((WheelObstacle)bodies.get(0));
+    }
+
+    /**
+     * Creates the physics Body(s) for this object, adding them to the world.
+     *
+     * This method overrides the base method to keep your ship from spinning.
+     *
+     * @param world Box2D world to store body
+     *
+     * @return true if object allocation succeeded
+     */
+    public boolean activatePhysics(World world) {
+        // create the box from our superclass
+        if (!super.activatePhysics(world)) {
+            return false;
+        }
+
+        // Ground Sensor
+        // -------------
+        // We only allow the Oob to jump when he's on the ground.
+        // Double jumping is not allowed.
+        //
+        // To determine whether or not the Oob is on the ground,
+        // we create a thin sensor under his feet, which reports
+        // collisions with the world but has no collision response.
+        body.setGravityScale(0);
+        FixtureDef sensorDef = new FixtureDef();
+        sensorDef.density = OOB_DENSITY;
+        sensorDef.isSensor = true;
+        sensorShape = new CircleShape();
+        sensorShape.setRadius(radius);
+        sensorDef.shape = sensorShape;
+
+        sensorFixture = body.createFixture(sensorDef);
+        sensorFixture.setUserData(getSensorName());
+
+        return true;
+    }
+
+    public void applyForceZero() {
+        body.setLinearVelocity(0, 0);
+    }
+
+    /**
+     * Applies the force to the body of this Oob
+     *
+     * This method should be called after the force attribute is set.
+     */
+    public void applyForce() {
+        if (!isActive()) {
+            return;
+        }
+        // Don't want to be moving. Damp out player motion
+        if(getLinearVelocity().len() > OOB_MINSPEED) {
+            forceCache.set(-getDamping() * getVX(), -getDamping() * getVY());
+            body.applyForce(forceCache, getPosition(), true);
+        }
+
+        forceCache.set(getMovement().x*OOB_FORCE,getMovement().y*OOB_FORCE);
+        body.applyLinearImpulse(forceCache,getPosition(),true);
+    }
+
+    /**
+     * Updates the object's physics state (NOT GAME LOGIC).
+     *
+     * We use this method to reset cooldowns.
+     *
+     * @param dt Number of seconds since last animation frame
+     */
+    public void update(float dt) {
+        // Apply cooldowns
+        if(InputController.getInstance().getJump())
+            isJumping = true;
+        else
+            isJumping = false;
+
+        super.update(dt);
+    }
+
+    /**
+     * Draws the outline of the physics body.
+     *
+     * This method can be helpful for understanding issues with collisions.
+     *
+     * @param canvas Drawing context
+     */
+    public void drawDebug(GameCanvas canvas) {
+        super.drawDebug(canvas);
+//        canvas.drawPhysics(sensorShape,Color.RED,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
+    }
+
+}
