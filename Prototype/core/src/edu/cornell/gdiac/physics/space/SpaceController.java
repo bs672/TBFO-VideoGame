@@ -22,17 +22,17 @@ import com.badlogic.gdx.utils.Array;
  */
 public class SpaceController extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
-    private static final String OOB_FILE  = "space/Oob_full.png";
+    private static final String OOB_FILE  = "space/oob_2.png";
     /** The texture file for the planets */
-    private static final String BLUE_P = "space/blue_planet_102.png";
+    private static final String BLUE_P = "space/blue_planet_480.png";
     /** The texture file for the planets */
-    private static final String GREEN_P = "space/green_planet_102.png";
+    private static final String GREEN_P = "space/green_planet_480.png";
     /** The texture file for the planets */
-    private static final String ORANGE_P = "space/orange_planet_102.png";
+    private static final String ORANGE_P = "space/orange_planet_480.png";
     /** The texture file for the planets */
-    private static final String ORNG_RED_P = "space/orange_red_planet_102.png";
+    private static final String ORNG_RED_P = "space/orange_red_planet_360.png";
     /** The texture file for the planets */
-    private static final String RED_P = "space/red_planet_102.png";
+    private static final String RED_P = "space/red_planet_360.png";
     /** Texture file for background image */
     private static final String BACKG_FILE = "space/background_720.png";
 
@@ -281,7 +281,7 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2((float)(PLANETS[ii][2]/1.6),(float)(PLANETS[ii][2]/1.6)));
+            obj.scalePicScale(new Vector2(.25f,.25f));
             if (ii%5 == 0) {obj.setTexture(blue_P_Texture); }
             if (ii%5 == 1) {obj.setTexture(green_P_Texture); }
             if (ii%5 == 2) {obj.setTexture(orange_P_Texture); }
