@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.physics.space;
 
 import edu.cornell.gdiac.physics.GameCanvas;
+import edu.cornell.gdiac.physics.obstacle.Obstacle;
 import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
 
 /**
@@ -43,6 +44,11 @@ public class PlanetModel extends WheelObstacle{
 
     public void drawDebug(GameCanvas canvas) {
         super.drawDebug(canvas);
+    }
+
+
+    public boolean equals(Obstacle o) {
+        return getX() == o.getX() && getY() == o.getY();
     }
 
 }

@@ -246,6 +246,7 @@ public class OobModel extends WheelObstacle {
 
         forceCache.set(getMovement().x*OOB_FORCE,getMovement().y*OOB_FORCE);
         body.applyLinearImpulse(forceCache,getPosition(),true);
+        setMovement(new Vector2(0,0));
     }
 
     /**

@@ -45,7 +45,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(8f, 5.5f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = .3f;
+    private static float OOB_RADIUS = 0.7f;
 
     private static final float SIPHON = 0.02f;
 
@@ -193,9 +193,12 @@ public class SpaceController extends WorldController implements ContactListener 
     private OobModel avatar;
     /** Reference to current planet Oob's on */
     private PlanetModel currentPlanet;
+    /** last planet on */
+    private PlanetModel lastPlanet;
     /** List of all live planets */
     private Array<PlanetModel> planets;
-
+    /** vector from Oob to center of the screen */
+    private Vector2 vecToCenter = new Vector2();
     /** Mark set to handle more sophisticated collision callbacks */
     protected ObjectSet<Fixture> sensorFixtures;
     /** the font for the mass text on each object */
@@ -376,29 +379,24 @@ public class SpaceController extends WorldController implements ContactListener 
             reset();
 
         if(currentPlanet!=null) {
-
-
-            Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
-            int closestPlanet = 0;
-            Vector2 radDir;
-
-            //Loop to get closest planet
-            for (int i = 0; i < planets.size; i++) {
-                radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len() && radDir.len() < planets.get(i).getRadius() + avatar.getRadius() + EPSILON) {
-                    smallestRad = radDir.cpy();
-                    closestPlanet = i;
+            vecToCenter.set(16f - avatar.getX(), 9 - avatar.getY());
+            if(!vecToCenter.equals(Vector2.Zero)) {
+                for(Obstacle o : objects) {
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter));
                 }
             }
+
+            Vector2 smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+
             //determines mouse or keyboard controls
             boolean jump = false;
             float moveDirection = 0;
             if (control==1){
                 Vector2 mouse = InputController.getInstance().getCursor();
-                mouse = mouse.sub(planets.get(closestPlanet).getPosition());
+                mouse = mouse.sub(currentPlanet.getPosition());
                 float angle = mouse.angle();
                 Vector2 oob = avatar.getPosition();
-                oob.sub(planets.get(closestPlanet).getPosition());
+                oob.sub(currentPlanet.getPosition());
                 float angle2 = oob.angle();
                 if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
                     moveDirection = -1;
@@ -413,40 +411,40 @@ public class SpaceController extends WorldController implements ContactListener 
                 moveDirection = InputController.getInstance().getHorizontal();
             }
 
-            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
+            if (smallestRad.len() < currentPlanet.getRadius() + avatar.getRadius() + EPSILON) {
                 avatar.applyForceZero();
-                smallestRad.scl((planets.get(closestPlanet).getRadius() + avatar.getRadius()) / smallestRad.len());
+                smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
                 Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
                 if (jump) {
                     SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
                     avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
+                    lastPlanet = currentPlanet;
                     currentPlanet = null;
                     avatar.applyForce();
                 }
                 else {
-                    float rad = planets.get(closestPlanet).getRadius();
+                    float rad = currentPlanet.getRadius();
                     float oldAvatarRad = avatar.getRadius();
-                    WheelObstacle cloPl = planets.get(closestPlanet);
                     if(rad > MIN_RADIUS){
                         float oldOobMass = avatar.getMass();
-                        float oldPlanMass = cloPl.getMass();
-                        cloPl.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
+                        float oldPlanMass = currentPlanet.getMass();
+                        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
                         avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON)/Math.PI));
-                        cloPl.scalePicScale(new Vector2(cloPl.getRadius() / rad, cloPl.getRadius() / rad));
+                        currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
                         avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
                     }
                     if (moveDirection == 1) {
-                        avatar.setX(cloPl.getX() + smallestRad.x + mvmtDir.x);
-                        avatar.setY(cloPl.getY() + smallestRad.y + mvmtDir.y);
+                        avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
+                        avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
                     } else if (moveDirection == -1) {
-                        avatar.setX(cloPl.getX() + smallestRad.x - mvmtDir.x);
-                        avatar.setY(cloPl.getY() + smallestRad.y - mvmtDir.y);
+                        avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
+                        avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
                     }
                     avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
-                    smallestRad = new Vector2(avatar.getX() - cloPl.getX(), avatar.getY() - cloPl.getY());
-                    smallestRad.scl((avatar.getRadius() + cloPl.getRadius())/smallestRad.len());
-                    avatar.setX(cloPl.getX() + smallestRad.x);
-                    avatar.setY(cloPl.getY() + smallestRad.y);
+                    smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+                    smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
+                    avatar.setX(currentPlanet.getX() + smallestRad.x);
+                    avatar.setY(currentPlanet.getY() + smallestRad.y);
                     avatar.setMovement(new Vector2(0, 0));
                 }
             } else
@@ -458,17 +456,27 @@ public class SpaceController extends WorldController implements ContactListener 
         SoundController.getInstance().update();
 
         if (currentPlanet==null) {
+            for(Obstacle o : objects) {
+                if(o.equals(avatar)) {
+                    o.setX(o.getX() - avatar.getVX() / 60);
+                    o.setY(o.getY() - avatar.getVY() / 60);
+                }
+                else {
+                    o.setX(o.getX() - avatar.getVX() / 30);
+                    o.setY(o.getY() - avatar.getVY() / 30);
+                }
+            }
             Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
             int closestPlanet = 0;
             Vector2 radDir;
             for (int i = 0; i < planets.size; i++) {
                 radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len() && radDir.len() < planets.get(i).getRadius() + avatar.getRadius() + EPSILON) {
+                if (radDir.len() < smallestRad.len()) {
                     smallestRad = radDir.cpy();
                     closestPlanet = i;
                 }
             }
-            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON)
+            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON && !lastPlanet.equals(planets.get(closestPlanet)))
                 currentPlanet = planets.get(closestPlanet);
         }
         //need to set currentPlanet to currentPlanetNumber
