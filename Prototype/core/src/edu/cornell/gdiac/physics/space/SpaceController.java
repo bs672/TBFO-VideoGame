@@ -383,7 +383,7 @@ public class SpaceController extends WorldController implements ContactListener 
 
         if(avatar.getX() < 0 || avatar.getX() > 32 || avatar.getY() < 0 || avatar.getY() > 18)
             reset();
-
+        System.out.println(currentPlanet);
         if(currentPlanet!=null) {
             vecToCenter.set(16f - avatar.getX(), 9 - avatar.getY());
             if(!vecToCenter.equals(Vector2.Zero)) {
@@ -417,44 +417,41 @@ public class SpaceController extends WorldController implements ContactListener 
                 moveDirection = InputController.getInstance().getHorizontal();
             }
 
-            if (smallestRad.len() < currentPlanet.getRadius() + avatar.getRadius() + EPSILON) {
-                avatar.applyForceZero();
-                smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
-                Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
-                if (jump) {
-                    SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-                    avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
-                    lastPlanet = currentPlanet;
-                    currentPlanet = null;
-                    avatar.applyForce();
+            avatar.applyForceZero();
+            smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
+            Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
+            if (jump) {
+                SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
+                avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
+                lastPlanet = currentPlanet;
+                currentPlanet = null;
+                avatar.applyForce();
+            }
+            else {
+                float rad = currentPlanet.getRadius();
+                float oldAvatarRad = avatar.getRadius();
+                if(rad > MIN_RADIUS){
+                    float oldOobMass = avatar.getMass();
+                    float oldPlanMass = currentPlanet.getMass();
+                    currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
+                    avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
+                    currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
+                    avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
                 }
-                else {
-                    float rad = currentPlanet.getRadius();
-                    float oldAvatarRad = avatar.getRadius();
-                    if(rad > MIN_RADIUS){
-                        float oldOobMass = avatar.getMass();
-                        float oldPlanMass = currentPlanet.getMass();
-                        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-                        avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
-                        currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
-                        avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
-                    }
-                    if (moveDirection == 1) {
-                        avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
-                        avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
-                    } else if (moveDirection == -1) {
-                        avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
-                        avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
-                    }
-                    avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
-                    smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-                    smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
-                    avatar.setX(currentPlanet.getX() + smallestRad.x);
-                    avatar.setY(currentPlanet.getY() + smallestRad.y);
-                    avatar.setMovement(new Vector2(0, 0));
+                if (moveDirection == 1) {
+                    avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
+                    avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
+                } else if (moveDirection == -1) {
+                    avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
+                    avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
                 }
-            } else
+                avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
+                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+                smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
+                avatar.setX(currentPlanet.getX() + smallestRad.x);
+                avatar.setY(currentPlanet.getY() + smallestRad.y);
                 avatar.setMovement(new Vector2(0, 0));
+                }
         }
         avatar.applyForce();
 
@@ -485,6 +482,7 @@ public class SpaceController extends WorldController implements ContactListener 
             if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON && !lastPlanet.equals(planets.get(closestPlanet))) {
                 currentPlanet = planets.get(closestPlanet);
                 SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+                avatar.setMovement(Vector2.Zero);
             }
         }
         //need to set currentPlanet to currentPlanetNumber
@@ -639,9 +637,9 @@ public class SpaceController extends WorldController implements ContactListener 
         }
         canvas.begin();
         for(int i = 0; i < planets.size; i++) {
-            canvas.drawText(Integer.toString((int)(Math.pow(planets.get(i).getRadius(), 2)*Math.PI)), massFont, planets.get(i).getX()*32 - 8, planets.get(i).getY()*32 + 15);
+            canvas.drawText(Integer.toString((int)(Math.pow(planets.get(i).getRadius(), 2)*Math.PI)), massFont, planets.get(i).getX()*canvas.getWidth()/32, planets.get(i).getY()*canvas.getHeight()/18);
         }
-        canvas.drawText(Integer.toString((int)(Math.pow(avatar.getRadius(), 2)*Math.PI)), massFont, avatar.getX()*32 - 8, avatar.getY()*32 + 15);
+        canvas.drawText(Integer.toString((int)(Math.pow(avatar.getRadius(), 2)*Math.PI)), massFont, avatar.getX()*canvas.getWidth()/32, avatar.getY()*canvas.getHeight()/18);
         canvas.end();
 
 
