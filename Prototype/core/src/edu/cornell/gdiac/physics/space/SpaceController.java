@@ -45,7 +45,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(8f, 5.5f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = 0.7f;
+    private static float OOB_RADIUS = 0.8f;
 
     private static final float SIPHON = 0.02f;
 
@@ -169,23 +169,29 @@ public class SpaceController extends WorldController implements ContactListener 
 
     // Since these appear only once, we do not care about the magic numbers.
     // In an actual game, this information would go in a data file.
-    // Wall vertices
-    private static final float[][] WALLS = {
-            {0.0f,0.0f, 0.0f, 18.0f, 0.1f, 18.0f, 0.1f,  0.0f},
 
-            {0.0f,18.0f, 32.0f, 18.0f, 32.0f, 17.9f, 0.0f, 17.9f},
-
-            {31.9f,18.0f, 32.0f, 18.0f, 32.0f, 0.0f, 31.9f, 0.0f},
-
-            {0.0f,0.0f, 0.0f, 0.1f, 32.0f, 0.1f, 32.0f, 0.0f},
-    };
 
     private static final float[][] PLANETS = {
-            {8.0f, 4.5f, 1.8f},
+            {8.0f, 4.5f, 2.8f},
             {5.0f, 12.5f, 1.2f},
-            {27.0f, 4.5f, 2.1f},
+            {27.0f, 4.5f, 2.7f},
             {25.0f, 12.5f, 1.6f},
-            {18.0f, 4.0f, 1.9f}
+            {18.0f, -4.0f, 1.9f},
+
+            {17.0f, 22.5f, 3.8f},
+            {-5.0f, -12.5f, 4.2f},
+            {-17.0f, 17.5f, 3.7f},
+            {40.0f, 17.5f, 5.6f},
+            {-18.0f, 4.0f, 1.9f},
+
+            {-2.0f, 10.5f, 1.8f},
+            {-5.0f, -22.5f, 2.2f},
+            {44.0f, 1.5f, 1.7f},
+            {-16.0f, -17.5f, 1.2f},
+            {-28.0f, 5.8f, 1.7f},
+
+
+
     };
 
     // Physics objects for the game
@@ -284,7 +290,7 @@ public class SpaceController extends WorldController implements ContactListener 
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.25f,.25f));
+            obj.scalePicScale(new Vector2(.2f*obj.getRadius(),.2f*obj.getRadius()));
             if (ii%5 == 0) {obj.setTexture(blue_P_Texture); }
             if (ii%5 == 1) {obj.setTexture(green_P_Texture); }
             if (ii%5 == 2) {obj.setTexture(orange_P_Texture); }
@@ -429,7 +435,7 @@ public class SpaceController extends WorldController implements ContactListener 
                         float oldOobMass = avatar.getMass();
                         float oldPlanMass = currentPlanet.getMass();
                         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-                        avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON)/Math.PI));
+                        avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
                         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
                         avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
                     }
@@ -476,8 +482,10 @@ public class SpaceController extends WorldController implements ContactListener 
                     closestPlanet = i;
                 }
             }
-            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON && !lastPlanet.equals(planets.get(closestPlanet)))
+            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON && !lastPlanet.equals(planets.get(closestPlanet))) {
                 currentPlanet = planets.get(closestPlanet);
+                SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+            }
         }
         //need to set currentPlanet to currentPlanetNumber
     }
@@ -502,7 +510,7 @@ public class SpaceController extends WorldController implements ContactListener 
 //        bullet.setVX(speed);
 //        addQueuedObject(bullet);
 //
-//        SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+//
 //    }
 
     /**

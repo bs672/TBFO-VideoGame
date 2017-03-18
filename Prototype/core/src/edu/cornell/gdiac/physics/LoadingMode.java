@@ -185,7 +185,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		this.manager = manager;
 		this.canvas  = canvas;
 		budget = millis;
-		
+
+
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(),canvas.getHeight());
 
