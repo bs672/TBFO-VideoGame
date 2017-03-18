@@ -70,6 +70,12 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void create() {
 		canvas  = new GameCanvas();
+		//canvas.setFullscreen(true,true);
+        //canvas.setSize(1140,740);
+        //canvas.setSize(1200,700);
+        //canvas.resize();
+        //canvas.setHeight(700);
+        //canvas.setWidth(1100);
 		loading = new LoadingMode(canvas,manager,1);
 		
 		// Initialize the three game worlds

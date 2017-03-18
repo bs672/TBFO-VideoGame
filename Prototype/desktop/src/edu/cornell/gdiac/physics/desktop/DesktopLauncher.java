@@ -34,9 +34,9 @@ public class DesktopLauncher {
 	 */
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width  = 1280;
-		config.height = 760;
-		config.resizable = true;
+		config.width  = 1080;
+		config.height = 680;
+		//config.resizable = true;
 		new LwjglApplication(new GDXRoot(), config);
 	}
 }
