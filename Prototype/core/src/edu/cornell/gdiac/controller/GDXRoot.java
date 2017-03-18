@@ -11,7 +11,7 @@
  * Based on original PhysicsDemo Lab by Don Holden, 2007
  * LibGDX version, 2/6/2015
  */
- package edu.cornell.gdiac.physics;
+ package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
@@ -20,10 +20,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
 
+import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.util.*;
-import edu.cornell.gdiac.physics.space.*;
-import edu.cornell.gdiac.physics.ragdoll.*;
-import edu.cornell.gdiac.physics.platform.*;
 
 /**
  * Root class for a LibGDX.  
@@ -38,7 +36,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	/** AssetManager to load game assets (textures, sounds, etc.) */
 	private AssetManager manager;
 	/** Drawing context to display graphics (VIEW CLASS) */
-	private GameCanvas canvas; 
+	private GameCanvas canvas;
 	/** Player mode for the asset loading screen (CONTROLLER CLASS) */
 	private LoadingMode loading;
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
@@ -80,7 +78,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		
 		// Initialize the three game worlds
 		controllers = new WorldController[1];
-		controllers[0] = new SpaceController();
+		controllers[0] = new PlayMode();
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
 		}

@@ -1,4 +1,4 @@
-package edu.cornell.gdiac.physics.space;
+package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -9,18 +9,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
-import edu.cornell.gdiac.physics.InputController;
-import edu.cornell.gdiac.physics.WorldController;
-import edu.cornell.gdiac.physics.obstacle.Obstacle;
-import edu.cornell.gdiac.physics.obstacle.PolygonObstacle;
-import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
+import edu.cornell.gdiac.model.OobModel;
+import edu.cornell.gdiac.model.PlanetModel;
+import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Matt Loughney on 2/28/2017.
  */
-public class SpaceController extends WorldController implements ContactListener {
+public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
     private static final String OOB_FILE  = "space/oob_2.png";
     /** The texture file for the planets */
@@ -47,7 +45,7 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Oob's initial radius */
     private static float OOB_RADIUS = 0.8f;
 
-    private static final float SIPHON = 0.2f;
+    private static final float SIPHON = 0.02f;
 
     private static final float MIN_RADIUS = 1f;
 
@@ -221,7 +219,7 @@ public class SpaceController extends WorldController implements ContactListener 
      *
      * The game has default gravity and other settings
      */
-    public SpaceController() {
+    public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
         setDebug(false);
         setComplete(false);
@@ -385,9 +383,6 @@ public class SpaceController extends WorldController implements ContactListener 
                 control = 1;
             }
         }
-        // Process actions in object model
-
-        //If Oob is landed on a planet
 
         if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
             reset();

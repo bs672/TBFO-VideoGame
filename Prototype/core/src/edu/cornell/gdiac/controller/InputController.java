@@ -11,7 +11,7 @@
  * Based on original PhysicsDemo Lab by Don Holden, 2007
  * LibGDX version, 2/6/2015
  */
-package edu.cornell.gdiac.physics;
+package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
@@ -66,6 +66,8 @@ public class InputController {
 	private float horizontal;
 	/** How much did we move vertically? */
 	private boolean jump;
+	/** if we've unpressed left click */
+	private boolean leftClickNotPressed;
 
 	private boolean mouseJump;
 
@@ -250,8 +252,11 @@ public class InputController {
 		else{
 			jump = false;
 		}
-		if((Gdx.input.isButtonPressed(Input.Buttons.LEFT))){
+		if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+			leftClickNotPressed = true;
+		if((Gdx.input.isButtonPressed(Input.Buttons.LEFT)) && leftClickNotPressed){
 			mouseJump = true;
+			leftClickNotPressed = false;
 		}
 		else{
 			mouseJump = false;

@@ -1,4 +1,4 @@
-package edu.cornell.gdiac.physics.space;
+package edu.cornell.gdiac.model;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -6,14 +6,9 @@ import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
-import edu.cornell.gdiac.physics.obstacle.BoxObstacle;
-import edu.cornell.gdiac.physics.obstacle.ComplexObstacle;
-import edu.cornell.gdiac.physics.obstacle.SimpleObstacle;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import edu.cornell.gdiac.physics.obstacle.*;
+import edu.cornell.gdiac.model.obstacle.BoxObstacle;
+import edu.cornell.gdiac.model.obstacle.ComplexObstacle;
+import edu.cornell.gdiac.model.obstacle.SimpleObstacle;
 
 
 /**

@@ -19,7 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.*;
 
-import edu.cornell.gdiac.physics.obstacle.*;
+import edu.cornell.gdiac.model.obstacle.*;
 
 public class Spinner extends ComplexObstacle {
 	/** The debug name for the entire obstacle */
