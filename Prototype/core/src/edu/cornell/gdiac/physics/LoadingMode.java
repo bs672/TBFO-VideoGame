@@ -46,12 +46,18 @@ import edu.cornell.gdiac.util.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "space/background_720.png";
+    private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
+    private static final String BACKG_FILE_RED_STAR = "space/red_stars.png";
+    private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
 	private static final String PROGRESS_FILE = "space/progressbar.png";
 	private static final String PLAY_BTN_FILE = "space/play.png";
 	
 	/** Background texture for start-up */
-	private Texture background;
+	private Texture backgroundMAIN;
+    /** Background texture for start-up */
+    private Texture backgroundREDSTAR;
+    /** Background texture for start-up */
+    private Texture backgroundWHITESTAR;
 	/** Play button to display when done */
 	private Texture playButton;
 	/** Texture atlas to support a progress bar */
@@ -192,7 +198,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 		// Load the next two images immediately.
 		playButton = null;
-		background = new Texture(BACKGROUND_FILE);
+		backgroundMAIN = new Texture(BACKG_FILE_MAIN);
+        backgroundREDSTAR = new Texture(BACKG_FILE_RED_STAR);
+        backgroundWHITESTAR = new Texture(BACKG_FILE_WHITE_STAR);
 		statusBar  = new Texture(PROGRESS_FILE);
 		
 		// No progress so far.		
@@ -231,9 +239,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		 statusFrgRight = null;
 		 statusFrgMiddle = null;
 
-		 background.dispose();
+		 backgroundMAIN.dispose();
+         backgroundREDSTAR.dispose();
+         backgroundWHITESTAR.dispose();
 		 statusBar.dispose();
-		 background = null;
+		 backgroundMAIN = null;
+        backgroundREDSTAR = null;
+        backgroundWHITESTAR = null;
 		 statusBar  = null;
 		 if (playButton != null) {
 			 playButton.dispose();
@@ -271,7 +283,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 */
 	private void draw() {
 		canvas.begin();
-        canvas.draw(background, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundREDSTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {

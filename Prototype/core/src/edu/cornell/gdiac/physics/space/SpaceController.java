@@ -30,11 +30,15 @@ public class SpaceController extends WorldController implements ContactListener 
     /** The texture file for the planets */
     private static final String ORANGE_P = "space/orange_planet_480.png";
     /** The texture file for the planets */
-    private static final String ORNG_RED_P = "space/orange_red_planet_360.png";
+    private static final String ORNG_RED_P = "space/orange_red_planet_480.png";
     /** The texture file for the planets */
-    private static final String RED_P = "space/red_planet_360.png";
+    private static final String RED_P = "space/red_planet_480.png";
     /** Texture file for background image */
-    private static final String BACKG_FILE = "space/background_720.png";
+    private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
+    /** Texture file for background image */
+    private static final String BACKG_FILE_RED_STAR = "space/red_stars.png";
+    /** Texture file for background image */
+    private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
 
     /** The sound file for a jump */
     private static final String JUMP_FILE = "platform/jump.mp3";
@@ -68,7 +72,11 @@ public class SpaceController extends WorldController implements ContactListener 
     /** Planet texture */
     private TextureRegion red_P_Texture;
     /** Texture asset for background image */
-    private TextureRegion backgroundTexture;
+    private TextureRegion backgroundTextureMAIN;
+    /** Texture asset for background image */
+    private TextureRegion backgroundTextureREDSTAR;
+    /** Texture asset for background image */
+    private TextureRegion backgroundTextureWHITESTAR;
 
     private boolean jumping = false;
 
@@ -103,8 +111,12 @@ public class SpaceController extends WorldController implements ContactListener 
         assets.add(ORNG_RED_P);
         manager.load(RED_P, Texture.class);
         assets.add(RED_P);
-        manager.load(BACKG_FILE, Texture.class);
-        assets.add(BACKG_FILE);
+        manager.load(BACKG_FILE_MAIN, Texture.class);
+        assets.add(BACKG_FILE_MAIN);
+        manager.load(BACKG_FILE_RED_STAR, Texture.class);
+        assets.add(BACKG_FILE_RED_STAR);
+        manager.load(BACKG_FILE_WHITE_STAR, Texture.class);
+        assets.add(BACKG_FILE_WHITE_STAR);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -137,7 +149,9 @@ public class SpaceController extends WorldController implements ContactListener 
         orange_P_Texture = createTexture(manager,ORANGE_P,false);
         orange_red_P_Texture = createTexture(manager,ORNG_RED_P,false);
         red_P_Texture = createTexture(manager,RED_P,false);
-        backgroundTexture = createTexture(manager,BACKG_FILE,false);
+        backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
+        backgroundTextureREDSTAR = createTexture(manager,BACKG_FILE_RED_STAR,false);
+        backgroundTextureWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -619,7 +633,9 @@ public class SpaceController extends WorldController implements ContactListener 
 
         // Draw background unscaled.
         canvas.begin();
-        canvas.draw(backgroundTexture, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundTextureREDSTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundTextureWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.end();
 
         canvas.begin();
