@@ -639,7 +639,7 @@ public class SpaceController extends WorldController implements ContactListener 
         }
         canvas.begin();
         for(int i = 0; i < planets.size; i++) {
-            canvas.drawText(Integer.toString((int)(Math.pow(planets.get(i).getRadius(), 2)*Math.PI)), massFont, planets.get(i).getX()*32 - 8, planets.get(i).getY()*32 + 15);
+            canvas.drawText(Integer.toString((int)(Math.pow(planets.get(i).getRadius(), 2)*Math.PI)), massFont, planets.get(i).getX()*canvas.getWidth()/32, planets.get(i).getY()*canvas.getHeight()/18);
         }
         canvas.drawText(Integer.toString((int)(Math.pow(avatar.getRadius(), 2)*Math.PI)), massFont, avatar.getX()*32 - 8, avatar.getY()*32 + 15);
         canvas.end();
