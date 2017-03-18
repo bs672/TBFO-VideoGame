@@ -1,7 +1,7 @@
-package edu.cornell.gdiac.physics.space;
+package edu.cornell.gdiac.model;
 
-import edu.cornell.gdiac.physics.GameCanvas;
-import edu.cornell.gdiac.physics.obstacle.CapsuleObstacle;
+import edu.cornell.gdiac.view.GameCanvas;
+import edu.cornell.gdiac.model.obstacle.CapsuleObstacle;
 
 /**
  * Created by jchan_000 on 3/11/2017.

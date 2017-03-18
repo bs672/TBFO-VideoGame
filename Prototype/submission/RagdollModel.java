@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.*;
 import com.badlogic.gdx.graphics.g2d.*;
 
-import edu.cornell.gdiac.physics.obstacle.*;
+import edu.cornell.gdiac.model.obstacle.*;
 
 /**
  * A ragdoll whose body parts are boxes connected by joints

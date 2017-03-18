@@ -1,21 +1,15 @@
-package edu.cornell.gdiac.physics.space;
+package edu.cornell.gdiac.model;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
-import edu.cornell.gdiac.physics.GameCanvas;
-import edu.cornell.gdiac.physics.InputController;
-import edu.cornell.gdiac.physics.obstacle.CapsuleObstacle;
-import edu.cornell.gdiac.physics.obstacle.ComplexObstacle;
-import edu.cornell.gdiac.physics.obstacle.SimpleObstacle;
-import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
+import edu.cornell.gdiac.view.GameCanvas;
+import edu.cornell.gdiac.controller.InputController;
+import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 
 /**
  * Created by Matt Loughney on 2/28/2017.
  */
-public class OobModel3 extends ComplexObstacle {
+public class OobModel extends WheelObstacle {
 
     // Physics constants
     /** The density of the character */
@@ -37,8 +31,6 @@ public class OobModel3 extends ComplexObstacle {
     /** Identifier to allow us to track the sensor in ContactListener */
     private static final String SENSOR_NAME = "OobGroundSensor";
 
-    private static final int BLOBS = 15;
-
     /** The current horizontal movement of the character */
     private Vector2 movement;
     /** How long until we can jump again */
@@ -56,16 +48,6 @@ public class OobModel3 extends ComplexObstacle {
 
     /** radial vector from center of planet */
     private Vector2 radDirection;
-
-    private float radius;
-
-    private World world;
-
-
-    /** The texture file for the character avatar (no animation) */
-    private static final String OOB_FILE  = "space/oob.png";
-    /** Texture asset for character avatar */
-
 
     /**
      * Returns left/right movement of this character.
@@ -167,75 +149,17 @@ public class OobModel3 extends ComplexObstacle {
         return SENSOR_NAME;
     }
 
-    public float getX() {
-        return (body != null ? body.getPosition().x : super.getX());
-    }
-
     /**
-     * Sets the x-coordinate for this physics body
+     * Creates a new Oob at the origin.
      *
-     * This method affects the root body of this composite structure only.  If you want
-     * to set the value for any of the child obstacles, iterate over the children.
+     * The size is expressed in physics units NOT pixels.  In order for
+     * drawing to work properly, you MUST set the drawScale. The drawScale
+     * converts the physics units to pixels.
      *
-     * @param value  the x-coordinate for this physics body
+     * @param radius		The object radius in physics units
      */
-    public void setX(float value) {
-        if (body != null) {
-            positionCache.set(value,body.getPosition().y);
-            body.setTransform(positionCache,body.getAngle());
-        } else {
-            super.setX(value);
-        }
-    }
-
-    /**
-     * Returns the y-coordinate for this physics body
-     *
-     * This method affects the root body of this composite structure only.  If you want
-     * to set the value for any of the child obstacles, iterate over the children.
-     *
-     * @return the y-coordinate for this physics body
-     */
-    public float getY() {
-        return (body != null ? body.getPosition().y : super.getY());
-    }
-
-    /**
-     * Sets the y-coordinate for this physics body
-     *
-     * This method affects the root body of this composite structure only.  If you want
-     * to set the value for any of the child obstacles, iterate over the children.
-     *
-     * @param value  the y-coordinate for this physics body
-     */
-    public void setY(float value) {
-        if (body != null) {
-            positionCache.set(body.getPosition().x,value);
-            body.setTransform(positionCache,body.getAngle());
-        } else {
-            super.setY(value);
-        }
-    }
-
-
-    /**
-     * Returns the radius of this circle
-     *
-     * @return the radius of this circle
-     */
-    public float getRadius() {
-        return ((WheelObstacle)bodies.get(0)).getRadius();
-    }
-
-
-    /**
-     * Sets the radius of this circle
-     *
-     * @param value  the radius of this circle
-     */
-    public void setRadius(float value) {
-        ((WheelObstacle)bodies.get(0)).setRadius(value);
-        markDirty(true);
+    public OobModel(float radius) {
+        this(0,0,radius);
     }
 
     /**
@@ -249,74 +173,17 @@ public class OobModel3 extends ComplexObstacle {
      * @param y  		Initial y position of the avatar center
      * @param radius		The object radius in physics units
      */
-    public OobModel3(float x, float y, float radius, World world) {
-        super(x, y);
-        this.world = world;
-        this.radius = radius;
+    public OobModel(float x, float y, float radius) {
+        super(x,y,radius);
+        setDensity(OOB_DENSITY);
+//        setFriction(OOB_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
+        setFixedRotation(true);
+
         // Gameplay attributes
         isGrounded = false;
+
         jumpCooldown = 0;
-    }
-    public void init() {
-
-        // Create central blob
-        WheelObstacle centerBlob = new WheelObstacle(getX(), getY(), 0.25f);
-        centerBlob.setDensity(OOB_DENSITY);
-        centerBlob.setRestitution(0.4f);
-        centerBlob.setFriction(0.5f);
-        bodies.add(centerBlob);
-
-        // Create outer blobs
-        for (int i = 0; i < BLOBS; i++) {
-            double angle = (2 * Math.PI) / (i * BLOBS);
-            float blobX = (float) (getX() + radius * Math.cos(angle));
-            float blobY = (float) (getY() + radius * Math.sin(angle));
-            WheelObstacle blob = new WheelObstacle(blobX, blobY, 0.25f);
-            blob.setDensity(OOB_DENSITY);
-            blob.setRestitution(0.4f);
-            blob.setFriction(0.5f);
-            bodies.add(blob);
-        }
-    }
-
-    public boolean createJoints(World world) {
-        assert bodies.size > 0;
-
-        for (int i = 1; i <= BLOBS; i++) {
-            // Connect all outer blobs to center
-            DistanceJointDef jointDef = new DistanceJointDef();
-            jointDef.bodyA = bodies.get(0).getBody();
-            jointDef.bodyB = bodies.get(i).getBody();
-            jointDef.length = radius;
-            jointDef.collideConnected = true;
-            jointDef.frequencyHz = 5.0f;
-            jointDef.dampingRatio = 0.5f;
-            Joint joint = world.createJoint(jointDef);
-            joints.add(joint);
-
-            // Connect the outer blobs to each other
-            jointDef.bodyA = bodies.get(i).getBody();
-            jointDef.bodyB = bodies.get((i+1)%BLOBS).getBody();
-            jointDef.collideConnected = true;
-            jointDef.frequencyHz = 5.0f;
-            jointDef.dampingRatio = 0.5f;
-            Joint joint2 = world.createJoint(jointDef);
-            joints.add(joint2);
-        }
-        return true;
-    }
-
-    public void setTextures(TextureRegion avatarTexture) {
-        if (bodies.size == 0) {
-            init();
-        }
-        else {
-            ((WheelObstacle)bodies.get(0)).setTexture(avatarTexture);
-        }
-    }
-
-    public WheelObstacle getOob() {
-        return ((WheelObstacle)bodies.get(0));
+        setName("Oob");
     }
 
     /**
@@ -347,7 +214,7 @@ public class OobModel3 extends ComplexObstacle {
         sensorDef.density = OOB_DENSITY;
         sensorDef.isSensor = true;
         sensorShape = new CircleShape();
-        sensorShape.setRadius(radius);
+        sensorShape.setRadius(getRadius());
         sensorDef.shape = sensorShape;
 
         sensorFixture = body.createFixture(sensorDef);
@@ -377,6 +244,7 @@ public class OobModel3 extends ComplexObstacle {
 
         forceCache.set(getMovement().x*OOB_FORCE,getMovement().y*OOB_FORCE);
         body.applyLinearImpulse(forceCache,getPosition(),true);
+        setMovement(new Vector2(0,0));
     }
 
     /**

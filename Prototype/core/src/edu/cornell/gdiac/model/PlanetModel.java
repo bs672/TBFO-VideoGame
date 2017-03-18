@@ -1,8 +1,8 @@
-package edu.cornell.gdiac.physics.space;
+package edu.cornell.gdiac.model;
 
-import edu.cornell.gdiac.physics.GameCanvas;
-import edu.cornell.gdiac.physics.obstacle.Obstacle;
-import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
+import edu.cornell.gdiac.view.GameCanvas;
+import edu.cornell.gdiac.model.obstacle.Obstacle;
+import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 
 /**
  * Created by jchan_000 on 3/11/2017.

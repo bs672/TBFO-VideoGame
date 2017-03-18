@@ -1,4 +1,4 @@
-package edu.cornell.gdiac.physics.space;
+package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -9,18 +9,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
-import edu.cornell.gdiac.physics.InputController;
-import edu.cornell.gdiac.physics.WorldController;
-import edu.cornell.gdiac.physics.obstacle.Obstacle;
-import edu.cornell.gdiac.physics.obstacle.PolygonObstacle;
-import edu.cornell.gdiac.physics.obstacle.WheelObstacle;
+import edu.cornell.gdiac.model.OobModel;
+import edu.cornell.gdiac.model.PlanetModel;
+import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Matt Loughney on 2/28/2017.
  */
-public class SpaceController extends WorldController implements ContactListener {
+public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
     private static final String OOB_FILE  = "space/oob_2.png";
     /** The texture file for the planets */
@@ -55,7 +53,7 @@ public class SpaceController extends WorldController implements ContactListener 
 
     private static final float MIN_RADIUS = 1f;
 
-    private static final float EPSILON = 0.01f;
+    private static final float EPSILON = 0.1f;
 
     //control = 0 is keyboard, control = 1 is mouse
     private int control = 1;
@@ -224,12 +222,18 @@ public class SpaceController extends WorldController implements ContactListener 
     /** the font for the mass text on each object */
     private BitmapFont massFont;
 
+    private float width;
+    private float height;
+    /** if we've just loaded */
+    private boolean justLoaded = true;
+
+
     /**
      * Creates and initialize a new instance of the platformer game
      *
      * The game has default gravity and other settings
      */
-    public SpaceController() {
+    public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
         setDebug(false);
         setComplete(false);
@@ -383,6 +387,8 @@ public class SpaceController extends WorldController implements ContactListener 
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        width = canvas.getWidth() / 32;
+        height = canvas.getHeight() / 18;
         if (InputController.getInstance().getChange()){
             if (control == 1){
                 control = 0;
@@ -391,19 +397,18 @@ public class SpaceController extends WorldController implements ContactListener 
                 control = 1;
             }
         }
-        // Process actions in object model
 
-        //If Oob is landed on a planet
-
-        if(avatar.getX() < 0 || avatar.getX() > 32 || avatar.getY() < 0 || avatar.getY() > 18)
+        if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
             reset();
-        System.out.println(currentPlanet);
         if(currentPlanet!=null) {
-            vecToCenter.set(16f - avatar.getX(), 9 - avatar.getY());
-            if(!vecToCenter.equals(Vector2.Zero)) {
-                for(Obstacle o : objects) {
-                    o.setPosition(o.getPosition().cpy().add(vecToCenter));
+            vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
+            for(Obstacle o : objects) {
+                if(justLoaded) {
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
+                    justLoaded = false;
                 }
+                else
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f/25)));
             }
 
             Vector2 smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
@@ -488,15 +493,15 @@ public class SpaceController extends WorldController implements ContactListener 
             Vector2 radDir;
             for (int i = 0; i < planets.size; i++) {
                 radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len()) {
+                if (radDir.len() < smallestRad.len() && !lastPlanet.equals(planets.get(i))) {
                     smallestRad = radDir.cpy();
                     closestPlanet = i;
                 }
             }
-            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON && !lastPlanet.equals(planets.get(closestPlanet))) {
+            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
                 currentPlanet = planets.get(closestPlanet);
                 SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
-                avatar.setMovement(Vector2.Zero);
+                avatar.applyForceZero();
             }
         }
         //need to set currentPlanet to currentPlanetNumber

@@ -20,7 +20,7 @@
  * Based on original PhysicsDemo Lab by Don Holden, 2007
  * LibGDX version, 2/6/2015
  */
-package edu.cornell.gdiac.physics;
+package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.controllers.*;
+import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.util.*;
 
 /**
