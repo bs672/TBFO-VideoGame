@@ -415,7 +415,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
             //determines mouse or keyboard controls
             boolean jump = false;
-            float moveDirection = 0;
+            float moveDirection;
             if (control==1){
                 Vector2 mouse = InputController.getInstance().getCursor();
                 mouse = mouse.sub(currentPlanet.getPosition());
@@ -423,10 +423,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 oob = avatar.getPosition();
                 oob.sub(currentPlanet.getPosition());
                 float angle2 = oob.angle();
-                if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
+                System.out.println(angle - angle2);
+                if(Math.abs(angle - angle2) <= 1.5f)
+                    moveDirection = 0;
+                else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
                     moveDirection = -1;
                 }
-                else if((angle - angle2+360)%360 > 180 && (angle - angle2+360)%360<359){
+                else {
                     moveDirection = 1;
                 }
                 jump = InputController.getInstance().getMouseJump();
