@@ -31,6 +31,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String ORNG_RED_P = "space/orange_red_planet_480.png";
     /** The texture file for the planets */
     private static final String RED_P = "space/red_planet_480.png";
+    /** The texture file for the planets */
+    private static final String COMMAND_P = "space/command.png";
     /** Texture file for background image */
     private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
     /** Texture file for background image */
@@ -38,12 +40,20 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Texture file for background image */
     private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
 
+
+    /** Parallax values */
+    private static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
+    private static final float BG_WHITE_PARALLAX = 0.4f;
+    private static final float BG_RED_PARALLAX   = 0.9f;
+    private static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
+    private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
+
     /** The sound file for a jump */
-    private static final String JUMP_FILE = "platform/jump.mp3";
+    private static final String JUMP_FILE = "space/jump.mp3";
     /** The sound file for a bullet fire */
-    private static final String PEW_FILE = "platform/pew.mp3";
+    private static final String PEW_FILE = "space/pew.mp3";
     /** The sound file for a bullet collision */
-    private static final String POP_FILE = "platform/plop.mp3";
+    private static final String POP_FILE = "space/plop.mp3";
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(8f, 5.5f);
     /** Oob's initial radius */
@@ -69,12 +79,18 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion orange_red_P_Texture;
     /** Planet texture */
     private TextureRegion red_P_Texture;
+    /** Planet texture */
+    private TextureRegion command_P_Texture;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureREDSTAR;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureWHITESTAR;
+
+
+
+
 
     private boolean jumping = false;
 
@@ -109,6 +125,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(ORNG_RED_P);
         manager.load(RED_P, Texture.class);
         assets.add(RED_P);
+        manager.load(COMMAND_P, Texture.class);
+        assets.add(COMMAND_P);
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
         manager.load(BACKG_FILE_RED_STAR, Texture.class);
@@ -141,15 +159,29 @@ public class PlayMode extends WorldController implements ContactListener {
             return;
         }
 
+
+
         avatarTexture = createTexture(manager,OOB_FILE,false);
         blue_P_Texture = createTexture(manager,BLUE_P,false);
         green_P_Texture = createTexture(manager,GREEN_P,false);
         orange_P_Texture = createTexture(manager,ORANGE_P,false);
         orange_red_P_Texture = createTexture(manager,ORNG_RED_P,false);
         red_P_Texture = createTexture(manager,RED_P,false);
+        command_P_Texture = createTexture(manager,COMMAND_P,false);
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
-        backgroundTextureREDSTAR = createTexture(manager,BACKG_FILE_RED_STAR,false);
-        backgroundTextureWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
+
+        Texture redTex = new Texture(BACKG_FILE_RED_STAR);
+        redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion redTexReg = new TextureRegion(redTex);
+        redTexReg.setRegion(0,0,redTex.getWidth()*7,redTex.getHeight()*7);
+        backgroundTextureREDSTAR=redTexReg;
+
+
+        Texture whiteTex = new Texture(BACKG_FILE_WHITE_STAR);
+        whiteTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion whiteTexReg = new TextureRegion(whiteTex);
+        whiteTexReg.setRegion(0,0,whiteTex.getWidth()*7,whiteTex.getHeight()*7);
+        backgroundTextureWHITESTAR=whiteTexReg;
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -157,6 +189,23 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, POP_FILE);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
+    }
+
+    /**
+     * Helper to initialize a texture after loading.
+     *
+     * @param manager Reference to global asset manager
+     * @param key The key identifying the texture in the loader
+     *
+     * @return the texture newly initialized
+     */
+    private static Texture loadTexture(AssetManager manager, String key) {
+        Texture result = null;
+        if (manager.isLoaded(key)) {
+            result = manager.get(key, Texture.class);
+            result.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        }
+        return result;
     }
 
     // Physics constants for initialization
@@ -184,23 +233,23 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     private static final float[][] PLANETS = {
-            {8.0f, 4.5f, 2.8f},
-            {5.0f, 12.5f, 1.2f},
-            {27.0f, 4.5f, 2.7f},
-            {25.0f, 12.5f, 1.6f},
-            {18.0f, -4.0f, 1.9f},
+            {8.0f, 4.5f, 2.8f, 0f},
+            {5.0f, 12.5f, 1.2f, 0f},
+            {27.0f, 4.5f, 2.7f, 0f},
+            {25.0f, 12.5f, 1.6f, 0f},
+            {18.0f, -4.0f, 1.9f, 0f},
 
-            {17.0f, 22.5f, 3.8f},
-            {-5.0f, -12.5f, 4.2f},
-            {-17.0f, 17.5f, 3.7f},
-            {40.0f, 17.5f, 5.6f},
-            {-18.0f, 4.0f, 1.9f},
+            {17.0f, 22.5f, 3.8f, 0f},
+            {-5.0f, -12.5f, 4.2f, 0f},
+            {-17.0f, 17.5f, 3.7f, 0f},
+            {40.0f, 17.5f, 2.6f, 1f},
+            {-18.0f, 4.0f, 1.9f, 0f},
 
-            {-2.0f, 10.5f, 1.8f},
-            {-5.0f, -22.5f, 2.2f},
-            {44.0f, 1.5f, 1.7f},
-            {-16.0f, -17.5f, 1.2f},
-            {-28.0f, 5.8f, 1.7f},
+            {-2.0f, 10.5f, 1.8f, 0f},
+            {-5.0f, -22.5f, 2.2f, 0f},
+            {44.0f, 1.5f, 1.7f, 0f},
+            {-16.0f, -17.5f, 1.2f, 0f},
+            {-28.0f, 5.8f, 1.7f, 0f},
 
 
 
@@ -302,18 +351,34 @@ public class PlayMode extends WorldController implements ContactListener {
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.length; ii++){
             PlanetModel obj;
-            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], 0);
+            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
             obj.setBodyType(BodyDef.BodyType.StaticBody);
             obj.setDensity(BASIC_DENSITY);
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f*obj.getRadius(),.2f*obj.getRadius()));
-            if (ii%5 == 0) {obj.setTexture(blue_P_Texture); }
-            if (ii%5 == 1) {obj.setTexture(green_P_Texture); }
-            if (ii%5 == 2) {obj.setTexture(orange_P_Texture); }
-            if (ii%5 == 3) {obj.setTexture(orange_red_P_Texture); }
-            if (ii%5 == 4) {obj.setTexture(red_P_Texture); }
+            if (obj.getType()==0f) {
+                if (ii % 5 == 0) {
+                    obj.setTexture(blue_P_Texture);
+                }
+                if (ii % 5 == 1) {
+                    obj.setTexture(green_P_Texture);
+                }
+                if (ii % 5 == 2) {
+                    obj.setTexture(orange_P_Texture);
+                }
+                if (ii % 5 == 3) {
+                    obj.setTexture(orange_red_P_Texture);
+                }
+                if (ii % 5 == 4) {
+                    obj.setTexture(red_P_Texture);
+                }
+            }
+            if (obj.getType()==1f) {
+                obj.setTexture(command_P_Texture);
+                }
+
 
             obj.setName(pname+ii);
             addObject(obj);
@@ -636,11 +701,20 @@ public class PlayMode extends WorldController implements ContactListener {
     public void draw(float dt) {
         canvas.clear();
 
+        //float camera = -carPosition;
+
         // Draw background unscaled.
         canvas.begin();
+
+        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
+       // canvas.drawWrapped(backgroundTextureREDSTAR,BG_RED_PARALLAX,0f);
+       // canvas.drawWrapped(backgroundTextureWHITESTAR,BG_WHITE_PARALLAX,0f);
+
         canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundTextureREDSTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundTextureWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+
+
         canvas.end();
 
         canvas.begin();

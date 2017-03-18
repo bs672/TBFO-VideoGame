@@ -56,13 +56,14 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** Background texture for start-up */
 	private Texture backgroundMAIN;
     /** Background texture for start-up */
-    private Texture backgroundREDSTAR;
-    /** Background texture for start-up */
-    private Texture backgroundWHITESTAR;
+    private TextureRegion backgroundREDSTAR;
+    /** Texture asset for background image */
+    private TextureRegion backgroundWHITESTAR;
 	/** Play button to display when done */
 	private Texture playButton;
 	/** Texture atlas to support a progress bar */
 	private Texture statusBar;
+
 	
 	// statusBar is a "texture atlas." Break it up into parts.
 	/** Left cap to the status background (grey region) */
@@ -101,6 +102,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private static int WINDOWS_START = 7;
 	/** Start button for XBox controller on Mac OS X */
 	private static int MAC_OS_X_START = 4;
+
+	/** The font for giving messages to the player */
+	protected BitmapFont displayFont;
 
 	/** AssetManager to be loading in the background */
 	private AssetManager manager;
@@ -200,9 +204,23 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		// Load the next two images immediately.
 		playButton = null;
 		backgroundMAIN = new Texture(BACKG_FILE_MAIN);
-        backgroundREDSTAR = new Texture(BACKG_FILE_RED_STAR);
-        backgroundWHITESTAR = new Texture(BACKG_FILE_WHITE_STAR);
+
 		statusBar  = new Texture(PROGRESS_FILE);
+
+
+        Texture redTex = new Texture(BACKG_FILE_RED_STAR);
+        redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion redTexReg = new TextureRegion(redTex);
+        redTexReg.setRegion(0,0,redTex.getWidth()*7,redTex.getHeight()*7);
+        backgroundREDSTAR=redTexReg;
+
+
+        Texture whiteTex = new Texture(BACKG_FILE_WHITE_STAR);
+        whiteTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion whiteTexReg = new TextureRegion(whiteTex);
+        whiteTexReg.setRegion(0,0,whiteTex.getWidth()*7,whiteTex.getHeight()*7);
+        backgroundWHITESTAR=whiteTexReg;
+
 		
 		// No progress so far.		
 		progress   = 0;
@@ -241,8 +259,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		 statusFrgMiddle = null;
 
 		 backgroundMAIN.dispose();
-         backgroundREDSTAR.dispose();
-         backgroundWHITESTAR.dispose();
+        // backgroundREDSTAR.dispose();
+        // backgroundWHITESTAR.dispose();
 		 statusBar.dispose();
 		 backgroundMAIN = null;
         backgroundREDSTAR = null;
@@ -283,10 +301,15 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * prefer this in lecture.
 	 */
 	private void draw() {
+
+
+
+		//displayFont.setColor(Color.YELLOW);
 		canvas.begin();
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundREDSTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+		//canvas.drawTextCentered("The Big Friendly Oob", displayFont, 100.0f);
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {
@@ -509,14 +532,14 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		return true; 
 	}
 
-	/** 
+	/**
 	 * Called when a key is typed (UNSUPPORTED)
 	 *
 	 * @param keycode the key typed
-	 * @return whether to hand the event to other listeners. 
+	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean keyTyped(char character) { 
-		return true; 
+	public boolean keyTyped(char character) {
+		return true;
 	}
 
 	/** 
