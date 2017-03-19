@@ -276,6 +276,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private PlanetModel lastPlanet;
     /** List of all live planets */
     private Array<PlanetModel> planets;
+    //Number of command planets left
+    private int numCommand;
     /** list of ships */
     private Array<ShipModel> ships;
     /** vector from Oob to center of the screen */
@@ -333,6 +335,7 @@ public class PlayMode extends WorldController implements ContactListener {
         world.setContactListener(this);
         setComplete(false);
         setFailure(false);
+        numCommand=0;
         populateLevel();
     }
 
@@ -370,6 +373,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (obj.getType() == 1f) {
                 obj.setTexture(command_P_Texture);
+                numCommand++;
             }
 
 
@@ -448,7 +452,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 control = 1;
             }
         }
-
+        if(numCommand==0){
+            //We win the game!
+            reset();
+        }
         if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
             reset();
         if(currentPlanet!=null) {
