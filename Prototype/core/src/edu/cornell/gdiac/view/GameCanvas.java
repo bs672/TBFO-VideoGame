@@ -916,7 +916,53 @@ public class GameCanvas {
 		float y = (getHeight() + layout.height) / 2.0f;
 		font.draw(spriteBatch, layout, x, y+offset);
     }
-    
+
+	private Vector2 positionCache = new Vector2();
+
+	/**
+	 * Private method to process the wrap offset of an image.
+	 *
+	 * @param pos The center of the background image
+	 *
+	 * @return the vector, wrapped to the screen
+	 *
+	 */
+	private Vector2 wrapPosition(Vector2 pos) {
+		float w = getWidth();
+		if (pos.x < 0) {
+			float n = (float)Math.floor((-pos.x) / w);
+			pos.x += (1 + n) * w;
+		} else if (pos.x > 0) {
+			pos.x %= w;
+		}
+
+		return pos;
+	}
+
+	/**
+	 * Draw the seamless background image.
+	 *
+	 * The background image is drawn (with NO SCALING) at position x, y.  Width-wise,
+	 * the image is seamlessly scrolled; when we reach the image we draw a second copy.
+	 *
+	 * To work properly, the image should be wide enough to fill the screen. However,
+	 * it can be of any height.
+	 *
+	 * @param image  Texture to draw as an overlay
+	 * @param x 	The x-coordinate of the bottom left corner
+	 * @param y 	The y-coordinate of the bottom left corner
+	 */
+	public void drawWrapped(Texture image, float x, float y) {
+		positionCache.set(x,y);
+		wrapPosition(positionCache);
+
+		float w = getWidth();
+		// Have to draw the background twice for continuous scrolling.
+		spriteBatch.draw(image, positionCache.x,   positionCache.y);
+		spriteBatch.draw(image, positionCache.x-w, positionCache.y);
+	}
+
+
 	/**
 	 * Start the debug drawing sequence.
 	 *

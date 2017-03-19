@@ -15,11 +15,11 @@ public class PlanetModel extends WheelObstacle{
 
     //TODO type of the planet
     //Type 0 is default
-    private static int type;
+    private static float type;
 
-    public void setType(int val){type = val;}
+    public void setType(float val){type = val;}
 
-    public int getType(){return type;}
+    public float getType(){return type;}
 
     /**
      * Creates a new planet at the given position.
@@ -33,7 +33,7 @@ public class PlanetModel extends WheelObstacle{
      * @param radius		The object radius in physics units
      * @param t         The type of the planet
      */
-    public PlanetModel(float x, float y, float radius, int t) {
+    public PlanetModel(float x, float y, float radius, float t) {
         super(x,y,radius);
         setDensity(PLANET_DENSITY);
         setFixedRotation(true);
