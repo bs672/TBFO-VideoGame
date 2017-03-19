@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import edu.cornell.gdiac.model.BulletModel;
 import edu.cornell.gdiac.model.PlanetModel;
 import edu.cornell.gdiac.model.ShipModel;
 import edu.cornell.gdiac.model.OobModel;
@@ -31,6 +32,8 @@ public class AIController {
     private static final float MOVE_SPEED = 0.01f;
     /** epsilon for distance from orbiting planet */
     private static final float EPSILON = 0.1f;
+    /** firing cooldown time */
+    private static final int COOLDOWN = 60;
 
     public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, OobModel oob) {
         this.ships = ships;
@@ -107,6 +110,20 @@ public class AIController {
     }
 
     public void aggroPathfind(ShipModel s) {
-        
+        tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
+        tempVec2.set(tempVec1);
+        tempVec2.nor();
+        if(s.getCooldown() == 0) {
+            BulletModel b = new BulletModel(s.getX() + tempVec2.x, s.getY() + tempVec2.y);
+            b.setVX(tempVec2.x);
+            b.setVY(tempVec2.y);
+            s.setCooldown(COOLDOWN);
+        }
+        else
+            s.decCooldown();
+        if(tempVec1.len() > 6) {
+            s.setVX(tempVec2.x);
+            s.setVY(tempVec2.y);
+        }
     }
 }

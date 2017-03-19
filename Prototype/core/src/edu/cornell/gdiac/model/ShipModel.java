@@ -17,6 +17,8 @@ public class ShipModel extends CapsuleObstacle{
     private Vector2 movement;
     private boolean inOrbit;
     private boolean aggroed;
+    private int firingCooldown;
+
     private static final float AGGRO_RANGE = 1.0f;
 
 
@@ -38,6 +40,11 @@ public class ShipModel extends CapsuleObstacle{
 
     public float getAggroRange() {return AGGRO_RANGE; }
 
+    public void setCooldown(int c) {firingCooldown = c; }
+
+    public int getCooldown() {return firingCooldown; }
+
+    public void decCooldown() {firingCooldown++; }
 
     /**
      * Creates a new ship at the given position.
@@ -58,6 +65,7 @@ public class ShipModel extends CapsuleObstacle{
 
         type = t;
         setName("ship");
+        firingCooldown = 0;
     }
 
     //Creates a Ship with predetermined width and height at given position.
@@ -66,6 +74,7 @@ public class ShipModel extends CapsuleObstacle{
         setFixedRotation(true);
 
         setName("ship");
+        firingCooldown = 0;
     }
 
     public void drawDebug(GameCanvas canvas) {
