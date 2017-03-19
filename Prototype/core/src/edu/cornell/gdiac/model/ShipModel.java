@@ -13,13 +13,13 @@ public class ShipModel extends CapsuleObstacle{
     private static final float HEIGHT = 0.6f;
 
     private static final float DAMPING = 5.0f;
-    private static final float SPEED = 3.0f;
+    private static final float MOVE_SPEED = 0.1f;
     private Vector2 movement;
     private boolean inOrbit;
     private boolean aggroed;
     private int firingCooldown;
 
-    private static final float AGGRO_RANGE = 1.0f;
+    private static final float AGGRO_RANGE = 10.0f;
 
 
     //TODO type of the ship
@@ -44,7 +44,9 @@ public class ShipModel extends CapsuleObstacle{
 
     public int getCooldown() {return firingCooldown; }
 
-    public void decCooldown() {firingCooldown++; }
+    public void decCooldown() {firingCooldown--; }
+
+    public float getMoveSpeed() {return MOVE_SPEED; }
 
     /**
      * Creates a new ship at the given position.

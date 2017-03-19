@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.OobModel;
 import edu.cornell.gdiac.model.PlanetModel;
+import edu.cornell.gdiac.model.ShipModel;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
@@ -39,6 +40,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String BACKG_FILE_RED_STAR = "space/red_stars.png";
     /** Texture file for background image */
     private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
+    /** Texture file for ship */
+    private static final String SHIP_TEXTURE = "space/ship.png";
 
 
     /** Parallax values */
@@ -87,6 +90,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion backgroundTextureREDSTAR;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureWHITESTAR;
+    /** Texture asset for ship */
+    private TextureRegion ship_texture;
 
 
 
@@ -133,6 +138,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(BACKG_FILE_RED_STAR);
         manager.load(BACKG_FILE_WHITE_STAR, Texture.class);
         assets.add(BACKG_FILE_WHITE_STAR);
+        manager.load(SHIP_TEXTURE, Texture.class);
+        assets.add(SHIP_TEXTURE);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -169,6 +176,7 @@ public class PlayMode extends WorldController implements ContactListener {
         red_P_Texture = createTexture(manager,RED_P,false);
         command_P_Texture = createTexture(manager,COMMAND_P,false);
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
+        ship_texture = createTexture(manager, SHIP_TEXTURE, false);
 
         Texture redTex = new Texture(BACKG_FILE_RED_STAR);
         redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -255,6 +263,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
     };
 
+    private static final float[][] SHIPS = {
+            {11.0f, 4.5f}
+    };
+
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -264,6 +276,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private PlanetModel lastPlanet;
     /** List of all live planets */
     private Array<PlanetModel> planets;
+    /** list of ships */
+    private Array<ShipModel> ships;
     /** vector from Oob to center of the screen */
     private Vector2 vecToCenter = new Vector2();
     /** Mark set to handle more sophisticated collision callbacks */
@@ -275,6 +289,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private float height;
     /** if we've just loaded */
     private boolean justLoaded = true;
+    /** AIController */
+    private AIController aiController;
 
 
     /**
@@ -290,6 +306,7 @@ public class PlayMode extends WorldController implements ContactListener {
         world.setContactListener(this);
         sensorFixtures = new ObjectSet<Fixture>();
         planets = new Array<PlanetModel>();
+        ships = new Array<ShipModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
     }
@@ -300,6 +317,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );
 
         for(Obstacle obj : objects) {
@@ -308,6 +326,7 @@ public class PlayMode extends WorldController implements ContactListener {
         objects.clear();
         addQueue.clear();
         planets.clear();
+        ships.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -321,35 +340,9 @@ public class PlayMode extends WorldController implements ContactListener {
      * Lays out the game geography.
      */
     private void populateLevel() {
-//        // Add level goal
-//        float dwidth  = goalTile.getRegionWidth()/scale.x;
-//        float dheight = goalTile.getRegionHeight()/scale.y;
-//        goalDoor = new BoxObstacle(GOAL_POS.x,GOAL_POS.y,dwidth,dheight);
-//        goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
-//        goalDoor.setDensity(0.0f);
-//        goalDoor.setFriction(0.0f);
-//        goalDoor.setRestitution(0.0f);
-//        goalDoor.setSensor(true);
-//        goalDoor.setDrawScale(scale);
-//        goalDoor.setTexture(goalTile);
-//        goalDoor.setName("goal");
-//        addObject(goalDoor);
-
-//        String wname = "wall";
-//        for (int ii = 0; ii < WALLS.length; ii++) {
-//            PolygonObstacle obj;
-//            obj = new PolygonObstacle(WALLS[ii], 0, 0);
-//            obj.setBodyType(BodyDef.BodyType.StaticBody);
-//            obj.setDensity(BASIC_DENSITY);
-//            obj.setFriction(BASIC_FRICTION);
-//            obj.setRestitution(BASIC_RESTITUTION);
-//            obj.setDrawScale(scale);
-//            obj.setName(wname+ii);
-//            addObject(obj);
-//        }
 
         String pname = "planet";
-        for (int ii = 0; ii <PLANETS.length; ii++){
+        for (int ii = 0; ii <PLANETS.length; ii++) {
             PlanetModel obj;
             obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
             obj.setBodyType(BodyDef.BodyType.StaticBody);
@@ -357,8 +350,8 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.2f*obj.getRadius(),.2f*obj.getRadius()));
-            if (obj.getType()==0f) {
+            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            if (obj.getType() == 0f) {
                 if (ii % 5 == 0) {
                     obj.setTexture(blue_P_Texture);
                 }
@@ -375,29 +368,27 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.setTexture(red_P_Texture);
                 }
             }
-            if (obj.getType()==1f) {
+            if (obj.getType() == 1f) {
                 obj.setTexture(command_P_Texture);
-                }
+            }
 
 
-            obj.setName(pname+ii);
+            obj.setName(pname + ii);
             addObject(obj);
             planets.add(obj);
         }
-//
-//        String pname = "platform";
-//        for (int ii = 0; ii < PLATFORMS.length; ii++) {
-//            PolygonObstacle obj;
-//            obj = new PolygonObstacle(PLATFORMS[ii], 0, 0);
-//            obj.setBodyType(BodyDef.BodyType.StaticBody);
-//            obj.setDensity(BASIC_DENSITY);
-//            obj.setFriction(BASIC_FRICTION);
-//            obj.setRestitution(BASIC_RESTITUTION);
-//            obj.setDrawScale(scale);
-//            obj.setTexture(earthTile);
-//            obj.setName(pname+ii);
-//            addObject(obj);
-//        }
+        ShipModel sh = new ShipModel(SHIPS[0][0], SHIPS[0][1]);
+        sh.setBodyType(BodyDef.BodyType.DynamicBody);
+        sh.setDensity(BASIC_DENSITY);
+        sh.setFriction(BASIC_FRICTION);
+        sh.setRestitution(BASIC_RESTITUTION);
+        sh.setDrawScale(scale);
+        sh.scalePicScale(new Vector2(1f, 1f));
+        sh.setTexture(ship_texture);
+        sh.setName("ship1");
+        sh.setGravityScale(0.0f);
+        ships.add(sh);
+        addObject(sh);
 
         // Create Oob
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
@@ -408,13 +399,8 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.scalePicScale(new Vector2(.2f,.2f));
         addObject(avatar);
 
-        // Create spinning platform
-//        dwidth  = barrierTexture.getRegionWidth()/scale.x;
-//        dheight = barrierTexture.getRegionHeight()/scale.y;
-//        Spinner spinPlatform = new Spinner(SPIN_POS.x,SPIN_POS.y,dwidth,dheight);
-//        spinPlatform.setDrawScale(scale);
-//        spinPlatform.setTexture(barrierTexture);
-//        addObject(spinPlatform);
+
+        aiController = new AIController(ships, planets, avatar, scale);
     }
 
     /**
@@ -488,7 +474,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 oob = avatar.getPosition();
                 oob.sub(currentPlanet.getPosition());
                 float angle2 = oob.angle();
-                System.out.println(angle - angle2);
                 if(Math.abs(angle - angle2) <= 1.5f)
                     moveDirection = 0;
                 else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
@@ -572,6 +557,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 avatar.applyForceZero();
             }
         }
+        aiController.update(dt);
         //need to set currentPlanet to currentPlanetNumber
     }
 //
@@ -724,6 +710,8 @@ public class PlayMode extends WorldController implements ContactListener {
         for(Obstacle obj : objects) {
             obj.draw(canvas);
         }
+        for(Obstacle obj : aiController.bullets)
+            obj.draw(canvas);
         canvas.end();
 
         if (isDebug()) {
