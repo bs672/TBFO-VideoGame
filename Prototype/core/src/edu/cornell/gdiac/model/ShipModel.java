@@ -15,6 +15,9 @@ public class ShipModel extends CapsuleObstacle{
     private static final float DAMPING = 5.0f;
     private static final float SPEED = 3.0f;
     private Vector2 movement;
+    private boolean inOrbit;
+    private boolean aggroed;
+    private static final float AGGRO_RANGE = 1.0f;
 
 
     //TODO type of the ship
@@ -24,6 +27,16 @@ public class ShipModel extends CapsuleObstacle{
     public void setType(int val){type = val;}
 
     public int getType(){return type;}
+
+    public void setInOrbit(boolean b) {inOrbit = b;}
+
+    public boolean getInOrbit() {return inOrbit; }
+
+    public void setAggroed(boolean b) {aggroed = b; }
+
+    public boolean getAggroed() {return aggroed; }
+
+    public float getAggroRange() {return AGGRO_RANGE; }
 
 
     /**
