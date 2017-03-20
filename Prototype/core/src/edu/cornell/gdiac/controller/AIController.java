@@ -179,4 +179,8 @@ public class AIController {
             s.setVY(s.getVY()*0.75f);
         }
     }
+
+    public void removeShip(ShipModel s) {
+        ships.removeValue(s, true);
+    }
 }
