@@ -399,10 +399,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if (obj.getType() == 2f) {
                 obj.setTexture(poison_P_Texture);
             }
-
-
             obj.setName(pname + ii);
-            System.out.println(obj.getType());
             addObject(obj);
             planets.add(obj);
         }
@@ -470,10 +467,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setGravityScale(0);
                 bullet.setVX(aiController.bulletData.get(i + 2));
                 bullet.setVY(aiController.bulletData.get(i + 3));
-                bullet.setTexture(ship_texture);
+                bullet.setTexture(bullet_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
-                bullet.setActive(false);
             }
             aiController.bulletData.clear();
         }
@@ -632,6 +628,9 @@ public class PlayMode extends WorldController implements ContactListener {
             playerControls();
 
             if (currentPlanet.getRadius() < DEATH_RADIUS) {
+                if(currentPlanet.getType()==1f){
+                    numCommand--;
+                }
                 currentPlanet.markRemoved(true);
                 planets.removeValue(currentPlanet, true);
                 jump = true;
@@ -664,25 +663,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
         aiController.update(dt);
 
-
-        if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
-                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
-                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
-                bullet.setDensity(0.0f);
-                bullet.setFriction(0.0f);
-                bullet.setRestitution(0.0f);
-                bullet.setDrawScale(scale);
-                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
-                bullet.setGravityScale(0);
-                bullet.setVX(aiController.bulletData.get(i + 2));
-                bullet.setVY(aiController.bulletData.get(i + 3));
-                bullet.setTexture(bullet_texture);
-                bullet.setName("bullet");
-                addObject(bullet);
-            }
-            aiController.bulletData.clear();
-        }
         shootBullet();
 
     }
