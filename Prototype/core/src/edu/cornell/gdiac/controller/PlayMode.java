@@ -98,7 +98,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Planet texture */
     private TextureRegion poison_P_Texture;
     /** Planet texture */
-    private TextureRegion nuetral_P_Texture;
+    private TextureRegion neutral_P_Texture;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
@@ -206,7 +206,7 @@ public class PlayMode extends WorldController implements ContactListener {
         red_P_Texture = createTexture(manager,RED_P,false);
         command_P_Texture = createTexture(manager,COMMAND_P,false);
         poison_P_Texture = createTexture(manager,POISON_P,false);
-        nuetral_P_Texture = createTexture(manager,NEUTRAL_P,false);
+        neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
 
@@ -308,8 +308,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private PlanetModel lastPlanet;
     /** List of all live planets */
     private Array<PlanetModel> planets;
-    //Number of command planets left
-    private int numCommand;
+    //List of command planets
+    private Array<PlanetModel> commandPlanets;
     /** list of ships */
     private Array<ShipModel> ships;
     /** vector from Oob to center of the screen */
@@ -340,6 +340,7 @@ public class PlayMode extends WorldController implements ContactListener {
         world.setContactListener(this);
         sensorFixtures = new ObjectSet<Fixture>();
         planets = new Array<PlanetModel>();
+        commandPlanets = new Array<PlanetModel>();
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
@@ -360,6 +361,7 @@ public class PlayMode extends WorldController implements ContactListener {
         objects.clear();
         addQueue.clear();
         planets.clear();
+        commandPlanets.clear();
         ships.clear();
         world.dispose();
 
@@ -367,7 +369,6 @@ public class PlayMode extends WorldController implements ContactListener {
         world.setContactListener(this);
         setComplete(false);
         setFailure(false);
-        numCommand=0;
         populateLevel();
     }
 
@@ -387,6 +388,7 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            obj.setName(pname + ii);
             if (obj.getType() == 0f || obj.getType() == 3f) {
                 if (ii % 5 == 0) {
                     obj.setTexture(blue_P_Texture);
@@ -406,18 +408,18 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (obj.getType() == 1f) {
                 obj.setTexture(command_P_Texture);
-                numCommand++;
+                commandPlanets.add(obj);
             }
             if (obj.getType() == 2f) {
                 obj.setTexture(poison_P_Texture);
             }
             if (obj.getType() == 3f) {
-                obj.setTexture(nuetral_P_Texture);
+                obj.setTexture(neutral_P_Texture);
             }
 
-            obj.setName(pname + ii);
             addObject(obj);
             planets.add(obj);
+
         }
 
         // Create Ships
@@ -469,6 +471,27 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         return true;
+    }
+
+    public void loopCommandPlanets(){
+        for(PlanetModel c: commandPlanets){
+            if (c.canSpawn()){
+                //SPAWN SHIP
+                ShipModel sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius());
+                sh.setBodyType(BodyDef.BodyType.DynamicBody);
+                sh.setDensity(BASIC_DENSITY);
+                sh.setFriction(BASIC_FRICTION);
+                sh.setRestitution(BASIC_RESTITUTION);
+                sh.setDrawScale(scale);
+                sh.scalePicScale(new Vector2(1f, 1f));
+                sh.setTexture(ship_texture);
+                sh.setName("ship");
+                sh.setGravityScale(0.0f);
+                ships.add(sh);
+                addObject(sh);
+                aiController.addShip(sh, c);
+            }
+        }
     }
 
     //Shoot bullet from ship
@@ -616,7 +639,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 control = 1;
             }
         }
-        if(numCommand==0){
+        if(commandPlanets.size==0){
             //We win the game!
             reset();
         }
@@ -648,7 +671,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
             if (currentPlanet.getRadius() < DEATH_RADIUS) {
                 if(currentPlanet.getType()==1f){
-                    numCommand--;
+                    commandPlanets.removeValue(currentPlanet, true);
                 }
                 currentPlanet.markRemoved(true);
                 planets.removeValue(currentPlanet, true);
@@ -679,6 +702,8 @@ public class PlayMode extends WorldController implements ContactListener {
         SoundController.getInstance().update();
 
         findPlanet();
+
+        loopCommandPlanets();
 
         aiController.update(dt);
 
