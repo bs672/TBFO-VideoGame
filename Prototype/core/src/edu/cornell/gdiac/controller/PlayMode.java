@@ -266,8 +266,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float[][] PLANETS = {
             {8.0f, 4.5f, 2.8f, 3f},
-            {5.0f, 12.5f, 1.2f, 0f},
-            {8.0f, 4.5f, 2.8f, 0f},
             {5.0f, 12.5f, 1.2f, 2f},
             {27.0f, 4.5f, 2.7f, 0f},
             {25.0f, 12.5f, 1.6f, 0f},
@@ -648,7 +646,7 @@ public class PlayMode extends WorldController implements ContactListener {
             else {
                 rad = currentPlanet.getRadius();
                 oldAvatarRad = avatar.getRadius();
-                if(rad > DEATH_RADIUS && currentPlanet.getType()!= 3f){
+                if(rad > DEATH_RADIUS && (currentPlanet.getType()== 0f||currentPlanet.getType()==1f)){
                     siphonPlanet();
                 }
                 else if(currentPlanet.getType()==2f){
