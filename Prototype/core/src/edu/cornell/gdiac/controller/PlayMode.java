@@ -842,6 +842,4 @@ public class PlayMode extends WorldController implements ContactListener {
 //        selector.draw(canvas);
 //        canvas.end();
     }
-
-
 }
