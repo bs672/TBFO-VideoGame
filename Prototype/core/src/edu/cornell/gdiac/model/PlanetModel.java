@@ -13,8 +13,10 @@ public class PlanetModel extends WheelObstacle{
     /** The density of the character */
     private static final float PLANET_DENSITY = 1.0f;
 
-    //TODO type of the planet
-    //Type 0 is default
+    //Type 0 is normal planet
+    //Type 1 is command planet
+    //Type 2 is poison planet
+
     private static float type;
 
     public void setType(float val){type = val;}
