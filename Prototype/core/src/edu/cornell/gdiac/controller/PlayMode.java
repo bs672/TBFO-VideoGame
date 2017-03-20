@@ -79,6 +79,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float EPSILON = 0.1f;
 
+    private static final int THRESHOLD = 4;
+
     //0 is not paused, 1 is victory pause, 2 is defeat pause
     private int pauseState = 0;
 
@@ -612,9 +614,9 @@ public class PlayMode extends WorldController implements ContactListener {
             Vector2 oob = avatar.getPosition();
             oob.sub(currentPlanet.getPosition());
             float angle2 = oob.angle();
-            if(Math.abs(angle - angle2) <= 1.5f)
+            if(Math.abs(angle - angle2) <= THRESHOLD)
                 moveDirection = 0;
-            else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
+            else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 0){
                 moveDirection = -1;
             }
             else {
