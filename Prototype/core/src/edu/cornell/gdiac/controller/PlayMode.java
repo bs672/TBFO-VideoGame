@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
+import edu.cornell.gdiac.model.BulletModel;
 import edu.cornell.gdiac.model.OobModel;
 import edu.cornell.gdiac.model.PlanetModel;
 import edu.cornell.gdiac.model.ShipModel;
@@ -68,6 +69,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float SIPHON = 0.02f;
 
+    private static final float POISON = 0.02f;
+
     private static final float MIN_RADIUS = 1f;
 
     private static final float EPSILON = 0.1f;
@@ -101,9 +104,14 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Texture asset for bullet */
     private TextureRegion bullet_texture;
 
-
-
-
+    //variables
+    Vector2 mvmtDir;
+    Vector2 smallestRad;
+    float rad;
+    float oldAvatarRad;
+    //variables for playerControls()
+    boolean jump = false;
+    float moveDirection = 0f;
 
     private boolean jumping = false;
 
@@ -263,8 +271,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
             {17.0f, 22.5f, 3.8f, 0f},
             {-5.0f, -12.5f, 4.2f, 0f},
-            {-17.0f, 17.5f, 3.7f, 0f},
-            {40.0f, 17.5f, 2.6f, 1f},
+            {-17.0f, 17.5f, 3.7f, 1f},
+            {40.0f, 17.5f, 2.6f, 2f},
             {-18.0f, 4.0f, 1.9f, 0f},
 
             {-2.0f, 10.5f, 1.8f, 0f},
@@ -416,10 +424,10 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
+        avatar.setName("Oob");
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
         avatar.scalePicScale(new Vector2(.2f,.2f));
         addObject(avatar);
-
 
         aiController = new AIController(ships, planets, avatar, scale);
     }
@@ -448,112 +456,8 @@ public class PlayMode extends WorldController implements ContactListener {
         return true;
     }
 
-    /**
-     * The core gameplay loop of this world.
-     *
-     * This method contains the specific update code for this mini-game. It does
-     * not handle collisions, as those are managed by the parent class WorldController.
-     * This method is called after input is read, but before collisions are resolved.
-     * The very last thing that it should do is apply forces to the appropriate objects.
-     *
-     * @param dt Number of seconds since last animation frame
-     */
-    public void update(float dt) {
-        width = canvas.getWidth() / 32;
-        height = canvas.getHeight() / 18;
-        if (InputController.getInstance().getChange()){
-            if (control == 1){
-                control = 0;
-            }
-            else{
-                control = 1;
-            }
-        }
-        if(numCommand==0){
-            //We win the game!
-            reset();
-        }
-        if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
-            reset();
-        if(currentPlanet!=null) {
-            vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
-            for(Obstacle o : objects) {
-                if(justLoaded) {
-                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
-                    justLoaded = false;
-                }
-                else
-                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f/25)));
-            }
-
-            Vector2 smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-
-            //determines mouse or keyboard controls
-            boolean jump = false;
-            float moveDirection;
-            if (control==1){
-                Vector2 mouse = InputController.getInstance().getCursor();
-                mouse = mouse.sub(currentPlanet.getPosition());
-                float angle = mouse.angle();
-                Vector2 oob = avatar.getPosition();
-                oob.sub(currentPlanet.getPosition());
-                float angle2 = oob.angle();
-                if(Math.abs(angle - angle2) <= 1.5f)
-                    moveDirection = 0;
-                else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
-                    moveDirection = -1;
-                }
-                else {
-                    moveDirection = 1;
-                }
-                jump = InputController.getInstance().getMouseJump();
-            }
-            else{
-                jump = InputController.getInstance().getJump();
-                moveDirection = InputController.getInstance().getHorizontal();
-            }
-
-            avatar.applyForceZero();
-            smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
-            Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
-            if (jump) {
-                SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-                avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
-                lastPlanet = currentPlanet;
-                currentPlanet = null;
-                avatar.applyForce();
-            }
-            else {
-                float rad = currentPlanet.getRadius();
-                float oldAvatarRad = avatar.getRadius();
-                if(rad > MIN_RADIUS){
-                    float oldOobMass = avatar.getMass();
-                    float oldPlanMass = currentPlanet.getMass();
-                    currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-                    avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
-                    currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
-                    avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
-                }
-                if (moveDirection == 1) {
-                    avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
-                    avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
-                } else if (moveDirection == -1) {
-                    avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
-                    avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
-                }
-                avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
-                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-                smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
-                avatar.setX(currentPlanet.getX() + smallestRad.x);
-                avatar.setY(currentPlanet.getY() + smallestRad.y);
-                avatar.setMovement(new Vector2(0, 0));
-                }
-        }
-        avatar.applyForce();
-
-        // If we use sound, we must remember this.
-        SoundController.getInstance().update();
-
+    //Finds closest planet
+    public void findPlanet(){
         if (currentPlanet==null) {
             for(Obstacle o : objects) {
                 if(o.equals(avatar)) {
@@ -581,32 +485,172 @@ public class PlayMode extends WorldController implements ContactListener {
                 avatar.applyForceZero();
             }
         }
-        aiController.update(dt);
-        //need to set currentPlanet to currentPlanetNumber
     }
-//
-//    /**
-//     * Add a new bullet to the world and send it in the right direction.
-//     */
-//    private void createBullet() {
-//        float offset = (avatar.isFacingRight() ? BULLET_OFFSET : -BULLET_OFFSET);
-//        float radius = bulletTexture.getRegionWidth()/(2.0f*scale.x);
-//        WheelObstacle bullet = new WheelObstacle(avatar.getX()+offset, avatar.getY(), radius);
-//
-//        bullet.setName("bullet");
-//        bullet.setDensity(HEAVY_DENSITY);
-//        bullet.setDrawScale(scale);
-//        bullet.setTexture(bulletTexture);
-//        bullet.setBullet(true);
-//        bullet.setGravityScale(0);
-//
-//        // Compute position and velocity
-//        float speed  = (avatar.isFacingRight() ? BULLET_SPEED : -BULLET_SPEED);
-//        bullet.setVX(speed);
-//        addQueuedObject(bullet);
-//
-//
-//    }
+
+    //Oob loses mass
+    public void loseMass(float massLoss){
+        float oldOobMass = avatar.getMass();
+        if(avatar.getRadius()>=0.4) {
+            avatar.setRadius((float) Math.sqrt((oldOobMass - massLoss) / Math.PI));
+            avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
+        }
+    }
+
+    //Siphon closest planet
+    public void siphonPlanet(){
+        float oldOobMass = avatar.getMass();
+        float oldPlanMass = currentPlanet.getMass();
+        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
+        avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
+        currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
+        avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
+    }
+
+    //Make Oob move around the planet
+    public void moveAroundPlanet(){
+        if (moveDirection == 1) {
+            avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
+            avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
+        } else if (moveDirection == -1) {
+            avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
+            avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
+        }
+        avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
+        smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+        smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
+        avatar.setX(currentPlanet.getX() + smallestRad.x);
+        avatar.setY(currentPlanet.getY() + smallestRad.y);
+        avatar.setMovement(new Vector2(0, 0));
+    }
+
+    //Make Oob jump
+    public void jump(){
+        SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
+        avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
+        lastPlanet = currentPlanet;
+        currentPlanet = null;
+        avatar.applyForce();
+    }
+
+    //Determines whether the player is using mouse or keyboard and sets associated variables
+    public void playerControls(){
+        if (control==1){
+            Vector2 mouse = InputController.getInstance().getCursor();
+            mouse = mouse.sub(currentPlanet.getPosition());
+            float angle = mouse.angle();
+            Vector2 oob = avatar.getPosition();
+            oob.sub(currentPlanet.getPosition());
+            float angle2 = oob.angle();
+            if(Math.abs(angle - angle2) <= 1.5f)
+                moveDirection = 0;
+            else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
+                moveDirection = -1;
+            }
+            else {
+                moveDirection = 1;
+            }
+            jump = InputController.getInstance().getMouseJump();
+        }
+        else{
+            jump = InputController.getInstance().getJump();
+            moveDirection = InputController.getInstance().getHorizontal();
+        }
+    }
+
+    /**
+     * The core gameplay loop of this world.
+     *
+     * This method contains the specific update code for this mini-game. It does
+     * not handle collisions, as those are managed by the parent class WorldController.
+     * This method is called after input is read, but before collisions are resolved.
+     * The very last thing that it should do is apply forces to the appropriate objects.
+     *
+     * @param dt Number of seconds since last animation frame
+     */
+    public void update(float dt) {
+        width = canvas.getWidth() / 32;
+        height = canvas.getHeight() / 18;
+        if (InputController.getInstance().getChange()){
+            if (control == 1){
+                control = 0;
+            }
+            else{
+                control = 1;
+            }
+        }
+        if(numCommand==0){
+            //We win the game!
+            reset();
+        }
+        if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
+            //Off the screen
+            reset();
+        if(avatar.getRadius()<=0.4){
+            //Game Over
+            reset();
+        }
+        if(currentPlanet!=null) {
+            vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
+            for(Obstacle o : objects) {
+                if(justLoaded) {
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
+                    justLoaded = false;
+                }
+                else
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f/25)));
+            }
+
+            smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+
+            //determines mouse or keyboard controls
+            playerControls();
+
+            avatar.applyForceZero();
+            smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
+            mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
+            if (jump) {
+                jump();
+            }
+            else {
+                rad = currentPlanet.getRadius();
+                oldAvatarRad = avatar.getRadius();
+                if(rad > MIN_RADIUS && currentPlanet.getType()!=2f){
+                    siphonPlanet();
+                }
+                else if(currentPlanet.getType()==2f){
+                    loseMass(POISON);
+                }
+                moveAroundPlanet();
+            }
+        }
+        avatar.applyForce();
+
+        // If we use sound, we must remember this.
+        SoundController.getInstance().update();
+
+        findPlanet();
+
+        aiController.update(dt);
+
+        if(aiController.bulletData.size != 0) {
+            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
+                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
+                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
+                bullet.setDensity(0.0f);
+                bullet.setFriction(0.0f);
+                bullet.setRestitution(0.0f);
+                bullet.setDrawScale(scale);
+                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
+                bullet.setGravityScale(0);
+                bullet.setVX(aiController.bulletData.get(i + 2));
+                bullet.setVY(aiController.bulletData.get(i + 3));
+                bullet.setTexture(ship_texture);
+                bullet.setName("bullet");
+                addObject(bullet);
+            }
+            aiController.bulletData.clear();
+        }
+    }
 
     /**
      * Remove a new bullet from the world.
@@ -618,7 +662,7 @@ public class PlayMode extends WorldController implements ContactListener {
         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
     }
 
-
+    int counter = 0;
     /**
      * Callback method for the start of a collision
      *
@@ -643,12 +687,14 @@ public class PlayMode extends WorldController implements ContactListener {
             Obstacle bd2 = (Obstacle)body2.getUserData();
 
             // Test bullet collision with world
-            if (bd1.getName().equals("bullet") && bd2 != avatar) {
+            if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 removeBullet(bd1);
+                loseMass(0.5f);
             }
 
-            if (bd2.getName().equals("bullet") && bd1 != avatar) {
+            if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 removeBullet(bd2);
+                loseMass(0.5f);
             }
 
             // See if we have landed on the ground.
@@ -657,12 +703,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 avatar.setGrounded(true);
                 sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
             }
-
-            // Check for win condition
-//            if ((bd1 == avatar   && bd2 == goalDoor) ||
-//                    (bd1 == goalDoor && bd2 == avatar)) {
-//                setComplete(true);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -734,8 +774,6 @@ public class PlayMode extends WorldController implements ContactListener {
         for(Obstacle obj : objects) {
             obj.draw(canvas);
         }
-        for(Obstacle obj : aiController.bullets)
-            obj.draw(canvas);
         canvas.end();
 
         if (isDebug()) {
