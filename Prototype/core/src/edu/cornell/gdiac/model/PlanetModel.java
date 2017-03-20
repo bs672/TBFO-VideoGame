@@ -16,12 +16,19 @@ public class PlanetModel extends WheelObstacle{
     //Type 0 is normal planet
     //Type 1 is command planet
     //Type 2 is poison planet
+    //Type 3 is neutral planet
 
     private static float type;
+
+    private static boolean dying;
+
+    public boolean isDying() {return dying;}
 
     public void setType(float val){type = val;}
 
     public float getType(){return type;}
+
+    public void setDying(boolean bool) {dying = bool;}
 
     /**
      * Creates a new planet at the given position.
