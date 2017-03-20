@@ -441,6 +441,38 @@ public class PlayMode extends WorldController implements ContactListener {
 
         return true;
     }
+
+    //Finds closest planet
+    public void findPlanet(){
+        if (currentPlanet==null) {
+            for(Obstacle o : objects) {
+                if(o.equals(avatar)) {
+                    o.setX(o.getX() - avatar.getVX() / 60);
+                    o.setY(o.getY() - avatar.getVY() / 60);
+                }
+                else {
+                    o.setX(o.getX() - avatar.getVX() / 30);
+                    o.setY(o.getY() - avatar.getVY() / 30);
+                }
+            }
+            Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+            int closestPlanet = 0;
+            Vector2 radDir;
+            for (int i = 0; i < planets.size; i++) {
+                radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
+                if (radDir.len() < smallestRad.len() && !lastPlanet.equals(planets.get(i))) {
+                    smallestRad = radDir.cpy();
+                    closestPlanet = i;
+                }
+            }
+            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
+                currentPlanet = planets.get(closestPlanet);
+                SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+                avatar.applyForceZero();
+            }
+        }
+    }
+
     //Oob loses mass
     public void loseMass(){
         float oldOobMass = avatar.getMass();
@@ -582,33 +614,7 @@ public class PlayMode extends WorldController implements ContactListener {
         // If we use sound, we must remember this.
         SoundController.getInstance().update();
 
-        if (currentPlanet==null) {
-            for(Obstacle o : objects) {
-                if(o.equals(avatar)) {
-                    o.setX(o.getX() - avatar.getVX() / 60);
-                    o.setY(o.getY() - avatar.getVY() / 60);
-                }
-                else {
-                    o.setX(o.getX() - avatar.getVX() / 30);
-                    o.setY(o.getY() - avatar.getVY() / 30);
-                }
-            }
-            Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
-            int closestPlanet = 0;
-            Vector2 radDir;
-            for (int i = 0; i < planets.size; i++) {
-                radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len() && !lastPlanet.equals(planets.get(i))) {
-                    smallestRad = radDir.cpy();
-                    closestPlanet = i;
-                }
-            }
-            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
-                currentPlanet = planets.get(closestPlanet);
-                SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
-                avatar.applyForceZero();
-            }
-        }
+        findPlanet();
 
         aiController.update(dt);
 
