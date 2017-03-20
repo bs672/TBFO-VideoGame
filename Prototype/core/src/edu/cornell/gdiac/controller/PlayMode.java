@@ -105,10 +105,6 @@ public class PlayMode extends WorldController implements ContactListener {
     boolean jump = false;
     float moveDirection = 0f;
 
-
-
-
-
     private boolean jumping = false;
 
     /** Track asset loading from all instances and subclasses */
