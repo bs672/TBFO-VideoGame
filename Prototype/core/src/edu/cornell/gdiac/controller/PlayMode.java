@@ -624,11 +624,11 @@ public class PlayMode extends WorldController implements ContactListener {
             smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
             //determines mouse or keyboard controls
+            playerControls();
+
             if (currentPlanet.getRadius() < MIN_RADIUS) {
                 currentPlanet.setDying(true);
             }
-            playerControls();
-
             if (currentPlanet.getRadius() < DEATH_RADIUS) {
                 currentPlanet.markRemoved(true);
                 planets.removeValue(currentPlanet, true);
@@ -644,7 +644,7 @@ public class PlayMode extends WorldController implements ContactListener {
             else {
                 rad = currentPlanet.getRadius();
                 oldAvatarRad = avatar.getRadius();
-                if(rad > DEATH_RADIUS && currentPlanet.getType()!= 3f){
+                if(rad > DEATH_RADIUS && (currentPlanet.getType()== 0f||currentPlanet.getType()==1f)){
                     siphonPlanet();
                 }
                 else if(currentPlanet.getType()==2f){
