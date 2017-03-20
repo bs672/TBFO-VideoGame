@@ -64,6 +64,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float SIPHON = 0.02f;
 
+    private static final float POISON = 0.02f;
+
     private static final float MIN_RADIUS = 1f;
 
     private static final float EPSILON = 0.1f;
@@ -92,6 +94,15 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion backgroundTextureWHITESTAR;
     /** Texture asset for ship */
     private TextureRegion ship_texture;
+
+    //variables
+    Vector2 mvmtDir;
+    Vector2 smallestRad;
+    float rad;
+    float oldAvatarRad;
+    //variables for playerControls()
+    boolean jump = false;
+    float moveDirection = 0f;
 
 
 
@@ -249,15 +260,15 @@ public class PlayMode extends WorldController implements ContactListener {
 
             {17.0f, 22.5f, 3.8f, 0f},
             {-5.0f, -12.5f, 4.2f, 0f},
-            {-17.0f, 17.5f, 3.7f, 0f},
-            {40.0f, 17.5f, 2.6f, 1f},
+            {-17.0f, 17.5f, 3.7f, 1f},
+            {40.0f, 17.5f, 2.6f, 2f},
             {-18.0f, 4.0f, 1.9f, 0f},
 
             {-2.0f, 10.5f, 1.8f, 0f},
             {-5.0f, -22.5f, 2.2f, 0f},
             {44.0f, 1.5f, 1.7f, 0f},
             {-16.0f, -17.5f, 1.2f, 0f},
-            {-28.0f, 5.8f, 1.7f, 0f},
+            {-28.0f, 5.8f, 1.7f, 2f},
 
 
 
@@ -430,6 +441,75 @@ public class PlayMode extends WorldController implements ContactListener {
 
         return true;
     }
+    //Oob loses mass
+    public void loseMass(){
+        float oldOobMass = avatar.getMass();
+        if(avatar.getRadius()>=0.4) {
+            avatar.setRadius((float) Math.sqrt((oldOobMass - POISON / 3) / Math.PI));
+            avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
+        }
+    }
+
+    //Siphon closest planet
+    public void siphonPlanet(){
+        float oldOobMass = avatar.getMass();
+        float oldPlanMass = currentPlanet.getMass();
+        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
+        avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
+        currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
+        avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
+    }
+
+    //Make Oob move around the planet
+    public void moveAroundPlanet(){
+        if (moveDirection == 1) {
+            avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
+            avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
+        } else if (moveDirection == -1) {
+            avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
+            avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
+        }
+        avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
+        smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+        smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
+        avatar.setX(currentPlanet.getX() + smallestRad.x);
+        avatar.setY(currentPlanet.getY() + smallestRad.y);
+        avatar.setMovement(new Vector2(0, 0));
+    }
+
+    //Make Oob jump
+    public void jump(){
+        SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
+        avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
+        lastPlanet = currentPlanet;
+        currentPlanet = null;
+        avatar.applyForce();
+    }
+
+    //Determines whether the player is using mouse or keyboard and sets associated variables
+    public void playerControls(){
+        if (control==1){
+            Vector2 mouse = InputController.getInstance().getCursor();
+            mouse = mouse.sub(currentPlanet.getPosition());
+            float angle = mouse.angle();
+            Vector2 oob = avatar.getPosition();
+            oob.sub(currentPlanet.getPosition());
+            float angle2 = oob.angle();
+            if(Math.abs(angle - angle2) <= 1.5f)
+                moveDirection = 0;
+            else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
+                moveDirection = -1;
+            }
+            else {
+                moveDirection = 1;
+            }
+            jump = InputController.getInstance().getMouseJump();
+        }
+        else{
+            jump = InputController.getInstance().getJump();
+            moveDirection = InputController.getInstance().getHorizontal();
+        }
+    }
 
     /**
      * The core gameplay loop of this world.
@@ -457,7 +537,12 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
+            //Off the screen
             reset();
+        if(avatar.getRadius()<=0.4){
+            //Game Over
+            reset();
+        }
         if(currentPlanet!=null) {
             vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
             for(Obstacle o : objects) {
@@ -469,68 +554,28 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f/25)));
             }
 
-            Vector2 smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+            smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
             //determines mouse or keyboard controls
-            boolean jump = false;
-            float moveDirection;
-            if (control==1){
-                Vector2 mouse = InputController.getInstance().getCursor();
-                mouse = mouse.sub(currentPlanet.getPosition());
-                float angle = mouse.angle();
-                Vector2 oob = avatar.getPosition();
-                oob.sub(currentPlanet.getPosition());
-                float angle2 = oob.angle();
-                if(Math.abs(angle - angle2) <= 1.5f)
-                    moveDirection = 0;
-                else if((angle - angle2+360)%360 <= 180 && (angle - angle2+360)%360 > 1){
-                    moveDirection = -1;
-                }
-                else {
-                    moveDirection = 1;
-                }
-                jump = InputController.getInstance().getMouseJump();
-            }
-            else{
-                jump = InputController.getInstance().getJump();
-                moveDirection = InputController.getInstance().getHorizontal();
-            }
+            playerControls();
 
             avatar.applyForceZero();
             smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
-            Vector2 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
+            mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
             if (jump) {
-                SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-                avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
-                lastPlanet = currentPlanet;
-                currentPlanet = null;
-                avatar.applyForce();
+                jump();
             }
             else {
-                float rad = currentPlanet.getRadius();
-                float oldAvatarRad = avatar.getRadius();
-                if(rad > MIN_RADIUS){
-                    float oldOobMass = avatar.getMass();
-                    float oldPlanMass = currentPlanet.getMass();
-                    currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-                    avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
-                    currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
-                    avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
+                rad = currentPlanet.getRadius();
+                oldAvatarRad = avatar.getRadius();
+                if(rad > MIN_RADIUS && currentPlanet.getType()!=2f){
+                    siphonPlanet();
                 }
-                if (moveDirection == 1) {
-                    avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
-                    avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
-                } else if (moveDirection == -1) {
-                    avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
-                    avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
+                else if(currentPlanet.getType()==2f){
+                    loseMass();
                 }
-                avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
-                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-                smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
-                avatar.setX(currentPlanet.getX() + smallestRad.x);
-                avatar.setY(currentPlanet.getY() + smallestRad.y);
-                avatar.setMovement(new Vector2(0, 0));
-                }
+                moveAroundPlanet();
+            }
         }
         avatar.applyForce();
 

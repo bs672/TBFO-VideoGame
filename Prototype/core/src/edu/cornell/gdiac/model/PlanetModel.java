@@ -39,7 +39,7 @@ public class PlanetModel extends WheelObstacle{
         super(x,y,radius);
         setDensity(PLANET_DENSITY);
         setFixedRotation(true);
-        type = t;
+        this.type = t;
 
         setName("Planet");
     }
