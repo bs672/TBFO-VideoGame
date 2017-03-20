@@ -405,6 +405,7 @@ public class PlayMode extends WorldController implements ContactListener {
             addObject(obj);
             planets.add(obj);
         }
+        
         ShipModel sh = new ShipModel(SHIPS[0][0], SHIPS[0][1]);
         sh.setBodyType(BodyDef.BodyType.DynamicBody);
         sh.setDensity(BASIC_DENSITY);

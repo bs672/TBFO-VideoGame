@@ -36,6 +36,8 @@ public class AIController {
     /** temp Vector2s */
     private Vector2 tempVec1;
     private Vector2 tempVec2;
+    private Vector2 oldPosition;
+    private Vector2 newPosition;
     /** epsilon for distance from orbiting planet */
     private static final float EPSILON = 0.1f;
     /** firing cooldown time */
@@ -71,6 +73,8 @@ public class AIController {
             }
             else
                 peacefulPathfind(s);
+            s.setAngle((float)(Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI/2));
+            s.setOldPosition(s.getPosition());
         }
     }
 
@@ -133,6 +137,7 @@ public class AIController {
         }
         else
             s.decCooldown();
+        // moving towards Oob
         if(tempVec1.len() > 4) {
             tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
             int closestPlanet = 0;
@@ -148,6 +153,7 @@ public class AIController {
             tempVec1.set(planets.get(closestPlanet).getPosition().cpy().sub(s.getPosition()));
             // tempVec2 is ship to Oob, tempVec1 is ship to planet
             float vecAngle = (float)Math.acos(tempVec1.dot(tempVec2)/(tempVec1.len()*tempVec2.len()));
+            // orbiting around a planet
             if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE/2 && Math.abs(vecAngle) < Math.PI / 2) {
                 float crossProd = tempVec1.x*tempVec2.y - tempVec1.y*tempVec2.x;
                 if(crossProd > 0) {
@@ -167,15 +173,18 @@ public class AIController {
                     s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
                 }
             }
+            // moving in space
             else {
                 tempVec2.scl(s.getMoveSpeed()*20/tempVec2.len());
                 s.setVX(tempVec2.x);
                 s.setVY(tempVec2.y);
             }
         }
+        // slowing down to not ram into Oob
         else {
             s.setVX(s.getVX()*0.75f);
             s.setVY(s.getVY()*0.75f);
+            s.setAngle((float)(Math.atan2(s.getVY(), s.getVX()) - Math.PI/2));
         }
     }
 
