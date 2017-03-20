@@ -69,6 +69,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float MIN_RADIUS = 1f;
 
+    private static final float DEATH_RADIUS = MIN_RADIUS*2/3;
+
     private static final float EPSILON = 0.1f;
 
     //control = 0 is keyboard, control = 1 is mouse
@@ -249,7 +251,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     private static final float[][] PLANETS = {
-            {8.0f, 4.5f, 2.8f, 0f},
+            {8.0f, 4.5f, 2.8f, 3f},
             {5.0f, 12.5f, 1.2f, 0f},
             {27.0f, 4.5f, 2.7f, 0f},
             {25.0f, 12.5f, 1.6f, 0f},
@@ -362,7 +364,7 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
-            if (obj.getType() == 0f) {
+            if (obj.getType() == 0f || obj.getType() == 3f) {
                 if (ii % 5 == 0) {
                     obj.setTexture(blue_P_Texture);
                 }
@@ -586,7 +588,16 @@ public class PlayMode extends WorldController implements ContactListener {
             smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
             //determines mouse or keyboard controls
+            if (currentPlanet.getRadius() < MIN_RADIUS) {
+                currentPlanet.setDying(true);
+            }
             playerControls();
+
+            if (currentPlanet.getRadius() < DEATH_RADIUS) {
+                currentPlanet.markRemoved(true);
+                planets.removeValue(currentPlanet, true);
+                jump = true;
+            }
 
             avatar.applyForceZero();
             smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
@@ -597,7 +608,7 @@ public class PlayMode extends WorldController implements ContactListener {
             else {
                 rad = currentPlanet.getRadius();
                 oldAvatarRad = avatar.getRadius();
-                if(rad > MIN_RADIUS && currentPlanet.getType()!=2f){
+                if(rad > DEATH_RADIUS && currentPlanet.getType()!= 3f){
                     siphonPlanet();
                 }
                 else if(currentPlanet.getType()==2f){
