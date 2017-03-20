@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
+import edu.cornell.gdiac.model.BulletModel;
 import edu.cornell.gdiac.model.OobModel;
 import edu.cornell.gdiac.model.PlanetModel;
 import edu.cornell.gdiac.model.ShipModel;
@@ -399,7 +400,6 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.scalePicScale(new Vector2(.2f,.2f));
         addObject(avatar);
 
-
         aiController = new AIController(ships, planets, avatar, scale);
     }
 
@@ -557,7 +557,26 @@ public class PlayMode extends WorldController implements ContactListener {
                 avatar.applyForceZero();
             }
         }
+
         aiController.update(dt);
+
+        if(aiController.bulletData.size != 0) {
+            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
+                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
+                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
+                bullet.setDensity(0.0f);
+                bullet.setFriction(0.4f);
+                bullet.setRestitution(0.1f);
+                bullet.setDrawScale(scale);
+                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
+                bullet.setGravityScale(0);
+                bullet.setVX(aiController.bulletData.get(i + 2));
+                bullet.setVY(aiController.bulletData.get(i + 3));
+                bullet.setTexture(ship_texture);
+                addObject(bullet);
+            }
+            aiController.bulletData.clear();
+        }
         //need to set currentPlanet to currentPlanetNumber
     }
 //
@@ -710,8 +729,6 @@ public class PlayMode extends WorldController implements ContactListener {
         for(Obstacle obj : objects) {
             obj.draw(canvas);
         }
-        for(Obstacle obj : aiController.bullets)
-            obj.draw(canvas);
         canvas.end();
 
         if (isDebug()) {
