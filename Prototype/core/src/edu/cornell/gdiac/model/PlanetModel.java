@@ -18,9 +18,9 @@ public class PlanetModel extends WheelObstacle{
     //Type 2 is poison planet
     //Type 3 is neutral planet
 
-    private static float type;
+    private float type;
 
-    private static boolean dying;
+    private boolean dying;
 
     public boolean isDying() {return dying;}
 
