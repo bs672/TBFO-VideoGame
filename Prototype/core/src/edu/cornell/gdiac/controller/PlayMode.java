@@ -276,7 +276,7 @@ public class PlayMode extends WorldController implements ContactListener {
     };
 
     private static final float[][] SHIPS = {
-            {11.0f, 4.5f}
+            {5.0f, 14f}
     };
 
     // Physics objects for the game
@@ -401,7 +401,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setDrawScale(scale);
         sh.scalePicScale(new Vector2(1f, 1f));
         sh.setTexture(ship_texture);
-        sh.setName("ship1");
+        sh.setName("ship");
         sh.setGravityScale(0.0f);
         ships.add(sh);
         addObject(sh);
@@ -673,15 +673,24 @@ public class PlayMode extends WorldController implements ContactListener {
             Obstacle bd1 = (Obstacle)body1.getUserData();
             Obstacle bd2 = (Obstacle)body2.getUserData();
 
-            // Test bullet collision with world
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 removeBullet(bd1);
-                loseMass(0.5f);
+                loseMass(0.1f);
             }
 
             if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 removeBullet(bd2);
-                loseMass(0.5f);
+                loseMass(0.1f);
+            }
+
+            if (bd1.getName().equals("ship") && bd2.getName().equals("Oob")) {
+                bd1.markRemoved(true);
+                aiController.removeShip((ShipModel)bd1);
+            }
+
+            if (bd2.getName().equals("ship") && bd1.getName().equals("Oob")) {
+                bd2.markRemoved(true);
+                aiController.removeShip((ShipModel)bd2);
             }
 
             // See if we have landed on the ground.
