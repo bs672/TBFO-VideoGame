@@ -43,6 +43,11 @@ public class AIController {
     /** distance from orbiting planet */
     private static final float ORBIT_DISTANCE = 3.0f;
 
+    public void addShip(ShipModel ship, PlanetModel planet){
+        ships.add(ship);
+        targetPlanets.put(ship, planet);
+    }
+
     public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, OobModel oob, Vector2 scale) {
         this.scale = scale;
         this.ships = ships;
