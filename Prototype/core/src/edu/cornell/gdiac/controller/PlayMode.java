@@ -483,11 +483,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setFriction(BASIC_FRICTION);
                 sh.setRestitution(BASIC_RESTITUTION);
                 sh.setDrawScale(scale);
-                sh.scalePicScale(new Vector2(1f, 1f));
+                sh.scalePicScale(new Vector2(.2f, .2f));
                 sh.setTexture(ship_texture);
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
-                ships.add(sh);
+//                ships.add(sh);
                 addObject(sh);
                 aiController.addShip(sh, c);
             }

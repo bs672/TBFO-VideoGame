@@ -71,6 +71,7 @@ public class AIController {
     public void update(float dt) {
         if(ships.size == 0)
             return;
+        System.out.println(ships.size);
         for(ShipModel s : ships) {
             s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
             if(s.getAggroed()) {
@@ -159,14 +160,14 @@ public class AIController {
             // tempVec2 is ship to Oob, tempVec1 is ship to planet
             float vecAngle = (float)Math.acos(tempVec1.dot(tempVec2)/(tempVec1.len()*tempVec2.len()));
             // orbiting around a planet
-            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE/2 && Math.abs(vecAngle) < Math.PI / 2) {
+            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE && Math.abs(vecAngle) < Math.PI / 2) {
                 float crossProd = tempVec1.x*tempVec2.y - tempVec1.y*tempVec2.x;
                 if(crossProd > 0) {
                     tempVec2.set(-tempVec1.y,tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(planets.get(closestPlanet).getPosition());
-                    tempVec1.scl((planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE/2)/tempVec1.len());
+                    tempVec1.scl((planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
                     s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
                 }
                 else {
@@ -174,7 +175,7 @@ public class AIController {
                     tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(planets.get(closestPlanet).getPosition());
-                    tempVec1.scl((planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE/2)/tempVec1.len());
+                    tempVec1.scl((planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
                     s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
                 }
             }
