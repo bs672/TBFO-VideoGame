@@ -728,8 +728,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 loseMass(0.1f);
             }
-
-            if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
+            else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 loseMass(0.1f);
             }
 
@@ -737,8 +736,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bd1.markRemoved(true);
                 aiController.removeShip((ShipModel)bd1);
             }
-
-            if (bd2.getName().equals("ship") && bd1.getName().equals("Oob")) {
+            else if (bd2.getName().equals("ship") && bd1.getName().equals("Oob")) {
                 bd2.markRemoved(true);
                 aiController.removeShip((ShipModel)bd2);
             }
@@ -746,8 +744,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if(bd1.getName().equals("planet") && bd2.getName().equals("Oob")) {
                 currentPlanet = (PlanetModel)bd1;
             }
-
-            if(bd2.getName().equals("planet") && bd1.getName().equals("Oob")) {
+            else if(bd2.getName().equals("planet") && bd1.getName().equals("Oob")) {
                 currentPlanet = (PlanetModel)bd2;
             }
 
