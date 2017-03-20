@@ -68,6 +68,8 @@ public class InputController {
 	private boolean jump;
 	/** if we've unpressed left click */
 	private boolean leftClickNotPressed;
+	private boolean leftClickJustPressed;
+	private boolean spaceJustPressed;
 
 	private boolean mouseJump;
 
@@ -246,17 +248,21 @@ public class InputController {
 		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			spaceJustPressed = true;
+		}
+		if(!Gdx.input.isKeyPressed(Input.Keys.SPACE) && spaceJustPressed) {
 			jump = true;
+			spaceJustPressed = false;
 		}
 		else{
 			jump = false;
 		}
-		if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-			leftClickNotPressed = true;
-		if((Gdx.input.isButtonPressed(Input.Buttons.LEFT)) && leftClickNotPressed){
+		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+			leftClickJustPressed = true;
+		if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && leftClickJustPressed){
 			mouseJump = true;
-			leftClickNotPressed = false;
+			leftClickJustPressed = false;
 		}
 		else{
 			mouseJump = false;
