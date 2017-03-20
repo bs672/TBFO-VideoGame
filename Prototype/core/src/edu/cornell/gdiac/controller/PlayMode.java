@@ -271,9 +271,9 @@ public class PlayMode extends WorldController implements ContactListener {
             {25.0f, 12.5f, 1.6f, 0f},
             {18.0f, -4.0f, 1.9f, 0f},
 
-            {17.0f, 22.5f, 3.8f, 0f},
-            {-5.0f, -12.5f, 4.2f, 0f},
-            {-17.0f, 17.5f, 3.7f, 0f},
+            {17.0f, 22.5f, 2.8f, 0f},
+            {-5.0f, -12.5f, 2.2f, 0f},
+            {-17.0f, 17.5f, 2.7f, 0f},
             {40.0f, 17.5f, 2.6f, 1f},
             {-18.0f, 4.0f, 1.9f, 0f},
 
@@ -473,6 +473,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setTexture(ship_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
+                bullet.setActive(false);
             }
             aiController.bulletData.clear();
         }
@@ -662,26 +663,7 @@ public class PlayMode extends WorldController implements ContactListener {
         findPlanet();
 
         aiController.update(dt);
-
-
-        if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
-                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
-                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
-                bullet.setDensity(0.0f);
-                bullet.setFriction(0.0f);
-                bullet.setRestitution(0.0f);
-                bullet.setDrawScale(scale);
-                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
-                bullet.setGravityScale(0);
-                bullet.setVX(aiController.bulletData.get(i + 2));
-                bullet.setVY(aiController.bulletData.get(i + 3));
-                bullet.setTexture(bullet_texture);
-                bullet.setName("bullet");
-                addObject(bullet);
-            }
-            aiController.bulletData.clear();
-        }
+        
         shootBullet();
 
     }
@@ -696,7 +678,6 @@ public class PlayMode extends WorldController implements ContactListener {
         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
     }
 
-    int counter = 0;
     /**
      * Callback method for the start of a collision
      *
@@ -742,6 +723,14 @@ public class PlayMode extends WorldController implements ContactListener {
             if (bd2.getName().equals("ship") && bd1.getName().equals("Oob")) {
                 bd2.markRemoved(true);
                 aiController.removeShip((ShipModel)bd2);
+            }
+
+            if(bd1.getName().equals("planet") && bd2.getName().equals("Oob")) {
+                currentPlanet = (PlanetModel)bd1;
+            }
+
+            if(bd2.getName().equals("planet") && bd1.getName().equals("Oob")) {
+                currentPlanet = (PlanetModel)bd2;
             }
 
             // See if we have landed on the ground.
