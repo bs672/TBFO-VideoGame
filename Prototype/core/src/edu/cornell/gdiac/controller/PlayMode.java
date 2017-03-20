@@ -37,6 +37,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String COMMAND_P = "space/command.png";
     /** The texture file for the planets */
     private static final String POISON_P = "space/planet.png";
+    /** The texture file for the planets */
+    private static final String NEUTRAL_P = "space/neutral.png";
     /** Texture file for background image */
     private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
     /** Texture file for background image */
@@ -95,6 +97,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion command_P_Texture;
     /** Planet texture */
     private TextureRegion poison_P_Texture;
+    /** Planet texture */
+    private TextureRegion nuetral_P_Texture;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
@@ -152,12 +156,16 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(COMMAND_P);
         manager.load(POISON_P, Texture.class);
         assets.add(POISON_P);
+        manager.load(NEUTRAL_P, Texture.class);
+        assets.add(NEUTRAL_P);
+
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
         manager.load(BACKG_FILE_RED_STAR, Texture.class);
         assets.add(BACKG_FILE_RED_STAR);
         manager.load(BACKG_FILE_WHITE_STAR, Texture.class);
         assets.add(BACKG_FILE_WHITE_STAR);
+
         manager.load(SHIP_TEXTURE, Texture.class);
         assets.add(SHIP_TEXTURE);
         manager.load(BULLET_TEXTURE, Texture.class);
@@ -198,7 +206,10 @@ public class PlayMode extends WorldController implements ContactListener {
         red_P_Texture = createTexture(manager,RED_P,false);
         command_P_Texture = createTexture(manager,COMMAND_P,false);
         poison_P_Texture = createTexture(manager,POISON_P,false);
+        nuetral_P_Texture = createTexture(manager,NEUTRAL_P,false);
+
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
+
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
@@ -365,6 +376,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     private void populateLevel() {
 
+        // Create Planets
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.length; ii++) {
             PlanetModel obj;
@@ -399,18 +411,23 @@ public class PlayMode extends WorldController implements ContactListener {
             if (obj.getType() == 2f) {
                 obj.setTexture(poison_P_Texture);
             }
+            if (obj.getType() == 3f) {
+                obj.setTexture(nuetral_P_Texture);
+            }
+
             obj.setName(pname + ii);
             addObject(obj);
             planets.add(obj);
         }
-        
+
+        // Create Ships
         ShipModel sh = new ShipModel(SHIPS[0][0], SHIPS[0][1]);
         sh.setBodyType(BodyDef.BodyType.DynamicBody);
         sh.setDensity(BASIC_DENSITY);
         sh.setFriction(BASIC_FRICTION);
         sh.setRestitution(BASIC_RESTITUTION);
         sh.setDrawScale(scale);
-        sh.scalePicScale(new Vector2(1f, 1f));
+        sh.scalePicScale(new Vector2(.2f, .2f));
         sh.setTexture(ship_texture);
         sh.setName("ship");
         sh.setGravityScale(0.0f);
@@ -468,6 +485,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setGravityScale(0);
                 bullet.setVX(aiController.bulletData.get(i + 2));
                 bullet.setVY(aiController.bulletData.get(i + 3));
+                bullet.setAngle((float)(Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI/2));
                 bullet.setTexture(bullet_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
