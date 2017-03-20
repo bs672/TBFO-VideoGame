@@ -402,6 +402,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
             obj.setName(pname + ii);
+            System.out.println(obj.getType());
             addObject(obj);
             planets.add(obj);
         }
@@ -650,7 +651,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 else if(currentPlanet.getType()==2f){
                     loseMass(POISON);
                 }
-                System.out.println(currentPlanet.getType());
                 moveAroundPlanet();
             }
         }
