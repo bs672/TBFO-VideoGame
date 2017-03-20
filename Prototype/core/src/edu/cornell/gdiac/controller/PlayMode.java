@@ -266,6 +266,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float[][] PLANETS = {
             {8.0f, 4.5f, 2.8f, 3f},
+            {5.0f, 12.5f, 1.2f, 0f},
+            {8.0f, 4.5f, 2.8f, 0f},
             {5.0f, 12.5f, 1.2f, 2f},
             {27.0f, 4.5f, 2.7f, 0f},
             {25.0f, 12.5f, 1.6f, 0f},
@@ -625,11 +627,11 @@ public class PlayMode extends WorldController implements ContactListener {
             smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
             //determines mouse or keyboard controls
-            playerControls();
-
             if (currentPlanet.getRadius() < MIN_RADIUS) {
                 currentPlanet.setDying(true);
             }
+            playerControls();
+
             if (currentPlanet.getRadius() < DEATH_RADIUS) {
                 currentPlanet.markRemoved(true);
                 planets.removeValue(currentPlanet, true);
@@ -645,7 +647,7 @@ public class PlayMode extends WorldController implements ContactListener {
             else {
                 rad = currentPlanet.getRadius();
                 oldAvatarRad = avatar.getRadius();
-                if(rad > DEATH_RADIUS && (currentPlanet.getType()== 0f||currentPlanet.getType()==1f)){
+                if(rad > DEATH_RADIUS && currentPlanet.getType()!= 3f){
                     siphonPlanet();
                 }
                 else if(currentPlanet.getType()==2f){
@@ -662,7 +664,26 @@ public class PlayMode extends WorldController implements ContactListener {
         findPlanet();
 
         aiController.update(dt);
-        
+
+
+        if(aiController.bulletData.size != 0) {
+            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
+                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
+                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
+                bullet.setDensity(0.0f);
+                bullet.setFriction(0.0f);
+                bullet.setRestitution(0.0f);
+                bullet.setDrawScale(scale);
+                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
+                bullet.setGravityScale(0);
+                bullet.setVX(aiController.bulletData.get(i + 2));
+                bullet.setVY(aiController.bulletData.get(i + 3));
+                bullet.setTexture(bullet_texture);
+                bullet.setName("bullet");
+                addObject(bullet);
+            }
+            aiController.bulletData.clear();
+        }
         shootBullet();
 
     }
