@@ -443,10 +443,10 @@ public class PlayMode extends WorldController implements ContactListener {
         return true;
     }
     //Oob loses mass
-    public void loseMass(){
+    public void loseMass(float massLoss){
         float oldOobMass = avatar.getMass();
         if(avatar.getRadius()>=0.4) {
-            avatar.setRadius((float) Math.sqrt((oldOobMass - POISON / 3) / Math.PI));
+            avatar.setRadius((float) Math.sqrt((oldOobMass - massLoss) / Math.PI));
             avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
         }
     }
@@ -573,7 +573,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     siphonPlanet();
                 }
                 else if(currentPlanet.getType()==2f){
-                    loseMass();
+                    loseMass(POISON);
                 }
                 moveAroundPlanet();
             }
@@ -670,10 +670,12 @@ public class PlayMode extends WorldController implements ContactListener {
             // Test bullet collision with world
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 removeBullet(bd1);
+                loseMass(0.5f);
             }
 
             if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 removeBullet(bd2);
+                loseMass(0.5f);
             }
 
             // See if we have landed on the ground.
@@ -682,12 +684,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 avatar.setGrounded(true);
                 sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
             }
-
-            // Check for win condition
-//            if ((bd1 == avatar   && bd2 == goalDoor) ||
-//                    (bd1 == goalDoor && bd2 == avatar)) {
-//                setComplete(true);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
