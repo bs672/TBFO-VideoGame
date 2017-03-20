@@ -39,6 +39,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String POISON_P = "space/planet.png";
     /** The texture file for the planets */
     private static final String NEUTRAL_P = "space/neutral.png";
+    /** The texture file for the planets */
+    private static final String DYING_P = "space/dying.png";
     /** Texture file for background image */
     private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
     /** Texture file for background image */
@@ -106,6 +108,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion poison_P_Texture;
     /** Planet texture */
     private TextureRegion neutral_P_Texture;
+    /** Planet texture */
+    private TextureRegion dying_P_Texture;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
@@ -165,6 +169,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(POISON_P);
         manager.load(NEUTRAL_P, Texture.class);
         assets.add(NEUTRAL_P);
+        manager.load(DYING_P, Texture.class);
+        assets.add(DYING_P);
 
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
@@ -214,6 +220,7 @@ public class PlayMode extends WorldController implements ContactListener {
         command_P_Texture = createTexture(manager,COMMAND_P,false);
         poison_P_Texture = createTexture(manager,POISON_P,false);
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
+        dying_P_Texture = createTexture(manager,DYING_P,false);
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
 
@@ -675,8 +682,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
                 //determines mouse or keyboard controls
-                if (currentPlanet.getRadius() < MIN_RADIUS) {
-                    currentPlanet.setDying(true);
+                if (currentPlanet.isDying() == false) {
+                    if (currentPlanet.getRadius() < MIN_RADIUS) {
+                        currentPlanet.setDying(true);
+                        currentPlanet.setTexture(dying_P_Texture);
+                    }
                 }
                 playerControls();
 
