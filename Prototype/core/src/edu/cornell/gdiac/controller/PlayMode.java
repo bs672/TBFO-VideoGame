@@ -400,6 +400,7 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
+        avatar.setName("Oob");
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
         avatar.scalePicScale(new Vector2(.2f,.2f));
         addObject(avatar);
@@ -572,43 +573,20 @@ public class PlayMode extends WorldController implements ContactListener {
                 BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
                 bullet.setDensity(0.0f);
-                bullet.setFriction(0.4f);
-                bullet.setRestitution(0.1f);
+                bullet.setFriction(0.0f);
+                bullet.setRestitution(0.0f);
                 bullet.setDrawScale(scale);
                 bullet.scalePicScale(new Vector2(0.5f, 0.5f));
                 bullet.setGravityScale(0);
                 bullet.setVX(aiController.bulletData.get(i + 2));
                 bullet.setVY(aiController.bulletData.get(i + 3));
                 bullet.setTexture(ship_texture);
+                bullet.setName("bullet");
                 addObject(bullet);
             }
             aiController.bulletData.clear();
         }
-        //need to set currentPlanet to currentPlanetNumber
     }
-//
-//    /**
-//     * Add a new bullet to the world and send it in the right direction.
-//     */
-//    private void createBullet() {
-//        float offset = (avatar.isFacingRight() ? BULLET_OFFSET : -BULLET_OFFSET);
-//        float radius = bulletTexture.getRegionWidth()/(2.0f*scale.x);
-//        WheelObstacle bullet = new WheelObstacle(avatar.getX()+offset, avatar.getY(), radius);
-//
-//        bullet.setName("bullet");
-//        bullet.setDensity(HEAVY_DENSITY);
-//        bullet.setDrawScale(scale);
-//        bullet.setTexture(bulletTexture);
-//        bullet.setBullet(true);
-//        bullet.setGravityScale(0);
-//
-//        // Compute position and velocity
-//        float speed  = (avatar.isFacingRight() ? BULLET_SPEED : -BULLET_SPEED);
-//        bullet.setVX(speed);
-//        addQueuedObject(bullet);
-//
-//
-//    }
 
     /**
      * Remove a new bullet from the world.
@@ -620,7 +598,7 @@ public class PlayMode extends WorldController implements ContactListener {
         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
     }
 
-
+    int counter = 0;
     /**
      * Callback method for the start of a collision
      *
@@ -645,11 +623,11 @@ public class PlayMode extends WorldController implements ContactListener {
             Obstacle bd2 = (Obstacle)body2.getUserData();
 
             // Test bullet collision with world
-            if (bd1.getName().equals("bullet") && bd2 != avatar) {
+            if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 removeBullet(bd1);
             }
 
-            if (bd2.getName().equals("bullet") && bd1 != avatar) {
+            if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 removeBullet(bd2);
             }
 
