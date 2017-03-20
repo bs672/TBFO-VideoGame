@@ -224,8 +224,8 @@ public class InputController {
 	 */
 	private void readKeyboard(Rectangle bounds, Vector2 scale, boolean secondary) {
 		// Give priority to gamepad results
-		resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyPressed(Input.Keys.R));
-		pausePressed = (secondary && pausePressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
+		resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyJustPressed(Input.Keys.R));
+		pausePressed = (secondary && pausePressed) || (Gdx.input.isKeyJustPressed(Input.Keys.P));
 		// Directional controls
 		horizontal = (secondary ? horizontal : 0.0f);
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {

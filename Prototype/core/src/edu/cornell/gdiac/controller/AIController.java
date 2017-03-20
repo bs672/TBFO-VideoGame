@@ -71,7 +71,6 @@ public class AIController {
     public void update(float dt) {
         if(ships.size == 0)
             return;
-        System.out.println(ships.size);
         for(ShipModel s : ships) {
             s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
             if(s.getAggroed()) {

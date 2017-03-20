@@ -13,7 +13,7 @@ public class PlanetModel extends WheelObstacle{
     /** The density of the character */
     private static final float PLANET_DENSITY = 1.0f;
 
-    private static final int SPAWN_COOLDOWN = 200;
+    private static final int SPAWN_COOLDOWN = 1000;
 
     //Type 0 is normal planet
     //Type 1 is command planet
@@ -29,7 +29,6 @@ public class PlanetModel extends WheelObstacle{
     public boolean canSpawn(){
         if (type==1f) {
             if(spawnCooldown>0) {
-                System.out.println(spawnCooldown);
                 spawnCooldown--;
                 return false;
             }

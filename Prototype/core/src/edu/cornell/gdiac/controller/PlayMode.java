@@ -79,6 +79,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float EPSILON = 0.1f;
 
+    //0 is not paused, 1 is victory pause, 2 is defeat pause
+    private int pauseState = 0;
+
+    private int inPause = 0;
+
     //control = 0 is keyboard, control = 1 is mouse
     private int control = 1;
     /** Texture asset for character avatar */
@@ -285,7 +290,7 @@ public class PlayMode extends WorldController implements ContactListener {
             {17.0f, 22.5f, 2.8f, 0f},
             {-5.0f, -12.5f, 2.2f, 0f},
             {-17.0f, 17.5f, 2.7f, 0f},
-            {40.0f, 17.5f, 2.6f, 1f},
+            {40.0f, 17.5f, 0.6f, 1f},
             {-18.0f, 4.0f, 1.9f, 0f},
 
             {-2.0f, 10.5f, 1.8f, 0f},
@@ -365,6 +370,7 @@ public class PlayMode extends WorldController implements ContactListener {
         ships.clear();
         world.dispose();
 
+        pauseState = 0;
         world = new World(gravity,false);
         world.setContactListener(this);
         setComplete(false);
@@ -595,6 +601,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Determines whether the player is using mouse or keyboard and sets associated variables
     public void playerControls(){
+        if(InputController.getInstance().didPause()){
+            pauseState = 3;
+        }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor();
             mouse = mouse.sub(currentPlanet.getPosition());
@@ -629,86 +638,86 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-        width = canvas.getWidth() / 32;
-        height = canvas.getHeight() / 18;
-        if (InputController.getInstance().getChange()){
-            if (control == 1){
-                control = 0;
-            }
-            else{
-                control = 1;
-            }
-        }
-        if(commandPlanets.size==0){
-            //We win the game!
-            reset();
-        }
-        if(avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
-            //Off the screen
-            reset();
-        if(avatar.getRadius()<=0.4){
-            //Game Over
-            reset();
-        }
-        if(currentPlanet!=null) {
-            vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
-            for(Obstacle o : objects) {
-                if(justLoaded) {
-                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
-                    justLoaded = false;
+        if (pauseState == 0) {
+            width = canvas.getWidth() / 32;
+            height = canvas.getHeight() / 18;
+            if (InputController.getInstance().getChange()) {
+                if (control == 1) {
+                    control = 0;
+                } else {
+                    control = 1;
                 }
-                else
-                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f/25)));
             }
-
-            smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-
-            //determines mouse or keyboard controls
-            if (currentPlanet.getRadius() < MIN_RADIUS) {
-                currentPlanet.setDying(true);
+            if (commandPlanets.size == 0) {
+                //We win the game!
+                pauseState = 1;
             }
-            playerControls();
-
-            if (currentPlanet.getRadius() < DEATH_RADIUS) {
-                if(currentPlanet.getType()==1f){
-                    commandPlanets.removeValue(currentPlanet, true);
+            if (avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
+                //Off the screen
+                pauseState = 2;
+            if (avatar.getRadius() <= 0.4) {
+                //Game Over
+                pauseState = 2;
+            }
+            if (currentPlanet != null) {
+                vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
+                for (Obstacle o : objects) {
+                    if (justLoaded) {
+                        o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
+                        justLoaded = false;
+                    } else
+                        o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
                 }
-                currentPlanet.markRemoved(true);
-                planets.removeValue(currentPlanet, true);
-                jump = true;
-            }
 
-            avatar.applyForceZero();
-            smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
-            mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1/(20*avatar.getRadius()));
-            if (jump) {
-                jump();
-            }
-            else {
-                rad = currentPlanet.getRadius();
-                oldAvatarRad = avatar.getRadius();
-                if(rad > DEATH_RADIUS && (currentPlanet.getType()== 0f||currentPlanet.getType()==1f)){
-                    siphonPlanet();
+                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+
+                //determines mouse or keyboard controls
+                if (currentPlanet.getRadius() < MIN_RADIUS) {
+                    currentPlanet.setDying(true);
                 }
-                else if(currentPlanet.getType()==2f){
-                    loseMass(POISON);
+                playerControls();
+
+                if (currentPlanet.getRadius() < DEATH_RADIUS) {
+                    if (currentPlanet.getType() == 1f) {
+                        commandPlanets.removeValue(currentPlanet, true);
+                    }
+                    currentPlanet.markRemoved(true);
+                    planets.removeValue(currentPlanet, true);
+                    jump = true;
                 }
-                moveAroundPlanet();
+
+                avatar.applyForceZero();
+                smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
+                mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1 / (20 * avatar.getRadius()));
+                if (jump) {
+                    jump();
+                } else {
+                    rad = currentPlanet.getRadius();
+                    oldAvatarRad = avatar.getRadius();
+                    if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                        siphonPlanet();
+                    } else if (currentPlanet.getType() == 2f) {
+                        loseMass(POISON);
+                    }
+                    moveAroundPlanet();
+                }
             }
+            avatar.applyForce();
+
+            // If we use sound, we must remember this.
+            SoundController.getInstance().update();
+
+            findPlanet();
+
+            loopCommandPlanets();
+
+            aiController.update(dt);
+
+            shootBullet();
         }
-        avatar.applyForce();
+        else{
 
-        // If we use sound, we must remember this.
-        SoundController.getInstance().update();
-
-        findPlanet();
-
-        loopCommandPlanets();
-
-        aiController.update(dt);
-
-        shootBullet();
-
+        }
     }
 
     /**
@@ -828,43 +837,44 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Timing values from parent loop
      */
     public void draw(float dt) {
-        canvas.clear();
+        if (pauseState == 0) {
+            canvas.clear();
 
-        //float camera = -carPosition;
+            //float camera = -carPosition;
 
-        // Draw background unscaled.
-        canvas.begin();
+            // Draw background unscaled.
+            canvas.begin();
 
-        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
-       // canvas.drawWrapped(backgroundTextureREDSTAR,BG_RED_PARALLAX,0f);
-       // canvas.drawWrapped(backgroundTextureWHITESTAR,BG_WHITE_PARALLAX,0f);
+            //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
+            // canvas.drawWrapped(backgroundTextureREDSTAR,BG_RED_PARALLAX,0f);
+            // canvas.drawWrapped(backgroundTextureWHITESTAR,BG_WHITE_PARALLAX,0f);
 
-        canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundTextureREDSTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundTextureWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+            canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+            canvas.draw(backgroundTextureREDSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+            canvas.draw(backgroundTextureWHITESTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
 
 
-        canvas.end();
+            canvas.end();
 
-        canvas.begin();
-        for(Obstacle obj : objects) {
-            obj.draw(canvas);
-        }
-        canvas.end();
-
-        if (isDebug()) {
-            canvas.beginDebug();
-            for(Obstacle obj : objects) {
-                obj.drawDebug(canvas);
+            canvas.begin();
+            for (Obstacle obj : objects) {
+                obj.draw(canvas);
             }
-            canvas.endDebug();
-        }
-        canvas.begin();
-        for(int i = 0; i < planets.size; i++) {
-            canvas.drawText(Integer.toString((int)(Math.pow(planets.get(i).getRadius(), 2)*Math.PI)), massFont, planets.get(i).getX()*canvas.getWidth()/32, planets.get(i).getY()*canvas.getHeight()/18);
-        }
-        canvas.drawText(Integer.toString((int)(Math.pow(avatar.getRadius(), 2)*Math.PI)), massFont, avatar.getX()*canvas.getWidth()/32, avatar.getY()*canvas.getHeight()/18);
-        canvas.end();
+            canvas.end();
+
+            if (isDebug()) {
+                canvas.beginDebug();
+                for (Obstacle obj : objects) {
+                    obj.drawDebug(canvas);
+                }
+                canvas.endDebug();
+            }
+            canvas.begin();
+            for (int i = 0; i < planets.size; i++) {
+                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX() * canvas.getWidth() / 32, planets.get(i).getY() * canvas.getHeight() / 18);
+            }
+            canvas.drawText(Integer.toString((int) (Math.pow(avatar.getRadius(), 2) * Math.PI)), massFont, avatar.getX() * canvas.getWidth() / 32, avatar.getY() * canvas.getHeight() / 18);
+            canvas.end();
 
 
 //        // Draw foreground last.
@@ -872,5 +882,40 @@ public class PlayMode extends WorldController implements ContactListener {
 //        canvas.draw(foregroundTexture, FORE_COLOR,  0, 0, canvas.getWidth(), canvas.getHeight());
 //        selector.draw(canvas);
 //        canvas.end();
+        }
+    else{
+            //This is what we draw when the game is "paused"
+            canvas.clear();
+            displayFont.setColor(Color.GREEN);
+            canvas.begin();
+            canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+            switch(pauseState){
+                case 1:
+                    canvas.drawTextCentered("VICTORY!", massFont, 0.0f);
+                    break;
+                case 2:
+                    canvas.drawTextCentered("DEFEAT!", massFont, 0.0f);
+                    break;
+                case 3:
+                    canvas.drawTextCentered("Game is paused", massFont, 0.0f);
+                    break;
+            }
+            canvas.end();
+            if(InputController.getInstance().didPause()&&inPause == 1){
+                //Done with pause
+                inPause = 0;
+                if(pauseState ==1 || pauseState == 2){
+                    pauseState = 0;
+                    reset();
+                }
+                else{
+                    pauseState = 0;
+                }
+            }
+            else{
+                //Stay in pause
+                inPause = 1;
+            }
+        }
     }
 }
