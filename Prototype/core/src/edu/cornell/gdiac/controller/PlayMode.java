@@ -269,7 +269,7 @@ public class PlayMode extends WorldController implements ContactListener {
             {-5.0f, -22.5f, 2.2f, 0f},
             {44.0f, 1.5f, 1.7f, 0f},
             {-16.0f, -17.5f, 1.2f, 0f},
-            {-28.0f, 5.8f, 1.7f, 2f},
+            {-28.0f, 5.8f, 1.7f, 0f},
 
 
 
