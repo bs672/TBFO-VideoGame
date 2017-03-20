@@ -14,7 +14,7 @@ public class ShipModel extends CapsuleObstacle{
 
     private static final float DAMPING = 5.0f;
     private static final float MOVE_SPEED = 0.1f;
-    private Vector2 movement;
+    private Vector2 oldPosition = new Vector2();
     private boolean inOrbit;
     private boolean aggroed;
     private int firingCooldown;
@@ -25,6 +25,10 @@ public class ShipModel extends CapsuleObstacle{
     //TODO type of the ship
     //Type 0 is default
     private static int type;
+
+    public Vector2 getOldPosition() {return oldPosition; }
+
+    public void setOldPosition(Vector2 v) {oldPosition.set(v); }
 
     public void setType(int val){type = val;}
 
