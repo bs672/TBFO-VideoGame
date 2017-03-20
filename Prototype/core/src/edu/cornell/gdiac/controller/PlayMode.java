@@ -447,6 +447,7 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.setDrawScale(scale);
         avatar.setTexture(avatarTexture);
         avatar.setBodyType(BodyDef.BodyType.DynamicBody);
+        avatar.setSensor(true);
         avatar.setName("Oob");
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
         avatar.scalePicScale(new Vector2(.2f,.2f));
