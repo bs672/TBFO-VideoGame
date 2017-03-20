@@ -720,13 +720,17 @@ public class PlayMode extends WorldController implements ContactListener {
             Obstacle bd1 = (Obstacle)body1.getUserData();
             Obstacle bd2 = (Obstacle)body2.getUserData();
 
-            if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
+            if(bd1.getName().equals("bullet"))
                 removeBullet(bd1);
+
+            if(bd2.getName().equals("bullet"))
+                removeBullet(bd2);
+
+            if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 loseMass(0.1f);
             }
 
             if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
-                removeBullet(bd2);
                 loseMass(0.1f);
             }
 
