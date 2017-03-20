@@ -404,6 +404,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
             obj.setName(pname + ii);
+            System.out.println(obj.getType());
             addObject(obj);
             planets.add(obj);
         }
