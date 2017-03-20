@@ -198,7 +198,7 @@ public class PlayMode extends WorldController implements ContactListener {
         poison_P_Texture = createTexture(manager,POISON_P,false);
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
-        bullet_texture = createTexture(manager, SHIP_TEXTURE, false);
+        bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         Texture redTex = new Texture(BACKG_FILE_RED_STAR);
         redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -271,8 +271,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
             {17.0f, 22.5f, 3.8f, 0f},
             {-5.0f, -12.5f, 4.2f, 0f},
-            {-17.0f, 17.5f, 3.7f, 1f},
-            {40.0f, 17.5f, 2.6f, 2f},
+            {-17.0f, 17.5f, 3.7f, 0f},
+            {40.0f, 17.5f, 2.6f, 1f},
             {-18.0f, 4.0f, 1.9f, 0f},
 
             {-2.0f, 10.5f, 1.8f, 0f},
@@ -644,7 +644,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setGravityScale(0);
                 bullet.setVX(aiController.bulletData.get(i + 2));
                 bullet.setVY(aiController.bulletData.get(i + 3));
-                bullet.setTexture(ship_texture);
+                bullet.setTexture(bullet_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
             }
