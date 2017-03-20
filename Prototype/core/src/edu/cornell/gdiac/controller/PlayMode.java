@@ -639,6 +639,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 else if(currentPlanet.getType()==2f){
                     loseMass(POISON);
                 }
+                System.out.println(currentPlanet.getType());
                 moveAroundPlanet();
             }
         }
