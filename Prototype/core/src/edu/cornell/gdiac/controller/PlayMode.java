@@ -35,6 +35,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String RED_P = "space/red_planet_480.png";
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/command.png";
+    /** The texture file for the planets */
+    private static final String POISON_P = "space/planet.png";
     /** Texture file for background image */
     private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
     /** Texture file for background image */
@@ -43,6 +45,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
     /** Texture file for ship */
     private static final String SHIP_TEXTURE = "space/ship.png";
+    /** The texture file for the bullets */
+    private static final String BULLET_TEXTURE = "space/bullet.png";
 
 
     /** Parallax values */
@@ -87,6 +91,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion red_P_Texture;
     /** Planet texture */
     private TextureRegion command_P_Texture;
+    /** Planet texture */
+    private TextureRegion poison_P_Texture;
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
@@ -95,6 +101,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion backgroundTextureWHITESTAR;
     /** Texture asset for ship */
     private TextureRegion ship_texture;
+    /** Texture asset for bullet */
+    private TextureRegion bullet_texture;
 
     //variables
     Vector2 mvmtDir;
@@ -104,10 +112,6 @@ public class PlayMode extends WorldController implements ContactListener {
     //variables for playerControls()
     boolean jump = false;
     float moveDirection = 0f;
-
-
-
-
 
     private boolean jumping = false;
 
@@ -144,6 +148,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(RED_P);
         manager.load(COMMAND_P, Texture.class);
         assets.add(COMMAND_P);
+        manager.load(POISON_P, Texture.class);
+        assets.add(POISON_P);
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
         manager.load(BACKG_FILE_RED_STAR, Texture.class);
@@ -152,6 +158,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(BACKG_FILE_WHITE_STAR);
         manager.load(SHIP_TEXTURE, Texture.class);
         assets.add(SHIP_TEXTURE);
+        manager.load(BULLET_TEXTURE, Texture.class);
+        assets.add(BULLET_TEXTURE);
 
         manager.load(JUMP_FILE, Sound.class);
         assets.add(JUMP_FILE);
@@ -187,8 +195,10 @@ public class PlayMode extends WorldController implements ContactListener {
         orange_red_P_Texture = createTexture(manager,ORNG_RED_P,false);
         red_P_Texture = createTexture(manager,RED_P,false);
         command_P_Texture = createTexture(manager,COMMAND_P,false);
+        poison_P_Texture = createTexture(manager,POISON_P,false);
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
+        bullet_texture = createTexture(manager, SHIP_TEXTURE, false);
 
         Texture redTex = new Texture(BACKG_FILE_RED_STAR);
         redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -254,7 +264,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float[][] PLANETS = {
             {8.0f, 4.5f, 2.8f, 0f},
-            {5.0f, 12.5f, 1.2f, 0f},
+            {5.0f, 12.5f, 1.2f, 2f},
             {27.0f, 4.5f, 2.7f, 0f},
             {25.0f, 12.5f, 1.6f, 0f},
             {18.0f, -4.0f, 1.9f, 0f},
@@ -270,9 +280,6 @@ public class PlayMode extends WorldController implements ContactListener {
             {44.0f, 1.5f, 1.7f, 0f},
             {-16.0f, -17.5f, 1.2f, 0f},
             {-28.0f, 5.8f, 1.7f, 0f},
-
-
-
     };
 
     private static final float[][] SHIPS = {
@@ -387,6 +394,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.setTexture(command_P_Texture);
                 numCommand++;
             }
+            if (obj.getType() == 2f) {
+                obj.setTexture(poison_P_Texture);
+            }
 
 
             obj.setName(pname + ii);
@@ -441,6 +451,28 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         return true;
+    }
+
+    //Shoot bullet from ship
+    public void shootBullet(){
+        if(aiController.bulletData.size != 0) {
+            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
+                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
+                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
+                bullet.setDensity(0.0f);
+                bullet.setFriction(0.0f);
+                bullet.setRestitution(0.0f);
+                bullet.setDrawScale(scale);
+                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
+                bullet.setGravityScale(0);
+                bullet.setVX(aiController.bulletData.get(i + 2));
+                bullet.setVY(aiController.bulletData.get(i + 3));
+                bullet.setTexture(ship_texture);
+                bullet.setName("bullet");
+                addObject(bullet);
+            }
+            aiController.bulletData.clear();
+        }
     }
 
     //Finds closest planet
@@ -619,24 +651,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
         aiController.update(dt);
 
-        if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
-                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
-                bullet.setBodyType(BodyDef.BodyType.DynamicBody);
-                bullet.setDensity(0.0f);
-                bullet.setFriction(0.0f);
-                bullet.setRestitution(0.0f);
-                bullet.setDrawScale(scale);
-                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
-                bullet.setGravityScale(0);
-                bullet.setVX(aiController.bulletData.get(i + 2));
-                bullet.setVY(aiController.bulletData.get(i + 3));
-                bullet.setTexture(ship_texture);
-                bullet.setName("bullet");
-                addObject(bullet);
-            }
-            aiController.bulletData.clear();
-        }
+        shootBullet();
     }
 
     /**
