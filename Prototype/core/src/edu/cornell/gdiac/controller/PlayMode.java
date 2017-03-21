@@ -682,14 +682,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
                 //determines mouse or keyboard controls
-                if (currentPlanet.isDying() == false) {
-                    if (currentPlanet.getRadius() < MIN_RADIUS) {
-                        currentPlanet.setDying(true);
-                        currentPlanet.setTexture(dying_P_Texture);
-                    }
+                if (!currentPlanet.isDying()&&currentPlanet.getRadius() < MIN_RADIUS) {
+                    currentPlanet.setDying(true);
+                    currentPlanet.setTexture(dying_P_Texture);
                 }
                 playerControls();
 
+                //forced jump
                 if (currentPlanet.getRadius() < DEATH_RADIUS) {
                     if (currentPlanet.getType() == 1f) {
                         commandPlanets.removeValue(currentPlanet, true);
@@ -697,12 +696,21 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentPlanet.markRemoved(true);
                     planets.removeValue(currentPlanet, true);
                     jump = true;
+                    //TODO Play planet explosion sound
                 }
 
                 avatar.applyForceZero();
                 smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
                 mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1 / (20 * avatar.getRadius()));
                 if (jump) {
+                    if(currentPlanet.isDying()){
+                        if (currentPlanet.getType() == 1f) {
+                            commandPlanets.removeValue(currentPlanet, true);
+                        }
+                        currentPlanet.markRemoved(true);
+                        planets.removeValue(currentPlanet, true);
+                        //TODO Play planet explosion sound
+                    }
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
