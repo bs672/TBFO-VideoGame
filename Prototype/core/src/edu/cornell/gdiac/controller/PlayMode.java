@@ -1089,19 +1089,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 removeBullet(bd2);
 
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
-//                loseMass(0.1f);
-//                float temp1 = BULLET_DAMAGE + (float) Math.sqrt(((double) avatar.getMass())/Math.PI);
-//                float newMass = (float) (temp1 * temp1 * Math.PI);
-//                avatar.setMass(newMass);
                 oldAvatarRad = avatar.getRadius();
                 avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
                 avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
-//                loseMass(0.1f);
-//                float temp1 = BULLET_DAMAGE + (float) Math.sqrt(((double) avatar.getMass())/Math.PI);
-//                float newMass = (float) (temp1 * temp1 * Math.PI);
-//                avatar.setMass(newMass);
                 oldAvatarRad = avatar.getRadius();
                 avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
                 avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
