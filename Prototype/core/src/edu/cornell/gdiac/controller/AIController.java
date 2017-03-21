@@ -50,13 +50,18 @@ public class AIController {
         targetPlanets.put(ship, planet);
     }
 
-    public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, OobModel oob, Vector2 scale) {
+    public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, OobModel oob, Vector2 scale) {
         this.scale = scale;
         this.ships = ships;
         this.planets = planets;
         targetPlanets = new ObjectMap<ShipModel, PlanetModel>();
         for(int i = 0; i < ships.size; i++)
-            targetPlanets.put(ships.get(i), planets.get(i));
+            if (ships.get(i).getType() == 2) {
+                targetPlanets.put(ships.get(i), commandPlanets.get(0));
+            }
+            else {
+                targetPlanets.put(ships.get(i), planets.get(i));
+            }
         avatar = oob;
         tempVec1 = new Vector2();
         tempVec2 = new Vector2();
@@ -80,7 +85,7 @@ public class AIController {
                     peacefulPathfind(s);
 
             }
-            else if(s.getType()==1){
+            else if(s.getType()==1 || s.getType()==2){
                 peacefulPathfind(s);
                 shootInRange(s);
             }

@@ -24,7 +24,7 @@ public class ShipModel extends CapsuleObstacle{
 
 
     //TODO type of the ship
-    //Type 0 is default, Type 1 is Guard Ship
+    //Type 0 is default, Type 1 is Guard Ship, Type 2
     private static int type;
 
     public Vector2 getOldPosition() {return oldPosition; }

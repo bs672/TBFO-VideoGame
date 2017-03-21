@@ -763,7 +763,7 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.scalePicScale(new Vector2(OOB_RADIUS/4, OOB_RADIUS/4));
         addObject(avatar);
 
-        aiController = new AIController(ships, planets, avatar, scale);
+        aiController = new AIController(ships, planets, commandPlanets, avatar, scale);
     }
 
 
@@ -800,8 +800,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 1);
                     sh.setAggroRange(20f);
                 }
-                else{
+                else if (Math.random() < 0.75){
                     sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                }
+                else {
+                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 2);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
