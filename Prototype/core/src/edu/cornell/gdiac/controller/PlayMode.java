@@ -438,7 +438,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create Ships
-        ShipModel sh = new ShipModel(SHIPS[0][0], SHIPS[0][1]);
+        ShipModel sh = new ShipModel(SHIPS[0][0], SHIPS[0][1], 0);
         sh.setBodyType(BodyDef.BodyType.DynamicBody);
         sh.setDensity(BASIC_DENSITY);
         sh.setFriction(BASIC_FRICTION);
@@ -493,7 +493,14 @@ public class PlayMode extends WorldController implements ContactListener {
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
                 //SPAWN SHIP
-                ShipModel sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius());
+                ShipModel sh;
+                if (Math.random()<0.5){
+                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 1);
+                    sh.setAggroRange(20f);
+                }
+                else{
+                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
                 sh.setFriction(BASIC_FRICTION);
@@ -503,7 +510,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setTexture(ship_texture);
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
-//                ships.add(sh);
                 addObject(sh);
                 aiController.addShip(sh, c);
             }

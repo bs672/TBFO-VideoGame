@@ -18,12 +18,13 @@ public class ShipModel extends CapsuleObstacle{
     private boolean inOrbit;
     private boolean aggroed;
     private int firingCooldown;
+    private float range;
 
     private static final float AGGRO_RANGE = 10.0f;
 
 
     //TODO type of the ship
-    //Type 0 is default
+    //Type 0 is default, Type 1 is Guard Ship
     private static int type;
 
     public Vector2 getOldPosition() {return oldPosition; }
@@ -42,7 +43,9 @@ public class ShipModel extends CapsuleObstacle{
 
     public boolean getAggroed() {return aggroed; }
 
-    public float getAggroRange() {return AGGRO_RANGE; }
+    public void setAggroRange(float f){range = f;}
+
+    public float getAggroRange() {return range; }
 
     public void setCooldown(int c) {firingCooldown = c; }
 
@@ -75,12 +78,13 @@ public class ShipModel extends CapsuleObstacle{
     }
 
     //Creates a Ship with predetermined width and height at given position.
-    public ShipModel(float x, float y){
+    public ShipModel(float x, float y, int t){
         super(x, y, WIDTH, HEIGHT);
         setFixedRotation(true);
-
+        type = t;
         setName("ship");
         firingCooldown = 0;
+        range = AGGRO_RANGE;
     }
 
     public void drawDebug(GameCanvas canvas) {

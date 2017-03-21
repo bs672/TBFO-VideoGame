@@ -72,13 +72,19 @@ public class AIController {
         if(ships.size == 0)
             return;
         for(ShipModel s : ships) {
-            s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
-            if(s.getAggroed()) {
-                aggroPathfind(s);
+            if (s.getType()==0) {
+                s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
+                if (s.getAggroed()) {
+                    aggroPathfind(s);
+                } else
+                    peacefulPathfind(s);
+
             }
-            else
+            else if(s.getType()==1){
                 peacefulPathfind(s);
-            s.setAngle((float)(Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI/2));
+                shootInRange(s);
+            }
+            s.setAngle((float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2));
             s.setOldPosition(s.getPosition());
         }
     }
@@ -130,18 +136,25 @@ public class AIController {
         }
     }
 
+    //Shoots if the ship is in range of oob
+    public void shootInRange(ShipModel s){
+        tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
+            if (s.getCooldown() == 0) {
+                if(tempVec1.len()<=s.getAggroRange()) {
+                    tempVec1.scl(1f / tempVec1.len());
+                    bulletData.add(s.getX() + tempVec1.x);
+                    bulletData.add(s.getY() + tempVec1.y);
+                    bulletData.add(tempVec1.x * 10);
+                    bulletData.add(tempVec1.y * 10);
+                    s.setCooldown(COOLDOWN);
+                }
+            } else
+                s.decCooldown();
+    }
+
     public void aggroPathfind(ShipModel s) {
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
-        if(s.getCooldown() == 0) {
-            tempVec1.scl(1f/tempVec1.len());
-            bulletData.add(s.getX() + tempVec1.x);
-            bulletData.add(s.getY() + tempVec1.y);
-            bulletData.add(tempVec1.x*10);
-            bulletData.add(tempVec1.y*10);
-            s.setCooldown(COOLDOWN);
-        }
-        else
-            s.decCooldown();
+        shootInRange(s);
         // moving towards Oob
         if(tempVec1.len() > 4) {
             tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
