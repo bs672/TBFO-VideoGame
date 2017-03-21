@@ -459,7 +459,7 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.setSensor(true);
         avatar.setName("Oob");
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
-        avatar.scalePicScale(new Vector2(.2f,.2f));
+        avatar.scalePicScale(new Vector2(OOB_RADIUS/4, OOB_RADIUS/4));
         addObject(avatar);
 
         aiController = new AIController(ships, planets, avatar, scale);
@@ -918,13 +918,13 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
             switch(pauseState){
                 case 1:
-                    canvas.drawTextCentered("VICTORY!", massFont, 0.0f);
+                    canvas.drawTextCentered("VICTORY! Press p to restart", massFont, 0.0f);
                     break;
                 case 2:
-                    canvas.drawTextCentered("DEFEAT!", massFont, 0.0f);
+                    canvas.drawTextCentered("DEFEAT! Press p to restart", massFont, 0.0f);
                     break;
                 case 3:
-                    canvas.drawTextCentered("Game is paused", massFont, 0.0f);
+                    canvas.drawTextCentered("Game is paused. Press p to resume", massFont, 0.0f);
                     break;
             }
             canvas.end();
