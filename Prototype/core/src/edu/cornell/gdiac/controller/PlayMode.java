@@ -127,6 +127,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float DEATH_RADIUS = MIN_RADIUS*2/3;
 
+    private static final float OOB_DEATH_RADIUS = 0.57f;
+
     private static final float EPSILON = 0.1f;
 
     private static final int THRESHOLD = 4;
@@ -497,7 +499,7 @@ public class PlayMode extends WorldController implements ContactListener {
             {8.0f, 4.5f, 2.8f, 3f},
             {5.0f, 12.5f, 1.2f, 2f},
             {27.0f, 4.5f, 2.7f, 0f},
-            {25.0f, 12.5f, 1.6f, 0f},
+            {25.0f, 12.5f, 1.6f, 1f},
             {18.0f, -4.0f, 1.9f, 0f},
 
             {17.0f, 22.5f, 2.8f, 0f},
@@ -745,7 +747,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setFriction(BASIC_FRICTION);
         sh.setRestitution(BASIC_RESTITUTION);
         sh.setDrawScale(scale);
-        sh.scalePicScale(new Vector2(.2f, .2f));
+        sh.scalePicScale(new Vector2(.5f, .5f));
         sh.setTexture(ship_texture);
         sh.setName("ship");
         sh.setGravityScale(0.0f);
@@ -831,7 +833,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setFriction(0.0f);
                 bullet.setRestitution(0.0f);
                 bullet.setDrawScale(scale);
-                bullet.scalePicScale(new Vector2(0.5f, 0.5f));
+                bullet.scalePicScale(new Vector2(0.3f, 0.3f));
                 bullet.setGravityScale(0);
                 bullet.setVX(aiController.bulletData.get(i + 2));
                 bullet.setVY(aiController.bulletData.get(i + 3));
@@ -878,7 +880,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Oob loses mass
     public void loseMass(float massLoss){
         float oldOobMass = avatar.getMass();
-        if(avatar.getRadius()>=0.4) {
+        if(avatar.getRadius()>=OOB_DEATH_RADIUS) {
             avatar.setRadius((float) Math.sqrt((oldOobMass - massLoss) / Math.PI));
             avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
         }
@@ -976,7 +978,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if (avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
                 //Off the screen
                 pauseState = 2;
-            if (avatar.getRadius() <= 0.4) {
+            if (avatar.getRadius() <= OOB_DEATH_RADIUS) {
                 //Game Over
                 pauseState = 2;
             }
@@ -1093,12 +1095,14 @@ public class PlayMode extends WorldController implements ContactListener {
 
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 oldAvatarRad = avatar.getRadius();
-                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
+                loseMass(BULLET_DAMAGE);
+//                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
                 avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 oldAvatarRad = avatar.getRadius();
-                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
+                loseMass(BULLET_DAMAGE);
+//                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
                 avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
 
