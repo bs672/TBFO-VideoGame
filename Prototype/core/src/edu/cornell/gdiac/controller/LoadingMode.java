@@ -51,7 +51,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     private static final String BACKG_FILE_RED_STAR = "space/red_stars.png";
     private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
 	private static final String PROGRESS_FILE = "space/progressbar.png";
-	private static final String PLAY_BTN_FILE = "space/play.png";
+	private static final String PLAY_BTN_FILE = "space/oob_2.png";
 	
 	/** Background texture for start-up */
 	private Texture backgroundMAIN;

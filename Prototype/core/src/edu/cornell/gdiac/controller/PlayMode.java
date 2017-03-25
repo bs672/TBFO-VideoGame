@@ -16,7 +16,6 @@ import edu.cornell.gdiac.model.ShipModel;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Created by Matt Loughney on 2/28/2017.
@@ -27,34 +26,34 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     /** The texture file for the planets */
-    private static final String BLUE_P_1 = "space/planets/1.png";
-    private static final String BLUE_P_2 = "space/planets/2.png";
-    private static final String BLUE_P_3 = "space/planets/3.png";
-    private static final String BLUE_P_4 = "space/planets/4.png";
+    private static final String BLUE_P_1 = "space/planets/blue.png";
+    private static final String BLUE_P_2 = "space/planets/blue.png";
+    private static final String BLUE_P_3 = "space/planets/blue.png";
+    private static final String BLUE_P_4 = "space/planets/blue.png";
 
     /** The texture file for the planets */
-    private static final String PURPLE_P_1 = "space/planets/5.png";
-    private static final String PURPLE_P_2 = "space/planets/6.png";
-    private static final String PURPLE_P_3 = "space/planets/7.png";
-    private static final String PURPLE_P_4 = "space/planets/8.png";
+    private static final String PURPLE_P_1 = "space/planets/purple.png";
+    private static final String PURPLE_P_2 = "space/planets/purple.png";
+    private static final String PURPLE_P_3 = "space/planets/purple.png";
+    private static final String PURPLE_P_4 = "space/planets/purple.png";
 
     /** The texture file for the planets */
-    private static final String MAGENTA_P_1 = "space/planets/9.png";
-    private static final String MAGENTA_P_2 = "space/planets/10.png";
-    private static final String MAGENTA_P_3 = "space/planets/11.png";
-    private static final String MAGENTA_P_4 = "space/planets/12.png";
+    private static final String ORANGE_P_1 = "space/planets/orange.png";
+    private static final String ORANGE_P_2 = "space/planets/orange.png";
+    private static final String ORANGE_P_3 = "space/planets/orange.png";
+    private static final String ORANGE_P_4 = "space/planets/orange.png";
 
     /** The texture file for the planets */
-    private static final String SKY_P_1 = "space/planets/13.png";
-    private static final String SKY_P_2 = "space/planets/14.png";
-    private static final String SKY_P_3 = "space/planets/15.png";
-    private static final String SKY_P_4 = "space/planets/16.png";
+    private static final String SKY_P_1 = "space/planets/sky.png";
+    private static final String SKY_P_2 = "space/planets/sky.png";
+    private static final String SKY_P_3 = "space/planets/sky.png";
+    private static final String SKY_P_4 = "space/planets/sky.png";
 
     /** The texture file for the planets */
-    private static final String TEAL_P_1 = "space/planets/17.png";
-    private static final String TEAL_P_2 = "space/planets/18.png";
-    private static final String TEAL_P_3 = "space/planets/19.png";
-    private static final String TEAL_P_4 = "space/planets/20.png";
+    private static final String TEAL_P_1 = "space/planets/teal.png";
+    private static final String TEAL_P_2 = "space/planets/teal.png";
+    private static final String TEAL_P_3 = "space/planets/teal.png";
+    private static final String TEAL_P_4 = "space/planets/teal.png";
 
     /** The texture file for the planets */
     private static final String POISON_P_1 = "space/planets/poison1.png";
@@ -115,9 +114,9 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "space/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(8f, 5.5f);
+    private static Vector2 OOB_POS = new Vector2(16f, 20f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = 0.8f;
+    private static float OOB_RADIUS = 1f;
 
     private static final float SIPHON = 0.02f;
 
@@ -127,7 +126,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float DEATH_RADIUS = MIN_RADIUS*2/3;
 
-    private static final float OOB_DEATH_RADIUS = 0.57f;
+    private static final float OOB_DEATH_RADIUS = 0.56f;
 
     private static final float EPSILON = 0.1f;
 
@@ -158,10 +157,10 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion purple_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion magenta_P_1_Texture;
-    private TextureRegion magenta_P_2_Texture;
-    private TextureRegion magenta_P_3_Texture;
-    private TextureRegion magenta_P_4_Texture;
+    private TextureRegion orange_P_1_Texture;
+    private TextureRegion orange_P_2_Texture;
+    private TextureRegion orange_P_3_Texture;
+    private TextureRegion orange_P_4_Texture;
 
     /** Planet texture */
     private TextureRegion sky_P_1_Texture;
@@ -273,14 +272,14 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(PURPLE_P_4, Texture.class);
         assets.add(PURPLE_P_4);
 
-        manager.load(MAGENTA_P_1, Texture.class);
-        assets.add(MAGENTA_P_1);
-        manager.load(MAGENTA_P_2, Texture.class);
-        assets.add(MAGENTA_P_2);
-        manager.load(MAGENTA_P_3, Texture.class);
-        assets.add(MAGENTA_P_3);
-        manager.load(MAGENTA_P_4, Texture.class);
-        assets.add(MAGENTA_P_4);
+        manager.load(ORANGE_P_1, Texture.class);
+        assets.add(ORANGE_P_1);
+        manager.load(ORANGE_P_2, Texture.class);
+        assets.add(ORANGE_P_2);
+        manager.load(ORANGE_P_3, Texture.class);
+        assets.add(ORANGE_P_3);
+        manager.load(ORANGE_P_4, Texture.class);
+        assets.add(ORANGE_P_4);
 
         manager.load(SKY_P_1, Texture.class);
         assets.add(SKY_P_1);
@@ -384,10 +383,10 @@ public class PlayMode extends WorldController implements ContactListener {
         purple_P_3_Texture = createTexture(manager,PURPLE_P_3,false);
         purple_P_4_Texture = createTexture(manager,PURPLE_P_4,false);
 
-        magenta_P_1_Texture = createTexture(manager,MAGENTA_P_1,false);
-        magenta_P_2_Texture = createTexture(manager,MAGENTA_P_2,false);
-        magenta_P_3_Texture = createTexture(manager,MAGENTA_P_3,false);
-        magenta_P_4_Texture = createTexture(manager,MAGENTA_P_4,false);
+        orange_P_1_Texture = createTexture(manager,ORANGE_P_1,false);
+        orange_P_2_Texture = createTexture(manager, ORANGE_P_2,false);
+        orange_P_3_Texture = createTexture(manager, ORANGE_P_3,false);
+        orange_P_4_Texture = createTexture(manager, ORANGE_P_4,false);
 
         sky_P_1_Texture = createTexture(manager,SKY_P_1,false);
         sky_P_2_Texture = createTexture(manager,SKY_P_2,false);
@@ -516,7 +515,9 @@ public class PlayMode extends WorldController implements ContactListener {
     };
 
     private static final float[][] SHIPS = {
-            {5.0f, 14f}
+            {5.0f, 14f, 0},
+            {-5.0f, 17f, 0},
+            {15.0f, 2f, 0}
     };
 
     // Physics objects for the game
@@ -646,20 +647,20 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                 }
 
-                //Magenta Planets
+                //Orange Planets
                 if (ii % 5 == 2) {
                     double rand=Math.random();
                     if (rand <= .25) {
-                        obj.setTexture(magenta_P_1_Texture);
+                        obj.setTexture(orange_P_1_Texture);
                     }
                     if ((rand <= .5) && (rand > .25)) {
-                        obj.setTexture(magenta_P_2_Texture);
+                        obj.setTexture(orange_P_2_Texture);
                     }
                     if ((rand <= .75) && (rand > .5)) {
-                        obj.setTexture(magenta_P_3_Texture);
+                        obj.setTexture(orange_P_3_Texture);
                     }
                     if (rand > .75) {
-                        obj.setTexture(magenta_P_4_Texture);
+                        obj.setTexture(orange_P_4_Texture);
                     }
                 }
 
@@ -741,18 +742,20 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create Ships
-        ShipModel sh = new ShipModel(SHIPS[0][0], SHIPS[0][1], 0);
-        sh.setBodyType(BodyDef.BodyType.DynamicBody);
-        sh.setDensity(BASIC_DENSITY);
-        sh.setFriction(BASIC_FRICTION);
-        sh.setRestitution(BASIC_RESTITUTION);
-        sh.setDrawScale(scale);
-        sh.scalePicScale(new Vector2(.5f, .5f));
-        sh.setTexture(ship_texture);
-        sh.setName("ship");
-        sh.setGravityScale(0.0f);
-        ships.add(sh);
-        addObject(sh);
+        for (int ii = 0; ii <SHIPS.length; ii++) {
+            ShipModel sh = new ShipModel(SHIPS[ii][0], SHIPS[ii][1], SHIPS[ii][2]);
+            sh.setBodyType(BodyDef.BodyType.DynamicBody);
+            sh.setDensity(BASIC_DENSITY);
+            sh.setFriction(BASIC_FRICTION);
+            sh.setRestitution(BASIC_RESTITUTION);
+            sh.setDrawScale(scale);
+            sh.scalePicScale(new Vector2(.3f, .3f));
+            sh.setTexture(ship_texture);
+            sh.setName("ship");
+            sh.setGravityScale(0.0f);
+            ships.add(sh);
+            addObject(sh);
+        }
 
         // Create Oob
         avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
@@ -762,7 +765,7 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.setSensor(true);
         avatar.setName("Oob");
         currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
-        avatar.scalePicScale(new Vector2(OOB_RADIUS/4, OOB_RADIUS/4));
+        avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
         addObject(avatar);
 
         aiController = new AIController(ships, planets, commandPlanets, avatar, scale);
@@ -815,6 +818,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setDrawScale(scale);
                 sh.scalePicScale(new Vector2(.2f, .2f));
                 sh.setTexture(ship_texture);
+                //sh.setDimension(2f,2f);
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
                 addObject(sh);
@@ -1097,13 +1101,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 oldAvatarRad = avatar.getRadius();
                 loseMass(BULLET_DAMAGE);
 //                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
-                avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
+               //avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 oldAvatarRad = avatar.getRadius();
                 loseMass(BULLET_DAMAGE);
 //                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
-                avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
+                //avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
 
             if (bd1.getName().equals("ship") && bd2.getName().equals("Oob")) {

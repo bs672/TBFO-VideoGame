@@ -20,20 +20,20 @@ public class ShipModel extends CapsuleObstacle{
     private int firingCooldown;
     private float range;
 
-    private static final float AGGRO_RANGE = 10.0f;
+    private static final float AGGRO_RANGE = 8.0f;
 
 
     //TODO type of the ship
     //Type 0 is default, Type 1 is Guard Ship, Type 2
-    private static int type;
+    private static float type;
 
     public Vector2 getOldPosition() {return oldPosition; }
 
     public void setOldPosition(Vector2 v) {oldPosition.set(v); }
 
-    public void setType(int val){type = val;}
+    public void setType(float val){type = val;}
 
-    public int getType(){return type;}
+    public float getType(){return type;}
 
     public void setInOrbit(boolean b) {inOrbit = b;}
 
@@ -68,7 +68,7 @@ public class ShipModel extends CapsuleObstacle{
      * @param height	The object width in physics units
      * @param t         The type of the ship
      */
-    public ShipModel(float x, float y, float width, float height, int t) {
+    public ShipModel(float x, float y, float width, float height, float t) {
         super(x,y,width,height);
         setFixedRotation(true);
 
@@ -78,7 +78,7 @@ public class ShipModel extends CapsuleObstacle{
     }
 
     //Creates a Ship with predetermined width and height at given position.
-    public ShipModel(float x, float y, int t){
+    public ShipModel(float x, float y, float t){
         super(x, y, WIDTH, HEIGHT);
         setFixedRotation(true);
         type = t;
