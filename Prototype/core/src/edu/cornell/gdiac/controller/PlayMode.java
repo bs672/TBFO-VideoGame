@@ -27,39 +27,51 @@ public class PlayMode extends WorldController implements ContactListener {
 
     /** The texture file for the planets */
     private static final String BLUE_P_1 = "space/planets/blue.png";
-    private static final String BLUE_P_2 = "space/planets/blue.png";
-    private static final String BLUE_P_3 = "space/planets/blue.png";
-    private static final String BLUE_P_4 = "space/planets/blue.png";
+    private static final String BLUE_P_2 = "space/planets/blue2.png";
+    private static final String BLUE_P_3 = "space/planets/blue3.png";
+    //private static final String BLUE_P_4 = "space/planets/blue.png";
 
     /** The texture file for the planets */
     private static final String PURPLE_P_1 = "space/planets/purple.png";
-    private static final String PURPLE_P_2 = "space/planets/purple.png";
-    private static final String PURPLE_P_3 = "space/planets/purple.png";
-    private static final String PURPLE_P_4 = "space/planets/purple.png";
+    private static final String PURPLE_P_2 = "space/planets/purple2.png";
+    private static final String PURPLE_P_3 = "space/planets/purple3.png";
+    //private static final String PURPLE_P_4 = "space/planets/purple.png";
 
     /** The texture file for the planets */
     private static final String ORANGE_P_1 = "space/planets/orange.png";
-    private static final String ORANGE_P_2 = "space/planets/orange.png";
-    private static final String ORANGE_P_3 = "space/planets/orange.png";
-    private static final String ORANGE_P_4 = "space/planets/orange.png";
+    private static final String ORANGE_P_2 = "space/planets/orange2.png";
+    private static final String ORANGE_P_3 = "space/planets/orange3.png";
+    //private static final String ORANGE_P_4 = "space/planets/orange.png";
 
     /** The texture file for the planets */
     private static final String SKY_P_1 = "space/planets/sky.png";
-    private static final String SKY_P_2 = "space/planets/sky.png";
-    private static final String SKY_P_3 = "space/planets/sky.png";
-    private static final String SKY_P_4 = "space/planets/sky.png";
+    private static final String SKY_P_2 = "space/planets/sky2.png";
+    private static final String SKY_P_3 = "space/planets/sky3.png";
+    //private static final String SKY_P_4 = "space/planets/sky.png";
 
     /** The texture file for the planets */
-    private static final String TEAL_P_1 = "space/planets/teal.png";
-    private static final String TEAL_P_2 = "space/planets/teal.png";
-    private static final String TEAL_P_3 = "space/planets/teal.png";
-    private static final String TEAL_P_4 = "space/planets/teal.png";
+    private static final String GREEN_P_1 = "space/planets/green.png";
+    private static final String GREEN_P_2 = "space/planets/green2.png";
+    private static final String GREEN_P_3 = "space/planets/green3.png";
+    //private static final String GREEN_P_4 = "space/planets/green.png";
 
     /** The texture file for the planets */
-    private static final String POISON_P_1 = "space/planets/poison1.png";
-    private static final String POISON_P_2 = "space/planets/poison2.png";
-    private static final String POISON_P_3 = "space/planets/poison3.png";
-    private static final String POISON_P_4 = "space/planets/poison4.png";
+    private static final String PINK_P_1 = "space/planets/pink.png";
+    private static final String PINK_P_2 = "space/planets/pink2.png";
+    private static final String PINK_P_3 = "space/planets/pink3.png";
+    //private static final String PINK_P_4 = "space/planets/pink.png";
+
+    /** The texture file for the planets */
+    private static final String RED_P_1 = "space/planets/red.png";
+    private static final String RED_P_2 = "space/planets/red2.png";
+    private static final String RED_P_3 = "space/planets/red3.png";
+    //private static final String RED_P_4 = "space/planets/red.png";
+
+    /** The texture file for the planets */
+    private static final String POISON_P_1 = "space/planets/sun.png";
+    private static final String POISON_P_2 = "space/planets/sun.png";
+    private static final String POISON_P_3 = "space/planets/sun.png";
+    private static final String POISON_P_4 = "space/planets/sun.png";
 
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
@@ -87,11 +99,14 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     /** Texture file for background image */
-    private static final String BACKG_FILE_MAIN = "space/gradient_background.png";
+    private static final String BACKG_FILE_MAIN = "space/background/background_main.png";
     /** Texture file for background image */
-    private static final String BACKG_FILE_RED_STAR = "space/red_stars.png";
+    private static final String BACKG_FILE_LARGE_STARS = "space/background/large-stars.png";
     /** Texture file for background image */
-    private static final String BACKG_FILE_WHITE_STAR = "space/white_stars.png";
+    private static final String BACKG_FILE_MEDIUM_STARS = "space/background/medium-stars.png";
+    /** Texture file for background image */
+    private static final String BACKG_FILE_SMALL_STARS = "space/background/small-stars.png";
+
 
 
     /** Texture file for ship */
@@ -148,31 +163,43 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion blue_P_1_Texture;
     private TextureRegion blue_P_2_Texture;
     private TextureRegion blue_P_3_Texture;
-    private TextureRegion blue_P_4_Texture;
+   // private TextureRegion blue_P_4_Texture;
 
     /** Planet texture */
     private TextureRegion purple_P_1_Texture;
     private TextureRegion purple_P_2_Texture;
     private TextureRegion purple_P_3_Texture;
-    private TextureRegion purple_P_4_Texture;
+   // private TextureRegion purple_P_4_Texture;
 
     /** Planet texture */
     private TextureRegion orange_P_1_Texture;
     private TextureRegion orange_P_2_Texture;
     private TextureRegion orange_P_3_Texture;
-    private TextureRegion orange_P_4_Texture;
+    //private TextureRegion orange_P_4_Texture;
 
     /** Planet texture */
     private TextureRegion sky_P_1_Texture;
     private TextureRegion sky_P_2_Texture;
     private TextureRegion sky_P_3_Texture;
-    private TextureRegion sky_P_4_Texture;
+   // private TextureRegion sky_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion teal_P_1_Texture;
-    private TextureRegion teal_P_2_Texture;
-    private TextureRegion teal_P_3_Texture;
-    private TextureRegion teal_P_4_Texture;
+    private TextureRegion green_P_1_Texture;
+    private TextureRegion green_P_2_Texture;
+    private TextureRegion green_P_3_Texture;
+    //private TextureRegion green_P_4_Texture;
+
+    /** Planet texture */
+    private TextureRegion pink_P_1_Texture;
+    private TextureRegion pink_P_2_Texture;
+    private TextureRegion pink_P_3_Texture;
+    //private TextureRegion pink_P_4_Texture;
+
+    /** Planet texture */
+    private TextureRegion red_P_1_Texture;
+    private TextureRegion red_P_2_Texture;
+    private TextureRegion red_P_3_Texture;
+    //private TextureRegion red_P_4_Texture;
 
     /** Planet texture */
     private TextureRegion poison_P_1_Texture;
@@ -211,12 +238,15 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
-    private TextureRegion backgroundTextureREDSTAR;
+    private TextureRegion backgroundTextureLARGESTAR;
     /** Texture asset for background image */
-    private TextureRegion backgroundTextureWHITESTAR;
+    private TextureRegion backgroundTextureMEDIUMSTAR;
+    /** Texture asset for background image */
+    private TextureRegion backgroundTextureSMALLSTAR;
+
+
+
     /** Texture asset for ship */
-
-
     private TextureRegion ship_texture;
     /** Texture asset for bullet */
     private TextureRegion bullet_texture;
@@ -260,8 +290,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(BLUE_P_2);
         manager.load(BLUE_P_3, Texture.class);
         assets.add(BLUE_P_3);
-        manager.load(BLUE_P_4, Texture.class);
-        assets.add(BLUE_P_4);
+       // manager.load(BLUE_P_4, Texture.class);
+      //  assets.add(BLUE_P_4);
 
         manager.load(PURPLE_P_1, Texture.class);
         assets.add(PURPLE_P_1);
@@ -269,8 +299,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(PURPLE_P_2);
         manager.load(PURPLE_P_3, Texture.class);
         assets.add(PURPLE_P_3);
-        manager.load(PURPLE_P_4, Texture.class);
-        assets.add(PURPLE_P_4);
+      //  manager.load(PURPLE_P_4, Texture.class);
+      //  assets.add(PURPLE_P_4);
 
         manager.load(ORANGE_P_1, Texture.class);
         assets.add(ORANGE_P_1);
@@ -278,8 +308,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(ORANGE_P_2);
         manager.load(ORANGE_P_3, Texture.class);
         assets.add(ORANGE_P_3);
-        manager.load(ORANGE_P_4, Texture.class);
-        assets.add(ORANGE_P_4);
+     //   manager.load(ORANGE_P_4, Texture.class);
+     //   assets.add(ORANGE_P_4);
 
         manager.load(SKY_P_1, Texture.class);
         assets.add(SKY_P_1);
@@ -287,17 +317,35 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(SKY_P_2);
         manager.load(SKY_P_3, Texture.class);
         assets.add(SKY_P_3);
-        manager.load(SKY_P_4, Texture.class);
-        assets.add(SKY_P_4);
+     //   manager.load(SKY_P_4, Texture.class);
+     //   assets.add(SKY_P_4);
 
-        manager.load(TEAL_P_1, Texture.class);
-        assets.add(TEAL_P_1);
-        manager.load(TEAL_P_2, Texture.class);
-        assets.add(TEAL_P_2);
-        manager.load(TEAL_P_3, Texture.class);
-        assets.add(TEAL_P_3);
-        manager.load(TEAL_P_4, Texture.class);
-        assets.add(TEAL_P_4);
+        manager.load(GREEN_P_1, Texture.class);
+        assets.add(GREEN_P_1);
+        manager.load(GREEN_P_2, Texture.class);
+        assets.add(GREEN_P_2);
+        manager.load(GREEN_P_3, Texture.class);
+        assets.add(GREEN_P_3);
+      //  manager.load(GREEN_P_4, Texture.class);
+     //   assets.add(GREEN_P_4);
+
+        manager.load(PINK_P_1, Texture.class);
+        assets.add(PINK_P_1);
+        manager.load(PINK_P_2, Texture.class);
+        assets.add(PINK_P_2);
+        manager.load(PINK_P_3, Texture.class);
+        assets.add(PINK_P_3);
+       // manager.load(PINK_P_4, Texture.class);
+       // assets.add(PINK_P_4);
+
+        manager.load(RED_P_1, Texture.class);
+        assets.add(RED_P_1);
+        manager.load(RED_P_2, Texture.class);
+        assets.add(RED_P_2);
+        manager.load(RED_P_3, Texture.class);
+        assets.add(RED_P_3);
+       // manager.load(RED_P_4, Texture.class);
+        //assets.add(RED_P_4);
 
         manager.load(POISON_P_1, Texture.class);
         assets.add(POISON_P_1);
@@ -334,10 +382,12 @@ public class PlayMode extends WorldController implements ContactListener {
 
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
-        manager.load(BACKG_FILE_RED_STAR, Texture.class);
-        assets.add(BACKG_FILE_RED_STAR);
-        manager.load(BACKG_FILE_WHITE_STAR, Texture.class);
-        assets.add(BACKG_FILE_WHITE_STAR);
+        manager.load(BACKG_FILE_LARGE_STARS, Texture.class);
+        assets.add(BACKG_FILE_LARGE_STARS);
+        manager.load(BACKG_FILE_MEDIUM_STARS, Texture.class);
+        assets.add(BACKG_FILE_MEDIUM_STARS);
+        manager.load(BACKG_FILE_SMALL_STARS, Texture.class);
+        assets.add(BACKG_FILE_SMALL_STARS);
 
         manager.load(SHIP_TEXTURE, Texture.class);
         assets.add(SHIP_TEXTURE);
@@ -376,27 +426,37 @@ public class PlayMode extends WorldController implements ContactListener {
         blue_P_1_Texture = createTexture(manager,BLUE_P_1,false);
         blue_P_2_Texture = createTexture(manager,BLUE_P_2,false);
         blue_P_3_Texture = createTexture(manager,BLUE_P_3,false);
-        blue_P_4_Texture = createTexture(manager,BLUE_P_4,false);
+       // blue_P_4_Texture = createTexture(manager,BLUE_P_4,false);
 
         purple_P_1_Texture = createTexture(manager,PURPLE_P_1,false);
         purple_P_2_Texture = createTexture(manager,PURPLE_P_2,false);
         purple_P_3_Texture = createTexture(manager,PURPLE_P_3,false);
-        purple_P_4_Texture = createTexture(manager,PURPLE_P_4,false);
+      // purple_P_4_Texture = createTexture(manager,PURPLE_P_4,false);
 
         orange_P_1_Texture = createTexture(manager,ORANGE_P_1,false);
         orange_P_2_Texture = createTexture(manager, ORANGE_P_2,false);
         orange_P_3_Texture = createTexture(manager, ORANGE_P_3,false);
-        orange_P_4_Texture = createTexture(manager, ORANGE_P_4,false);
+      //  orange_P_4_Texture = createTexture(manager, ORANGE_P_4,false);
 
         sky_P_1_Texture = createTexture(manager,SKY_P_1,false);
         sky_P_2_Texture = createTexture(manager,SKY_P_2,false);
         sky_P_3_Texture = createTexture(manager,SKY_P_3,false);
-        sky_P_4_Texture = createTexture(manager,SKY_P_4,false);
+      //  sky_P_4_Texture = createTexture(manager,SKY_P_4,false);
 
-        teal_P_1_Texture = createTexture(manager,TEAL_P_1,false);
-        teal_P_2_Texture = createTexture(manager,TEAL_P_2,false);
-        teal_P_3_Texture = createTexture(manager,TEAL_P_3,false);
-        teal_P_4_Texture = createTexture(manager,TEAL_P_4,false);
+        green_P_1_Texture = createTexture(manager, GREEN_P_1,false);
+        green_P_2_Texture = createTexture(manager, GREEN_P_2,false);
+        green_P_3_Texture = createTexture(manager, GREEN_P_3,false);
+      //  green_P_4_Texture = createTexture(manager,GREEN_P_4,false);
+
+        pink_P_1_Texture = createTexture(manager, PINK_P_1,false);
+        pink_P_2_Texture = createTexture(manager, PINK_P_2,false);
+        pink_P_3_Texture = createTexture(manager, PINK_P_3,false);
+        //  pink_P_4_Texture = createTexture(manager,PINK_P_4,false);
+
+        red_P_1_Texture = createTexture(manager, RED_P_1,false);
+        red_P_2_Texture = createTexture(manager, RED_P_2,false);
+        red_P_3_Texture = createTexture(manager, RED_P_3,false);
+        //  red_P_4_Texture = createTexture(manager,RED_P_4,false);
 
         poison_P_1_Texture = createTexture(manager,POISON_P_1,false);
         poison_P_2_Texture = createTexture(manager,POISON_P_2,false);
@@ -426,22 +486,31 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
+        backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
+        backgroundTextureMEDIUMSTAR = createTexture(manager,BACKG_FILE_MEDIUM_STARS,true);
+        backgroundTextureSMALLSTAR = createTexture(manager,BACKG_FILE_SMALL_STARS,true);
 
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
-        Texture redTex = new Texture(BACKG_FILE_RED_STAR);
-        redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        TextureRegion redTexReg = new TextureRegion(redTex);
-        redTexReg.setRegion(0,0,redTex.getWidth()*7,redTex.getHeight()*7);
-        backgroundTextureREDSTAR=redTexReg;
-
-
-        Texture whiteTex = new Texture(BACKG_FILE_WHITE_STAR);
-        whiteTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        TextureRegion whiteTexReg = new TextureRegion(whiteTex);
-        whiteTexReg.setRegion(0,0,whiteTex.getWidth()*7,whiteTex.getHeight()*7);
-        backgroundTextureWHITESTAR=whiteTexReg;
+//        Texture L_Tex = new Texture(BACKG_FILE_LARGE_STARS);
+//        L_Tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+//        TextureRegion L_TexReg = new TextureRegion(L_Tex);
+//        L_TexReg.setRegion(0,0,L_Tex.getWidth()*7,L_Tex.getHeight()*7);
+//        backgroundTextureLARGESTAR =L_TexReg;
+//
+//
+//        Texture M_Tex = new Texture(BACKG_FILE_MEDIUM_STARS);
+//        M_Tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+//        TextureRegion M_TexReg = new TextureRegion(M_Tex);
+//        M_TexReg.setRegion(0,0,M_Tex.getWidth()*7,M_Tex.getHeight()*7);
+//        backgroundTextureMEDIUMSTAR =M_TexReg;
+//
+//        Texture S_Tex = new Texture(BACKG_FILE_SMALL_STARS);
+//        S_Tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+//        TextureRegion S_TexReg = new TextureRegion(S_Tex);
+//        S_TexReg.setRegion(0,0,S_Tex.getWidth()*7,S_Tex.getHeight()*7);
+//        backgroundTextureSMALLSTAR =S_TexReg;
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -495,7 +564,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     private static final float[][] PLANETS = {
-            {8.0f, 4.5f, 2.8f, 3f},
+            {0.0f, 0.5f, 2.8f, 3f},
             {5.0f, 12.5f, 1.2f, 2f},
             {27.0f, 4.5f, 2.7f, 0f},
             {25.0f, 12.5f, 1.6f, 1f},
@@ -555,7 +624,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(false);
+        setDebug(true);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -614,87 +683,121 @@ public class PlayMode extends WorldController implements ContactListener {
             if (obj.getType() == 0f || obj.getType() == 3f) {
 
                 //Blue Planets
-                if (ii % 5 == 0) {
+                if (ii % 7 == 0) {
                     double rand=Math.random();
-                    if (rand <= .25) {
+                    if (rand <= .33) {
                         obj.setTexture(blue_P_1_Texture);
                     }
-                    if ((rand <= .5) && (rand > .25)) {
+                    if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(blue_P_2_Texture);
                     }
-                    if ((rand <= .75) && (rand > .5)) {
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(blue_P_3_Texture);
+//                    }
+                    if (rand > .66) {
                         obj.setTexture(blue_P_3_Texture);
-                    }
-                    if (rand > .75) {
-                        obj.setTexture(blue_P_4_Texture);
                     }
                 }
 
                 //Purple Planets
-                if (ii % 5 == 1) {
+                if (ii % 7 == 1) {
                     double rand=Math.random();
-                    if (rand <= .25) {
+                    if (rand <= .33) {
                         obj.setTexture(purple_P_1_Texture);
                     }
-                    if ((rand <= .5) && (rand > .25)) {
+                    if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(purple_P_2_Texture);
                     }
-                    if ((rand <= .75) && (rand > .5)) {
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(purple_P_3_Texture);
+//                    }
+                    if (rand > .66) {
                         obj.setTexture(purple_P_3_Texture);
-                    }
-                    if (rand > .75) {
-                        obj.setTexture(purple_P_4_Texture);
                     }
                 }
 
                 //Orange Planets
-                if (ii % 5 == 2) {
+                if (ii % 7 == 2) {
                     double rand=Math.random();
-                    if (rand <= .25) {
+                    if (rand <= .33) {
                         obj.setTexture(orange_P_1_Texture);
                     }
-                    if ((rand <= .5) && (rand > .25)) {
+                    if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(orange_P_2_Texture);
                     }
-                    if ((rand <= .75) && (rand > .5)) {
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(orange_P_3_Texture);
+//                    }
+                    if (rand > .66) {
                         obj.setTexture(orange_P_3_Texture);
-                    }
-                    if (rand > .75) {
-                        obj.setTexture(orange_P_4_Texture);
                     }
                 }
 
                 //Sky Planets
-                if (ii % 5 == 3) {
+                if (ii % 7 == 3) {
                     double rand=Math.random();
-                    if (rand <= .25) {
+                    if (rand <= .33) {
                         obj.setTexture(sky_P_1_Texture);
                     }
-                    if ((rand <= .5) && (rand > .25)) {
+                    if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(sky_P_2_Texture);
                     }
-                    if ((rand <= .75) && (rand > .5)) {
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(sky_P_3_Texture);
+//                    }
+                    if (rand > .66) {
                         obj.setTexture(sky_P_3_Texture);
-                    }
-                    if (rand > .75) {
-                        obj.setTexture(sky_P_4_Texture);
                     }
                 }
 
-                //Teal Planets
-                if (ii % 5 == 4) {
+                //Green Planets
+                if (ii % 7 == 4) {
                     double rand=Math.random();
-                    if (rand <= .25) {
-                        obj.setTexture(teal_P_1_Texture);
+                    if (rand <= .33) {
+                        obj.setTexture(green_P_1_Texture);
                     }
-                    if ((rand <= .5) && (rand > .25)) {
-                        obj.setTexture(teal_P_2_Texture);
+                    if ((rand <= .66) && (rand > .33)) {
+                        obj.setTexture(green_P_2_Texture);
                     }
-                    if ((rand <= .75) && (rand > .5)) {
-                        obj.setTexture(teal_P_3_Texture);
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(green_P_3_Texture);
+//                    }
+                    if (rand > .66) {
+                        obj.setTexture(green_P_3_Texture);
                     }
-                    if (rand > .75) {
-                        obj.setTexture(teal_P_4_Texture);
+                }
+
+                //Pink Planets
+                if (ii % 7 == 5) {
+                    double rand=Math.random();
+                    if (rand <= .33) {
+                        obj.setTexture(pink_P_1_Texture);
+                    }
+                    if ((rand <= .66) && (rand > .33)) {
+                        obj.setTexture(pink_P_2_Texture);
+                    }
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(green_P_3_Texture);
+//                    }
+                    if (rand > .66) {
+                        obj.setTexture(pink_P_3_Texture);
+                    }
+                }
+
+                //Red Planets
+                if (ii % 7 == 6) {
+                    double rand=Math.random();
+                    if (rand <= .33) {
+                        obj.setTexture(red_P_1_Texture);
+                    }
+                    if ((rand <= .66) && (rand > .33)) {
+                        obj.setTexture(red_P_2_Texture);
+                    }
+//                    if ((rand <= .75) && (rand > .5)) {
+//                        obj.setTexture(green_P_3_Texture);
+//                    }
+                    if (rand > .66) {
+                        obj.setTexture(red_P_3_Texture);
                     }
                 }
 
@@ -712,6 +815,7 @@ public class PlayMode extends WorldController implements ContactListener {
 //                    obj.setTexture(red_P_Texture);
 //                }
             }
+            //Command Planets
             if (obj.getType() == 1f) {
                 obj.setTexture(command_P_Texture);
                 commandPlanets.add(obj);
@@ -732,6 +836,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(poison_P_4_Texture);
                     }
             }
+            //Neutral Planets
             if (obj.getType() == 3f) {
                 obj.setTexture(neutral_P_Texture);
             }
@@ -818,7 +923,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setDrawScale(scale);
                 sh.scalePicScale(new Vector2(.2f, .2f));
                 sh.setTexture(ship_texture);
-                //sh.setDimension(2f,2f);
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
                 addObject(sh);
@@ -1190,12 +1294,21 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.begin();
 
             //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
-            // canvas.drawWrapped(backgroundTextureREDSTAR,BG_RED_PARALLAX,0f);
-            // canvas.drawWrapped(backgroundTextureWHITESTAR,BG_WHITE_PARALLAX,0f);
-
+            // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
+            // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
+            int blueImageWidth = 0;
+            Vector2 bottomLeft = new Vector2();
+            if (canvas.getWidth() < 1280) {
+                blueImageWidth = 1280;
+                bottomLeft.x = (1280 - canvas.getWidth())/2;
+            } else {
+                blueImageWidth = canvas.getWidth();
+                bottomLeft.x = 1280 + (1280 - canvas.getWidth())/2;
+            }
             canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-            canvas.draw(backgroundTextureREDSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-            canvas.draw(backgroundTextureWHITESTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+            canvas.draw(backgroundTextureLARGESTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+            canvas.draw(backgroundTextureMEDIUMSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+            canvas.draw(backgroundTextureSMALLSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
 
 
             canvas.end();
