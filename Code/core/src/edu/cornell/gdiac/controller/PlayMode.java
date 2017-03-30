@@ -987,7 +987,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 pauseState = 2;
             }
             if (currentPlanet != null) {
-                vecToCenter.set(16f - currentPlanet.getX(), 9f - currentPlanet.getY());
+                vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
                 for (Obstacle o : objects) {
                     if (justLoaded) {
                         o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
@@ -1215,9 +1215,9 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             canvas.begin();
             for (int i = 0; i < planets.size; i++) {
-                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX() * canvas.getWidth() / 32, planets.get(i).getY() * canvas.getHeight() / 18);
+                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX()*40f, planets.get(i).getY() * 40f);
             }
-            canvas.drawText(Integer.toString((int) (Math.pow(avatar.getRadius(), 2) * Math.PI)), massFont, avatar.getX() * canvas.getWidth() / 32, avatar.getY() * canvas.getHeight() / 18);
+            canvas.drawText(Integer.toString((int) (Math.pow(avatar.getRadius(), 2) * Math.PI)), massFont, avatar.getX() * 40f, avatar.getY() * 40f);
             canvas.end();
 
 
