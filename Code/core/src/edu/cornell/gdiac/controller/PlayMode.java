@@ -77,7 +77,7 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String COMMAND_P = "space/planets/command.png";
 
     /** The texture file for the planets */
-    private static final String NEUTRAL_P = "space/planets/start.png";
+    private static final String NEUTRAL_P = "space/planets/neutral.png";
 
     /** The texture file for the planets */
     private static final String DYING_P = "space/planets/dying.png";
