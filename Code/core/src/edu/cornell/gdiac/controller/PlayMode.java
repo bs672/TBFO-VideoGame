@@ -486,9 +486,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
-        backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
-        backgroundTextureMEDIUMSTAR = createTexture(manager,BACKG_FILE_MEDIUM_STARS,true);
-        backgroundTextureSMALLSTAR = createTexture(manager,BACKG_FILE_SMALL_STARS,true);
+        backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,false);
+        backgroundTextureMEDIUMSTAR = createTexture(manager,BACKG_FILE_MEDIUM_STARS,false);
+        backgroundTextureSMALLSTAR = createTexture(manager,BACKG_FILE_SMALL_STARS,false);
 
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
@@ -555,7 +555,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The speed of the bullet after firing */
     private static final float  BULLET_SPEED = 20.0f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = 0.01f;
+    private static final float  BULLET_DAMAGE = 0.05f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
@@ -624,7 +624,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(true);
+        setDebug(false);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);

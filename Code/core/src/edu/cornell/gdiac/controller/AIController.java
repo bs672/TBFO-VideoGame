@@ -41,7 +41,7 @@ public class AIController {
     /** epsilon for distance from orbiting planet */
     private static final float EPSILON = 0.1f;
     /** firing cooldown time */
-    private static final int COOLDOWN = 6;
+    private static final int COOLDOWN = 9;
     /** distance from orbiting planet */
     private static final float ORBIT_DISTANCE = 3.0f;
 
