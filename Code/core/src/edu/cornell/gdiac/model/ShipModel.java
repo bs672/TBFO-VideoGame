@@ -18,6 +18,8 @@ public class ShipModel extends CapsuleObstacle{
     private boolean inOrbit;
     private boolean aggroed;
     private int firingCooldown;
+    private int burstCount=20;
+    private int delay;
     private float range;
 
     private static final float AGGRO_RANGE = 8.0f;
@@ -53,6 +55,18 @@ public class ShipModel extends CapsuleObstacle{
 
     public void decCooldown() {firingCooldown--; }
 
+    public void setBurstCount(int b) {burstCount = b; }
+
+    public int getBurstCount() {return burstCount; }
+
+    public void decBurstCount() {burstCount --; }
+
+    public void setDelay(int d) {delay = d; }
+
+    public int getDelay() {return delay; }
+
+    public void decDelay() {delay --; }
+
     public float getMoveSpeed() {return MOVE_SPEED; }
 
     /**
@@ -75,6 +89,7 @@ public class ShipModel extends CapsuleObstacle{
         type = t;
         setName("ship");
         firingCooldown = 0;
+        delay=0;
     }
 
     //Creates a Ship with predetermined width and height at given position.
@@ -84,6 +99,7 @@ public class ShipModel extends CapsuleObstacle{
         type = t;
         setName("ship");
         firingCooldown = 0;
+        delay=0;
         range = AGGRO_RANGE;
     }
 

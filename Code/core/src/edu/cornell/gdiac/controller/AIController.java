@@ -41,7 +41,11 @@ public class AIController {
     /** epsilon for distance from orbiting planet */
     private static final float EPSILON = 0.1f;
     /** firing cooldown time */
-    private static final int COOLDOWN = 9;
+    private static final int COOLDOWN = 200;
+    /** burst amount */
+    private static final int BURSTCOUNT = 10;
+    /** burst delay */
+    private static final int DELAY = 5;
     /** distance from orbiting planet */
     private static final float ORBIT_DISTANCE = 3.0f;
 
@@ -144,17 +148,48 @@ public class AIController {
     //Shoots if the ship is in range of oob
     public void shootInRange(ShipModel s){
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
+        System.out.print("Cooldown: ");
+        System.out.println(s.getCooldown());
             if (s.getCooldown() == 0) {
-                if(tempVec1.len()<=s.getAggroRange()) {
-                    tempVec1.scl(1f / tempVec1.len());
-                    bulletData.add(s.getX() + tempVec1.x);
-                    bulletData.add(s.getY() + tempVec1.y);
-                    bulletData.add(tempVec1.x * 10);
-                    bulletData.add(tempVec1.y * 10);
-                    s.setCooldown(COOLDOWN);
+              //  System.out.println("Cooldown Over");
+                //for (int i = 0; i < 2; i++) {
+                //while (s.getBurstCount() != 0) {
+                System.out.print("Ammo: ");
+                System.out.println(s.getBurstCount());
+                if (s.getBurstCount() != 0) {
+                   // System.out.println("Has Ammo");
+                    System.out.print("Delay: ");
+                    System.out.println(s.getDelay());
+                    if (s.getDelay() == 0) {
+                       // System.out.println("Allowed to shoot");
+                        if (tempVec1.len() <= s.getAggroRange()) {
+                            tempVec1.scl(1f / tempVec1.len());
+                            bulletData.add(s.getX() + tempVec1.x);
+                            bulletData.add(s.getY() + tempVec1.y);
+                            bulletData.add(tempVec1.x * 10);
+                            bulletData.add(tempVec1.y * 10);
+                            System.out.println("Shot a bullet");
+                        }
+                        s.decBurstCount();
+                       // System.out.println("Decrease Ammo");
+                        s.setDelay(DELAY);
+                       // System.out.println("Reset Delay");
+                    }
+                    else {
+                        s.decDelay();
+                      //  System.out.println("Decrease Delay");
+                    }
                 }
-            } else
+                else {
+                    System.out.println("No Ammo");
+                    s.setCooldown(COOLDOWN);
+                    s.setBurstCount(BURSTCOUNT);
+                    System.out.println("Reset both counts");
+                }
+            }
+            else {
                 s.decCooldown();
+            }
     }
 
     public void aggroPathfind(ShipModel s) {

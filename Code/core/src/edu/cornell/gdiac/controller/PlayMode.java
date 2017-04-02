@@ -555,7 +555,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The speed of the bullet after firing */
     private static final float  BULLET_SPEED = 20.0f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = 0.05f;
+    private static final float  BULLET_DAMAGE = 0.00f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
