@@ -259,6 +259,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //variables for playerControls()
     boolean jump = false;
     float moveDirection = 0f;
+    private boolean mute = true;
 
     private boolean jumping = false;
 
@@ -979,7 +980,8 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
                 currentPlanet = planets.get(closestPlanet);
-                SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+                if(!mute)
+                    SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
                 avatar.applyForceZero();
             }
         }
@@ -1023,7 +1025,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Make Oob jump
     public void jump(){
-        SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
+        if(!mute)
+            SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
         avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
         lastPlanet = currentPlanet;
         currentPlanet = null;
@@ -1169,7 +1172,8 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public void removeBullet(Obstacle bullet) {
         bullet.markRemoved(true);
-        SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
+        if(!mute)
+            SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
     }
 
     /**

@@ -93,16 +93,18 @@ public class AIController {
                 peacefulPathfind(s);
                 shootInRange(s);
             }
+            // set the ship's orientation to the correct angle
             float desiredAngle = (float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2);
-            float newAngle;
-            if(s.getAngle() > 6)
-                s.setAngle(s.getAngle() - 2*(float)Math.PI);
-            if(s.getAngle() > 0 && desiredAngle < 0)
-                newAngle = s.getAngle() + (float)((desiredAngle + 2*Math.PI) - s.getAngle()) / 10;
-            else
-                newAngle = s.getAngle() + ((desiredAngle) - s.getAngle()) / 10;
-//            s.setAngle(s.getAngle() + (newAngle - s.getAngle()) / 10);
-            s.setAngle(newAngle);
+            if(desiredAngle < 0)
+                desiredAngle += (float)(Math.PI * 2);
+            float difference = desiredAngle - s.getAngle();
+            if(difference < -Math.PI)
+                difference += 2*Math.PI;
+            else if(difference > Math.PI)
+                difference -= 2*Math.PI;
+            s.setAngle(s.getAngle() + difference / 10);
+            if(s.getAngle() >= Math.PI * 2)
+                s.setAngle(s.getAngle() - (float)Math.PI * 2);
             s.setOldPosition(s.getPosition());
         }
     }
