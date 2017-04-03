@@ -93,7 +93,16 @@ public class AIController {
                 peacefulPathfind(s);
                 shootInRange(s);
             }
-            s.setAngle((float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2));
+            float desiredAngle = (float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2);
+            float newAngle;
+            if(s.getAngle() > 6)
+                s.setAngle(s.getAngle() - 2*(float)Math.PI);
+            if(s.getAngle() > 0 && desiredAngle < 0)
+                newAngle = s.getAngle() + (float)((desiredAngle + 2*Math.PI) - s.getAngle()) / 10;
+            else
+                newAngle = s.getAngle() + ((desiredAngle) - s.getAngle()) / 10;
+//            s.setAngle(s.getAngle() + (newAngle - s.getAngle()) / 10);
+            s.setAngle(newAngle);
             s.setOldPosition(s.getPosition());
         }
     }
@@ -148,18 +157,18 @@ public class AIController {
     //Shoots if the ship is in range of oob
     public void shootInRange(ShipModel s){
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
-        System.out.print("Cooldown: ");
-        System.out.println(s.getCooldown());
+//        System.out.print("Cooldown: ");
+//        System.out.println(s.getCooldown());
             if (s.getCooldown() == 0) {
               //  System.out.println("Cooldown Over");
                 //for (int i = 0; i < 2; i++) {
                 //while (s.getBurstCount() != 0) {
-                System.out.print("Ammo: ");
-                System.out.println(s.getBurstCount());
+//                System.out.print("Ammo: ");
+//                System.out.println(s.getBurstCount());
                 if (s.getBurstCount() != 0) {
                    // System.out.println("Has Ammo");
-                    System.out.print("Delay: ");
-                    System.out.println(s.getDelay());
+//                    System.out.print("Delay: ");
+//                    System.out.println(s.getDelay());
                     if (s.getDelay() == 0) {
                        // System.out.println("Allowed to shoot");
                         if (tempVec1.len() <= s.getAggroRange()) {
@@ -168,7 +177,7 @@ public class AIController {
                             bulletData.add(s.getY() + tempVec1.y);
                             bulletData.add(tempVec1.x * 10);
                             bulletData.add(tempVec1.y * 10);
-                            System.out.println("Shot a bullet");
+//                            System.out.println("Shot a bullet");
                         }
                         s.decBurstCount();
                        // System.out.println("Decrease Ammo");
@@ -181,10 +190,10 @@ public class AIController {
                     }
                 }
                 else {
-                    System.out.println("No Ammo");
+//                    System.out.println("No Ammo");
                     s.setCooldown(COOLDOWN);
                     s.setBurstCount(BURSTCOUNT);
-                    System.out.println("Reset both counts");
+//                    System.out.println("Reset both counts");
                 }
             }
             else {
@@ -242,7 +251,6 @@ public class AIController {
         else {
             s.setVX(s.getVX()*0.75f);
             s.setVY(s.getVY()*0.75f);
-            s.setAngle((float)(Math.atan2(s.getVY(), s.getVX()) - Math.PI/2));
         }
     }
 

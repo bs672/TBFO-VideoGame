@@ -908,7 +908,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 ShipModel sh;
                 if (Math.random()<0.5){
                     sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 1);
-                    sh.setAggroRange(20f);
+//                    sh.setAggroRange(20f);
                 }
                 else if (Math.random() < 0.75){
                     sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
