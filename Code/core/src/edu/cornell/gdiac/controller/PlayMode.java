@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
-import edu.cornell.gdiac.model.BulletModel;
-import edu.cornell.gdiac.model.OobModel;
-import edu.cornell.gdiac.model.PlanetModel;
-import edu.cornell.gdiac.model.ShipModel;
+import edu.cornell.gdiac.model.*;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
@@ -593,6 +590,7 @@ public class PlayMode extends WorldController implements ContactListener {
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
+    private ComplexOobModel complexAvatar;
     /** Reference to current planet Oob's on */
     private PlanetModel currentPlanet;
     /** last planet on */
@@ -625,7 +623,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(false);
+        setDebug(true);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -874,6 +872,15 @@ public class PlayMode extends WorldController implements ContactListener {
         avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
         addObject(avatar);
 
+        complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
+        complexAvatar.setDrawScale(scale);
+        complexAvatar.setTexture(avatarTexture);
+        complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
+        complexAvatar.setSensor(true);
+        complexAvatar.setName("ComplexOob");
+        complexAvatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
+        addObject(complexAvatar);
+
         aiController = new AIController(ships, planets, commandPlanets, avatar, scale);
     }
 
@@ -1072,6 +1079,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        complexAvatar.applyForce(new Vector2(0,-10));
         if (pauseState == 0) {
             width = canvas.getWidth() / 32;
             height = canvas.getHeight() / 18;
@@ -1208,14 +1216,10 @@ public class PlayMode extends WorldController implements ContactListener {
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 oldAvatarRad = avatar.getRadius();
                 loseMass(BULLET_DAMAGE);
-//                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
-               //avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 oldAvatarRad = avatar.getRadius();
                 loseMass(BULLET_DAMAGE);
-//                avatar.setRadius(oldAvatarRad - BULLET_DAMAGE);
-                //avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
             }
 
             if (bd1.getName().equals("ship") && bd2.getName().equals("Oob")) {
