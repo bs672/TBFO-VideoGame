@@ -5,11 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import edu.cornell.gdiac.model.obstacle.*;
-import com.badlogic.gdx.utils.Array;
 
 
 /**
@@ -24,8 +22,8 @@ import com.badlogic.gdx.utils.Array;
 public class ComplexOobModel extends ComplexObstacle {
 
     private WheelObstacle center;
-    private Array<WheelObstacle> outerRing;
     private float radius;
+    private Vector2 forceVec;
 
     /**
      * Creates a new ragdoll with its head at the given position.
@@ -35,24 +33,25 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public ComplexOobModel(float x, float y, float rad, int ringCircles) {
         super(x,y);
+        forceVec = new Vector2();
+        setPosition(x,y);
         this.radius = rad;
-        center = new WheelObstacle(x, y, rad / 5);
+        setBodyType(BodyDef.BodyType.DynamicBody);
+        center = new WheelObstacle(x, y, 0.05f);
         center.setBodyType(BodyDef.BodyType.DynamicBody);
         center.setName("OobCenter");
+        body = center.getBody();
         bodies.add(center);
         float angle = 0;
-        outerRing = new Array<WheelObstacle>();
         for(int i = 0; i < ringCircles; i++) {
-            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), rad / 15);
+            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / ringCircles));
             wheel.setBodyType(BodyDef.BodyType.DynamicBody);
-            wheel.setName("ring" + Integer.toString(i));
+            wheel.setName("Oob");
             bodies.add(wheel);
-            outerRing.add(wheel);
             angle += 2 * Math.PI / ringCircles;
         }
         for(Obstacle b : bodies)
             b.setGravityScale(0);
-
     }
 
 
@@ -65,7 +64,7 @@ public class ComplexOobModel extends ComplexObstacle {
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
             jointDef.length = radius;
-            jointDef.dampingRatio = 0.5f;
+            jointDef.dampingRatio = 0.3f;
             jointDef.frequencyHz = 5;
             Joint joint = world.createJoint(jointDef);
             joints.add(joint);
@@ -113,5 +112,51 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public void applyForce(Vector2 v) {
         center.getBody().setLinearVelocity(v);
+    }
+
+    public float getRadius() { return radius + 0.02f; }
+
+    public void setRadius(float f) {
+        for(Joint j : joints)
+            ((DistanceJoint)j).setLength(f);
+    }
+
+    public float getMass() {
+        return (float)(2*Math.PI*Math.pow(radius, 2));
+    }
+
+    public WheelObstacle getCenter() {return center; }
+
+    public void setX(float f) {
+        center.setX(f);
+        float angle = 0;
+        for(int i = 1; i < bodies.size; i++) {
+            bodies.get(i).setX(f + radius*(float)Math.cos(angle));
+            angle += 2 * Math.PI / (bodies.size - 1);
+        }
+    }
+    public void setY(float f) {
+        center.setY(f);
+        float angle = 0;
+        for(int i = 1; i < bodies.size; i++) {
+            bodies.get(i).setY(f + radius*(float)Math.sin(angle));
+            angle += 2 * Math.PI / (bodies.size - 1);
+        }
+    }
+
+    public float getX() {return center.getX();}
+    public float getY() {return center.getY();}
+
+    public Vector2 getPosition() {return center.getPosition();}
+
+    public void addToForceVec(Vector2 v){forceVec.add(v);}
+
+    public void resetForceVec() {forceVec.set(0,0);}
+
+    public void applyForce() {applyForce(forceVec);}
+
+    public void setLinearVelocity(Vector2 v) {
+        for(Obstacle o : bodies)
+            o.setLinearVelocity(v);
     }
 }

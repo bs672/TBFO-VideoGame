@@ -249,7 +249,6 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion bullet_texture;
 
     //variables
-    Vector2 mvmtDir;
     Vector2 smallestRad;
     float rad;
     float oldAvatarRad;
@@ -846,6 +845,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create Ships
+        /*
         for (int ii = 0; ii <SHIPS.length; ii++) {
             ShipModel sh = new ShipModel(SHIPS[ii][0], SHIPS[ii][1], SHIPS[ii][2]);
             sh.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -859,19 +859,19 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.setGravityScale(0.0f);
             ships.add(sh);
             addObject(sh);
-        }
+        }*/
 
         // Create Oob
-        avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
-        avatar.setDrawScale(scale);
-        avatar.setTexture(avatarTexture);
-        avatar.setBodyType(BodyDef.BodyType.DynamicBody);
-        avatar.setSensor(true);
-        avatar.setName("Oob");
-        currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
-        avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
-        addObject(avatar);
+//        avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
+//        avatar.setDrawScale(scale);
+//        avatar.setTexture(avatarTexture);
+//        avatar.setBodyType(BodyDef.BodyType.DynamicBody);
+//        avatar.setSensor(true);
+//        avatar.setName("Oob");
+//        avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
+//        addObject(avatar);
 
+        currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
         complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
@@ -881,7 +881,7 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
         addObject(complexAvatar);
 
-        aiController = new AIController(ships, planets, commandPlanets, avatar, scale);
+        aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
 
 
@@ -901,7 +901,7 @@ public class PlayMode extends WorldController implements ContactListener {
             return false;
         }
 
-        if (!isFailure() && avatar.getY() < -1) {
+        if (!isFailure() && complexAvatar.getY() < -1) {
             setFailure(true);
             return false;
         }
@@ -911,7 +911,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
-            if (c.canSpawn()){
+            if (c.canSpawn() && false){
                 //SPAWN SHIP
                 ShipModel sh;
                 if (Math.random()<0.5){
@@ -962,82 +962,88 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    public void scrollScreen() {
+        if(currentPlanet != null) {
+            vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
+            for (Obstacle o : objects) {
+                if (justLoaded) {
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
+                    justLoaded = false;
+                } else
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+            }
+        }
+        else {
+            for(Obstacle o : objects) {
+                o.setX(o.getX() - complexAvatar.getCenter().getVX() / 60);
+                o.setY(o.getY() - complexAvatar.getCenter().getVY() / 60);
+            }
+        }
+    }
+
     //Finds closest planet
     public void findPlanet(){
-        if (currentPlanet==null) {
-            for(Obstacle o : objects) {
-                if(o.equals(avatar)) {
-                    o.setX(o.getX() - avatar.getVX() / 60);
-                    o.setY(o.getY() - avatar.getVY() / 60);
-                }
-                else {
-                    o.setX(o.getX() - avatar.getVX() / 30);
-                    o.setY(o.getY() - avatar.getVY() / 30);
-                }
+        Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+        int closestPlanet = 0;
+        Vector2 radDir;
+        for (int i = 0; i < planets.size; i++) {
+            radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
+            if (radDir.len() < smallestRad.len() && !lastPlanet.equals(planets.get(i))) {
+                smallestRad = radDir.cpy();
+                closestPlanet = i;
             }
-            Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
-            int closestPlanet = 0;
-            Vector2 radDir;
-            for (int i = 0; i < planets.size; i++) {
-                radDir = new Vector2(avatar.getX() - planets.get(i).getX(), avatar.getY() - planets.get(i).getY());
-                if (radDir.len() < smallestRad.len() && !lastPlanet.equals(planets.get(i))) {
-                    smallestRad = radDir.cpy();
-                    closestPlanet = i;
-                }
-            }
-            if (smallestRad.len() < planets.get(closestPlanet).getRadius() + avatar.getRadius() + EPSILON) {
-                currentPlanet = planets.get(closestPlanet);
-                if(!mute)
-                    SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
-                avatar.applyForceZero();
-            }
+        }
+        if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
+            currentPlanet = planets.get(closestPlanet);
+            if(!mute)
+                SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+//            complexAvatar.applyForceZero();
         }
     }
 
     //Oob loses mass
     public void loseMass(float massLoss){
-        float oldOobMass = avatar.getMass();
-        if(avatar.getRadius()>=OOB_DEATH_RADIUS) {
-            avatar.setRadius((float) Math.sqrt((oldOobMass - massLoss) / Math.PI));
-            avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad, avatar.getRadius() / oldAvatarRad));
+        float oldOobMass = complexAvatar.getMass();
+        if(complexAvatar.getRadius()>=OOB_DEATH_RADIUS) {
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass - massLoss) / Math.PI));
+            complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
     }
 
     //Siphon closest planet
     public void siphonPlanet(){
-        float oldOobMass = avatar.getMass();
+        float oldOobMass = complexAvatar.getMass();
         float oldPlanMass = currentPlanet.getMass();
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-        avatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
+        complexAvatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
-        avatar.scalePicScale(new Vector2(avatar.getRadius() / oldAvatarRad,avatar.getRadius() / oldAvatarRad));
+        complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad,complexAvatar.getRadius() / oldAvatarRad));
     }
 
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            avatar.setX(currentPlanet.getX() + smallestRad.x + mvmtDir.x);
-            avatar.setY(currentPlanet.getY() + smallestRad.y + mvmtDir.y);
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(2f));
         } else if (moveDirection == -1) {
-            avatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
-            avatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-2f));
+//            complexAvatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
+//            complexAvatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
         }
-        avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
-        smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-        smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
-        avatar.setX(currentPlanet.getX() + smallestRad.x);
-        avatar.setY(currentPlanet.getY() + smallestRad.y);
-        avatar.setMovement(new Vector2(0, 0));
+//        avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
+//        smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
+//        smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
+//        complexAvatar.setX(currentPlanet.getX() + smallestRad.x);
+//        complexAvatar.setY(currentPlanet.getY() + smallestRad.y);
+//        avatar.setMovement(new Vector2(0, 0));
     }
 
     //Make Oob jump
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        avatar.setMovement(smallestRad.scl((float)(Math.sqrt(avatar.getMass()))/2));
+        complexAvatar.setLinearVelocity(smallestRad.nor().scl(-10));
         lastPlanet = currentPlanet;
         currentPlanet = null;
-        avatar.applyForce();
     }
 
     //Determines whether the player is using mouse or keyboard and sets associated variables
@@ -1049,7 +1055,7 @@ public class PlayMode extends WorldController implements ContactListener {
             Vector2 mouse = InputController.getInstance().getCursor();
             mouse = mouse.sub(currentPlanet.getPosition());
             float angle = mouse.angle();
-            Vector2 oob = avatar.getPosition();
+            Vector2 oob = complexAvatar.getPosition();
             oob.sub(currentPlanet.getPosition());
             float angle2 = oob.angle();
             if(Math.abs(angle - angle2) <= THRESHOLD)
@@ -1079,8 +1085,8 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-        complexAvatar.applyForce(new Vector2(0,-10));
         if (pauseState == 0) {
+            scrollScreen();
             width = canvas.getWidth() / 32;
             height = canvas.getHeight() / 18;
             if (InputController.getInstance().getChange()) {
@@ -1094,24 +1100,19 @@ public class PlayMode extends WorldController implements ContactListener {
                 //We win the game!
                 pauseState = 1;
             }
-            if (avatar.getX() < 0 || avatar.getX() > width || avatar.getY() < 0 || avatar.getY() > height)
+            if (complexAvatar.getX() < 0 || complexAvatar.getX() > width || complexAvatar.getY() < 0 || complexAvatar.getY() > height)
                 //Off the screen
                 pauseState = 2;
-            if (avatar.getRadius() <= OOB_DEATH_RADIUS) {
+            if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
                 //Game Over
                 pauseState = 2;
             }
             if (currentPlanet != null) {
-                vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
-                for (Obstacle o : objects) {
-                    if (justLoaded) {
-                        o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
-                        justLoaded = false;
-                    } else
-                        o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
-                }
 
-                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
+                smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
+                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-15));
+
+//                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
 
                 //determines mouse or keyboard controls
                 if (!currentPlanet.isDying()&&currentPlanet.getRadius() < MIN_RADIUS) {
@@ -1131,9 +1132,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     //TODO Play planet explosion sound
                 }
 
-                avatar.applyForceZero();
-                smallestRad.scl((currentPlanet.getRadius() + avatar.getRadius()) / smallestRad.len());
-                mvmtDir = new Vector2(smallestRad.y, -smallestRad.x).scl(1 / (20 * avatar.getRadius()));
                 if (jump) {
                     if(currentPlanet.isDying()){
                         if (currentPlanet.getType() == 1f) {
@@ -1146,7 +1144,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
-                    oldAvatarRad = avatar.getRadius();
+                    oldAvatarRad = complexAvatar.getRadius();
                     if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
                         siphonPlanet();
                     } else if (currentPlanet.getType() == 2f) {
@@ -1155,12 +1153,15 @@ public class PlayMode extends WorldController implements ContactListener {
                     moveAroundPlanet();
                 }
             }
-            avatar.applyForce();
+            else {
+                findPlanet();
+            }
+            complexAvatar.applyForce();
+            complexAvatar.resetForceVec();
 
             // If we use sound, we must remember this.
             SoundController.getInstance().update();
 
-            findPlanet();
 
             loopCommandPlanets();
 
@@ -1214,11 +1215,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 removeBullet(bd2);
 
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
-                oldAvatarRad = avatar.getRadius();
+                oldAvatarRad = complexAvatar.getRadius();
                 loseMass(BULLET_DAMAGE);
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
-                oldAvatarRad = avatar.getRadius();
+                oldAvatarRad = complexAvatar.getRadius();
                 loseMass(BULLET_DAMAGE);
             }
 
@@ -1239,11 +1240,11 @@ public class PlayMode extends WorldController implements ContactListener {
             }
 
             // See if we have landed on the ground.
-            if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
-                    (avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-                avatar.setGrounded(true);
-                sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
-            }
+//            if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
+//                    (avatar.getSensorName().equals(fd1) && avatar != bd2)) {
+//                avatar.setGrounded(true);
+//                sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1270,13 +1271,13 @@ public class PlayMode extends WorldController implements ContactListener {
         Object bd1 = body1.getUserData();
         Object bd2 = body2.getUserData();
 
-        if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
-                (avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-            sensorFixtures.remove(avatar == bd1 ? fix2 : fix1);
-            if (sensorFixtures.size == 0) {
-                avatar.setGrounded(false);
-            }
-        }
+//        if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
+//                (avatar.getSensorName().equals(fd1) && avatar != bd2)) {
+//            sensorFixtures.remove(avatar == bd1 ? fix2 : fix1);
+//            if (sensorFixtures.size == 0) {
+//                avatar.setGrounded(false);
+//            }
+//        }
     }
 
     /** Unused ContactListener method */
@@ -1338,7 +1339,7 @@ public class PlayMode extends WorldController implements ContactListener {
             for (int i = 0; i < planets.size; i++) {
                 canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX()*40f, planets.get(i).getY() * 40f);
             }
-            canvas.drawText(Integer.toString((int) (Math.pow(avatar.getRadius(), 2) * Math.PI)), massFont, avatar.getX() * 40f, avatar.getY() * 40f);
+            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
             canvas.end();
 
 

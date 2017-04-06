@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.BulletModel;
 import edu.cornell.gdiac.model.PlanetModel;
 import edu.cornell.gdiac.model.ShipModel;
+import edu.cornell.gdiac.model.ComplexOobModel;
 import edu.cornell.gdiac.model.OobModel;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.PooledList;
@@ -30,7 +31,7 @@ public class AIController {
     /** All the objects in the world. */
     protected Array<Float> bulletData = new Array<Float>();
     /** Oob */
-    private OobModel avatar;
+    private ComplexOobModel avatar;
     /** draw scale */
     private Vector2 scale;
     /** temp Vector2s */
@@ -54,7 +55,7 @@ public class AIController {
         targetPlanets.put(ship, planet);
     }
 
-    public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, OobModel oob, Vector2 scale) {
+    public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, ComplexOobModel oob, Vector2 scale) {
         this.scale = scale;
         this.ships = ships;
         this.planets = planets;
