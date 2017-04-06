@@ -121,14 +121,15 @@ public class ComplexOobModel extends ComplexObstacle {
         center.getBody().setLinearVelocity(v);
     }
 
+    public Vector2 getLinearVelocity() {return center.getLinearVelocity();}
+
     public float getRadius() { return radius; }
 
     public void setRadius(float f) {
         radius = f;
-        System.out.println(radius);
         for(DistanceJoint j : innerJoints) // the central joints
             j.setLength(radius);
-        for(DistanceJoint j : outerJoints) {
+        for(DistanceJoint j : outerJoints) { // the outer joints
             j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2));
         }
     }

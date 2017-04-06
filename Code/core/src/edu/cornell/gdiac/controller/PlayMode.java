@@ -845,7 +845,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create Ships
-        /*
+
         for (int ii = 0; ii <SHIPS.length; ii++) {
             ShipModel sh = new ShipModel(SHIPS[ii][0], SHIPS[ii][1], SHIPS[ii][2]);
             sh.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -859,7 +859,7 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.setGravityScale(0.0f);
             ships.add(sh);
             addObject(sh);
-        }*/
+        }
 
         // Create Oob
 //        avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
@@ -911,7 +911,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
-            if (c.canSpawn() && false){
+            if (c.canSpawn()){
                 //SPAWN SHIP
                 ShipModel sh;
                 if (Math.random()<0.5){
@@ -1031,25 +1031,17 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(2f));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(1f * complexAvatar.getMass()));
         } else if (moveDirection == -1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-2f));
-//            complexAvatar.setX(currentPlanet.getX() + smallestRad.x - mvmtDir.x);
-//            complexAvatar.setY(currentPlanet.getY() + smallestRad.y - mvmtDir.y);
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-1f * complexAvatar.getMass()));
         }
-//        avatar.setAngle((float)(Math.atan2(smallestRad.y, smallestRad.x) - Math.PI / 2));
-//        smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-//        smallestRad.scl((avatar.getRadius() + currentPlanet.getRadius())/smallestRad.len());
-//        complexAvatar.setX(currentPlanet.getX() + smallestRad.x);
-//        complexAvatar.setY(currentPlanet.getY() + smallestRad.y);
-//        avatar.setMovement(new Vector2(0, 0));
     }
 
     //Make Oob jump
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        complexAvatar.setLinearVelocity(smallestRad.cpy().nor().scl(10));
+        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(10)));
         lastPlanet = currentPlanet;
         currentPlanet = null;
     }
@@ -1118,7 +1110,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-15));
+                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-25));
                     //determines mouse or keyboard controls
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
@@ -1151,12 +1143,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     rad = currentPlanet.getRadius();
                     oldAvatarRad = complexAvatar.getRadius();
                     if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
-                        System.out.println("HERE");
                         siphonPlanet();
                     } else if (currentPlanet.getType() == 2f) {
                         loseMass(POISON);
                     }
+                    if(complexAvatar.getLinearVelocity().len() < 7) {
                         moveAroundPlanet();
+                    }
                 }
             }
             else {
