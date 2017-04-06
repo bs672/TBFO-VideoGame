@@ -969,8 +969,16 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (justLoaded) {
                     o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
                     justLoaded = false;
-                } else
-                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                }
+                else {
+                    if(o.equals(complexAvatar)) {
+                        for(Obstacle p : complexAvatar.getBodies()) {
+                            p.setPosition(p.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                        }
+                    }
+                    else
+                        o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                }
             }
         }
         else {
@@ -995,9 +1003,9 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
+            test = false;
             if(!mute)
                 SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
-//            complexAvatar.applyForceZero();
         }
     }
 
@@ -1041,7 +1049,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        complexAvatar.setLinearVelocity(smallestRad.nor().scl(-10));
+        complexAvatar.setLinearVelocity(smallestRad.cpy().nor().scl(10));
         lastPlanet = currentPlanet;
         currentPlanet = null;
     }
@@ -1074,6 +1082,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    boolean test = true;
     /**
      * The core gameplay loop of this world.
      *
@@ -1108,14 +1117,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 pauseState = 2;
             }
             if (currentPlanet != null) {
-
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
                 complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-15));
-
-//                smallestRad = new Vector2(avatar.getX() - currentPlanet.getX(), avatar.getY() - currentPlanet.getY());
-
-                //determines mouse or keyboard controls
-                if (!currentPlanet.isDying()&&currentPlanet.getRadius() < MIN_RADIUS) {
+                    //determines mouse or keyboard controls
+                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
                     currentPlanet.setTexture(dying_P_Texture);
                 }
@@ -1133,7 +1138,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 if (jump) {
-                    if(currentPlanet.isDying()){
+                    if (currentPlanet.isDying()) {
                         if (currentPlanet.getType() == 1f) {
                             commandPlanets.removeValue(currentPlanet, true);
                         }
@@ -1146,14 +1151,17 @@ public class PlayMode extends WorldController implements ContactListener {
                     rad = currentPlanet.getRadius();
                     oldAvatarRad = complexAvatar.getRadius();
                     if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                        System.out.println("HERE");
                         siphonPlanet();
                     } else if (currentPlanet.getType() == 2f) {
                         loseMass(POISON);
                     }
-                    moveAroundPlanet();
+                        moveAroundPlanet();
                 }
             }
             else {
+                if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
+                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
                 findPlanet();
             }
             complexAvatar.applyForce();

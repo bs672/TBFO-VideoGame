@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import edu.cornell.gdiac.model.obstacle.*;
+import com.badlogic.gdx.utils.Array;
 
 
 /**
@@ -24,6 +25,8 @@ public class ComplexOobModel extends ComplexObstacle {
     private WheelObstacle center;
     private float radius;
     private Vector2 forceVec;
+    private Array<DistanceJoint> innerJoints;
+    private Array<DistanceJoint> outerJoints;
 
     /**
      * Creates a new ragdoll with its head at the given position.
@@ -42,6 +45,8 @@ public class ComplexOobModel extends ComplexObstacle {
         center.setName("OobCenter");
         body = center.getBody();
         bodies.add(center);
+        innerJoints = new Array<DistanceJoint>();
+        outerJoints = new Array<DistanceJoint>();
         float angle = 0;
         for(int i = 0; i < ringCircles; i++) {
             WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / ringCircles));
@@ -64,10 +69,11 @@ public class ComplexOobModel extends ComplexObstacle {
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
             jointDef.length = radius;
-            jointDef.dampingRatio = 0.3f;
+            jointDef.dampingRatio = 0.5f;
             jointDef.frequencyHz = 5;
             Joint joint = world.createJoint(jointDef);
             joints.add(joint);
+            innerJoints.add((DistanceJoint)joint);
 
 
             // making joints between outer ring
@@ -84,6 +90,7 @@ public class ComplexOobModel extends ComplexObstacle {
             jointDef.length = 2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2);
             joint = world.createJoint(jointDef);
             joints.add(joint);
+            outerJoints.add((DistanceJoint)joint);
         }
 
         return true;
@@ -114,15 +121,20 @@ public class ComplexOobModel extends ComplexObstacle {
         center.getBody().setLinearVelocity(v);
     }
 
-    public float getRadius() { return radius + 0.02f; }
+    public float getRadius() { return radius; }
 
     public void setRadius(float f) {
-        for(Joint j : joints)
-            ((DistanceJoint)j).setLength(f);
+        radius = f;
+        System.out.println(radius);
+        for(DistanceJoint j : innerJoints) // the central joints
+            j.setLength(radius);
+        for(DistanceJoint j : outerJoints) {
+            j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2));
+        }
     }
 
     public float getMass() {
-        return (float)(2*Math.PI*Math.pow(radius, 2));
+        return (float)(Math.PI*Math.pow(radius, 2));
     }
 
     public WheelObstacle getCenter() {return center; }
@@ -158,5 +170,12 @@ public class ComplexOobModel extends ComplexObstacle {
     public void setLinearVelocity(Vector2 v) {
         for(Obstacle o : bodies)
             o.setLinearVelocity(v);
+    }
+
+    public Vector2 getForceVec() {return forceVec;}
+
+    public void setPosition(Vector2 v) {
+        for(Obstacle o : bodies)
+            o.setPosition(v);
     }
 }
