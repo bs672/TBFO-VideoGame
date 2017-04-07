@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.*;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
+import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 
@@ -249,13 +250,14 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion bullet_texture;
 
     //variables
-    Vector2 smallestRad;
-    float rad;
-    float oldAvatarRad;
-    //variables for playerControls()
+    private Vector2 smallestRad;
+    private float rad;
+    private float oldAvatarRad;
+    //variables for player controls
     boolean jump = false;
-    float moveDirection = 0f;
+    private float moveDirection = 0f;
     private boolean mute = true;
+    private Vector2 launchVec;
 
     private boolean jumping = false;
 
@@ -632,6 +634,7 @@ public class PlayMode extends WorldController implements ContactListener {
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
+        launchVec = new Vector2();
     }
 
     /**
@@ -1003,7 +1006,6 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
-            test = false;
             if(!mute)
                 SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
         }
@@ -1046,8 +1048,8 @@ public class PlayMode extends WorldController implements ContactListener {
         currentPlanet = null;
     }
 
-    //Determines whether the player is using mouse or keyboard and sets associated variables
-    public void playerControls(){
+    //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
+    public void groundPlayerControls(){
         if(InputController.getInstance().didPause()){
             pauseState = 3;
         }
@@ -1074,7 +1076,21 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
-    boolean test = true;
+    //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's in the air
+    public void airPlayerControls() {
+        if(InputController.getInstance().didPause()){
+            pauseState = 3;
+        }
+        if (control==1){
+            launchVec = InputController.getInstance().getCursor().sub(complexAvatar.getPosition());
+            jump = InputController.getInstance().getMouseJump();
+        }
+        else{
+            jump = InputController.getInstance().getJump();
+            moveDirection = InputController.getInstance().getHorizontal();
+        }
+    }
+
     /**
      * The core gameplay loop of this world.
      *
@@ -1116,7 +1132,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentPlanet.setDying(true);
                     currentPlanet.setTexture(dying_P_Texture);
                 }
-                playerControls();
+                groundPlayerControls();
 
                 //forced jump
                 if (currentPlanet.getRadius() < DEATH_RADIUS) {
@@ -1153,6 +1169,20 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             else {
+                airPlayerControls();
+                if(jump) {
+                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(-complexAvatar.getRadius() + 1.5f));
+                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.4f);
+                    expulsion.setName("expulsion");
+                    expulsion.setDrawScale(scale);
+                    expulsion.setTexture(avatarTexture);
+                    complexAvatar.scalePicScale(new Vector2(.3f*0.4f, .3f*0.4f));
+                    addObject(expulsion);
+                    expulsion.setLinearVelocity(launchVec.cpy().scl(-1));
+                    loseMass((float)Math.PI * 0.16f);
+                    Vector2 velocityChange = launchVec.cpy().scl(expulsion.getMass() / complexAvatar.getMass());
+                    complexAvatar.getLinearVelocity().add(velocityChange);
+                }
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
                 findPlanet();
