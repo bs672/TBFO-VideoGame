@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -15,12 +16,14 @@ import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 
+
+
 /**
  * Created by Matt Loughney on 2/28/2017.
  */
 public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
-    private static final String OOB_FILE  = "space/oob_2.png";
+    private static final String OOB_FILE  = "space/Oob/oob_2.png";
 
 
     /** The texture file for the planets */
@@ -71,6 +74,14 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String POISON_P_3 = "space/planets/sun.png";
     private static final String POISON_P_4 = "space/planets/sun.png";
 
+   // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
+
+    //Animator sun = new Animator();
+
+
+
+   // Animation test2= new Animation(20,)
+
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
 
@@ -108,9 +119,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     /** Texture file for ship */
-    private static final String SHIP_TEXTURE = "space/ship.png";
+    private static final String SHIP_TEXTURE = "space/ships/ship.png";
     /** The texture file for the bullets */
-    private static final String BULLET_TEXTURE = "space/bullet.png";
+    private static final String BULLET_TEXTURE = "space/ships/bullet.png";
+    /** The texture file for mass expulsion */
+    private static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
 
     /** Parallax values */
@@ -121,11 +134,11 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
     /** The sound file for a jump */
-    private static final String JUMP_FILE = "space/jump.mp3";
+    private static final String JUMP_FILE = "space/audio/jump.mp3";
     /** The sound file for a bullet fire */
-    private static final String PEW_FILE = "space/pew.mp3";
+    private static final String PEW_FILE = "space/audio/pew.mp3";
     /** The sound file for a bullet collision */
-    private static final String POP_FILE = "space/plop.mp3";
+    private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(16f, 20f);
     /** Oob's initial radius */
@@ -133,7 +146,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float SIPHON = 0.02f;
 
-    private static final float POISON = 0.02f;
+    private static final float POISON = -0.02f;
 
     private static final float MIN_RADIUS = 1f;
 
@@ -214,6 +227,9 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Planet texture */
     private TextureRegion dying_P_Texture;
 
+    /** Expulsion texture */
+    private TextureRegion expulsion_Texture;
+
 
 
 
@@ -282,6 +298,9 @@ public class PlayMode extends WorldController implements ContactListener {
         platformAssetState = AssetState.LOADING;
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
+
+        manager.load(EXPULSION_TEXTURE, Texture.class);
+        assets.add(EXPULSION_TEXTURE);
 
         manager.load(BLUE_P_1, Texture.class);
         assets.add(BLUE_P_1);
@@ -421,6 +440,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
         avatarTexture = createTexture(manager,OOB_FILE,false);
+        expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
         blue_P_1_Texture = createTexture(manager,BLUE_P_1,false);
         blue_P_2_Texture = createTexture(manager,BLUE_P_2,false);
@@ -554,7 +574,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The speed of the bullet after firing */
     private static final float  BULLET_SPEED = 20.0f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = 0.00f;
+    private static final float  BULLET_DAMAGE = -0.00f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
@@ -609,6 +629,8 @@ public class PlayMode extends WorldController implements ContactListener {
     /** the font for the mass text on each object */
     private BitmapFont massFont;
 
+    private int returnToPlanetTimer;
+
     private float width;
     private float height;
     /** if we've just loaded */
@@ -635,6 +657,7 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
         launchVec = new Vector2();
+        returnToPlanetTimer = 0;
     }
 
     /**
@@ -994,34 +1017,39 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Finds closest planet
     public void findPlanet(){
+        returnToPlanetTimer++;
         Vector2 smallestRad = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
         int closestPlanet = 0;
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && !lastPlanet.equals(planets.get(i))) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
         }
+        System.out.println(smallestRad.len());
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
+            returnToPlanetTimer = 0;
             if(!mute)
                 SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
         }
     }
 
     //Oob loses mass
-    public void loseMass(float massLoss){
+    public void changeMass(float massChange){
+        oldAvatarRad = complexAvatar.getRadius();
         float oldOobMass = complexAvatar.getMass();
         if(complexAvatar.getRadius()>=OOB_DEATH_RADIUS) {
-            complexAvatar.setRadius((float) Math.sqrt((oldOobMass - massLoss) / Math.PI));
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + massChange) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
     }
 
     //Siphon closest planet
     public void siphonPlanet(){
+        oldAvatarRad = complexAvatar.getRadius();
         float oldOobMass = complexAvatar.getMass();
         float oldPlanMass = currentPlanet.getMass();
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
@@ -1082,7 +1110,7 @@ public class PlayMode extends WorldController implements ContactListener {
             pauseState = 3;
         }
         if (control==1){
-            launchVec = InputController.getInstance().getCursor().sub(complexAvatar.getPosition());
+            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
             jump = InputController.getInstance().getMouseJump();
         }
         else{
@@ -1126,12 +1154,14 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-25));
+                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
                     //determines mouse or keyboard controls
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
                     currentPlanet.setTexture(dying_P_Texture);
                 }
+
+
                 groundPlayerControls();
 
                 //forced jump
@@ -1157,31 +1187,35 @@ public class PlayMode extends WorldController implements ContactListener {
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
-                    oldAvatarRad = complexAvatar.getRadius();
                     if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
                         siphonPlanet();
                     } else if (currentPlanet.getType() == 2f) {
-                        loseMass(POISON);
+                        changeMass(POISON);
                     }
                     if(complexAvatar.getLinearVelocity().len() < 7) {
                         moveAroundPlanet();
                     }
+                    if(smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
+                        lastPlanet = currentPlanet;
+                        currentPlanet = null;
+                    }
                 }
             }
-            else {
+            else if(currentPlanet == null) { // we're floating in space
                 airPlayerControls();
                 if(jump) {
-                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(-complexAvatar.getRadius() + 1.5f));
-                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.4f);
+                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
+                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.25f);
+                    expulsion.setGravityScale(0);
                     expulsion.setName("expulsion");
                     expulsion.setDrawScale(scale);
-                    expulsion.setTexture(avatarTexture);
-                    complexAvatar.scalePicScale(new Vector2(.3f*0.4f, .3f*0.4f));
+                    expulsion.setTexture(expulsion_Texture);
+                    expulsion.scalePicScale(new Vector2(0.3f, 0.3f));
                     addObject(expulsion);
-                    expulsion.setLinearVelocity(launchVec.cpy().scl(-1));
-                    loseMass((float)Math.PI * 0.16f);
-                    Vector2 velocityChange = launchVec.cpy().scl(expulsion.getMass() / complexAvatar.getMass());
-                    complexAvatar.getLinearVelocity().add(velocityChange);
+                    expulsion.setLinearVelocity(launchVec.cpy().scl(2));
+                    changeMass((float)Math.PI * -0.04f);
+                    Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
                 }
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1212,8 +1246,6 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public void removeBullet(Obstacle bullet) {
         bullet.markRemoved(true);
-        if(!mute)
-            SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
     }
 
     /**
@@ -1247,11 +1279,15 @@ public class PlayMode extends WorldController implements ContactListener {
 
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 oldAvatarRad = complexAvatar.getRadius();
-                loseMass(BULLET_DAMAGE);
+                changeMass(BULLET_DAMAGE);
+                if(!mute)
+                    SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 oldAvatarRad = complexAvatar.getRadius();
-                loseMass(BULLET_DAMAGE);
+                changeMass(BULLET_DAMAGE);
+                if(!mute)
+                    SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
             }
 
             if (bd1.getName().equals("ship") && bd2.getName().equals("Oob")) {
@@ -1268,6 +1304,15 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             else if(bd2.getName().equals("planet") && bd1.getName().equals("Oob")) {
                 currentPlanet = (PlanetModel)bd2;
+            }
+
+            if(bd1.getName().equals("Oob") && bd2.getName().equals("expulsion")) {
+                bd2.markRemoved(true);
+                changeMass(((WheelObstacle)bd2).getMass());
+            }
+            else if(bd1.getName().equals("expulsion") && bd2.getName().equals("Oob")) {
+                bd1.markRemoved(true);
+                changeMass(((WheelObstacle)bd1).getMass());
             }
 
             // See if we have landed on the ground.
@@ -1350,13 +1395,14 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(backgroundTextureMEDIUMSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
             canvas.draw(backgroundTextureSMALLSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
 
-
             canvas.end();
 
             canvas.begin();
             for (Obstacle obj : objects) {
                 obj.draw(canvas);
+
             }
+
             canvas.end();
 
             if (isDebug()) {
