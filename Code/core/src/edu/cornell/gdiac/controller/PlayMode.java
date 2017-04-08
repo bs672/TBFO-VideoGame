@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,12 +15,14 @@ import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 
+
+
 /**
  * Created by Matt Loughney on 2/28/2017.
  */
 public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
-    private static final String OOB_FILE  = "space/oob_2.png";
+    private static final String OOB_FILE  = "space/Oob/oob_2.png";
 
 
     /** The texture file for the planets */
@@ -70,6 +73,14 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String POISON_P_3 = "space/planets/sun.png";
     private static final String POISON_P_4 = "space/planets/sun.png";
 
+   // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
+
+    //Animator sun = new Animator();
+
+
+
+   // Animation test2= new Animation(20,)
+
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
 
@@ -107,9 +118,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     /** Texture file for ship */
-    private static final String SHIP_TEXTURE = "space/ship.png";
+    private static final String SHIP_TEXTURE = "space/ships/ship.png";
     /** The texture file for the bullets */
-    private static final String BULLET_TEXTURE = "space/bullet.png";
+    private static final String BULLET_TEXTURE = "space/ships/bullet.png";
 
 
     /** Parallax values */
@@ -120,11 +131,11 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
     /** The sound file for a jump */
-    private static final String JUMP_FILE = "space/jump.mp3";
+    private static final String JUMP_FILE = "space/audio/jump.mp3";
     /** The sound file for a bullet fire */
-    private static final String PEW_FILE = "space/pew.mp3";
+    private static final String PEW_FILE = "space/audio/pew.mp3";
     /** The sound file for a bullet collision */
-    private static final String POP_FILE = "space/plop.mp3";
+    private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(16f, 20f);
     /** Oob's initial radius */
@@ -255,7 +266,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //variables for playerControls()
     boolean jump = false;
     float moveDirection = 0f;
-    private boolean mute = true;
+    private boolean mute = false;
 
     private boolean jumping = false;
 
@@ -1182,8 +1193,6 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public void removeBullet(Obstacle bullet) {
         bullet.markRemoved(true);
-        if(!mute)
-            SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
     }
 
     /**
@@ -1218,10 +1227,14 @@ public class PlayMode extends WorldController implements ContactListener {
             if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
                 oldAvatarRad = complexAvatar.getRadius();
                 loseMass(BULLET_DAMAGE);
+                if(!mute)
+                    SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
             }
             else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
                 oldAvatarRad = complexAvatar.getRadius();
                 loseMass(BULLET_DAMAGE);
+                if(!mute)
+                    SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
             }
 
             if (bd1.getName().equals("ship") && bd2.getName().equals("Oob")) {
@@ -1320,13 +1333,14 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(backgroundTextureMEDIUMSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
             canvas.draw(backgroundTextureSMALLSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
 
-
             canvas.end();
 
             canvas.begin();
             for (Obstacle obj : objects) {
                 obj.draw(canvas);
+
             }
+
             canvas.end();
 
             if (isDebug()) {
