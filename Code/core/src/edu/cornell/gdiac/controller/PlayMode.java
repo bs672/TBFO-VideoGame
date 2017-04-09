@@ -1400,9 +1400,7 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.begin();
             for (Obstacle obj : objects) {
                 obj.draw(canvas);
-
             }
-
             canvas.end();
 
             if (isDebug()) {
