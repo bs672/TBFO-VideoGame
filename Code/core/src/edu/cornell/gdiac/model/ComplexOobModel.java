@@ -63,7 +63,7 @@ public class ComplexOobModel extends ComplexObstacle {
         setPosition(x,y);
         this.radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
-        center = new WheelObstacle(x, y, 0.05f);
+        center = new WheelObstacle(x, y, 0.5f);
         center.setBodyType(BodyDef.BodyType.DynamicBody);
         center.setName("OobCenter");
         body = center.getBody();
