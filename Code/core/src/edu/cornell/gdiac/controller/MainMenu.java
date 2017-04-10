@@ -112,6 +112,17 @@ public class MainMenu extends WorldController implements ContactListener {
     private static final String NEUTRAL_P = "space/planets/neutral.png";
 
     /** The texture file for the planets */
+    private static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
+
+    /** The texture file for the planets */
+    private static final String PLAY_TEXTURE = "space/menus/play_planet.png";
+
+    /** The texture file for the planets */
+    private static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
+
+    private static final String TITLE = "space/menus/title.png";
+
+    /** The texture file for the planets */
     private static final String DYING_P = "space/planets/dying.png";
 
     /** Texture file for background image */
@@ -123,7 +134,6 @@ public class MainMenu extends WorldController implements ContactListener {
     /** Texture file for background image */
     private static final String BACKG_FILE_SMALL_STARS = "space/background/small-stars.png";
 
-    private static final String TITLE = "space/menus/title.png";
 
 
 
@@ -177,6 +187,15 @@ public class MainMenu extends WorldController implements ContactListener {
 
     /** Planet texture */
     private TextureRegion neutral_P_Texture;
+
+    /** Settings texture */
+    private TextureRegion settings_Texture;
+
+    /** Levels texture */
+    private TextureRegion levels_Texture;
+
+    /** Play texture */
+    private TextureRegion play_Texture;
 
     /** Expulsion texture */
     private TextureRegion expulsion_Texture;
@@ -236,6 +255,15 @@ public class MainMenu extends WorldController implements ContactListener {
 
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
+
+        manager.load(SETTINGS_TEXTURE, Texture.class);
+        assets.add(SETTINGS_TEXTURE);
+
+        manager.load(PLAY_TEXTURE, Texture.class);
+        assets.add(PLAY_TEXTURE);
+
+        manager.load(LEVELS_TEXTURE, Texture.class);
+        assets.add(LEVELS_TEXTURE);
 
         manager.load(BLUE_P_1, Texture.class);
         assets.add(BLUE_P_1);
@@ -363,11 +391,14 @@ public class MainMenu extends WorldController implements ContactListener {
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
+        settings_Texture = createTexture(manager,SETTINGS_TEXTURE, false);
+        levels_Texture = createTexture(manager,LEVELS_TEXTURE, false);
+        play_Texture = createTexture(manager,PLAY_TEXTURE, false);
 
         TEXTURES[0] = neutral_P_Texture;
-        TEXTURES[1] = neutral_P_Texture;
-        TEXTURES[2] = neutral_P_Texture;
-        TEXTURES[3] = neutral_P_Texture;
+        TEXTURES[1] = settings_Texture;
+        TEXTURES[2] = levels_Texture;
+        TEXTURES[3] = play_Texture;
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
@@ -429,10 +460,10 @@ public class MainMenu extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {0.0f, 3.0f, 1f, 3f},   // NOTHING
-            {25, 10f, 1f, 3f},  //SETTINGS
-            {15.0f, 3f, 1f, 3f},    //LEVEL SELECT
-            {7.0f, 4.5f, 1f, 3f},   //PLAY
+            {0.0f, 3.0f, 1.1f, 3f},   // NOTHING
+            {25, 10f, 1.1f, 3f},  //SETTINGS
+            {15.0f, 3f, 1.1f, 3f},    //LEVEL SELECT
+            {7.0f, 4.5f, 1.1f, 3f},   //PLAY
 
     };
 
@@ -947,12 +978,6 @@ public class MainMenu extends WorldController implements ContactListener {
             }
             canvas.endDebug();
         }
-
-        canvas.begin();
-        canvas.drawText("Play", massFont, planets.get(3).getX() * 38f, planets.get(3).getY() * 41f);
-        canvas.drawText("Settings", massFont, planets.get(1).getX() * 38f, planets.get(1).getY() * 41f);
-        canvas.drawText("Levels", massFont, planets.get(2).getX() * 38f, planets.get(2).getY() * 41f);
-        canvas.end();
     }
 }
 

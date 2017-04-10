@@ -1059,7 +1059,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
                 }
                 else {
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 2);
+                    // TODO: CHANGE THIS TO TYPE 2 after sorting it out
+                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1072,6 +1073,15 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setGravityScale(0.0f);
                 addObject(sh);
                 aiController.addShip(sh, c);
+            }
+        }
+    }
+
+    public void loopConvertPlanet() {
+        for (int i = 0; i < planets.size; i++) {
+            if (planets.get(i).getConvert() > 180) {
+                planets.get(i).setType(1);
+                commandPlanets.add(planets.get(i));
             }
         }
     }
@@ -1345,6 +1355,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
             loopCommandPlanets();
+
+            loopConvertPlanet();
 
             aiController.update(dt);
 

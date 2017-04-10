@@ -11,6 +11,7 @@ public class ShipModel extends CapsuleObstacle{
 
     private static final float WIDTH = 0.3f;
     private static final float HEIGHT = 0.6f;
+    private static final float MOTHER_MASS = 0.6f;
 
     private static final float DAMPING = 5.0f;
     private static final float MOVE_SPEED = 0.1f;
@@ -21,12 +22,13 @@ public class ShipModel extends CapsuleObstacle{
     private int burstCount=20;
     private int delay;
     private float range;
+    private float mass;
 
     private static final float AGGRO_RANGE = 8.0f;
 
 
     //TODO type of the ship
-    //Type 0 is default, Type 1 is Guard Ship, Type 2
+    //Type 0 is default, Type 1 is Guard Ship, Type 2 is Mothership
     private static float type;
 
     public Vector2 getOldPosition() {return oldPosition; }
@@ -87,6 +89,9 @@ public class ShipModel extends CapsuleObstacle{
         setFixedRotation(true);
 
         type = t;
+        if (t == 2) {
+            mass = MOTHER_MASS;
+        }
         setName("ship");
         firingCooldown = 0;
         delay=0;
@@ -97,6 +102,9 @@ public class ShipModel extends CapsuleObstacle{
         super(x, y, WIDTH, HEIGHT);
         setFixedRotation(true);
         type = t;
+        if (t == 2) {
+            mass = MOTHER_MASS;
+        }
         setName("ship");
         firingCooldown = 0;
         delay=0;
