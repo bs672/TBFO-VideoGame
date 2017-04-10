@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
+import edu.cornell.gdiac.util.FilmStrip;
 import edu.cornell.gdiac.view.GameCanvas;
 
 /**
@@ -44,6 +45,9 @@ public abstract class SimpleObstacle extends Obstacle {
 
 	/** The width and height scale for the texture */
 	protected  Vector2 picScale = new Vector2(1f,1f);
+
+    /** Reference to object's sprite for drawing */
+    private FilmStrip objSprite;
 	
 	/// BodyDef Methods
 	public void scalePicScale(Vector2 v) { picScale.x *= v.x; picScale.y *= v.y; }
@@ -774,6 +778,34 @@ public abstract class SimpleObstacle extends Obstacle {
 		texture = value;
 		origin.set(texture.getRegionWidth()/2.0f, texture.getRegionHeight()/2.0f);
 	}
+
+
+
+
+    /**
+     * Returns the image filmstrip for this ship
+     *
+     * This value should be loaded by the GameMode and set there. However, we
+     * have to be prepared for this to be null at all times
+     *
+     * @return the image texture for this ship
+     */
+    public FilmStrip getFilmStrip() {
+        return objSprite;
+    }
+
+    /**
+     * Sets the image texture for this ship
+     *
+     * This value should be loaded by the GameMode and set there. However, we
+     * have to be prepared for this to be null at all times
+     *
+     * param value the image texture for this ship
+     */
+    public void setFilmStrip(FilmStrip value) {
+        objSprite = value;
+    }
+
 	
 	/**
 	 * Draws the physics object.
