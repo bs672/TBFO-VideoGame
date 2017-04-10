@@ -1170,9 +1170,9 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(10 + complexAvatar.getMass()));
         } else if (moveDirection == -1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(-10 - complexAvatar.getMass()));
         }
     }
 
@@ -1344,8 +1344,19 @@ public class PlayMode extends WorldController implements ContactListener {
             shootBullet();
         }
         else{
-            pauseState = 0;
-            listener.exitScreen(this, 0);
+            // Go to Pause Menu
+            if (pauseState == 3) {
+                pauseState = 0;
+                listener.exitScreen(this, 3);
+                return;
+            }
+            // Go to Main Menu
+            else {
+                pauseState = 0;
+                listener.exitScreen(this, 0);
+                return;
+            }
+
         }
     }
 
@@ -1480,7 +1491,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Timing values from parent loop
      */
     public void draw(float dt) {
-        if (pauseState == 0) {
             canvas.clear();
 
             //float camera = -carPosition;
@@ -1527,48 +1537,8 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
             canvas.end();
 
+        }
 
-//        // Draw foreground last.
-//        canvas.begin();
-//        canvas.draw(foregroundTexture, FORE_COLOR,  0, 0, canvas.getWidth(), canvas.getHeight());
-//        selector.draw(canvas);
-//        canvas.end();
-        }
-    else{
-            //This is what we draw when the game is "paused"
-            canvas.clear();
-            displayFont.setColor(Color.GREEN);
-            canvas.begin();
-            canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-            switch(pauseState){
-                case 1:
-                    canvas.drawTextCentered("VICTORY! Press p to restart", massFont, 0.0f);
-                    break;
-                case 2:
-                    canvas.drawTextCentered("DEFEAT! Press p to restart", massFont, 0.0f);
-                    break;
-                case 3:
-                    canvas.drawTextCentered("Game is paused. Press p to resume", massFont, 0.0f);
-                    break;
-            }
-            canvas.end();
-            if(InputController.getInstance().didPause()&&inPause == 1){
-                //Done with pause
-                inPause = 0;
-                if(pauseState ==1 || pauseState == 2){
-                    pauseState = 0;
-                    reset();
-                }
-                else{
-                    pauseState = 0;
-                }
-            }
-            else{
-                //Stay in pause
-                inPause = 1;
-            }
-        }
-    }
 }
 
 

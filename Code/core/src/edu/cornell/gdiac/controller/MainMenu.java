@@ -365,7 +365,6 @@ public class MainMenu extends WorldController implements ContactListener {
         TEXTURES[1] = neutral_P_Texture;
         TEXTURES[2] = neutral_P_Texture;
         TEXTURES[3] = neutral_P_Texture;
-        TEXTURES[4] = neutral_P_Texture;
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
@@ -430,7 +429,6 @@ public class MainMenu extends WorldController implements ContactListener {
             {0.0f, 3.0f, 1f, 3f},   // NOTHING
             {25, 10f, 1f, 3f},  //SETTINGS
             {15.0f, 3f, 1f, 3f},    //LEVEL SELECT
-            {25.0f, 4.5f, 1f, 3f},  // EDITOR
             {7.0f, 4.5f, 1f, 3f},   //PLAY
 
     };
@@ -728,10 +726,15 @@ public class MainMenu extends WorldController implements ContactListener {
             complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
             //determines mouse or keyboard controls
 
-            for (int i = 1; i < planets.size; i++) {
+            for (int i = 1; i <= 2; i++) {
                 if (currentPlanet == planets.get(i)) {
                     listener.exitScreen(this, i);
+                    return;
                 }
+            }
+            if (currentPlanet == planets.get(3)) {
+                listener.exitScreen(this, 4);
+                return;
             }
 
             groundPlayerControls();
@@ -938,10 +941,9 @@ public class MainMenu extends WorldController implements ContactListener {
         }
 
         canvas.begin();
-        canvas.drawText("Play", massFont, planets.get(4).getX() * 38f, planets.get(4).getY() * 41f);
+        canvas.drawText("Play", massFont, planets.get(3).getX() * 38f, planets.get(3).getY() * 41f);
         canvas.drawText("Settings", massFont, planets.get(1).getX() * 38f, planets.get(1).getY() * 41f);
         canvas.drawText("Levels", massFont, planets.get(2).getX() * 38f, planets.get(2).getY() * 41f);
-        canvas.drawText("Editor", massFont, planets.get(3).getX() * 38f, planets.get(3).getY() * 41f);
         canvas.end();
     }
 }

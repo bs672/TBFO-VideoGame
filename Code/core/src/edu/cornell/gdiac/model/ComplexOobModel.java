@@ -63,7 +63,7 @@ public class ComplexOobModel extends ComplexObstacle {
         setPosition(x,y);
         this.radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
-        center = new WheelObstacle(x, y, 0.5f);
+        center = new WheelObstacle(x, y, 0.4f);
         center.setBodyType(BodyDef.BodyType.DynamicBody);
         center.setName("OobCenter");
         body = center.getBody();
@@ -250,6 +250,8 @@ public class ComplexOobModel extends ComplexObstacle {
         for(DistanceJoint j : outerJoints) { // the outer joints
             j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2));
         }
+        for(int i = 1; i < bodies.size; i++)
+            ((WheelObstacle)bodies.get(i)).setRadius(radius*(float)Math.sin(Math.PI / (bodies.size - 1)));
     }
 
     public float getMass() {
