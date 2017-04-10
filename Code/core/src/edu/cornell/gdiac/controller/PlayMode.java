@@ -692,6 +692,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        returnToPlanetTimer = 0;
         justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );
 
@@ -1133,7 +1134,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 30) || returnToPlanetTimer >= 30)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
