@@ -1,5 +1,6 @@
 package edu.cornell.gdiac.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,6 +10,9 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import edu.cornell.gdiac.model.obstacle.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.graphics.*;
+import edu.cornell.gdiac.view.g2d.*;
 
 
 /**
@@ -28,6 +32,24 @@ public class ComplexOobModel extends ComplexObstacle {
     private Array<DistanceJoint> innerJoints;
     private Array<DistanceJoint> outerJoints;
 
+    /** The variant of the spritebatch for drawing vertices */
+    private VertexBatch batch;
+    /** The buffer containing the vertex data to draw */
+    private VertexBuffer vertices;
+    /** The indices to define triangles from the vertices */
+    private short[] indices;
+
+    /** The image to texture the vertices with */
+    private Texture img;
+    /** The transform to center the image on the screen */
+    private Affine2 transform;
+
+    /** The number of edges to approximate a circle */
+    private int size;
+
+    /** A vector to track the last mouse position */
+    private Array<Vector2> edgePosns;
+
     /**
      * Creates a new ragdoll with its head at the given position.
      *
@@ -37,10 +59,11 @@ public class ComplexOobModel extends ComplexObstacle {
     public ComplexOobModel(float x, float y, float rad, int ringCircles) {
         super(x,y);
         forceVec = new Vector2();
+        size = ringCircles;
         setPosition(x,y);
         this.radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
-        center = new WheelObstacle(x, y, 0.05f);
+        center = new WheelObstacle(x, y, 0.5f);
         center.setBodyType(BodyDef.BodyType.DynamicBody);
         center.setName("OobCenter");
         body = center.getBody();
@@ -57,8 +80,17 @@ public class ComplexOobModel extends ComplexObstacle {
         }
         for(Obstacle b : bodies)
             b.setGravityScale(0);
-    }
 
+        // Create the VertexBatch for drawing
+        batch = new VertexBatch();
+        img = new Texture("space/Oob/oob2.png");
+
+        // Create a transform to center the polygon
+        transform = new Affine2();
+        transform.setToTranslation(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+
+        mapTexture();
+    }
 
     protected boolean createJoints(World world) {
         for(int i = 1; i < bodies.size; i++) {
@@ -96,6 +128,92 @@ public class ComplexOobModel extends ComplexObstacle {
         return true;
     }
 
+    /**
+     * Renders the polygon to the screen
+     *
+     * We do not need an update() call for this class, that is handled by the
+     * InputProcessor methods.
+     */
+    public void draw () {
+        for(int i = 0; i < size; i++)
+            moveIndex(i, bodies.get(i+1).getX(), bodies.get(i+1).getY());
+        Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(img,vertices,indices,transform);
+        batch.end();
+    }
+
+    /**
+     * The vertex is nudged by its change in position.
+     *
+     * @param newX   The x-coordinate in screen space (origin top left)
+     * @param newY   The y-coordinate in screen space (origin top left)
+     */
+    public void moveIndex(int edgeIndex, float newX, float newY) {
+        System.out.println(edgePosns.get(edgeIndex));
+        float dx = newX-edgePosns.get(edgeIndex).x;
+        float dy = edgePosns.get(edgeIndex).y-newY; // Inverts the y-axis
+        vertices.nudge(edgeIndex,dx,dy);
+        edgePosns.get(edgeIndex).set(newX,newY);
+    }
+
+    /**
+     * Resets the polygon to match the current global state.
+     *
+     * maps the texture coordinates to the coordinates of Oob's outer ring of circles
+     */
+    public void mapTexture() {
+        // Cache objects to create the vertex buffer
+        Vector2 position = new Vector2(0,0);
+        Vector2 texcoord = new Vector2(0,0);
+
+        // Go around in a circle, starting at the right
+        float step = (float)(Math.PI*2)/size;
+        vertices = new VertexBuffer(size+1);
+        vertices.append(position, Color.WHITE, texcoord);
+
+        edgePosns = new Array<Vector2>();
+
+        float dx, dy;
+        for(int i = 0; i < size; i++) {
+            // Compute position on unit circle
+            double angle = i*step;
+            dx = (float)Math.cos(angle);
+            dy = (float)Math.sin(angle);
+
+            // Set the position
+            position.set(bodies.get(i+1).getPosition());
+
+            // Set the texture coords.
+            texcoord.set(dx/2,dy/2);
+
+            // append to vertex buffer
+            vertices.append(position, Color.WHITE, texcoord);
+            edgePosns.add(position);
+        }
+
+        // Create the indices as a fan to the right
+        indices = new short[size*3];
+        for(int i = 0; i < size-1; i++) {
+            indices[3*i  ]  = 0;
+            indices[3*i+1]  = (short)(i+1);
+            indices[3*i+2]  = (short)(i+2);
+        }
+        indices[3*size-3]  = 0;
+        indices[3*size-2]  = (short)(3*size-1);
+        indices[3*size-1]  = (short)(3*size);
+    }
+
+    /**
+     * Called when the Application is destroyed.
+     *
+     * This is preceded by a call to pause().
+     */
+    public void dispose () {
+        batch.dispose();
+        img.dispose();
+    }
 
     /**
      * Sets the object texture for drawing purposes.

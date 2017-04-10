@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.*;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
+import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Files;
@@ -28,6 +29,19 @@ import com.badlogic.gdx.Files;
  * Created by Matt Loughney on 2/28/2017.
  */
 public class PlayMode extends WorldController implements ContactListener {
+
+
+    private ScreenListener listener;
+
+    /**
+     * Sets the ScreenListener for this mode
+     *
+     * The ScreenListener will respond to requests to quit.
+     */
+    public void setScreenListener(ScreenListener listener) {
+        this.listener = listener;
+    }
+
     /** The texture file for the character avatar (no animation) */
 
 
@@ -1124,7 +1138,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 closestPlanet = i;
             }
         }
-        System.out.println(smallestRad.len());
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
             returnToPlanetTimer = 0;
@@ -1331,7 +1344,8 @@ public class PlayMode extends WorldController implements ContactListener {
             shootBullet();
         }
         else{
-
+            pauseState = 0;
+            listener.exitScreen(this, 0);
         }
     }
 
@@ -1496,9 +1510,7 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.begin();
             for (Obstacle obj : objects) {
                 obj.draw(canvas);
-
             }
-
             canvas.end();
 
             if (isDebug()) {
