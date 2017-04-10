@@ -1156,9 +1156,9 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(10 + complexAvatar.getMass()));
         } else if (moveDirection == -1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(-10 - complexAvatar.getMass()));
         }
     }
 
