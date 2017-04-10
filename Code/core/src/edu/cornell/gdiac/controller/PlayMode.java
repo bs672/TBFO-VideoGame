@@ -1,7 +1,9 @@
 package edu.cornell.gdiac.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,12 +11,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.*;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.Files;
 
 
 
@@ -23,6 +29,8 @@ import com.badlogic.gdx.utils.Array;
  */
 public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
+
+
     private static final String OOB_FILE  = "space/Oob/oob_2.png";
 
 
@@ -140,9 +148,9 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(16f, 20f);
+    private static Vector2 OOB_POS = new Vector2(0f, 0f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = 1f;
+    private  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
 
     private static final float SIPHON = 0.02f;
 
@@ -580,8 +588,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     // Since these appear only once, we do not care about the magic numbers.
     // In an actual game, this information would go in a data file.
-
-
+    /*
     private static final float[][] PLANETS = {
             {0.0f, 0.5f, 2.8f, 3f},
             {5.0f, 12.5f, 1.2f, 2f},
@@ -607,7 +614,9 @@ public class PlayMode extends WorldController implements ContactListener {
             {-5.0f, 17f, 0},
             {15.0f, 2f, 0}
     };
-
+    */
+    private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
+    private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -638,7 +647,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** AIController */
     private AIController aiController;
 
-
+    //private String jsonString = "{\"sceneName\":\"MainScene\",\"composite\":{\"sImages\":[{\"uniqueId\":4,\"tags\":[],\"customVars\":\"Type:1\",\"x\":6.6625,\"y\":3.9375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":0.75,\"originY\":1.6875,\"layerName\":\"Default\",\"imageName\":\"ship\"},{\"uniqueId\":5,\"tags\":[],\"customVars\":\"Type:3\",\"x\":5.55,\"y\":1.7000003,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":1,\"layerName\":\"Default\",\"imageName\":\"command\"},{\"uniqueId\":6,\"tags\":[],\"x\":-3.375,\"y\":0.42499995,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":4.06875,\"originY\":4.06875,\"zIndex\":2,\"layerName\":\"Default\",\"imageName\":\"sun\"},{\"uniqueId\":7,\"tags\":[],\"x\":-3.1125002,\"y\":-2.9875,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":3,\"layerName\":\"Default\",\"imageName\":\"neutral\"},{\"uniqueId\":8,\"tags\":[],\"x\":2.1125,\"y\":-0.4375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":3,\"originY\":3,\"zIndex\":4,\"layerName\":\"Default\",\"imageName\":\"purple\"},{\"uniqueId\":9,\"tags\":[],\"x\":0.7750001,\"y\":-0.76250005,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":4.375,\"originY\":4.375,\"zIndex\":5,\"layerName\":\"Default\",\"imageName\":\"oob2\"}],\"layers\":[{\"layerName\":\"Default\",\"isVisible\":true}]},\"physicsPropertiesVO\":{}}";
     /**
      * Creates and initialize a new instance of the platformer game
      *
@@ -658,6 +667,9 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
+        String jsonString = json.readString();
+        jsonParse(jsonString);
     }
 
     /**
@@ -687,6 +699,90 @@ public class PlayMode extends WorldController implements ContactListener {
         populateLevel();
     }
 
+    //Reads the data from a JSON file and turns it into game data
+    //When creating overlap2d levels, make sure the starting purple planet + oob is positioned at (5.33, 2.67)
+    private void jsonParse(String data){
+        JsonValue full = new JsonReader().parse(data);
+        full = full.get(1).get(0);
+        JsonValue temp;
+        String objectName;
+        Array<Array<Float>> planetArray = new Array<Array<Float>>();
+        Array<Array<Float>> shipArray = new Array<Array<Float>>();
+        Array<Float> tempArray;
+        float scale = 0f;
+        float xPos = 0f;
+        float yPos = 0f;
+        //starting planet always same
+        tempArray = new Array<Float>();
+        tempArray.add(0.0f);
+        tempArray.add(0.0f);
+        tempArray.add(2.5f);
+        tempArray.add(3.0f);
+        planetArray.add(tempArray);
+        for(int i = 0; i<full.size; i++){
+            temp = full.get(i);
+            objectName = temp.getString("imageName");
+            if(temp.has("scaleX"))
+                scale = temp.getFloat("scaleX");
+            else
+                scale = 1f;
+            if(temp.has("x"))
+                xPos = temp.getFloat("x");
+            if(temp.has("y"))
+                yPos = temp.getFloat("y");
+            if(objectName.equals("neutral")){
+                //planets are 6 overlap2d units
+                //0.4 scale is good starting
+                //2.5 size is good starting in-game
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add(3.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("command")){
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add(1.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("sun")){
+                //sun is 8 overlap2d units
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+4)*3);
+                tempArray.add((yPos+4)*3);
+                tempArray.add(2.5f*scale/0.3f);
+                tempArray.add(2.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("blue")){//We're currently using "BLUE" planets for regular
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add(0.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("ship")){
+                //ship is 1.5 overlap2d units
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+0.75f)*3);
+                tempArray.add((yPos+0.75f)*3);
+                tempArray.add(0.0f); //cannot search for type of ship yet
+                shipArray.add(tempArray);
+            }
+            else if(objectName.equals("oob2")){
+                OOB_RADIUS = scale / 0.2f;
+            }
+        }
+        PLANETS = planetArray;
+        SHIPS = shipArray;
+
+    }
+
     /**
      * Lays out the game geography.
      */
@@ -694,9 +790,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Planets
         String pname = "planet";
-        for (int ii = 0; ii <PLANETS.length; ii++) {
+        for (int ii = 0; ii <PLANETS.size; ii++) {
             PlanetModel obj;
-            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
+            obj = new PlanetModel(PLANETS.get(ii).get(0), PLANETS.get(ii).get(1), PLANETS.get(ii).get(2), PLANETS.get(ii).get(3));
             obj.setBodyType(BodyDef.BodyType.StaticBody);
             obj.setDensity(BASIC_DENSITY);
             obj.setFriction(BASIC_FRICTION);
@@ -872,8 +968,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Ships
 
-        for (int ii = 0; ii <SHIPS.length; ii++) {
-            ShipModel sh = new ShipModel(SHIPS[ii][0], SHIPS[ii][1], SHIPS[ii][2]);
+        for (int ii = 0; ii <SHIPS.size; ii++) {
+            ShipModel sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2));
             sh.setBodyType(BodyDef.BodyType.DynamicBody);
             sh.setDensity(BASIC_DENSITY);
             sh.setFriction(BASIC_FRICTION);
@@ -897,7 +993,7 @@ public class PlayMode extends WorldController implements ContactListener {
 //        avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
 //        addObject(avatar);
 
-        currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
+        currentPlanet = planets.get(0); //The first planet is always the starting planet
         complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
