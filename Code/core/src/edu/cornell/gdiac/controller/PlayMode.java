@@ -1188,6 +1188,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
     public void groundPlayerControls(){
+        if (InputController.getInstance().didReset()) {
+            reset();
+        }
         if(InputController.getInstance().didPause()){
             pauseState = 3;
         }
@@ -1216,6 +1219,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's in the air
     public void airPlayerControls() {
+        if (InputController.getInstance().didReset()) {
+            reset();
+        }
         if(InputController.getInstance().didPause()){
             pauseState = 3;
         }

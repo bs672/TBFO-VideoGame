@@ -568,12 +568,11 @@ public class PauseMenu extends WorldController implements ContactListener {
     public void scrollScreen() {
     }
 
-
-
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
     public void groundPlayerControls(){
-        if (InputController.getInstance().didReset()) {
-            reset();
+        if (InputController.getInstance().didPause()) {
+            listener.exitScreen(this, 3);
+            return;
         }
         if (control==1){
             jump = InputController.getInstance().getMouseJump();

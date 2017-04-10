@@ -172,6 +172,9 @@ public class MainMenu extends WorldController implements ContactListener {
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
 
+    /** Timer for resetting the menu */
+    private int jumpTime = 0;
+
     /** Planet texture */
     private TextureRegion neutral_P_Texture;
 
@@ -488,7 +491,7 @@ public class MainMenu extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
-        jumpedOnce = false;
+        jumpTime = 0;
     }
 
     /**
@@ -497,8 +500,8 @@ public class MainMenu extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
-        jumpedOnce = false;
         justLoaded = true;
+        jumpTime = 0;
         Vector2 gravity = new Vector2(world.getGravity() );
 
         for(Obstacle obj : objects) {
@@ -722,6 +725,7 @@ public class MainMenu extends WorldController implements ContactListener {
         }
 
         if (currentPlanet != null) {
+            jumpTime = 0;
             smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
             complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
             //determines mouse or keyboard controls
@@ -751,6 +755,10 @@ public class MainMenu extends WorldController implements ContactListener {
             }
         }
         else if(currentPlanet == null) { // we're floating in space
+            jumpTime++;
+            if (jumpTime > 180) {
+                reset();
+            }
             airPlayerControls();
             if(jump) {
                 Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
