@@ -62,7 +62,13 @@ public class AIController {
         targetPlanets = new ObjectMap<ShipModel, PlanetModel>();
         for(int i = 0; i < ships.size; i++)
             if (ships.get(i).getType() == 2) {
-                targetPlanets.put(ships.get(i), commandPlanets.get(0));
+                PlanetModel bigPlanet = planets.get(0);
+                for (int j = 0; j < planets.size; j++) {
+                    if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
+                        bigPlanet = planets.get(j);
+                    }
+                }
+                targetPlanets.put(ships.get(i), bigPlanet);
             }
             else {
                 targetPlanets.put(ships.get(i), planets.get(i));
@@ -90,9 +96,13 @@ public class AIController {
                     peacefulPathfind(s);
 
             }
-            else if(s.getType()==1 || s.getType()==2){
+            else if(s.getType()==1){
                 peacefulPathfind(s);
                 shootInRange(s);
+            }
+            else if(s.getType() ==2){
+                findBigPlanet(s);
+                convertInRange(s);
             }
             // set the ship's orientation to the correct angle
             float desiredAngle = (float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2);
@@ -157,6 +167,51 @@ public class AIController {
         }
     }
 
+    /**
+     * try to get into orbit of biggest planet
+     *
+     * @param s
+     */
+    public void findBigPlanet(ShipModel s) {
+
+        tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
+        s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
+        if(s.getInOrbit()) {
+            if(wanderers.contains(s))
+                wanderers.remove(s);
+            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
+            tempVec2.set(-tempVec1.y,tempVec1.x);
+            tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
+            tempVec1.set(s.getPosition().cpy().add(tempVec2));
+            tempVec1.sub(targetPlanets.get(s).getPosition());
+            tempVec1.scl((targetPlanets.get(s).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+            s.setPosition(targetPlanets.get(s).getPosition().cpy().add(tempVec1));
+        }
+        else {
+            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
+            if(tempVec1.len() < targetPlanets.get(s).getRadius() + ORBIT_DISTANCE) {
+                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+                s.setPosition(s.getPosition().cpy().add(tempVec1));
+            }
+            else {
+                if(!wanderers.contains(s)) {
+                    tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+                    int bigPlanet = 0;
+                    for (int j = 0; j < planets.size; j++) {
+                        if ((planets.get(j).getRadius() > planets.get(bigPlanet).getRadius()) && (planets.get(j).getType() != 1)) {
+                            bigPlanet = j;
+                        }
+                    }
+                    targetPlanets.put(s, planets.get(bigPlanet));
+                    wanderers.add(s);
+                }
+                tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
+                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+                s.setPosition(s.getPosition().cpy().add(tempVec1));
+            }
+        }
+    }
+
     //Shoots if the ship is in range of oob
     public void shootInRange(ShipModel s){
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
@@ -185,6 +240,13 @@ public class AIController {
             else {
                 s.decCooldown();
             }
+    }
+
+    // Convert if ship is in range
+    public void convertInRange(ShipModel s){
+        if (s.getInOrbit()) {
+            targetPlanets.get(s).convert();
+        }
     }
 
     public void aggroPathfind(ShipModel s) {
