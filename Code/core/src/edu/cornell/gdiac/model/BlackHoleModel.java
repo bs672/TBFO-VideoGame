@@ -38,12 +38,14 @@ public class BlackHoleModel extends WheelObstacle{
      * @param x  		          Initial x position of the avatar center
      * @param y  		          Initial y position of the avatar center
      * @param radius		      The object radius in physics units
-     * @param outVelocity         The type of the planet
+     * @param ov                  The type of the planet
      */
-    public BlackHoleModel(float x, float y, float radius, Vector2 outVelocity) {
+    public BlackHoleModel(float x, float y, float radius, Vector2 ov) {
         super(x,y,radius);
         setDensity(PLANET_DENSITY);
         setFixedRotation(true);
+        setRadius(radius);
+        setOutVelocity(ov);
 
         setName("black hole");
     }
