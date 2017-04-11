@@ -51,8 +51,8 @@ public class PauseMenu extends WorldController implements ContactListener {
     private static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
     private static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
     private static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
-    private static final String RESUME_TEXTURE = "space/menus/play_planet.png"; //TODO: FIX THIS
-    private static final String RESUME_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
+    private static final String RESUME_TEXTURE = "space/menus/resume_planet.png";
+    private static final String RESUME_HOVER_TEXTURE = "space/menus/resume_planet_hover.png";
 
     // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
 
@@ -387,10 +387,10 @@ public class PauseMenu extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {23.0f, 4f, 1.1f, 3f},   // MAIN MENU
-            {23, 10f, 1.1f, 3f},  //SETTINGS
-            {10.0f, 3f, 1.1f, 3f},    //LEVEL SELECT
-            {15.0f, 8.5f, 1.1f, 3f},   //PLAY
+            {23.0f, 4f, 1.3f, 3f},   // MAIN MENU
+            {23, 10f, 1.3f, 3f},  //SETTINGS
+            {10.0f, 3f, 1.3f, 3f},    //LEVEL SELECT
+            {15.0f, 8.5f, 1.5f, 3f},   //PLAY
 
     };
 
