@@ -621,6 +621,9 @@ public class PauseMenu extends WorldController implements ContactListener {
         if (InputController.getInstance().didReset()) {
             reset();
         }
+        if (InputController.getInstance().didPause()) {
+            listener.exitScreen(this, 100);
+        }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor();
             mouse = mouse.sub(currentPlanet.getPosition());
@@ -648,6 +651,9 @@ public class PauseMenu extends WorldController implements ContactListener {
     public void airPlayerControls() {
         if (InputController.getInstance().didReset()) {
             reset();
+        }
+        if (InputController.getInstance().didPause()) {
+            listener.exitScreen(this, 100);
         }
         if (control==1){
             launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
@@ -906,7 +912,7 @@ public class PauseMenu extends WorldController implements ContactListener {
             LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
 
-        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundMAIN, Color.GRAY, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());

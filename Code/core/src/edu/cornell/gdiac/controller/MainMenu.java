@@ -120,6 +120,15 @@ public class MainMenu extends WorldController implements ContactListener {
     /** The texture file for the planets */
     private static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
 
+    /** The texture file for the planets */
+    private static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
+
+    /** The texture file for the planets */
+    private static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
+
+    /** The texture file for the planets */
+    private static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+
     private static final String TITLE = "space/menus/title.png";
 
     /** The texture file for the planets */
@@ -195,6 +204,15 @@ public class MainMenu extends WorldController implements ContactListener {
     /** Play texture */
     private TextureRegion play_Texture;
 
+    /** Settings texture */
+    private TextureRegion settings_Hover_Texture;
+
+    /** Levels texture */
+    private TextureRegion levels_Hover_Texture;
+
+    /** Play texture */
+    private TextureRegion play_Hover_Texture;
+
     /** Expulsion texture */
     private TextureRegion expulsion_Texture;
 
@@ -254,11 +272,20 @@ public class MainMenu extends WorldController implements ContactListener {
         manager.load(SETTINGS_TEXTURE, Texture.class);
         assets.add(SETTINGS_TEXTURE);
 
+        manager.load(SETTINGS_HOVER_TEXTURE, Texture.class);
+        assets.add(SETTINGS_HOVER_TEXTURE);
+
         manager.load(PLAY_TEXTURE, Texture.class);
         assets.add(PLAY_TEXTURE);
 
+        manager.load(PLAY_HOVER_TEXTURE, Texture.class);
+        assets.add(PLAY_HOVER_TEXTURE);
+
         manager.load(LEVELS_TEXTURE, Texture.class);
         assets.add(LEVELS_TEXTURE);
+
+        manager.load(LEVELS_HOVER_TEXTURE, Texture.class);
+        assets.add(LEVELS_HOVER_TEXTURE);
 
         manager.load(BLUE_P_1, Texture.class);
         assets.add(BLUE_P_1);
@@ -394,10 +421,18 @@ public class MainMenu extends WorldController implements ContactListener {
         levels_Texture = createTexture(manager,LEVELS_TEXTURE, false);
         play_Texture = createTexture(manager,PLAY_TEXTURE, false);
 
-        TEXTURES[0] = neutral_P_Texture;
-        TEXTURES[1] = settings_Texture;
-        TEXTURES[2] = levels_Texture;
-        TEXTURES[3] = play_Texture;
+        settings_Hover_Texture = createTexture(manager,SETTINGS_HOVER_TEXTURE, false);
+        levels_Hover_Texture = createTexture(manager,LEVELS_HOVER_TEXTURE, false);
+        play_Hover_Texture = createTexture(manager,PLAY_HOVER_TEXTURE, false);
+
+        TEXTURES[0][0] = neutral_P_Texture;
+        TEXTURES[0][1] = neutral_P_Texture;
+        TEXTURES[1][0] = settings_Texture;
+        TEXTURES[1][1] = settings_Hover_Texture;
+        TEXTURES[2][0] = levels_Texture;
+        TEXTURES[3][0] = play_Texture;
+        TEXTURES[2][1] = levels_Hover_Texture;
+        TEXTURES[3][1] = play_Hover_Texture;
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -457,16 +492,16 @@ public class MainMenu extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {0.0f, 3.0f, 1.1f, 3f},   // NOTHING
-            {25, 10f, 1.1f, 3f},  //SETTINGS
-            {15.0f, 3f, 1.1f, 3f},    //LEVEL SELECT
-            {7.0f, 4.5f, 1.1f, 3f},   //PLAY
+            {0.0f, 3.0f, 1.2f, 3f},   // NOTHING
+            {25, 10f, 1.2f, 3f},  //SETTINGS
+            {15.0f, 3f, 1.2f, 3f},    //LEVEL SELECT
+            {7.0f, 4.5f, 1.2f, 3f},   //PLAY
 
     };
 
     private boolean jumpedOnce;
 
-    private static final TextureRegion[] TEXTURES = new TextureRegion[PLANETS.length];
+    private static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     // Physics objects for the game
@@ -566,7 +601,7 @@ public class MainMenu extends WorldController implements ContactListener {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname + ii);
-            obj.setTexture(TEXTURES[ii]);
+            obj.setTexture(TEXTURES[ii][0]);
             addObject(obj);
             planets.add(obj);
         }
@@ -769,7 +804,16 @@ public class MainMenu extends WorldController implements ContactListener {
             }
 
             groundPlayerControls();
-
+            Vector2 mouse = InputController.getInstance().getCursor();
+            for (int i = 0; i < planets.size; i++) {
+                float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
+                if (Math.sqrt(d) < planets.get(i).getRadius()) {
+                    planets.get(i).setTexture(TEXTURES[i][1]);
+                }
+                else {
+                    planets.get(i).setTexture(TEXTURES[i][0]);
+                }
+            }
             if (jump) {
                 jump();
             } else {
