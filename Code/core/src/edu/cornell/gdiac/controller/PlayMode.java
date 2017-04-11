@@ -1054,7 +1054,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 30) || returnToPlanetTimer >= 30)) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
@@ -1083,9 +1083,11 @@ public class PlayMode extends WorldController implements ContactListener {
         float oldOobMass = complexAvatar.getMass();
         float oldPlanMass = currentPlanet.getMass();
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-        complexAvatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
-        complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad,complexAvatar.getRadius() / oldAvatarRad));
+        if(currentPlanet.getType() == 0) {
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + SIPHON / 3) / Math.PI));
+            complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
+        }
     }
 
     //Make Oob move around the planet
@@ -1166,6 +1168,8 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        if(InputController.getInstance().debugJustPressed())
+            setDebug(!isDebug());
         if (pauseState == 0) {
             scrollScreen();
             width = canvas.getWidth() / 32;
@@ -1341,9 +1345,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     bd2.markRemoved(true);
                     aiController.removeShip((ShipModel)bd2);
                 }
-                else if(bd2.getName().equals("planet")) {
-                    currentPlanet = (PlanetModel)bd2;
-                }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
                     changeMass(((WheelObstacle)bd2).getMass());
@@ -1364,9 +1365,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 else if (bd1.getName().equals("ship")) {
                     bd1.markRemoved(true);
                     aiController.removeShip((ShipModel)bd1);
-                }
-                else if(bd1.getName().equals("planet")) {
-                    currentPlanet = (PlanetModel)bd1;
                 }
                 else if(bd1.getName().equals("expulsion")) {
                     bd1.markRemoved(true);

@@ -121,6 +121,12 @@ public class InputController {
 		return debugPressed && !debugPrevious;
 	}
 
+	public boolean debugJustPressed() {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+			return true;
+		return false;
+	}
+
 	public boolean didPrimary(){
 		return primePressed && !primePrevious;
 	}
