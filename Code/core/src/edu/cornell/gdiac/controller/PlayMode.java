@@ -26,6 +26,7 @@ import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import javax.swing.plaf.TextUI;
 
@@ -529,6 +530,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
+    private Array<Array<Float>> BLACK_HOLES = new Array<Array<Float>>();
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -621,6 +623,8 @@ public class PlayMode extends WorldController implements ContactListener {
         String objectName;
         Array<Array<Float>> planetArray = new Array<Array<Float>>();
         Array<Array<Float>> shipArray = new Array<Array<Float>>();
+        Array<Array<Float>> blackHoleArray = new Array<Array<Float>>();
+        ObjectMap<Integer, Array<Float>> bhmap = new ObjectMap<Integer, Array<Float>>();
         Array<Float> tempArray;
         float scale = 0f;
         float xPos = 0f;
@@ -690,9 +694,42 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(objectName.equals("oob2")){
                 OOB_RADIUS = scale / 0.2f;
             }
+            else if(objectName.equals("blackHole")){
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.3f);
+                String custom = temp.getString("customVars");
+                int holePair = 0;
+                float direction = 0;
+                for(int a = 0; a<custom.length(); a++){
+                    if(custom.substring(a, a+5).equals("type:")){
+                        while(custom.charAt(a+5)!=';'){
+                            holePair = holePair * 10;
+                            holePair += Character.getNumericValue(custom.charAt(a+5));
+                            a++;
+                        }
+                    }
+                    if(custom.substring(a, a+10).equals("direction:")){
+                        direction = Float.parseFloat(custom.substring(a+10));
+                        a = custom.length();
+                    }
+                }
+                tempArray.add((float)Math.cos(Math.toRadians(direction)));
+                tempArray.add((float)Math.sin(Math.toRadians(direction)));
+                if(bhmap.containsKey(holePair)){
+                    blackHoleArray.add(tempArray);
+                    blackHoleArray.add(bhmap.get(holePair));
+                    bhmap.remove(holePair);
+                }
+                else{
+                    bhmap.put(holePair, tempArray);
+                }
+            }
         }
         PLANETS = planetArray;
         SHIPS = shipArray;
+        BLACK_HOLES =blackHoleArray;
 
     }
 
@@ -879,20 +916,25 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create black holes
-        BlackHoleModel b1 = new BlackHoleModel(16, 40, 1, new Vector2(0,-1));
-        BlackHoleModel b2 = new BlackHoleModel(30, 8, 1, new Vector2(-1,0));
-        b1.setTexture(blackHoleTexture);
-        b1.scalePicScale(new Vector2(0.25f, 0.25f));
-        b2.scalePicScale(new Vector2(0.25f, 0.25f));
-        b2.setTexture(blackHoleTexture);
-        b1.setPair(b2);
-        b2.setPair(b1);
-        b1.setBodyType(BodyDef.BodyType.StaticBody);
-        b2.setBodyType(BodyDef.BodyType.StaticBody);
-        b1.setDrawScale(scale);
-        b2.setDrawScale(scale);
-        addObject(b1);
-        addObject(b2);
+        for(int ii = 0; ii < BLACK_HOLES.size; ii = ii+2) {
+            BlackHoleModel b1 = new BlackHoleModel(BLACK_HOLES.get(ii).get(0), BLACK_HOLES.get(ii).get(1),
+                    BLACK_HOLES.get(ii).get(2), new Vector2(BLACK_HOLES.get(ii).get(3), BLACK_HOLES.get(ii).get(4)));
+            BlackHoleModel b2 = new BlackHoleModel(BLACK_HOLES.get(ii+1).get(0), BLACK_HOLES.get(ii+1).get(1),
+                    BLACK_HOLES.get(ii+1).get(2), new Vector2(BLACK_HOLES.get(ii+1).get(3), BLACK_HOLES.get(ii+1).get(4)));
+            b1.setTexture(blackHoleTexture);
+            b1.scalePicScale(new Vector2(0.25f, 0.25f));
+            b2.scalePicScale(new Vector2(0.25f, 0.25f));
+            b2.setTexture(blackHoleTexture);
+            b1.setPair(b2);
+            b2.setPair(b1);
+            b1.setBodyType(BodyDef.BodyType.StaticBody);
+            b2.setBodyType(BodyDef.BodyType.StaticBody);
+            b1.setDrawScale(scale);
+            b2.setDrawScale(scale);
+
+            addObject(b1);
+            addObject(b2);
+        }
 
         // Create Ships
 
