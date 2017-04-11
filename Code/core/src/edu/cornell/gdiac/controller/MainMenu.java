@@ -773,6 +773,7 @@ public class MainMenu extends WorldController implements ContactListener {
             }
 
             groundPlayerControls();
+
             if (jump) {
                 jump();
             } else {

@@ -45,6 +45,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private WorldController[] controllers;
 
 	private int lastScreen = 0;
+	private int lastPlayScreen = 4;
 
 	/**
 	 * Creates a new game from the configuration settings.
@@ -189,13 +190,14 @@ public class GDXRoot extends Game implements ScreenListener {
 				controllers[current].reset();
 			}
 			else {
-				current = lastScreen;
+				current = lastPlayScreen;
 			}
 			setScreen(controllers[current]);
 			lastScreen = 3;
 		}
 		else if (screen == controllers[4]) {
 			lastScreen = 4;
+			lastPlayScreen = 4;
 			current = exitCode;
 			controllers[current].reset();
 			setScreen(controllers[current]);

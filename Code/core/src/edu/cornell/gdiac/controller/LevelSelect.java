@@ -103,6 +103,18 @@ public class LevelSelect extends WorldController implements ContactListener {
     private static final String NEUTRAL_P = "space/planets/neutral.png";
 
     /** The texture file for the planets */
+    private static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
+
+    /** The texture file for the planets */
+    private static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
+
+    /** The texture file for the planets */
+    private static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
+
+    /** The texture file for the planets */
+    private static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
+
+    /** The texture file for the planets */
     private static final String DYING_P = "space/planets/dying.png";
 
     /** Texture file for background image */
@@ -166,6 +178,24 @@ public class LevelSelect extends WorldController implements ContactListener {
     /** Planet texture */
     private TextureRegion neutral_P_Texture;
 
+    /** Settings texture */
+    private TextureRegion settings_Texture;
+
+    /** Levels texture */
+    private TextureRegion settings_Hover_Texture;
+
+    /** Play texture */
+    private TextureRegion main_Menu_Texture;
+
+    /** Play texture */
+    private TextureRegion main_Menu_Hover_Texture;
+
+    /** Play texture */
+    private TextureRegion level_1_Texture;
+
+    /** Play texture */
+    private TextureRegion level_1_hover_Texture;
+
     /** Expulsion texture */
     private TextureRegion expulsion_Texture;
 
@@ -181,6 +211,8 @@ public class LevelSelect extends WorldController implements ContactListener {
     /** Texture asset for background image */
     private TextureRegion titleTexture;
 
+    /** Timer for resetting the menu */
+    private int jumpTime = 0;
 
 
     /** Texture asset for ship */
@@ -222,83 +254,20 @@ public class LevelSelect extends WorldController implements ContactListener {
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
 
+        manager.load(MAIN_MENU_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_TEXTURE);
+
+        manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_HOVER_TEXTURE);
+
+        manager.load(SETTINGS_TEXTURE, Texture.class);
+        assets.add(SETTINGS_TEXTURE);
+
+        manager.load(SETTINGS_HOVER_TEXTURE, Texture.class);
+        assets.add(SETTINGS_HOVER_TEXTURE);
+
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
-
-        manager.load(BLUE_P_1, Texture.class);
-        assets.add(BLUE_P_1);
-        manager.load(BLUE_P_2, Texture.class);
-        assets.add(BLUE_P_2);
-        manager.load(BLUE_P_3, Texture.class);
-        assets.add(BLUE_P_3);
-        // manager.load(BLUE_P_4, Texture.class);
-        //  assets.add(BLUE_P_4);
-
-        manager.load(PURPLE_P_1, Texture.class);
-        assets.add(PURPLE_P_1);
-        manager.load(PURPLE_P_2, Texture.class);
-        assets.add(PURPLE_P_2);
-        manager.load(PURPLE_P_3, Texture.class);
-        assets.add(PURPLE_P_3);
-        //  manager.load(PURPLE_P_4, Texture.class);
-        //  assets.add(PURPLE_P_4);
-
-        manager.load(ORANGE_P_1, Texture.class);
-        assets.add(ORANGE_P_1);
-        manager.load(ORANGE_P_2, Texture.class);
-        assets.add(ORANGE_P_2);
-        manager.load(ORANGE_P_3, Texture.class);
-        assets.add(ORANGE_P_3);
-        //   manager.load(ORANGE_P_4, Texture.class);
-        //   assets.add(ORANGE_P_4);
-
-        manager.load(SKY_P_1, Texture.class);
-        assets.add(SKY_P_1);
-        manager.load(SKY_P_2, Texture.class);
-        assets.add(SKY_P_2);
-        manager.load(SKY_P_3, Texture.class);
-        assets.add(SKY_P_3);
-        //   manager.load(SKY_P_4, Texture.class);
-        //   assets.add(SKY_P_4);
-
-        manager.load(GREEN_P_1, Texture.class);
-        assets.add(GREEN_P_1);
-        manager.load(GREEN_P_2, Texture.class);
-        assets.add(GREEN_P_2);
-        manager.load(GREEN_P_3, Texture.class);
-        assets.add(GREEN_P_3);
-        //  manager.load(GREEN_P_4, Texture.class);
-        //   assets.add(GREEN_P_4);
-
-        manager.load(PINK_P_1, Texture.class);
-        assets.add(PINK_P_1);
-        manager.load(PINK_P_2, Texture.class);
-        assets.add(PINK_P_2);
-        manager.load(PINK_P_3, Texture.class);
-        assets.add(PINK_P_3);
-        // manager.load(PINK_P_4, Texture.class);
-        // assets.add(PINK_P_4);
-
-        manager.load(RED_P_1, Texture.class);
-        assets.add(RED_P_1);
-        manager.load(RED_P_2, Texture.class);
-        assets.add(RED_P_2);
-        manager.load(RED_P_3, Texture.class);
-        assets.add(RED_P_3);
-        // manager.load(RED_P_4, Texture.class);
-        //assets.add(RED_P_4);
-
-        manager.load(POISON_P_1, Texture.class);
-        assets.add(POISON_P_1);
-        manager.load(POISON_P_2, Texture.class);
-        assets.add(POISON_P_2);
-        manager.load(POISON_P_3, Texture.class);
-        assets.add(POISON_P_3);
-        manager.load(POISON_P_4, Texture.class);
-        assets.add(POISON_P_4);
-
-        manager.load(COMMAND_P, Texture.class);
-        assets.add(COMMAND_P);
 
         manager.load(NEUTRAL_P, Texture.class);
         assets.add(NEUTRAL_P);
@@ -352,9 +321,19 @@ public class LevelSelect extends WorldController implements ContactListener {
 
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
 
-        TEXTURES[0] = neutral_P_Texture;
-        TEXTURES[1] = neutral_P_Texture;
-        TEXTURES[2] = neutral_P_Texture;
+        main_Menu_Texture = createTexture(manager,MAIN_MENU_TEXTURE,false);
+        main_Menu_Hover_Texture = createTexture(manager,MAIN_MENU_HOVER_TEXTURE,false);
+        settings_Texture = createTexture(manager,SETTINGS_TEXTURE, false);
+        settings_Hover_Texture = createTexture(manager,SETTINGS_HOVER_TEXTURE, false);
+        level_1_Texture = createTexture(manager,NEUTRAL_P,false);       // TODO: FIX THIS
+        level_1_hover_Texture = createTexture(manager,NEUTRAL_P,false);
+
+        TEXTURES[0][0] = main_Menu_Texture;
+        TEXTURES[0][1] = main_Menu_Hover_Texture;
+        TEXTURES[1][0] = settings_Texture;
+        TEXTURES[1][1] = settings_Hover_Texture;
+        TEXTURES[2][0] = level_1_Texture;
+        TEXTURES[2][1] = level_1_hover_Texture;
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
@@ -416,14 +395,14 @@ public class LevelSelect extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {0.0f, 4f, 1f, 3f},   // NOTHING
-            {25, 7f, 1f, 3f},  //SETTINGS
-            {15.0f, 10f, 1f, 3f},    //LEVEL SELECT
+            {23f, 5.5f, 1.1f, 3f},   // MAIN MENU
+            {10f, 5.5f, 1.1f, 3f},  //SETTINGS
+            {15.0f, 10f, 1.1f, 3f},    // LEVEL 1
     };
 
     private boolean jumpedOnce;
 
-    private static final TextureRegion[] TEXTURES = new TextureRegion[PLANETS.length];
+    private static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     // Physics objects for the game
@@ -476,7 +455,7 @@ public class LevelSelect extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
-        jumpedOnce = false;
+        jumpTime = 0;
     }
 
     /**
@@ -485,7 +464,7 @@ public class LevelSelect extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
-        jumpedOnce = false;
+        jumpTime = 0;
         justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );
 
@@ -511,8 +490,6 @@ public class LevelSelect extends WorldController implements ContactListener {
      */
     private void populateLevel() {
 
-        PLANETS[0][0] = canvas.getWidth()/80f;
-        PLANETS[1][0] = canvas.getWidth()/80f;
         PLANETS[2][0] = canvas.getWidth()/80f;
 
         // Create Planets
@@ -527,7 +504,7 @@ public class LevelSelect extends WorldController implements ContactListener {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname + ii);
-            obj.setTexture(TEXTURES[ii]);
+            obj.setTexture(TEXTURES[ii][0]);
             addObject(obj);
             planets.add(obj);
         }
@@ -602,9 +579,17 @@ public class LevelSelect extends WorldController implements ContactListener {
             }
         }
         groundPlayerControls();
+        Vector2 mouse = InputController.getInstance().getCursor();
+        for (int i = 0; i < planets.size; i++) {
+            float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
+            if (Math.sqrt(d) < planets.get(i).getRadius()) {
+                planets.get(i).setTexture(TEXTURES[i][1]);
+            }
+            else {
+                planets.get(i).setTexture(TEXTURES[i][0]);
+            }
+        }
         if (jump) {
-            System.out.println("jumped");
-            Vector2 mouse = InputController.getInstance().getCursor();
             for (int i = 0; i <= 1; i++) {
                 float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
                 if (Math.sqrt(d) < planets.get(i).getRadius()) {
@@ -701,8 +686,6 @@ public class LevelSelect extends WorldController implements ContactListener {
         }
 
         canvas.begin();
-        canvas.drawText("Settings", massFont, planets.get(1).getX() * 38f, planets.get(1).getY() * 41f);
-        canvas.drawText("Main Menu", massFont, planets.get(0).getX() * 38f, planets.get(0).getY() * 41f);
         canvas.drawText("Level 1", massFont, planets.get(2).getX() * 38f, planets.get(2).getY() * 41f);
         canvas.end();
 
