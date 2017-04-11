@@ -524,7 +524,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The restitution for all physics objects */
     private static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = -0.00f;
+    private static final float  BULLET_DAMAGE = -0.04f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
@@ -995,18 +995,19 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
+                Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
                 if (Math.random()<0.5){
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 1);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
 //                    sh.setAggroRange(20f);
                 }
                 else if (Math.random() < 0.75){
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
