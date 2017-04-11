@@ -45,63 +45,15 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private static final String OOB_FILE  = "space/Oob/oob_2.png";
 
-
-    /** The texture file for the planets */
-    private static final String BLUE_P_1 = "space/planets/blue.png";
-    private static final String BLUE_P_2 = "space/planets/blue2.png";
-    private static final String BLUE_P_3 = "space/planets/blue3.png";
-    //private static final String BLUE_P_4 = "space/planets/blue.png";
-
-    /** The texture file for the planets */
-    private static final String PURPLE_P_1 = "space/planets/purple.png";
-    private static final String PURPLE_P_2 = "space/planets/purple2.png";
-    private static final String PURPLE_P_3 = "space/planets/purple3.png";
-    //private static final String PURPLE_P_4 = "space/planets/purple.png";
-
-    /** The texture file for the planets */
-    private static final String ORANGE_P_1 = "space/planets/orange.png";
-    private static final String ORANGE_P_2 = "space/planets/orange2.png";
-    private static final String ORANGE_P_3 = "space/planets/orange3.png";
-    //private static final String ORANGE_P_4 = "space/planets/orange.png";
-
-    /** The texture file for the planets */
-    private static final String SKY_P_1 = "space/planets/sky.png";
-    private static final String SKY_P_2 = "space/planets/sky2.png";
-    private static final String SKY_P_3 = "space/planets/sky3.png";
-    //private static final String SKY_P_4 = "space/planets/sky.png";
-
-
-    /** The texture file for the planets */
-
-    /** The texture file for the planets */
-    private static final String GREEN_P_1 = "space/planets/green.png";
-    private static final String GREEN_P_2 = "space/planets/green2.png";
-    private static final String GREEN_P_3 = "space/planets/green3.png";
-    //private static final String GREEN_P_4 = "space/planets/green.png";
-
-    /** The texture file for the planets */
-    private static final String PINK_P_1 = "space/planets/pink.png";
-    private static final String PINK_P_2 = "space/planets/pink2.png";
-    private static final String PINK_P_3 = "space/planets/pink3.png";
-    //private static final String PINK_P_4 = "space/planets/pink.png";
-
-    /** The texture file for the planets */
-    private static final String RED_P_1 = "space/planets/red.png";
-    private static final String RED_P_2 = "space/planets/red2.png";
-    private static final String RED_P_3 = "space/planets/red3.png";
-    //private static final String RED_P_4 = "space/planets/red.png";
-
-    /** The texture file for the planets */
-    private static final String POISON_P_1 = "space/planets/sun.png";
-    private static final String POISON_P_2 = "space/planets/sun.png";
-    private static final String POISON_P_3 = "space/planets/sun.png";
-    private static final String POISON_P_4 = "space/planets/sun.png";
+    private static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu_planet.png";
+    private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_planet_hover.png";
+    private static final String BACK_TEXTURE  = "space/menus/back.png";
+    private static final String BACK_HOVER_TEXTURE  = "space/menus/back_hover.png";
+    private static final String MUTE_TEXTURE  = "space/menus/mute.png";
 
     // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
 
     //Animator sun = new Animator();
-
-
 
     // Animation test2= new Animation(20,)
 
@@ -175,6 +127,18 @@ public class SettingsMode extends WorldController implements ContactListener {
     /** Planet texture */
     private TextureRegion neutral_P_Texture;
 
+    /** Main Menu Texture */
+    private TextureRegion main_Menu_Texture;
+
+    /** Main Menu Hover Texture */
+    private TextureRegion main_Menu_Hover_Texture;
+
+    private TextureRegion back_Texture;
+
+    private TextureRegion back_hover_Texture;
+
+    private TextureRegion mute_Texture;
+
     /** Expulsion texture */
     private TextureRegion expulsion_Texture;
 
@@ -231,80 +195,23 @@ public class SettingsMode extends WorldController implements ContactListener {
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
 
+        manager.load(MAIN_MENU_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_TEXTURE);
+
+        manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_HOVER_TEXTURE);
+
+        manager.load(BACK_HOVER_TEXTURE, Texture.class);
+        assets.add(BACK_HOVER_TEXTURE);
+
+        manager.load(BACK_TEXTURE, Texture.class);
+        assets.add(BACK_TEXTURE);
+
+        manager.load(MUTE_TEXTURE, Texture.class);
+        assets.add(MUTE_TEXTURE);
+
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
-
-        manager.load(BLUE_P_1, Texture.class);
-        assets.add(BLUE_P_1);
-        manager.load(BLUE_P_2, Texture.class);
-        assets.add(BLUE_P_2);
-        manager.load(BLUE_P_3, Texture.class);
-        assets.add(BLUE_P_3);
-        // manager.load(BLUE_P_4, Texture.class);
-        //  assets.add(BLUE_P_4);
-
-        manager.load(PURPLE_P_1, Texture.class);
-        assets.add(PURPLE_P_1);
-        manager.load(PURPLE_P_2, Texture.class);
-        assets.add(PURPLE_P_2);
-        manager.load(PURPLE_P_3, Texture.class);
-        assets.add(PURPLE_P_3);
-        //  manager.load(PURPLE_P_4, Texture.class);
-        //  assets.add(PURPLE_P_4);
-
-        manager.load(ORANGE_P_1, Texture.class);
-        assets.add(ORANGE_P_1);
-        manager.load(ORANGE_P_2, Texture.class);
-        assets.add(ORANGE_P_2);
-        manager.load(ORANGE_P_3, Texture.class);
-        assets.add(ORANGE_P_3);
-        //   manager.load(ORANGE_P_4, Texture.class);
-        //   assets.add(ORANGE_P_4);
-
-        manager.load(SKY_P_1, Texture.class);
-        assets.add(SKY_P_1);
-        manager.load(SKY_P_2, Texture.class);
-        assets.add(SKY_P_2);
-        manager.load(SKY_P_3, Texture.class);
-        assets.add(SKY_P_3);
-        //   manager.load(SKY_P_4, Texture.class);
-        //   assets.add(SKY_P_4);
-
-        manager.load(GREEN_P_1, Texture.class);
-        assets.add(GREEN_P_1);
-        manager.load(GREEN_P_2, Texture.class);
-        assets.add(GREEN_P_2);
-        manager.load(GREEN_P_3, Texture.class);
-        assets.add(GREEN_P_3);
-        //  manager.load(GREEN_P_4, Texture.class);
-        //   assets.add(GREEN_P_4);
-
-        manager.load(PINK_P_1, Texture.class);
-        assets.add(PINK_P_1);
-        manager.load(PINK_P_2, Texture.class);
-        assets.add(PINK_P_2);
-        manager.load(PINK_P_3, Texture.class);
-        assets.add(PINK_P_3);
-        // manager.load(PINK_P_4, Texture.class);
-        // assets.add(PINK_P_4);
-
-        manager.load(RED_P_1, Texture.class);
-        assets.add(RED_P_1);
-        manager.load(RED_P_2, Texture.class);
-        assets.add(RED_P_2);
-        manager.load(RED_P_3, Texture.class);
-        assets.add(RED_P_3);
-        // manager.load(RED_P_4, Texture.class);
-        //assets.add(RED_P_4);
-
-        manager.load(POISON_P_1, Texture.class);
-        assets.add(POISON_P_1);
-        manager.load(POISON_P_2, Texture.class);
-        assets.add(POISON_P_2);
-        manager.load(POISON_P_3, Texture.class);
-        assets.add(POISON_P_3);
-        manager.load(POISON_P_4, Texture.class);
-        assets.add(POISON_P_4);
 
         manager.load(COMMAND_P, Texture.class);
         assets.add(COMMAND_P);
@@ -359,11 +266,18 @@ public class SettingsMode extends WorldController implements ContactListener {
         avatarTexture = createTexture(manager,OOB_FILE,false);
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
-        neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
+        main_Menu_Texture = createTexture(manager,MAIN_MENU_TEXTURE,false);
+        main_Menu_Hover_Texture = createTexture(manager,MAIN_MENU_HOVER_TEXTURE,false);
+        mute_Texture = createTexture(manager,MUTE_TEXTURE,false);
+        back_Texture = createTexture(manager,BACK_TEXTURE,false);
+        back_hover_Texture = createTexture(manager,BACK_HOVER_TEXTURE,false);
 
-        TEXTURES[0] = neutral_P_Texture;
-        TEXTURES[1] = neutral_P_Texture;
-        TEXTURES[2] = neutral_P_Texture;
+        TEXTURES[0][0] = main_Menu_Texture;    // MAIN MENU
+        TEXTURES[0][1] = main_Menu_Hover_Texture;
+        TEXTURES[1][0] = mute_Texture;    // MUTE
+        TEXTURES[1][1] = mute_Texture; //TODO: FIX THIS
+        TEXTURES[2][0] = back_Texture;    // BACK
+        TEXTURES[2][1] = back_hover_Texture;
 
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
@@ -425,14 +339,14 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {0.0f, 4f, 1f, 3f},   // NOTHING
-            {25, 7f, 1f, 3f},  //SETTINGS
-            {15.0f, 10f, 1f, 3f},    //LEVEL SELECT
+            {0.0f, 4f, 1.1f, 3f},   // MAIN MENU
+            {25, 8f, 0.9f, 3f},  // MUTE
+            {15.0f, 11f, 1.5f, 3f},    // BACK
     };
 
     private boolean jumpedOnce;
 
-    private static final TextureRegion[] TEXTURES = new TextureRegion[PLANETS.length];
+    private static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     // Physics objects for the game
@@ -536,7 +450,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname + ii);
-            obj.setTexture(TEXTURES[ii]);
+            obj.setTexture(TEXTURES[ii][0]);
             addObject(obj);
             planets.add(obj);
         }
@@ -611,9 +525,17 @@ public class SettingsMode extends WorldController implements ContactListener {
             }
         }
         groundPlayerControls();
+        Vector2 mouse = InputController.getInstance().getCursor();
+        for (int i = 0; i < planets.size; i++) {
+            float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
+            if (Math.sqrt(d) < planets.get(i).getRadius()) {
+                planets.get(i).setTexture(TEXTURES[i][1]);
+            }
+            else {
+                planets.get(i).setTexture(TEXTURES[i][0]);
+            }
+        }
         if (jump) {
-            System.out.println("jumped");
-            Vector2 mouse = InputController.getInstance().getCursor();
             for (int i = 0; i < planets.size; i++) {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
                 if (Math.sqrt(d) < planets.get(i).getRadius()) {
@@ -702,12 +624,6 @@ public class SettingsMode extends WorldController implements ContactListener {
             }
             canvas.endDebug();
         }
-
-        canvas.begin();
-        canvas.drawText("Main Menu", massFont, planets.get(0).getX() * 38f, planets.get(0).getY() * 41f);
-        canvas.drawText("Back", massFont, planets.get(2).getX() * 38f, planets.get(2).getY() * 41f);
-        canvas.drawText("Option 1", massFont, planets.get(1).getX() * 38f, planets.get(1).getY() * 41f);
-        canvas.end();
     }
 }
 

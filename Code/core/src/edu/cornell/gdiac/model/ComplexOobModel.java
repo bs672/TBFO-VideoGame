@@ -151,7 +151,6 @@ public class ComplexOobModel extends ComplexObstacle {
      * @param newY   The y-coordinate in screen space (origin top left)
      */
     public void moveIndex(int edgeIndex, float newX, float newY) {
-        System.out.println(edgePosns.get(edgeIndex));
         float dx = newX-edgePosns.get(edgeIndex).x;
         float dy = edgePosns.get(edgeIndex).y-newY; // Inverts the y-axis
         vertices.nudge(edgeIndex,dx,dy);
