@@ -68,12 +68,10 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     /** Texture file for background image */
     private static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
-    /** Texture file for background image */
-    private static final String BACKG_FILE_LARGE_STARS = "space/background/large-stars.png";
-    /** Texture file for background image */
-    private static final String BACKG_FILE_MEDIUM_STARS = "space/background/medium-stars.png";
-    /** Texture file for background image */
-    private static final String BACKG_FILE_SMALL_STARS = "space/background/small-stars.png";
+    private static final String BACKG_FILE_WHITE_STAR = "space/background/white-stars.png";
+    private static final String BACKG_FILE_LG_STAR = "space/background/large-stars.png";
+    private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
+    private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
     private static final String SETTINGS = "space/menus/settings.png";
 
@@ -143,15 +141,13 @@ public class SettingsMode extends WorldController implements ContactListener {
     private TextureRegion expulsion_Texture;
 
 
-    /** Texture asset for background image */
-    private TextureRegion backgroundTextureMAIN;
-    /** Texture asset for background image */
-    private TextureRegion backgroundTextureLARGESTAR;
-    /** Texture asset for background image */
-    private TextureRegion backgroundTextureMEDIUMSTAR;
-    /** Texture asset for background image */
-    private TextureRegion backgroundTextureSMALLSTAR;
-    /** Texture asset for background image */
+    /** Background texture */
+    private TextureRegion backgroundMAIN;
+    private TextureRegion backgroundWHITESTAR;
+    private TextureRegion backgroundLG;
+    private TextureRegion backgroundMED;
+    private TextureRegion backgroundSM;
+
     private TextureRegion settingsTexture;
 
 
@@ -224,12 +220,16 @@ public class SettingsMode extends WorldController implements ContactListener {
 
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
-        manager.load(BACKG_FILE_LARGE_STARS, Texture.class);
-        assets.add(BACKG_FILE_LARGE_STARS);
-        manager.load(BACKG_FILE_MEDIUM_STARS, Texture.class);
-        assets.add(BACKG_FILE_MEDIUM_STARS);
-        manager.load(BACKG_FILE_SMALL_STARS, Texture.class);
-        assets.add(BACKG_FILE_SMALL_STARS);
+        manager.load(BACKG_FILE_MAIN, Texture.class);
+        assets.add(BACKG_FILE_MAIN);
+        manager.load(BACKG_FILE_WHITE_STAR, Texture.class);
+        assets.add(BACKG_FILE_WHITE_STAR);
+        manager.load(BACKG_FILE_LG_STAR, Texture.class);
+        assets.add(BACKG_FILE_LG_STAR);
+        manager.load(BACKG_FILE_MED_STAR, Texture.class);
+        assets.add(BACKG_FILE_MED_STAR);
+        manager.load(BACKG_FILE_SM_STAR, Texture.class);
+        assets.add(BACKG_FILE_SM_STAR);
         manager.load(SETTINGS, Texture.class);
         assets.add(SETTINGS);
 
@@ -279,13 +279,11 @@ public class SettingsMode extends WorldController implements ContactListener {
         TEXTURES[2][0] = back_Texture;    // BACK
         TEXTURES[2][1] = back_hover_Texture;
 
-        backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
-        backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,true);
-        backgroundTextureMEDIUMSTAR = createTexture(manager,BACKG_FILE_MEDIUM_STARS,true);
-        backgroundTextureSMALLSTAR = createTexture(manager,BACKG_FILE_SMALL_STARS,true);
-        backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,false);
-        backgroundTextureMEDIUMSTAR = createTexture(manager,BACKG_FILE_MEDIUM_STARS,false);
-        backgroundTextureSMALLSTAR = createTexture(manager,BACKG_FILE_SMALL_STARS,false);
+        backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
+        backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
+        backgroundLG = createTexture(manager,BACKG_FILE_LG_STAR,false);
+        backgroundMED = createTexture(manager,BACKG_FILE_MED_STAR,false);
+        backgroundSM = createTexture(manager,BACKG_FILE_SM_STAR,false);
         settingsTexture = createTexture(manager,SETTINGS, true);
 
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
@@ -595,19 +593,30 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.clear();
 
         canvas.begin();
-        int blueImageWidth = 0;
-        Vector2 bottomLeft = new Vector2();
-        if (canvas.getWidth() < 1280) {
-            blueImageWidth = 1280;
-            bottomLeft.x = (1280 - canvas.getWidth()) / 2;
-        } else {
-            blueImageWidth = canvas.getWidth();
-            bottomLeft.x = 1280 + (1280 - canvas.getWidth()) / 2;
+
+        int LG_S_X;
+        int LG_S_Y;
+
+        if ((backgroundLG.getRegionWidth()-canvas.getWidth())>0) {
+            LG_S_X = 0;
         }
-        canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.draw(backgroundTextureLARGESTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.draw(backgroundTextureMEDIUMSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.draw(backgroundTextureSMALLSTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        else {
+            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
+        }
+
+        if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
+            LG_S_Y = 0;
+        }
+        else {
+            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
+        }
+
+
+        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
         canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth() / 2 - (settingsTexture.getRegionWidth() / 2) - 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
         canvas.end();
         canvas.begin();

@@ -48,18 +48,24 @@ import edu.cornell.gdiac.util.*;
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
     private static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
-    private static final String BACKG_FILE_RED_STAR = "space/background//large-stars.png";
-    private static final String BACKG_FILE_WHITE_STAR = "space/background/medium-stars.png";
-    private static final String BACKG_FILE_TITLE = "space/background/home_screen_assets/title.png";
+    private static final String BACKG_FILE_WHITE_STAR = "space/background/white-stars.png";
+    private static final String BACKG_FILE_LG_STAR = "space/background/large-stars.png";
+    private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
+    private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
+    private static final String BACKG_FILE_TITLE = "space/menus/title.png";
 	private static final String PROGRESS_FILE = "space/background/progressbar.png";
 	private static final String PLAY_BTN_FILE = "space/Oob/oob_2.png";
 	
 	/** Background texture for start-up */
 	private Texture backgroundMAIN;
-    /** Background texture for start-up */
-    private Texture backgroundREDSTAR;
     /** Texture asset for background image */
     private Texture backgroundWHITESTAR;
+    /** Background texture for start-up */
+    private Texture backgroundLG;
+    /** Background texture for start-up */
+    private Texture backgroundMED;
+    /** Texture asset for background image */
+    private Texture backgroundSM;
     /** Texture asset for background image */
     private Texture backgroundTITLE;
 	/** Play button to display when done */
@@ -212,8 +218,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		playButton = null;
 		backgroundMAIN = new Texture(BACKG_FILE_MAIN);
         backgroundTITLE = new Texture(BACKG_FILE_TITLE);
-        backgroundREDSTAR = new Texture(BACKG_FILE_RED_STAR);
         backgroundWHITESTAR = new Texture(BACKG_FILE_WHITE_STAR);
+        backgroundLG = new Texture(BACKG_FILE_LG_STAR);
+        backgroundMED = new Texture(BACKG_FILE_MED_STAR);
+        backgroundSM = new Texture(BACKG_FILE_SM_STAR);
 
 		statusBar  = new Texture(PROGRESS_FILE);
 
@@ -269,12 +277,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		 statusFrgMiddle = null;
 
 		 backgroundMAIN.dispose();
-        // backgroundREDSTAR.dispose();
-        // backgroundWHITESTAR.dispose();
+         backgroundWHITESTAR.dispose();
+         backgroundLG.dispose();
+         backgroundMED.dispose();
+         backgroundSM.dispose();
 		 statusBar.dispose();
 		 backgroundMAIN = null;
-        backgroundREDSTAR = null;
-        backgroundWHITESTAR = null;
+         backgroundWHITESTAR = null;
+         backgroundLG = null;
+         backgroundMED = null;
+         backgroundSM = null ;
 		 statusBar  = null;
 		 if (playButton != null) {
 			 playButton.dispose();
@@ -315,12 +327,30 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 		//displayFont.setColor(Color.YELLOW);
 		canvas.begin();
+
+        int LG_S_X;
+        int LG_S_Y;
+
+        if ((backgroundLG.getWidth()-canvas.getWidth())>0) {
+            LG_S_X = 0;
+        }
+        else {
+            LG_S_X = (backgroundLG.getWidth()-canvas.getWidth())/2;
+        }
+
+        if ((backgroundLG.getHeight()-canvas.getHeight())>0) {
+            LG_S_Y = 0;
+        }
+        else {
+            LG_S_Y = (backgroundLG.getHeight()-canvas.getHeight())/2;
+        }
+
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundREDSTAR, Color.WHITE, 0, 0,backgroundREDSTAR.getWidth(),backgroundREDSTAR.getHeight());
+        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        //canvas.draw(backgroundTITLE, Color.WHITE, centerX-(backgroundTITLE.getWidth()/2), centerY+(backgroundTITLE.getHeight()/4), backgroundTITLE.getWidth(), backgroundTITLE.getHeight()/2);
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getWidth(),backgroundLG.getHeight());
         canvas.draw(backgroundTITLE, Color.WHITE, canvas.getWidth() / 2 - (backgroundTITLE.getWidth() / 2) + 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
-		//canvas.drawTextCentered("The Big Friendly Oob", displayFont, 100.0f);
 		if (ready == false) {
 			drawProgress(canvas);
 		}
