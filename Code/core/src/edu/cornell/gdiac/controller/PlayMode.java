@@ -113,20 +113,6 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the planets */
     private static final String DYING_P = "space/planets/dying.png";
 
-//
-//    /** The texture file for the planets */
-//    private static final String BLUE_P = "space/blue_planet_480.png";
-//    /** The texture file for the planets */
-//    private static final String GREEN_P = "space/green_planet_480.png";
-//    /** The texture file for the planets */
-//    private static final String ORANGE_P = "space/orange_planet_480.png";
-//    /** The texture file for the planets */
-//    private static final String ORNG_RED_P = "space/orange_red_planet_480.png";
-//    /** The texture file for the planets */
-//    private static final String RED_P = "space/red_planet_480.png";
-//    /** The texture file for the planets */
-//    private static final String POISON_P = "space/planet.png";
-
 
 
     /** Texture file for background image */
@@ -253,24 +239,6 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion expulsion_Texture;
 
 
-
-
-//    /** Planet texture */
-//    private TextureRegion blue_P_Texture;
-//    /** Planet texture */
-//    private TextureRegion green_P_Texture;
-//    /** Planet texture */
-//    private TextureRegion orange_P_Texture;
-//    /** Planet texture */
-//    private TextureRegion orange_red_P_Texture;
-//    /** Planet texture */
-//    private TextureRegion red_P_Texture;
-//
-//    /** Planet texture */
-//    private TextureRegion poison_P_Texture;
-
-
-
     /** Texture asset for background image */
     private TextureRegion backgroundTextureMAIN;
     /** Texture asset for background image */
@@ -330,8 +298,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(BLUE_P_2);
         manager.load(BLUE_P_3, Texture.class);
         assets.add(BLUE_P_3);
-       // manager.load(BLUE_P_4, Texture.class);
-      //  assets.add(BLUE_P_4);
 
         manager.load(PURPLE_P_1, Texture.class);
         assets.add(PURPLE_P_1);
@@ -339,8 +305,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(PURPLE_P_2);
         manager.load(PURPLE_P_3, Texture.class);
         assets.add(PURPLE_P_3);
-      //  manager.load(PURPLE_P_4, Texture.class);
-      //  assets.add(PURPLE_P_4);
 
         manager.load(ORANGE_P_1, Texture.class);
         assets.add(ORANGE_P_1);
@@ -348,8 +312,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(ORANGE_P_2);
         manager.load(ORANGE_P_3, Texture.class);
         assets.add(ORANGE_P_3);
-     //   manager.load(ORANGE_P_4, Texture.class);
-     //   assets.add(ORANGE_P_4);
 
         manager.load(SKY_P_1, Texture.class);
         assets.add(SKY_P_1);
@@ -357,8 +319,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(SKY_P_2);
         manager.load(SKY_P_3, Texture.class);
         assets.add(SKY_P_3);
-     //   manager.load(SKY_P_4, Texture.class);
-     //   assets.add(SKY_P_4);
 
         manager.load(GREEN_P_1, Texture.class);
         assets.add(GREEN_P_1);
@@ -366,8 +326,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(GREEN_P_2);
         manager.load(GREEN_P_3, Texture.class);
         assets.add(GREEN_P_3);
-      //  manager.load(GREEN_P_4, Texture.class);
-     //   assets.add(GREEN_P_4);
 
         manager.load(PINK_P_1, Texture.class);
         assets.add(PINK_P_1);
@@ -375,8 +333,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(PINK_P_2);
         manager.load(PINK_P_3, Texture.class);
         assets.add(PINK_P_3);
-       // manager.load(PINK_P_4, Texture.class);
-       // assets.add(PINK_P_4);
 
         manager.load(RED_P_1, Texture.class);
         assets.add(RED_P_1);
@@ -384,8 +340,6 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(RED_P_2);
         manager.load(RED_P_3, Texture.class);
         assets.add(RED_P_3);
-       // manager.load(RED_P_4, Texture.class);
-        //assets.add(RED_P_4);
 
         manager.load(POISON_P_1, Texture.class);
         assets.add(POISON_P_1);
@@ -404,21 +358,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
         manager.load(DYING_P, Texture.class);
         assets.add(DYING_P);
-
-
-
-//        manager.load(GREEN_P, Texture.class);
-//        assets.add(GREEN_P);
-//        manager.load(ORANGE_P, Texture.class);
-//        assets.add(ORANGE_P);
-//        manager.load(ORNG_RED_P, Texture.class);
-//        assets.add(ORNG_RED_P);
-//        manager.load(RED_P, Texture.class);
-//        assets.add(RED_P);
-//
-//        manager.load(POISON_P, Texture.class);
-//        assets.add(POISON_P);
-
 
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
@@ -467,37 +406,30 @@ public class PlayMode extends WorldController implements ContactListener {
         blue_P_1_Texture = createTexture(manager,BLUE_P_1,false);
         blue_P_2_Texture = createTexture(manager,BLUE_P_2,false);
         blue_P_3_Texture = createTexture(manager,BLUE_P_3,false);
-       // blue_P_4_Texture = createTexture(manager,BLUE_P_4,false);
 
         purple_P_1_Texture = createTexture(manager,PURPLE_P_1,false);
         purple_P_2_Texture = createTexture(manager,PURPLE_P_2,false);
         purple_P_3_Texture = createTexture(manager,PURPLE_P_3,false);
-      // purple_P_4_Texture = createTexture(manager,PURPLE_P_4,false);
 
         orange_P_1_Texture = createTexture(manager,ORANGE_P_1,false);
         orange_P_2_Texture = createTexture(manager, ORANGE_P_2,false);
         orange_P_3_Texture = createTexture(manager, ORANGE_P_3,false);
-      //  orange_P_4_Texture = createTexture(manager, ORANGE_P_4,false);
 
         sky_P_1_Texture = createTexture(manager,SKY_P_1,false);
         sky_P_2_Texture = createTexture(manager,SKY_P_2,false);
         sky_P_3_Texture = createTexture(manager,SKY_P_3,false);
-      //  sky_P_4_Texture = createTexture(manager,SKY_P_4,false);
 
         green_P_1_Texture = createTexture(manager, GREEN_P_1,false);
         green_P_2_Texture = createTexture(manager, GREEN_P_2,false);
         green_P_3_Texture = createTexture(manager, GREEN_P_3,false);
-      //  green_P_4_Texture = createTexture(manager,GREEN_P_4,false);
 
         pink_P_1_Texture = createTexture(manager, PINK_P_1,false);
         pink_P_2_Texture = createTexture(manager, PINK_P_2,false);
         pink_P_3_Texture = createTexture(manager, PINK_P_3,false);
-        //  pink_P_4_Texture = createTexture(manager,PINK_P_4,false);
 
         red_P_1_Texture = createTexture(manager, RED_P_1,false);
         red_P_2_Texture = createTexture(manager, RED_P_2,false);
         red_P_3_Texture = createTexture(manager, RED_P_3,false);
-        //  red_P_4_Texture = createTexture(manager,RED_P_4,false);
 
         poison_P_1_Texture = createTexture(manager,POISON_P_1,false);
         poison_P_2_Texture = createTexture(manager,POISON_P_2,false);
@@ -510,22 +442,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
         command_P_Texture = createTexture(manager,COMMAND_P,false);
 
-
-
-
-
-
-
-//
-//        blue_P_Texture = createTexture(manager,BLUE_P,false);
-//        green_P_Texture = createTexture(manager,GREEN_P,false);
-//        orange_P_Texture = createTexture(manager,ORANGE_P,false);
-//        orange_red_P_Texture = createTexture(manager,ORNG_RED_P,false);
-//        red_P_Texture = createTexture(manager,RED_P,false);
-
-//        poison_P_Texture = createTexture(manager,POISON_P,false);
-
-
         backgroundTextureMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundTextureLARGESTAR = createTexture(manager,BACKG_FILE_LARGE_STARS,false);
         backgroundTextureMEDIUMSTAR = createTexture(manager,BACKG_FILE_MEDIUM_STARS,false);
@@ -533,25 +449,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
-
-//        Texture L_Tex = new Texture(BACKG_FILE_LARGE_STARS);
-//        L_Tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-//        TextureRegion L_TexReg = new TextureRegion(L_Tex);
-//        L_TexReg.setRegion(0,0,L_Tex.getWidth()*7,L_Tex.getHeight()*7);
-//        backgroundTextureLARGESTAR =L_TexReg;
-//
-//
-//        Texture M_Tex = new Texture(BACKG_FILE_MEDIUM_STARS);
-//        M_Tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-//        TextureRegion M_TexReg = new TextureRegion(M_Tex);
-//        M_TexReg.setRegion(0,0,M_Tex.getWidth()*7,M_Tex.getHeight()*7);
-//        backgroundTextureMEDIUMSTAR =M_TexReg;
-//
-//        Texture S_Tex = new Texture(BACKG_FILE_SMALL_STARS);
-//        S_Tex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-//        TextureRegion S_TexReg = new TextureRegion(S_Tex);
-//        S_TexReg.setRegion(0,0,S_Tex.getWidth()*7,S_Tex.getHeight()*7);
-//        backgroundTextureSMALLSTAR =S_TexReg;
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_FILE);
@@ -583,52 +480,15 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final float  DEFAULT_GRAVITY = -14.7f;
     /** The density for most physics objects */
     private static final float  BASIC_DENSITY = 0.0f;
-    /** The density for a bullet */
-    private static final float  HEAVY_DENSITY = 10.0f;
     /** Friction of most platforms */
     private static final float  BASIC_FRICTION = 0.4f;
     /** The restitution for all physics objects */
     private static final float  BASIC_RESTITUTION = 0.1f;
-    /** The width of the rope bridge */
-    private static final float  BRIDGE_WIDTH = 14.0f;
-    /** Offset for bullet when firing */
-    private static final float  BULLET_OFFSET = 0.2f;
-    /** The speed of the bullet after firing */
-    private static final float  BULLET_SPEED = 20.0f;
     /** The damage of the bullet */
     private static final float  BULLET_DAMAGE = -0.00f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
-    // Since these appear only once, we do not care about the magic numbers.
-    // In an actual game, this information would go in a data file.
-    /*
-    private static final float[][] PLANETS = {
-            {0.0f, 0.5f, 2.8f, 3f},
-            {5.0f, 12.5f, 1.2f, 2f},
-            {27.0f, 4.5f, 2.7f, 0f},
-            {25.0f, 12.5f, 1.6f, 1f},
-            {18.0f, -4.0f, 1.9f, 0f},
-
-            {17.0f, 22.5f, 2.8f, 0f},
-            {-5.0f, -12.5f, 2.2f, 0f},
-            {-17.0f, 17.5f, 2.7f, 2f},
-            {40.0f, 17.5f, 2f, 1f},
-            {-18.0f, 4.0f, 1.9f, 0f},
-
-            {-2.0f, 10.5f, 1.8f, 0f},
-            {-5.0f, -22.5f, 2.2f, 2f},
-            {44.0f, 1.5f, 1.7f, 0f},
-            {-16.0f, -17.5f, 1.2f, 3f},
-            {-28.0f, 5.8f, 1.7f, 3f},
-    };
-
-    private static final float[][] SHIPS = {
-            {5.0f, 14f, 0},
-            {-5.0f, 17f, 0},
-            {15.0f, 2f, 0}
-    };
-    */
     private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     // Physics objects for the game
@@ -826,9 +686,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(blue_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(blue_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(blue_P_3_Texture);
                     }
@@ -843,9 +700,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(purple_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(purple_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(purple_P_3_Texture);
                     }
@@ -860,9 +714,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(orange_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(orange_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(orange_P_3_Texture);
                     }
@@ -877,9 +728,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(sky_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(sky_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(sky_P_3_Texture);
                     }
@@ -894,9 +742,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(green_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(green_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(green_P_3_Texture);
                     }
@@ -911,9 +756,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(pink_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(green_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(pink_P_3_Texture);
                     }
@@ -928,27 +770,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((rand <= .66) && (rand > .33)) {
                         obj.setTexture(red_P_2_Texture);
                     }
-//                    if ((rand <= .75) && (rand > .5)) {
-//                        obj.setTexture(green_P_3_Texture);
-//                    }
                     if (rand > .66) {
                         obj.setTexture(red_P_3_Texture);
                     }
                 }
-
-
-//                if (ii % 5 == 1) {
-//                    obj.setTexture(green_P_Texture);
-//                }
-//                if (ii % 5 == 2) {
-//                    obj.setTexture(orange_P_Texture);
-//                }
-//                if (ii % 5 == 3) {
-//                    obj.setTexture(orange_red_P_Texture);
-//                }
-//                if (ii % 5 == 4) {
-//                    obj.setTexture(red_P_Texture);
-//                }
             }
             //Command Planets
             if (obj.getType() == 1f) {
@@ -999,15 +824,6 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create Oob
-//        avatar = new OobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS);
-//        avatar.setDrawScale(scale);
-//        avatar.setTexture(avatarTexture);
-//        avatar.setBodyType(BodyDef.BodyType.DynamicBody);
-//        avatar.setSensor(true);
-//        avatar.setName("Oob");
-//        avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
-//        addObject(avatar);
-
         currentPlanet = planets.get(0); //The first planet is always the starting planet
         complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
@@ -1258,8 +1074,8 @@ public class PlayMode extends WorldController implements ContactListener {
     public void update(float dt) {
         if (pauseState == 0) {
             scrollScreen();
-            width = canvas.getWidth() / 32;
-            height = canvas.getHeight() / 18;
+            width = canvas.getWidth() / 40;
+            height = canvas.getHeight() / 40;
             if (InputController.getInstance().getChange()) {
                 if (control == 1) {
                     control = 0;
@@ -1375,7 +1191,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 listener.exitScreen(this, 0);
                 return;
             }
-
         }
     }
 
@@ -1404,9 +1219,6 @@ public class PlayMode extends WorldController implements ContactListener {
         Body body1 = fix1.getBody();
         Body body2 = fix2.getBody();
 
-        Object fd1 = fix1.getUserData();
-        Object fd2 = fix2.getUserData();
-
         try {
             Obstacle bd1 = (Obstacle)body1.getUserData();
             Obstacle bd2 = (Obstacle)body2.getUserData();
@@ -1417,50 +1229,55 @@ public class PlayMode extends WorldController implements ContactListener {
             if(bd2.getName().equals("bullet"))
                 removeBullet(bd2);
 
-            if (bd1.getName().equals("bullet") && bd2.getName().equals("Oob")) {
-                oldAvatarRad = complexAvatar.getRadius();
-                changeMass(BULLET_DAMAGE);
-                if(!mute)
-                    SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
-            }
-            else if (bd2.getName().equals("bullet") && bd1.getName().equals("Oob")) {
-                oldAvatarRad = complexAvatar.getRadius();
-                changeMass(BULLET_DAMAGE);
-                if(!mute)
-                    SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
-            }
+            if(bd1.getName().equals("Oob")) {
+                if (bd2.getName().equals("bullet")) {
+                    oldAvatarRad = complexAvatar.getRadius();
+                    changeMass(BULLET_DAMAGE);
+                    if(!mute)
+                        SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
+                }
+                else if (bd2.getName().equals("ship")) {
+                    bd2.markRemoved(true);
+                    aiController.removeShip((ShipModel)bd2);
+                }
+                else if(bd2.getName().equals("planet")) {
+                    currentPlanet = (PlanetModel)bd2;
+                }
+                else if(bd2.getName().equals("expulsion")) {
+                    bd2.markRemoved(true);
+                    changeMass(((WheelObstacle)bd2).getMass());
+                }
+                else if(bd2.getName().equals("black hole")) {
+                    BlackHoleModel pair = ((BlackHoleModel)bd2).getPair();
+                    bd1.setX(pair.getX() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).x);
+                    bd1.setY(pair.getY() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).y);
+                }
 
-            if (bd1.getName().equals("ship") && bd2.getName().equals("Oob")) {
-                bd1.markRemoved(true);
-                aiController.removeShip((ShipModel)bd1);
             }
-            else if (bd2.getName().equals("ship") && bd1.getName().equals("Oob")) {
-                bd2.markRemoved(true);
-                aiController.removeShip((ShipModel)bd2);
+            else if(bd2.getName().equals("Oob")) {
+                if (bd1.getName().equals("bullet")) {
+                    oldAvatarRad = complexAvatar.getRadius();
+                    changeMass(BULLET_DAMAGE);
+                    if(!mute)
+                        SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
+                }
+                else if (bd1.getName().equals("ship")) {
+                    bd1.markRemoved(true);
+                    aiController.removeShip((ShipModel)bd1);
+                }
+                else if(bd1.getName().equals("planet")) {
+                    currentPlanet = (PlanetModel)bd1;
+                }
+                else if(bd1.getName().equals("expulsion")) {
+                    bd1.markRemoved(true);
+                    changeMass(((WheelObstacle)bd1).getMass());
+                }
+                else if(bd2.getName().equals("black hole")) {
+                    BlackHoleModel pair = ((BlackHoleModel)bd1).getPair();
+                    bd1.setX(pair.getX() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).x);
+                    bd1.setY(pair.getY() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).y);
+                }
             }
-
-            if(bd1.getName().equals("planet") && bd2.getName().equals("Oob")) {
-                currentPlanet = (PlanetModel)bd1;
-            }
-            else if(bd2.getName().equals("planet") && bd1.getName().equals("Oob")) {
-                currentPlanet = (PlanetModel)bd2;
-            }
-
-            if(bd1.getName().equals("Oob") && bd2.getName().equals("expulsion")) {
-                bd2.markRemoved(true);
-                changeMass(((WheelObstacle)bd2).getMass());
-            }
-            else if(bd1.getName().equals("expulsion") && bd2.getName().equals("Oob")) {
-                bd1.markRemoved(true);
-                changeMass(((WheelObstacle)bd1).getMass());
-            }
-
-            // See if we have landed on the ground.
-//            if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
-//                    (avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-//                avatar.setGrounded(true);
-//                sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1477,23 +1294,6 @@ public class PlayMode extends WorldController implements ContactListener {
     public void endContact(Contact contact) {
         Fixture fix1 = contact.getFixtureA();
         Fixture fix2 = contact.getFixtureB();
-
-        Body body1 = fix1.getBody();
-        Body body2 = fix2.getBody();
-
-        Object fd1 = fix1.getUserData();
-        Object fd2 = fix2.getUserData();
-
-        Object bd1 = body1.getUserData();
-        Object bd2 = body2.getUserData();
-
-//        if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
-//                (avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-//            sensorFixtures.remove(avatar == bd1 ? fix2 : fix1);
-//            if (sensorFixtures.size == 0) {
-//                avatar.setGrounded(false);
-//            }
-//        }
     }
 
     /** Unused ContactListener method */
@@ -1520,13 +1320,10 @@ public class PlayMode extends WorldController implements ContactListener {
             //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
             // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
             // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
-            int blueImageWidth = 0;
             Vector2 bottomLeft = new Vector2();
             if (canvas.getWidth() < 1280) {
-                blueImageWidth = 1280;
                 bottomLeft.x = (1280 - canvas.getWidth())/2;
             } else {
-                blueImageWidth = canvas.getWidth();
                 bottomLeft.x = 1280 + (1280 - canvas.getWidth())/2;
             }
             canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
@@ -1559,8 +1356,3 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
 }
-
-
-
-
-
