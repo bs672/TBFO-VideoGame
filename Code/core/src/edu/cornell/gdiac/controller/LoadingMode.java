@@ -116,6 +116,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
+	private boolean ready;
+
 	/** The width of the progress bar */	
 	private int width;
 	/** The y-coordinate of the center of the progress bar */
@@ -172,7 +174,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return true if the player is ready to go
 	 */
 	public boolean isReady() {
-		return pressState == 2;
+		return ready;
 	}
 	
 	/**
@@ -203,6 +205,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 		// Compute the dimensions from the canvas
 		resize(canvas.getWidth(),canvas.getHeight());
+
+		ready = false;
 
 		// Load the next two images immediately.
 		playButton = null;
@@ -288,13 +292,12 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton == null) {
+		if (ready == false) {
 			manager.update(budget);
 			this.progress = manager.getProgress();
 			if (progress >= 1.0f) {
 				this.progress = 1.0f;
-				playButton = new Texture(PLAY_BTN_FILE);
-				playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				ready = true;
 			}
 		}
 	}
@@ -317,12 +320,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundTITLE, Color.WHITE, centerX-(backgroundTITLE.getWidth()/2), centerY+(backgroundTITLE.getHeight()/4), backgroundTITLE.getWidth(), backgroundTITLE.getHeight()/2);
 		//canvas.drawTextCentered("The Big Friendly Oob", displayFont, 100.0f);
-		if (playButton == null) {
+		if (ready == false) {
 			drawProgress(canvas);
-		} else {
-			Color tint = (pressState == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2, 
-						centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
 		}
 		canvas.end();
 	}

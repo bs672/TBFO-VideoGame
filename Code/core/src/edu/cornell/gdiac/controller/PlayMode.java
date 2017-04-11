@@ -3,6 +3,7 @@ package edu.cornell.gdiac.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,13 +14,18 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.*;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 import edu.cornell.gdiac.util.FilmStrip;
+import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.Files;
 
 
 
@@ -27,7 +33,22 @@ import com.badlogic.gdx.utils.Array;
  * Created by Matt Loughney on 2/28/2017.
  */
 public class PlayMode extends WorldController implements ContactListener {
+
+
+    private ScreenListener listener;
+
+    /**
+     * Sets the ScreenListener for this mode
+     *
+     * The ScreenListener will respond to requests to quit.
+     */
+    public void setScreenListener(ScreenListener listener) {
+        this.listener = listener;
+    }
+
     /** The texture file for the character avatar (no animation) */
+
+
     private static final String OOB_FILE  = "space/Oob/oob_2.png";
 
 
@@ -151,9 +172,9 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(16f, 20f);
+    private static Vector2 OOB_POS = new Vector2(0f, 0f);
     /** Oob's initial radius */
-    private static float OOB_RADIUS = 1f;
+    private  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
 
     private static final float SIPHON = 0.02f;
 
@@ -601,8 +622,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     // Since these appear only once, we do not care about the magic numbers.
     // In an actual game, this information would go in a data file.
-
-
+    /*
     private static final float[][] PLANETS = {
             {0.0f, 0.5f, 2.8f, 3f},
             {5.0f, 12.5f, 1.2f, 2f},
@@ -628,7 +648,9 @@ public class PlayMode extends WorldController implements ContactListener {
             {-5.0f, 17f, 0},
             {15.0f, 2f, 0}
     };
-
+    */
+    private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
+    private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -659,7 +681,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** AIController */
     private AIController aiController;
 
-
+    //private String jsonString = "{\"sceneName\":\"MainScene\",\"composite\":{\"sImages\":[{\"uniqueId\":4,\"tags\":[],\"customVars\":\"Type:1\",\"x\":6.6625,\"y\":3.9375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":0.75,\"originY\":1.6875,\"layerName\":\"Default\",\"imageName\":\"ship\"},{\"uniqueId\":5,\"tags\":[],\"customVars\":\"Type:3\",\"x\":5.55,\"y\":1.7000003,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":1,\"layerName\":\"Default\",\"imageName\":\"command\"},{\"uniqueId\":6,\"tags\":[],\"x\":-3.375,\"y\":0.42499995,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":4.06875,\"originY\":4.06875,\"zIndex\":2,\"layerName\":\"Default\",\"imageName\":\"sun\"},{\"uniqueId\":7,\"tags\":[],\"x\":-3.1125002,\"y\":-2.9875,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":3,\"layerName\":\"Default\",\"imageName\":\"neutral\"},{\"uniqueId\":8,\"tags\":[],\"x\":2.1125,\"y\":-0.4375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":3,\"originY\":3,\"zIndex\":4,\"layerName\":\"Default\",\"imageName\":\"purple\"},{\"uniqueId\":9,\"tags\":[],\"x\":0.7750001,\"y\":-0.76250005,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":4.375,\"originY\":4.375,\"zIndex\":5,\"layerName\":\"Default\",\"imageName\":\"oob2\"}],\"layers\":[{\"layerName\":\"Default\",\"isVisible\":true}]},\"physicsPropertiesVO\":{}}";
     /**
      * Creates and initialize a new instance of the platformer game
      *
@@ -680,6 +702,9 @@ public class PlayMode extends WorldController implements ContactListener {
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
         this.create();
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
+        String jsonString = json.readString();
+        jsonParse(jsonString);
     }
 
     /**
@@ -688,6 +713,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        returnToPlanetTimer = 0;
         justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );
 
@@ -709,6 +735,90 @@ public class PlayMode extends WorldController implements ContactListener {
         populateLevel();
     }
 
+    //Reads the data from a JSON file and turns it into game data
+    //When creating overlap2d levels, make sure the starting purple planet + oob is positioned at (5.33, 2.67)
+    private void jsonParse(String data){
+        JsonValue full = new JsonReader().parse(data);
+        full = full.get(1).get(0);
+        JsonValue temp;
+        String objectName;
+        Array<Array<Float>> planetArray = new Array<Array<Float>>();
+        Array<Array<Float>> shipArray = new Array<Array<Float>>();
+        Array<Float> tempArray;
+        float scale = 0f;
+        float xPos = 0f;
+        float yPos = 0f;
+        //starting planet always same
+        tempArray = new Array<Float>();
+        tempArray.add(0.0f);
+        tempArray.add(0.0f);
+        tempArray.add(2.5f);
+        tempArray.add(3.0f);
+        planetArray.add(tempArray);
+        for(int i = 0; i<full.size; i++){
+            temp = full.get(i);
+            objectName = temp.getString("imageName");
+            if(temp.has("scaleX"))
+                scale = temp.getFloat("scaleX");
+            else
+                scale = 1f;
+            if(temp.has("x"))
+                xPos = temp.getFloat("x");
+            if(temp.has("y"))
+                yPos = temp.getFloat("y");
+            if(objectName.equals("neutral")){
+                //planets are 6 overlap2d units
+                //0.4 scale is good starting
+                //2.5 size is good starting in-game
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add(3.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("command")){
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add(1.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("sun")){
+                //sun is 8 overlap2d units
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+4)*3);
+                tempArray.add((yPos+4)*3);
+                tempArray.add(2.5f*scale/0.3f);
+                tempArray.add(2.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("blue")){//We're currently using "BLUE" planets for regular
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add(0.0f);
+                planetArray.add(tempArray);
+            }
+            else if(objectName.equals("ship")){
+                //ship is 1.5 overlap2d units
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+0.75f)*3);
+                tempArray.add((yPos+0.75f)*3);
+                tempArray.add(0.0f); //cannot search for type of ship yet
+                shipArray.add(tempArray);
+            }
+            else if(objectName.equals("oob2")){
+                OOB_RADIUS = scale / 0.2f;
+            }
+        }
+        PLANETS = planetArray;
+        SHIPS = shipArray;
+
+    }
+
     /**
      * Lays out the game geography.
      */
@@ -716,9 +826,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Planets
         String pname = "planet";
-        for (int ii = 0; ii <PLANETS.length; ii++) {
+        for (int ii = 0; ii <PLANETS.size; ii++) {
             PlanetModel obj;
-            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
+            obj = new PlanetModel(PLANETS.get(ii).get(0), PLANETS.get(ii).get(1), PLANETS.get(ii).get(2), PLANETS.get(ii).get(3));
             obj.setBodyType(BodyDef.BodyType.StaticBody);
             obj.setDensity(BASIC_DENSITY);
             obj.setFriction(BASIC_FRICTION);
@@ -899,8 +1009,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Ships
 
-        for (int ii = 0; ii <SHIPS.length; ii++) {
-            ShipModel sh = new ShipModel(SHIPS[ii][0], SHIPS[ii][1], SHIPS[ii][2]);
+        for (int ii = 0; ii <SHIPS.size; ii++) {
+            ShipModel sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2));
             sh.setBodyType(BodyDef.BodyType.DynamicBody);
             sh.setDensity(BASIC_DENSITY);
             sh.setFriction(BASIC_FRICTION);
@@ -924,7 +1034,7 @@ public class PlayMode extends WorldController implements ContactListener {
 //        avatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
 //        addObject(avatar);
 
-        currentPlanet = planets.get(0); //CHANGE THIS FOR EACH LEVEL
+        currentPlanet = planets.get(0); //The first planet is always the starting planet
         complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
@@ -1050,12 +1160,11 @@ public class PlayMode extends WorldController implements ContactListener {
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 30) || returnToPlanetTimer >= 30)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
         }
-        System.out.println(smallestRad.len());
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
             returnToPlanetTimer = 0;
@@ -1088,9 +1197,9 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(10 + complexAvatar.getMass()));
         } else if (moveDirection == -1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(-10 - complexAvatar.getMass()));
         }
     }
 
@@ -1105,6 +1214,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
     public void groundPlayerControls(){
+        if (InputController.getInstance().didReset()) {
+            reset();
+        }
         if(InputController.getInstance().didPause()){
             pauseState = 3;
         }
@@ -1133,6 +1245,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's in the air
     public void airPlayerControls() {
+        if (InputController.getInstance().didReset()) {
+            reset();
+        }
         if(InputController.getInstance().didPause()){
             pauseState = 3;
         }
@@ -1262,6 +1377,18 @@ public class PlayMode extends WorldController implements ContactListener {
             shootBullet();
         }
         else{
+            // Go to Pause Menu
+            if (pauseState == 3) {
+                pauseState = 0;
+                listener.exitScreen(this, 3);
+                return;
+            }
+            // Go to Main Menu
+            else {
+                pauseState = 0;
+                listener.exitScreen(this, 0);
+                return;
+            }
 
         }
     }
@@ -1462,7 +1589,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Timing values from parent loop
      */
     public void draw(float dt) {
-        if (pauseState == 0) {
             canvas.clear();
 
             //float camera = -carPosition;
@@ -1490,6 +1616,7 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.end();
 
             for (Obstacle obj : objects) {
+
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                     stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
                     System.out.println("GOT HEREEEEEEEEEEEEEEEEEEE");
@@ -1514,15 +1641,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
             }
 
-
-
-
-
-
-
-
-
-
             if (isDebug()) {
                 canvas.beginDebug();
                 for (Obstacle obj : objects) {
@@ -1537,48 +1655,8 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
             canvas.end();
 
+        }
 
-//        // Draw foreground last.
-//        canvas.begin();
-//        canvas.draw(foregroundTexture, FORE_COLOR,  0, 0, canvas.getWidth(), canvas.getHeight());
-//        selector.draw(canvas);
-//        canvas.end();
-        }
-    else{
-            //This is what we draw when the game is "paused"
-            canvas.clear();
-            displayFont.setColor(Color.GREEN);
-            canvas.begin();
-            canvas.draw(backgroundTextureMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-            switch(pauseState){
-                case 1:
-                    canvas.drawTextCentered("VICTORY! Press p to restart", massFont, 0.0f);
-                    break;
-                case 2:
-                    canvas.drawTextCentered("DEFEAT! Press p to restart", massFont, 0.0f);
-                    break;
-                case 3:
-                    canvas.drawTextCentered("Game is paused. Press p to resume", massFont, 0.0f);
-                    break;
-            }
-            canvas.end();
-            if(InputController.getInstance().didPause()&&inPause == 1){
-                //Done with pause
-                inPause = 0;
-                if(pauseState ==1 || pauseState == 2){
-                    pauseState = 0;
-                    reset();
-                }
-                else{
-                    pauseState = 0;
-                }
-            }
-            else{
-                //Stay in pause
-                inPause = 1;
-            }
-        }
-    }
 }
 
 

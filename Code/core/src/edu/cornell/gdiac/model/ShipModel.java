@@ -18,7 +18,7 @@ public class ShipModel extends CapsuleObstacle{
     private boolean inOrbit;
     private boolean aggroed;
     private int firingCooldown;
-    private int burstCount=20;
+    private int burstCount=10;
     private int delay;
     private float range;
 
