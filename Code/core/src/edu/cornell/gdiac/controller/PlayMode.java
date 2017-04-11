@@ -1242,8 +1242,8 @@ public class PlayMode extends WorldController implements ContactListener {
     public void update(float dt) {
         if (pauseState == 0) {
             scrollScreen();
-            width = canvas.getWidth() / 32;
-            height = canvas.getHeight() / 18;
+            width = canvas.getWidth() / 40;
+            height = canvas.getHeight() / 40;
             if (InputController.getInstance().getChange()) {
                 if (control == 1) {
                     control = 0;
@@ -1357,7 +1357,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 listener.exitScreen(this, 0);
                 return;
             }
-
         }
     }
 

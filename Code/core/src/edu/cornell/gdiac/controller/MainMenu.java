@@ -619,7 +619,6 @@ public class MainMenu extends WorldController implements ContactListener {
                 closestPlanet = i;
             }
         }
-        System.out.println(smallestRad.len());
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
             returnToPlanetTimer = 0;
