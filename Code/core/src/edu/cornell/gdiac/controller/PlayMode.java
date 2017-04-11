@@ -111,8 +111,17 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
-
   // Animation test2= new Animation(.125f,poison_P_Strip);
+
+
+
+
+    // Objects used
+    Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
+    Texture walkSheet;
+
+    // A variable for tracking elapsed time for the animation
+    float stateTime;
 
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
@@ -701,7 +710,6 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
-        this.create();
         FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
@@ -976,27 +984,56 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.setTexture(command_P_Texture);
                 commandPlanets.add(obj);
             }
-            if (obj.getType() == 2f) {
+            //Poison Planets
+           if (obj.getType() == 2f) {
+//                // Constant rows and columns of the sprite sheet
+//                int FRAME_COLS = 8, FRAME_ROWS = 1;
+//
+//
+//                    // Load the sprite sheet as a Texture
+//                    walkSheet = new Texture(Gdx.files.internal("space/animations/sunAnim.png"));
+//
+//                    // Use the split utility method to create a 2D array of TextureRegions. This is
+//                    // possible because this sprite sheet contains frames of equal size and they are
+//                    // all aligned.
+//                    TextureRegion[][] tmp = TextureRegion.split(walkSheet,
+//                            walkSheet.getWidth() / FRAME_COLS,
+//                            walkSheet.getHeight() / FRAME_ROWS);
+//
+//                    // Place the regions into a 1D array in the correct order, starting from the top
+//                    // left, going across first. The Animation constructor requires a 1D array.
+//                    TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+//                    int index = 0;
+//                    for (int i = 0; i < FRAME_ROWS; i++) {
+//                        for (int j = 0; j < FRAME_COLS; j++) {
+//                            walkFrames[index++] = tmp[i][j];
+//                        }
+//                    }
+//
+//                    // Initialize the Animation with the frame interval and array of frames
+//                    walkAnimation = new Animation<TextureRegion>(.2f, walkFrames);
+//
+//                    // Instantiate a SpriteBatch for drawing and reset the elapsed animation
+//                    // time to 0
+//                    stateTime = 0f;
 
 
+               double rand = Math.random();
+               if (rand <= .25) {
+                   obj.setTexture(poison_P_1_Texture);
+               }
+               if ((rand <= .5) && (rand > .25)) {
+                   obj.setTexture(poison_P_2_Texture);
+               }
+               if ((rand <= .75) && (rand > .5)) {
+                   obj.setTexture(poison_P_3_Texture);
+               }
+               if (rand > .75) {
+                   obj.setTexture(poison_P_4_Texture);
+//                        obj.setFilmStrip(poison_P_Strip);
 
-
-                //Poison Planets
-                    double rand = Math.random();
-                    if (rand <= .25) {
-                        obj.setTexture(poison_P_1_Texture);
-                    }
-                    if ((rand <= .5) && (rand > .25)) {
-                        obj.setTexture(poison_P_2_Texture);
-                    }
-                    if ((rand <= .75) && (rand > .5)) {
-                        obj.setTexture(poison_P_3_Texture);
-                    }
-                    if (rand > .75) {
-                        obj.setTexture(poison_P_4_Texture);
-
-                    }
-            }
+               }
+           }
             //Neutral Planets
             if (obj.getType() == 3f) {
                 obj.setTexture(neutral_P_Texture);
@@ -1085,7 +1122,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
                 }
                 else {
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 2);
+                    // TODO: CHANGE THIS TO TYPE 2 after sorting it out
+                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1098,6 +1136,15 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setGravityScale(0.0f);
                 addObject(sh);
                 aiController.addShip(sh, c);
+            }
+        }
+    }
+
+    public void loopConvertPlanet() {
+        for (int i = 0; i < planets.size; i++) {
+            if (planets.get(i).getConvert() > 180) {
+                planets.get(i).setType(1);
+                commandPlanets.add(planets.get(i));
             }
         }
     }
@@ -1372,6 +1419,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
             loopCommandPlanets();
 
+            loopConvertPlanet();
+
             aiController.update(dt);
 
             shootBullet();
@@ -1523,47 +1572,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
-    // Constant rows and columns of the sprite sheet
-    private static final int FRAME_COLS = 8, FRAME_ROWS = 1;
-
-    // Objects used
-    Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
-    Texture walkSheet;
-    SpriteBatch spriteBatch;
-
-    // A variable for tracking elapsed time for the animation
-    float stateTime;
-
-    public void create() {
-
-        // Load the sprite sheet as a Texture
-        walkSheet = new Texture(Gdx.files.internal("space/animations/sunAnim.png"));
-
-        // Use the split utility method to create a 2D array of TextureRegions. This is
-        // possible because this sprite sheet contains frames of equal size and they are
-        // all aligned.
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet,
-                walkSheet.getWidth() / FRAME_COLS,
-                walkSheet.getHeight() / FRAME_ROWS);
-
-        // Place the regions into a 1D array in the correct order, starting from the top
-        // left, going across first. The Animation constructor requires a 1D array.
-        TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                walkFrames[index++] = tmp[i][j];
-            }
-        }
-
-        // Initialize the Animation with the frame interval and array of frames
-        walkAnimation = new Animation<TextureRegion>(.2f, walkFrames);
-
-        // Instantiate a SpriteBatch for drawing and reset the elapsed animation
-        // time to 0
-        spriteBatch = new SpriteBatch();
-        stateTime = 0f;
-    }
 
 
 
@@ -1617,26 +1625,29 @@ public class PlayMode extends WorldController implements ContactListener {
 
             for (Obstacle obj : objects) {
 
-                if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
-                    stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-                    System.out.println("GOT HEREEEEEEEEEEEEEEEEEEE");
-                    System.out.println(obj.getX()+" "+ obj.getY());
-
-
-                    // Get current frame of animation for the current stateTime
-
-                    TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-                    spriteBatch.begin();
-                    spriteBatch.draw(currentFrame, 100, 200); // Draw current frame at (50, 50)
-                    spriteBatch.end();
-
-                }
-                else {
+//                if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
+//                    stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+//                    System.out.println("GOT HEREEEEEEEEEEEEEEEEEEE");
+//                    System.out.println(obj.getX()+" "+ obj.getY());
+//
+//
+//                    // Get current frame of animation for the current stateTime
+//
+//                    TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+//                    canvas.begin();
+//                    //spriteBatch.draw(currentFrame, obj.getX(), obj.getY()); // Draw current frame at (50, 50)
+//                   // spriteBatch.draw(currentFrame,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,getAngle(),picScale.x, picScale.y);
+//                    //canvas.draw(currentFrame, obj.getX(), obj.getY());
+//                    //canvas.draw(currentFrame,Color.WHITE,currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),obj.getX(),obj.getY(),currentFrame.getRegionWidth()*.4f, currentFrame.getRegionHeight()*.4f);
+//                    canvas.end();
+//
+//                }
+                //else {
                     canvas.begin();
                     obj.draw(canvas);
                     canvas.end();
                     System.out.println("ELSE STATEMENT");
-                }
+              //  }
 
 
             }

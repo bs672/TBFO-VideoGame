@@ -318,7 +318,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundREDSTAR, Color.WHITE, 0, 0,backgroundREDSTAR.getWidth(),backgroundREDSTAR.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundTITLE, Color.WHITE, centerX-(backgroundTITLE.getWidth()/2), centerY+(backgroundTITLE.getHeight()/4), backgroundTITLE.getWidth(), backgroundTITLE.getHeight()/2);
+        //canvas.draw(backgroundTITLE, Color.WHITE, centerX-(backgroundTITLE.getWidth()/2), centerY+(backgroundTITLE.getHeight()/4), backgroundTITLE.getWidth(), backgroundTITLE.getHeight()/2);
+        canvas.draw(backgroundTITLE, Color.WHITE, canvas.getWidth() / 2 - (backgroundTITLE.getWidth() / 2) + 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
 		//canvas.drawTextCentered("The Big Friendly Oob", displayFont, 100.0f);
 		if (ready == false) {
 			drawProgress(canvas);

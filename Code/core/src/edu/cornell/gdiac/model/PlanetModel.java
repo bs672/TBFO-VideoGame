@@ -22,6 +22,8 @@ public class PlanetModel extends WheelObstacle{
 
     private float type;
 
+    private int becomingCommand = 0;
+
     private boolean dying;
 
     private int spawnCooldown = SPAWN_COOLDOWN;
@@ -48,6 +50,10 @@ public class PlanetModel extends WheelObstacle{
 
     public float getType(){return type;}
 
+    public void convert(){becomingCommand++;}
+
+    public int getConvert(){return becomingCommand;}
+
     public void setDying(boolean bool) {dying = bool;}
 
     /**
@@ -68,6 +74,7 @@ public class PlanetModel extends WheelObstacle{
         setFixedRotation(true);
         this.type = t;
         dying=false;
+        becomingCommand = 0;
 
         setName("Planet");
     }
