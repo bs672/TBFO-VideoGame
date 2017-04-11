@@ -523,7 +523,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The restitution for all physics objects */
     private static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = -0.00f;
+    private static final float  BULLET_DAMAGE = -0.04f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
@@ -879,11 +879,11 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         // Create black holes
-        BlackHoleModel b1 = new BlackHoleModel(16, 40, 1, new Vector2(0,-1));
-        BlackHoleModel b2 = new BlackHoleModel(30, 8, 1, new Vector2(-1,0));
+        BlackHoleModel b1 = new BlackHoleModel(10.5f, 40, 4, new Vector2(0.4f,-1));
+        BlackHoleModel b2 = new BlackHoleModel(22.5f, 40, 4, new Vector2(-0.4f,-1));
         b1.setTexture(blackHoleTexture);
-        b1.scalePicScale(new Vector2(0.25f, 0.25f));
-        b2.scalePicScale(new Vector2(0.25f, 0.25f));
+        b1.scalePicScale(new Vector2(1.2f, 1.2f));
+        b2.scalePicScale(new Vector2(1.2f, 1.2f));
         b2.setTexture(blackHoleTexture);
         b1.setPair(b2);
         b2.setPair(b1);
@@ -953,18 +953,19 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
+                Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
                 if (Math.random()<0.5){
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 1);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
 //                    sh.setAggroRange(20f);
                 }
                 else if (Math.random() < 0.75){
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
