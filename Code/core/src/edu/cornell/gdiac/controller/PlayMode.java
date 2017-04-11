@@ -169,7 +169,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(0f, 0f);
+    private static Vector2 OOB_POS = new Vector2(16f, 12f);
     /** Oob's initial radius */
     private  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
 
@@ -575,7 +575,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(false);
+        setDebug(true);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -632,7 +632,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Array<Array<Float>> blackHoleArray = new Array<Array<Float>>();
         ObjectMap<Integer, Array<Float>> bhmap = new ObjectMap<Integer, Array<Float>>();
         Array<Float> tempArray;
-        float scale = 0f;
+        float scale;
         float xPos = 0f;
         float yPos = 0f;
         //starting planet always same
@@ -698,7 +698,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 shipArray.add(tempArray);
             }
             else if(objectName.equals("oob2")){
-                OOB_RADIUS = scale / 0.2f;
+                OOB_RADIUS = scale / 0.35f;
             }
             else if(objectName.equals("blackHole")){
                 tempArray = new Array<Float>();
@@ -961,7 +961,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Oob
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
