@@ -26,7 +26,9 @@ import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.utils.ObjectMap;
 
+import javax.swing.plaf.TextUI;
 
 
 /**
@@ -49,7 +51,9 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
 
 
-    private static final String OOB_FILE  = "space/Oob/oob_2.png";
+    private static final String OOB_FILE  = "space/Oob/oob2.png";
+
+    private static final String BLACK_HOLE = "space/planets/blackHole.png";
 
 
     /** The texture file for the planets */
@@ -193,7 +197,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
 
-
+    private TextureRegion blackHoleTexture;
 
     /** Planet texture */
     private TextureRegion blue_P_1_Texture;
@@ -284,6 +288,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private float moveDirection = 0f;
     private boolean mute = true;
     private Vector2 launchVec;
+    private BlackHoleModel outHole;
+    private boolean blackHoleWarp;
 
     private boolean jumping = false;
 
@@ -308,6 +314,9 @@ public class PlayMode extends WorldController implements ContactListener {
         platformAssetState = AssetState.LOADING;
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
+
+        manager.load(BLACK_HOLE, Texture.class);
+        assets.add(BLACK_HOLE);
 
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
@@ -433,6 +442,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
         avatarTexture = createTexture(manager,OOB_FILE,false);
+        blackHoleTexture = createTexture(manager, BLACK_HOLE, false);
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
         blue_P_1_Texture = createTexture(manager,BLUE_P_1,false);
@@ -520,12 +530,13 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The restitution for all physics objects */
     private static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = -0.00f;
+    private static final float  BULLET_DAMAGE = -0.04f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
     private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
+    private Array<Array<Float>> BLACK_HOLES = new Array<Array<Float>>();
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -618,6 +629,8 @@ public class PlayMode extends WorldController implements ContactListener {
         String objectName;
         Array<Array<Float>> planetArray = new Array<Array<Float>>();
         Array<Array<Float>> shipArray = new Array<Array<Float>>();
+        Array<Array<Float>> blackHoleArray = new Array<Array<Float>>();
+        ObjectMap<Integer, Array<Float>> bhmap = new ObjectMap<Integer, Array<Float>>();
         Array<Float> tempArray;
         float scale = 0f;
         float xPos = 0f;
@@ -687,9 +700,42 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(objectName.equals("oob2")){
                 OOB_RADIUS = scale / 0.2f;
             }
+            else if(objectName.equals("blackHole")){
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.3f);
+                String custom = temp.getString("customVars");
+                int holePair = 0;
+                float direction = 0;
+                for(int a = 0; a<custom.length(); a++){
+                    if(custom.substring(a, a+5).equals("type:")){
+                        while(custom.charAt(a+5)!=';'){
+                            holePair = holePair * 10;
+                            holePair += Character.getNumericValue(custom.charAt(a+5));
+                            a++;
+                        }
+                    }
+                    if(custom.substring(a, a+10).equals("direction:")){
+                        direction = Float.parseFloat(custom.substring(a+10));
+                        a = custom.length();
+                    }
+                }
+                tempArray.add((float)Math.cos(Math.toRadians(direction)));
+                tempArray.add((float)Math.sin(Math.toRadians(direction)));
+                if(bhmap.containsKey(holePair)){
+                    blackHoleArray.add(tempArray);
+                    blackHoleArray.add(bhmap.get(holePair));
+                    bhmap.remove(holePair);
+                }
+                else{
+                    bhmap.put(holePair, tempArray);
+                }
+            }
         }
         PLANETS = planetArray;
         SHIPS = shipArray;
+        BLACK_HOLES =blackHoleArray;
 
     }
 
@@ -875,6 +921,27 @@ public class PlayMode extends WorldController implements ContactListener {
 
         }
 
+        // Create black holes
+        for(int ii = 0; ii < BLACK_HOLES.size; ii = ii+2) {
+            BlackHoleModel b1 = new BlackHoleModel(BLACK_HOLES.get(ii).get(0), BLACK_HOLES.get(ii).get(1),
+                    BLACK_HOLES.get(ii).get(2), new Vector2(BLACK_HOLES.get(ii).get(3), BLACK_HOLES.get(ii).get(4)));
+            BlackHoleModel b2 = new BlackHoleModel(BLACK_HOLES.get(ii+1).get(0), BLACK_HOLES.get(ii+1).get(1),
+                    BLACK_HOLES.get(ii+1).get(2), new Vector2(BLACK_HOLES.get(ii+1).get(3), BLACK_HOLES.get(ii+1).get(4)));
+            b1.setTexture(blackHoleTexture);
+            b1.scalePicScale(new Vector2(0.25f, 0.25f));
+            b2.scalePicScale(new Vector2(0.25f, 0.25f));
+            b2.setTexture(blackHoleTexture);
+            b1.setPair(b2);
+            b2.setPair(b1);
+            b1.setBodyType(BodyDef.BodyType.StaticBody);
+            b2.setBodyType(BodyDef.BodyType.StaticBody);
+            b1.setDrawScale(scale);
+            b2.setDrawScale(scale);
+
+            addObject(b1);
+            addObject(b2);
+        }
+
         // Create Ships
 
         for (int ii = 0; ii <SHIPS.size; ii++) {
@@ -900,7 +967,7 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
         complexAvatar.setSensor(true);
         complexAvatar.setName("ComplexOob");
-        complexAvatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
+        complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS, .4f*OOB_RADIUS));
         addObject(complexAvatar);
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
@@ -934,18 +1001,19 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
+                Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
                 if (Math.random()<0.5){
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 1);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
 //                    sh.setAggroRange(20f);
                 }
                 else if (Math.random() < 0.75){
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
-                    sh = new ShipModel(c.getX()+c.getRadius(), c.getY()+c.getRadius(), 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1014,9 +1082,15 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         else {
+            vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
             for(Obstacle o : objects) {
-                o.setX(o.getX() - complexAvatar.getCenter().getVX() / 60);
-                o.setY(o.getY() - complexAvatar.getCenter().getVY() / 60);
+                if(o.equals(complexAvatar)) {
+                    for(Obstacle p : complexAvatar.getBodies()) {
+                        p.setPosition(p.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                    }
+                }
+                else
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
             }
         }
     }
@@ -1029,7 +1103,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 30) || returnToPlanetTimer >= 30)) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
@@ -1058,9 +1132,11 @@ public class PlayMode extends WorldController implements ContactListener {
         float oldOobMass = complexAvatar.getMass();
         float oldPlanMass = currentPlanet.getMass();
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
-        complexAvatar.setRadius((float)Math.sqrt((oldOobMass + SIPHON/3)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
-        complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad,complexAvatar.getRadius() / oldAvatarRad));
+        if(currentPlanet.getType() == 0) {
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + SIPHON / 3) / Math.PI));
+            complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
+        }
     }
 
     //Make Oob move around the planet
@@ -1141,10 +1217,12 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        if(InputController.getInstance().debugJustPressed())
+            setDebug(!isDebug());
         if (pauseState == 0) {
             scrollScreen();
-            width = canvas.getWidth() / 40;
-            height = canvas.getHeight() / 40;
+            width = canvas.getWidth() / 32;
+            height = canvas.getHeight() / 18;
             if (InputController.getInstance().getChange()) {
                 if (control == 1) {
                     control = 0;
@@ -1156,9 +1234,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 //We win the game!
                 pauseState = 1;
             }
-            if (complexAvatar.getX() < 0 || complexAvatar.getX() > width || complexAvatar.getY() < 0 || complexAvatar.getY() > height)
-                //Off the screen
-                pauseState = 2;
+//            if (complexAvatar.getX() < 0 || complexAvatar.getX() > width || complexAvatar.getY() < 0 || complexAvatar.getY() > height)
+//                //Off the screen
+//                pauseState = 2;
             if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
                 //Game Over
                 pauseState = 2;
@@ -1213,6 +1291,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             else if(currentPlanet == null) { // we're floating in space
+                if(blackHoleWarp) {
+                    Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
+                    complexAvatar.setX(newPos.x);
+                    complexAvatar.setY(newPos.y);
+                    complexAvatar.setLinearVelocity(outHole.getOutVelocity());
+                    blackHoleWarp = false;
+                }
                 airPlayerControls();
                 if(jump) {
                     Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
@@ -1309,17 +1394,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     bd2.markRemoved(true);
                     aiController.removeShip((ShipModel)bd2);
                 }
-                else if(bd2.getName().equals("planet")) {
-                    currentPlanet = (PlanetModel)bd2;
-                }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
                     changeMass(((WheelObstacle)bd2).getMass());
                 }
                 else if(bd2.getName().equals("black hole")) {
-                    BlackHoleModel pair = ((BlackHoleModel)bd2).getPair();
-                    bd1.setX(pair.getX() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).x);
-                    bd1.setY(pair.getY() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).y);
+                    outHole = ((BlackHoleModel)bd2).getPair();
+                    blackHoleWarp = true;
                 }
 
             }
@@ -1334,17 +1415,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     bd1.markRemoved(true);
                     aiController.removeShip((ShipModel)bd1);
                 }
-                else if(bd1.getName().equals("planet")) {
-                    currentPlanet = (PlanetModel)bd1;
-                }
                 else if(bd1.getName().equals("expulsion")) {
                     bd1.markRemoved(true);
                     changeMass(((WheelObstacle)bd1).getMass());
                 }
-                else if(bd2.getName().equals("black hole")) {
-                    BlackHoleModel pair = ((BlackHoleModel)bd1).getPair();
-                    bd1.setX(pair.getX() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).x);
-                    bd1.setY(pair.getY() + pair.getOutVelocity().cpy().nor().scl(pair.getRadius() + ((ComplexOobModel)bd1).getRadius()).y);
+                else if(bd1.getName().equals("black hole")) {
+                    outHole = ((BlackHoleModel)bd1).getPair();
+                    blackHoleWarp = true;
                 }
             }
         } catch (Exception e) {
@@ -1479,10 +1556,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.endDebug();
             }
             canvas.begin();
-            for (int i = 0; i < planets.size; i++) {
-                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX()*40f, planets.get(i).getY() * 40f);
-            }
-            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
+//            for (int i = 0; i < planets.size; i++) {
+//                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX()*40f, planets.get(i).getY() * 40f);
+//            }
+//            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
             canvas.end();
 
         }

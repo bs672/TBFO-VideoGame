@@ -43,7 +43,7 @@ public class MainMenu extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
 
 
-    private static final String OOB_FILE  = "space/Oob/oob_2.png";
+    private static final String OOB_FILE  = "space/Oob/oob2.png";
 
 
     /** The texture file for the planets */

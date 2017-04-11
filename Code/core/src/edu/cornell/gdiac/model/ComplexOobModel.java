@@ -263,7 +263,7 @@ public class ComplexOobModel extends ComplexObstacle {
         center.setX(f);
         float angle = 0;
         for(int i = 1; i < bodies.size; i++) {
-            bodies.get(i).setX(f + radius*(float)Math.cos(angle));
+            ((WheelObstacle)bodies.get(i)).setX(f + radius*(float)Math.cos(angle));
             angle += 2 * Math.PI / (bodies.size - 1);
         }
     }
@@ -271,7 +271,7 @@ public class ComplexOobModel extends ComplexObstacle {
         center.setY(f);
         float angle = 0;
         for(int i = 1; i < bodies.size; i++) {
-            bodies.get(i).setY(f + radius*(float)Math.sin(angle));
+            ((WheelObstacle)bodies.get(i)).setY(f + radius*(float)Math.sin(angle));
             angle += 2 * Math.PI / (bodies.size - 1);
         }
     }

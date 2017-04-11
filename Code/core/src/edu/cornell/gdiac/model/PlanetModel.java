@@ -15,6 +15,8 @@ public class PlanetModel extends WheelObstacle{
 
     private static final int SPAWN_COOLDOWN = 300;
 
+    private int totalSpawned;
+
     //Type 0 is normal planet
     //Type 1 is command planet
     //Type 2 is poison planet
