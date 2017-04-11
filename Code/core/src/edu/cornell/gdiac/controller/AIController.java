@@ -42,9 +42,9 @@ public class AIController {
     /** epsilon for distance from orbiting planet */
     private static final float EPSILON = 0.1f;
     /** firing cooldown time */
-    private static final int COOLDOWN = 200;
+    private static final int COOLDOWN = 100;
     /** burst amount */
-    private static final int BURSTCOUNT = 10;
+    private static final int BURSTCOUNT = 5;
     /** burst delay */
     private static final int DELAY = 5;
     /** distance from orbiting planet */

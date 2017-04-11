@@ -47,18 +47,21 @@ import edu.cornell.gdiac.util.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-    private static final String BACKG_FILE_MAIN = "space/background/background_main.png";
-    private static final String BACKG_FILE_RED_STAR = "space/background/large-stars.png";
+    private static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
+    private static final String BACKG_FILE_RED_STAR = "space/background//large-stars.png";
     private static final String BACKG_FILE_WHITE_STAR = "space/background/medium-stars.png";
+    private static final String BACKG_FILE_TITLE = "space/background/home_screen_assets/title.png";
 	private static final String PROGRESS_FILE = "space/background/progressbar.png";
 	private static final String PLAY_BTN_FILE = "space/Oob/oob_2.png";
 	
 	/** Background texture for start-up */
 	private Texture backgroundMAIN;
     /** Background texture for start-up */
-    private TextureRegion backgroundREDSTAR;
+    private Texture backgroundREDSTAR;
     /** Texture asset for background image */
-    private TextureRegion backgroundWHITESTAR;
+    private Texture backgroundWHITESTAR;
+    /** Texture asset for background image */
+    private Texture backgroundTITLE;
 	/** Play button to display when done */
 	private Texture playButton;
 	/** Texture atlas to support a progress bar */
@@ -208,22 +211,25 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		// Load the next two images immediately.
 		playButton = null;
 		backgroundMAIN = new Texture(BACKG_FILE_MAIN);
+        backgroundTITLE = new Texture(BACKG_FILE_TITLE);
+        backgroundREDSTAR = new Texture(BACKG_FILE_RED_STAR);
+        backgroundWHITESTAR = new Texture(BACKG_FILE_WHITE_STAR);
 
 		statusBar  = new Texture(PROGRESS_FILE);
 
 
-        Texture redTex = new Texture(BACKG_FILE_RED_STAR);
-        redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        TextureRegion redTexReg = new TextureRegion(redTex);
-        redTexReg.setRegion(0,0,redTex.getWidth()*7,redTex.getHeight()*7);
-        backgroundREDSTAR=redTexReg;
-
-
-        Texture whiteTex = new Texture(BACKG_FILE_WHITE_STAR);
-        whiteTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        TextureRegion whiteTexReg = new TextureRegion(whiteTex);
-        whiteTexReg.setRegion(0,0,whiteTex.getWidth()*7,whiteTex.getHeight()*7);
-        backgroundWHITESTAR=whiteTexReg;
+//        Texture redTex = new Texture(BACKG_FILE_RED_STAR);
+//        redTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+//        TextureRegion redTexReg = new TextureRegion(redTex);
+//        redTexReg.setRegion(0,0,redTex.getWidth()*7,redTex.getHeight()*7);
+//        backgroundREDSTAR=redTexReg;
+//
+//
+//        Texture whiteTex = new Texture(BACKG_FILE_WHITE_STAR);
+//        whiteTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+//        TextureRegion whiteTexReg = new TextureRegion(whiteTex);
+//        whiteTexReg.setRegion(0,0,whiteTex.getWidth()*7,whiteTex.getHeight()*7);
+//        backgroundWHITESTAR=whiteTexReg;
 
 		
 		// No progress so far.		
@@ -310,8 +316,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		//displayFont.setColor(Color.YELLOW);
 		canvas.begin();
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundREDSTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundREDSTAR, Color.WHITE, 0, 0,backgroundREDSTAR.getWidth(),backgroundREDSTAR.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        //canvas.draw(backgroundTITLE, Color.WHITE, centerX-(backgroundTITLE.getWidth()/2), centerY+(backgroundTITLE.getHeight()/4), backgroundTITLE.getWidth(), backgroundTITLE.getHeight()/2);
+        canvas.draw(backgroundTITLE, Color.WHITE, canvas.getWidth() / 2 - (backgroundTITLE.getWidth() / 2) + 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
 		//canvas.drawTextCentered("The Big Friendly Oob", displayFont, 100.0f);
 		if (ready == false) {
 			drawProgress(canvas);
