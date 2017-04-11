@@ -157,9 +157,9 @@ public class MainMenu extends WorldController implements ContactListener {
     /** The sound file for a bullet collision */
     private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(0f, 0f);
+    private Vector2 OOB_POS = new Vector2(16,12);
     /** Oob's initial radius */
-    private  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
+    private  float OOB_RADIUS = .8f; //0.2 scale in overlap2d is standard
 
     private static final float SIPHON = 0.02f;
 
@@ -507,7 +507,7 @@ public class MainMenu extends WorldController implements ContactListener {
      */
     public MainMenu() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(false);
+        setDebug(true);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -572,13 +572,13 @@ public class MainMenu extends WorldController implements ContactListener {
         }
 
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(16, 12, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
         complexAvatar.setSensor(true);
         complexAvatar.setName("ComplexOob");
-        complexAvatar.scalePicScale(new Vector2(.3f*OOB_RADIUS, .3f*OOB_RADIUS));
+        complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS, .4f*OOB_RADIUS));
         addObject(complexAvatar);
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
