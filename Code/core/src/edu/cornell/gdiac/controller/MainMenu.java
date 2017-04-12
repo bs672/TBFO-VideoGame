@@ -495,7 +495,7 @@ public class MainMenu extends WorldController implements ContactListener {
 
     private static final float[][] PLANETS = {
             {0.0f, 3.0f, 1.2f, 3f},   // NOTHING
-            {25, 10f, 1.2f, 3f},  //SETTINGS
+            {30, 10f, 1.2f, 3f},  //SETTINGS
             {15.0f, 3f, 1.2f, 3f},    //LEVEL SELECT
             {7.0f, 4.5f, 1.2f, 3f},   //PLAY
 
@@ -720,7 +720,7 @@ public class MainMenu extends WorldController implements ContactListener {
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(10)));
+        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(20)));
         lastPlanet = currentPlanet;
         currentPlanet = null;
     }
@@ -838,18 +838,18 @@ public class MainMenu extends WorldController implements ContactListener {
         }
         else if(currentPlanet == null) { // we're floating in space
             jumpTime++;
-            if (jumpTime > 180) {
+            if (jumpTime > 230) {
                 reset();
             }
             // Gravity
             Vector2 tempVec1 = new Vector2(0, 0);
             for (int i = 0; i < planets.size; i++) {
-                if (planets.get(i) != lastPlanet) {
+                //if (planets.get(i) != lastPlanet) {
                     tempVec1.set(complexAvatar.getPosition().cpy().sub(planets.get(i).getPosition()));
                     float r = Math.abs(tempVec1.len() - planets.get(i).getRadius());
                     float k = complexAvatar.getMass()*planets.get(i).getMass();
-                    complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 0.1f*k/(r*r), -tempVec1.y * 0.1f*k/(r*r)));
-                }
+                    complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 1f*k/(r*r), -tempVec1.y * 1f*k/(r*r)));
+                //}
             }
 
             airPlayerControls();
