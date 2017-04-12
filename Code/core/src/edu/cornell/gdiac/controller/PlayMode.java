@@ -109,6 +109,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
+
+
    // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
 
    // Animator sun = new Animator();
@@ -135,6 +137,26 @@ public class PlayMode extends WorldController implements ContactListener {
 
     /** The texture file for the planets */
     private static final String DYING_P = "space/planets/dying.png";
+
+    /** The texture file for the planets */
+    private static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
+
+    /** The texture file for the planets */
+    private static final String PLAY_TEXTURE = "space/menus/play_planet.png";
+
+    /** The texture file for the planets */
+    private static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
+
+    /** The texture file for the planets */
+    private static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
+
+    /** The texture file for the planets */
+    private static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
+
+    /** The texture file for the planets */
+    private static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+
+    private static final String TITLE = "space/menus/title.png";
 
 
 
@@ -261,6 +283,24 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Expulsion texture */
     private TextureRegion expulsion_Texture;
 
+    /** Settings texture */
+    private TextureRegion settings_Texture;
+
+    /** Levels texture */
+    private TextureRegion levels_Texture;
+
+    /** Play texture */
+    private TextureRegion play_Texture;
+
+    /** Settings texture */
+    private TextureRegion settings_Hover_Texture;
+
+    /** Levels texture */
+    private TextureRegion levels_Hover_Texture;
+
+    /** Play texture */
+    private TextureRegion play_Hover_Texture;
+
 
 
     /** Background texture */
@@ -291,7 +331,7 @@ public class PlayMode extends WorldController implements ContactListener {
     private BlackHoleModel outHole;
     private boolean blackHoleWarp;
 
-    private boolean jumping = false;
+    public void setMute(boolean bool) {mute = bool;}
 
     /** Track asset loading from all instances and subclasses */
     private AssetState platformAssetState = AssetState.EMPTY;
@@ -314,6 +354,24 @@ public class PlayMode extends WorldController implements ContactListener {
         platformAssetState = AssetState.LOADING;
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
+
+        manager.load(SETTINGS_TEXTURE, Texture.class);
+        assets.add(SETTINGS_TEXTURE);
+
+        manager.load(SETTINGS_HOVER_TEXTURE, Texture.class);
+        assets.add(SETTINGS_HOVER_TEXTURE);
+
+        manager.load(PLAY_TEXTURE, Texture.class);
+        assets.add(PLAY_TEXTURE);
+
+        manager.load(PLAY_HOVER_TEXTURE, Texture.class);
+        assets.add(PLAY_HOVER_TEXTURE);
+
+        manager.load(LEVELS_TEXTURE, Texture.class);
+        assets.add(LEVELS_TEXTURE);
+
+        manager.load(LEVELS_HOVER_TEXTURE, Texture.class);
+        assets.add(LEVELS_HOVER_TEXTURE);
 
         manager.load(BLACK_HOLE, Texture.class);
         assets.add(BLACK_HOLE);

@@ -150,7 +150,7 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private TextureRegion settingsTexture;
 
-
+    private boolean[] lastInPlanet;
 
     /** Texture asset for ship */
     private TextureRegion ship_texture;
@@ -398,6 +398,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
         jumpedOnce = false;
+        lastInPlanet = new boolean[PLANETS.length];
     }
 
     /**
@@ -425,6 +426,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         setComplete(false);
         setFailure(false);
         populateLevel();
+        lastInPlanet = new boolean[PLANETS.length];
     }
 
     /**
@@ -524,13 +526,21 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
         groundPlayerControls();
         Vector2 mouse = InputController.getInstance().getCursor();
-        for (int i = 0; i < planets.size; i++) {
+        for (int i = 0; i < PLANETS.length; i++) {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
-            if (Math.sqrt(d) < planets.get(i).getRadius()) {
-                planets.get(i).setTexture(TEXTURES[i][1]);
+            if ((Math.sqrt(d) < planets.get(i).getRadius())) {
+                if (lastInPlanet[i] == false) {
+                    planets.get(i).setTexture(TEXTURES[i][1]);
+                    planets.get(i).setRadius(planets.get(i).getRadius()*1.1f);
+                    planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
+                }
+                lastInPlanet[i] = true;
             }
-            else {
+            else if (lastInPlanet[i] == true) {
                 planets.get(i).setTexture(TEXTURES[i][0]);
+                planets.get(i).setRadius(planets.get(i).getRadius()*1/1.1f);
+                planets.get(i).scalePicScale(new Vector2(1/1.2f, 1/1.2f));
+                lastInPlanet[i] = false;
             }
         }
         if (jump) {

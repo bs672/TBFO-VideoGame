@@ -192,6 +192,8 @@ public class MainMenu extends WorldController implements ContactListener {
     /** Timer for resetting the menu */
     private int jumpTime = 0;
 
+    private boolean[] lastInPlanet;
+
     /** Planet texture */
     private TextureRegion neutral_P_Texture;
 
@@ -555,6 +557,7 @@ public class MainMenu extends WorldController implements ContactListener {
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
         jumpTime = 0;
+        lastInPlanet = new boolean[PLANETS.length];
     }
 
     /**
@@ -582,6 +585,7 @@ public class MainMenu extends WorldController implements ContactListener {
         setComplete(false);
         setFailure(false);
         populateLevel();
+        lastInPlanet = new boolean[PLANETS.length];
     }
 
     /**
@@ -791,7 +795,6 @@ public class MainMenu extends WorldController implements ContactListener {
             smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
             complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
             //determines mouse or keyboard controls
-
             for (int i = 1; i <= 2; i++) {
                 if (currentPlanet == planets.get(i)) {
                     listener.exitScreen(this, i);
@@ -802,16 +805,23 @@ public class MainMenu extends WorldController implements ContactListener {
                 listener.exitScreen(this, 4);
                 return;
             }
-
             groundPlayerControls();
             Vector2 mouse = InputController.getInstance().getCursor();
-            for (int i = 0; i < planets.size; i++) {
+            for (int i = 0; i < PLANETS.length; i++) {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
-                if (Math.sqrt(d) < planets.get(i).getRadius()) {
-                    planets.get(i).setTexture(TEXTURES[i][1]);
+                if ((Math.sqrt(d) < planets.get(i).getRadius())) {
+                    if (lastInPlanet[i] == false) {
+                        planets.get(i).setTexture(TEXTURES[i][1]);
+                        planets.get(i).setRadius(planets.get(i).getRadius()*1.1f);
+                        planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
+                    }
+                    lastInPlanet[i] = true;
                 }
-                else {
+                else if (lastInPlanet[i] == true) {
                     planets.get(i).setTexture(TEXTURES[i][0]);
+                    planets.get(i).setRadius(planets.get(i).getRadius()*1/1.1f);
+                    planets.get(i).scalePicScale(new Vector2(1/1.2f, 1/1.2f));
+                    lastInPlanet[i] = false;
                 }
             }
             if (jump) {
@@ -831,6 +841,17 @@ public class MainMenu extends WorldController implements ContactListener {
             if (jumpTime > 180) {
                 reset();
             }
+            // Gravity
+            Vector2 tempVec1 = new Vector2(0, 0);
+            for (int i = 0; i < planets.size; i++) {
+                if (planets.get(i) != lastPlanet) {
+                    tempVec1.set(complexAvatar.getPosition().cpy().sub(planets.get(i).getPosition()));
+                    float r = Math.abs(tempVec1.len() - planets.get(i).getRadius());
+                    float k = complexAvatar.getMass()*planets.get(i).getMass();
+                    complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 0.1f*k/(r*r), -tempVec1.y * 0.1f*k/(r*r)));
+                }
+            }
+
             airPlayerControls();
             if(jump) {
                 Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));

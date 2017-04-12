@@ -174,6 +174,9 @@ public class GDXRoot extends Game implements ScreenListener {
 				setScreen(controllers[current]);
 				lastScreen = 1;
 			}
+			else if (exitCode == 1) {
+			    // controllers[4].setMute(false);
+            }
 		}
 		// LEVEL SELECT
 		else if (screen == controllers[2]) {
