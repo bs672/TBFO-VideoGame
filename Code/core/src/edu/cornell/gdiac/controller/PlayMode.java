@@ -986,8 +986,8 @@ public class PlayMode extends WorldController implements ContactListener {
             BlackHoleModel b2 = new BlackHoleModel(BLACK_HOLES.get(ii+1).get(0), BLACK_HOLES.get(ii+1).get(1),
                     BLACK_HOLES.get(ii+1).get(2), new Vector2(BLACK_HOLES.get(ii+1).get(3), BLACK_HOLES.get(ii+1).get(4)));
             b1.setTexture(blackHoleTexture);
-            b1.scalePicScale(new Vector2(0.25f, 0.25f));
-            b2.scalePicScale(new Vector2(0.25f, 0.25f));
+            b1.scalePicScale(new Vector2(1.4f, 1.4f));
+            b2.scalePicScale(new Vector2(1.4f, 1.4f));
             b2.setTexture(blackHoleTexture);
             b1.setPair(b2);
             b2.setPair(b1);
