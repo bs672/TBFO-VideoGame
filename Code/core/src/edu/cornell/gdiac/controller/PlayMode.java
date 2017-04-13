@@ -1297,7 +1297,8 @@ public class PlayMode extends WorldController implements ContactListener {
 //                pauseState = 2;
             if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
                 //Game Over
-                pauseState = 2;
+//                pauseState = 2;
+                reset();
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
