@@ -645,7 +645,7 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
-        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/Intro Level 1.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
     }
