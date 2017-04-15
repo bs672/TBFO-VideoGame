@@ -989,7 +989,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Oob
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX(), currentPlanet.getY() + currentPlanet.getRadius(), OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         //complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1204,12 +1204,13 @@ public class PlayMode extends WorldController implements ContactListener {
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(10)));
+        Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
+        complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
         lastPlanet = currentPlanet;
         currentPlanet = null;
     }
 
-    //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
+    //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
             reset();
@@ -1218,7 +1219,7 @@ public class PlayMode extends WorldController implements ContactListener {
             pauseState = 3;
         }
         if (control==1){
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             mouse = mouse.sub(currentPlanet.getPosition());
             float angle = mouse.angle();
             Vector2 oob = complexAvatar.getPosition();
@@ -1249,7 +1250,7 @@ public class PlayMode extends WorldController implements ContactListener {
             pauseState = 3;
         }
         if (control==1){
-            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
+            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
             jump = InputController.getInstance().getMouseJump();
         }
         else{
@@ -1563,14 +1564,14 @@ public class PlayMode extends WorldController implements ContactListener {
             LG_S_X = 0;
         }
         else {
-            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
+            LG_S_X = -(backgroundLG.getRegionWidth()-canvas.getWidth())/2;
         }
 
         if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
             LG_S_Y = 0;
         }
         else {
-            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
+            LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
 
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
@@ -1602,7 +1603,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.draw(canvas);
                     canvas.end();
                 }
-                if (obj.getName().equals("black hole")) {
+                else if (obj.getName().equals("black hole")) {
                     // Get current frame of animation for the current stateTime
                     TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
                     canvas.begin();
@@ -1610,6 +1611,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.draw(canvas);
                     canvas.end();
                 }
+
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
                     EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
                     // Get current frame of animation for the current stateTime
@@ -1619,6 +1621,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.draw(canvas);
                     canvas.end();
                 }
+
+//                else if (obj.getName().equals("ComplexOob")) {
+//                    ((ComplexOobModel)obj).draw();
+//                }
+
                 else {
                     canvas.begin();
                     obj.draw(canvas);
