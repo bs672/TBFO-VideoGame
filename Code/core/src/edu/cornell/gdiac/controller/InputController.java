@@ -17,6 +17,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
 
 import edu.cornell.gdiac.util.*;
+import edu.cornell.gdiac.view.GameCanvas;
 
 /**
  * Class for reading player input. 
@@ -142,8 +143,8 @@ public class InputController {
 	 *
 	 * @return the current position of the crosshairs on the screen.
 	 */
-	public Vector2 getCursor() {
-		return crosscache.set(cursar);
+	public Vector2 getCursor(GameCanvas canvas) {
+		return new Vector2(Gdx.input.getX()/40, -Gdx.input.getY()/40+canvas.getHeight()/40);
 	}
 	
 	/**

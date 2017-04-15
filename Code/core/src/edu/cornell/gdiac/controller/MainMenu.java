@@ -731,7 +731,7 @@ public class MainMenu extends WorldController implements ContactListener {
             reset();
         }
         if (control==1){
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             mouse = mouse.sub(currentPlanet.getPosition());
             float angle = mouse.angle();
             Vector2 oob = complexAvatar.getPosition();
@@ -759,7 +759,7 @@ public class MainMenu extends WorldController implements ContactListener {
             reset();
         }
         if (control==1){
-            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
+            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
             jump = InputController.getInstance().getMouseJump();
         }
         else{
@@ -806,7 +806,7 @@ public class MainMenu extends WorldController implements ContactListener {
                 return;
             }
             groundPlayerControls();
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             for (int i = 0; i < PLANETS.length; i++) {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
                 if ((Math.sqrt(d) < planets.get(i).getRadius())) {
@@ -1020,14 +1020,14 @@ public class MainMenu extends WorldController implements ContactListener {
             LG_S_X = 0;
         }
         else {
-            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
+            LG_S_X = -(backgroundLG.getRegionWidth()-canvas.getWidth())/2;
         }
 
         if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
             LG_S_Y = 0;
         }
         else {
-            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
+            LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
 
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());

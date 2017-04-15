@@ -978,7 +978,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Oob
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX(), currentPlanet.getY() + currentPlanet.getRadius(), OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1175,7 +1175,7 @@ public class PlayMode extends WorldController implements ContactListener {
         currentPlanet = null;
     }
 
-    //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
+    //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
             reset();
@@ -1184,7 +1184,7 @@ public class PlayMode extends WorldController implements ContactListener {
             pauseState = 3;
         }
         if (control==1){
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             mouse = mouse.sub(currentPlanet.getPosition());
             float angle = mouse.angle();
             Vector2 oob = complexAvatar.getPosition();
@@ -1215,7 +1215,7 @@ public class PlayMode extends WorldController implements ContactListener {
             pauseState = 3;
         }
         if (control==1){
-            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
+            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
             jump = InputController.getInstance().getMouseJump();
         }
         else{
@@ -1518,14 +1518,14 @@ public class PlayMode extends WorldController implements ContactListener {
             LG_S_X = 0;
         }
         else {
-            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
+            LG_S_X = -(backgroundLG.getRegionWidth()-canvas.getWidth())/2;
         }
 
         if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
             LG_S_Y = 0;
         }
         else {
-            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
+            LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
 
         canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
