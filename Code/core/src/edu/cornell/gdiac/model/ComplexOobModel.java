@@ -47,7 +47,7 @@ public class ComplexOobModel extends ComplexObstacle {
     /** The number of edges to approximate a circle */
     private int size;
 
-    /** A vector to track the last mouse position */
+    /** A vector arry to track the last position of each edge for texture mapping*/
     private Array<Vector2> edgePosns;
 
     /**
@@ -71,7 +71,7 @@ public class ComplexOobModel extends ComplexObstacle {
         innerJoints = new Array<DistanceJoint>();
         outerJoints = new Array<DistanceJoint>();
         float angle = 0;
-        for(int i = 0; i < ringCircles; i++) {
+        for(int i = 0; i < size; i++) { // create outer circles counter-clockwise from 0 degrees
             WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / ringCircles));
             wheel.setBodyType(BodyDef.BodyType.DynamicBody);
             wheel.setName("Oob");
@@ -137,8 +137,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void draw () {
         for(int i = 0; i < size; i++)
             moveIndex(i, bodies.get(i+1).getX(), bodies.get(i+1).getY());
-        Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        System.out.println(vertices);
+//        System.out.println();
         batch.begin();
         batch.draw(img,vertices,indices,transform);
         batch.end();
@@ -152,9 +152,10 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public void moveIndex(int edgeIndex, float newX, float newY) {
         float dx = newX-edgePosns.get(edgeIndex).x;
-        float dy = edgePosns.get(edgeIndex).y-newY; // Inverts the y-axis
+        float dy = newY-edgePosns.get(edgeIndex).y; // Inverts the y-axis
         vertices.nudge(edgeIndex,dx,dy);
-        edgePosns.get(edgeIndex).set(newX,newY);
+        edgePosns.get(edgeIndex).set(newX, newY);
+
     }
 
     /**
@@ -163,9 +164,10 @@ public class ComplexOobModel extends ComplexObstacle {
      * maps the texture coordinates to the coordinates of Oob's outer ring of circles
      */
     public void mapTexture() {
+        System.out.println();
         // Cache objects to create the vertex buffer
-        Vector2 position = new Vector2(0,0);
-        Vector2 texcoord = new Vector2(0,0);
+        Vector2 position = center.getPosition();
+        Vector2 texcoord = new Vector2(0.5f,0.5f);
 
         // Go around in a circle, starting at the right
         float step = (float)(Math.PI*2)/size;
@@ -185,7 +187,8 @@ public class ComplexOobModel extends ComplexObstacle {
             position.set(bodies.get(i+1).getPosition());
 
             // Set the texture coords.
-            texcoord.set(dx/2,dy/2);
+            texcoord.set((1+dx)/2,(1+dy)/2);
+            System.out.println(position);
 
             // append to vertex buffer
             vertices.append(position, Color.WHITE, texcoord);

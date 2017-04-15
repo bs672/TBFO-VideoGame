@@ -1169,7 +1169,8 @@ public class PlayMode extends WorldController implements ContactListener {
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(10)));
+        Vector2 mouseVec = InputController.getInstance().getCursor().cpy().sub(complexAvatar.getPosition());
+        complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
         lastPlanet = currentPlanet;
         currentPlanet = null;
     }
@@ -1548,7 +1549,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.draw(canvas);
                     canvas.end();
                 }
-                if (obj.getName().equals("black hole")) {
+                else if (obj.getName().equals("black hole")) {
                     // Get current frame of animation for the current stateTime
                     TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
                     canvas.begin();
@@ -1556,6 +1557,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.draw(canvas);
                     canvas.end();
                 }
+//                else if (obj.getName().equals("ComplexOob")) {
+//                    ((ComplexOobModel)obj).draw();
+//                }
                 else {
                     canvas.begin();
                     obj.draw(canvas);
