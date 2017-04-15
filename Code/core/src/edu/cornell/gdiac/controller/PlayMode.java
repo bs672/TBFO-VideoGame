@@ -44,7 +44,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
 
 
-    private static final String OOB_FILE  = "space/Oob/oob2.png";
+    private static final String OOB_FILE  = "space/animations/oobH.png";
 
 
     /** The texture file for the planets */
@@ -89,10 +89,12 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final String RED_P_3 = "space/planets/red3.png";
     //private static final String RED_P_4 = "space/planets/red.png";
 
-    /** The texture file for the planets */
+    /** The texture file for the planet animations */
     private static final String SUN_P = "space/animations/sunAnim.png";
 
     private static final String BLACK_HOLE = "space/animations/blackHoleAnim.png";
+
+    private static final String EXPLOSION = "space/animations/explosionAnim.png";
 
 
     /** The texture file for the planets */
@@ -163,7 +165,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float SIPHON = 0.02f;
 
-    private static final float POISON = -0.00f;
+    private static final float POISON = -0.02f;
 
     private static final float MIN_RADIUS = 1f;
 
@@ -177,6 +179,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     // A variable for tracking elapsed time for the animation
     private float stateTime=0f;
+    private float EXP_stateTime;
 
     //0 is not paused, 1 is victory pause, 2 is defeat pause
     private int pauseState = 0;
@@ -185,8 +188,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //control = 0 is keyboard, control = 1 is mouse
     private int control = 1;
-    /** Texture asset for character avatar */
-    private TextureRegion avatarTexture;
+
+    /** Animation texture */
+    private Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
+    private Texture oobSheet;
 
     private TextureRegion blackHoleTexture;
 
@@ -238,6 +243,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
     private Texture BH_Sheet;
+
+    private Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
+    private Texture EXP_Sheet;
 
 
 
@@ -343,9 +351,6 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(LEVELS_HOVER_TEXTURE, Texture.class);
         assets.add(LEVELS_HOVER_TEXTURE);
 
-        manager.load(BLACK_HOLE, Texture.class);
-        assets.add(BLACK_HOLE);
-
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
 
@@ -404,6 +409,9 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(BLACK_HOLE, Texture.class);
         assets.add(BLACK_HOLE);
 
+        manager.load(EXPLOSION, Texture.class);
+        assets.add(EXPLOSION);
+
         manager.load(COMMAND_P, Texture.class);
         assets.add(COMMAND_P);
 
@@ -460,7 +468,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
-        avatarTexture = createTexture(manager,OOB_FILE,false);
+        oobSheet = new Texture(Gdx.files.internal(OOB_FILE));
+
         blackHoleTexture = createTexture(manager, BLACK_HOLE, false);
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
@@ -495,6 +504,8 @@ public class PlayMode extends WorldController implements ContactListener {
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
         BH_Sheet = new Texture(Gdx.files.internal(BLACK_HOLE));
+
+        EXP_Sheet = new Texture(Gdx.files.internal(EXPLOSION));
 
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
 
@@ -980,12 +991,36 @@ public class PlayMode extends WorldController implements ContactListener {
         currentPlanet = planets.get(0); //The first planet is always the starting planet
         complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
-        complexAvatar.setTexture(avatarTexture);
+        //complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
         complexAvatar.setSensor(true);
         complexAvatar.setName("ComplexOob");
         complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS, .4f*OOB_RADIUS));
         addObject(complexAvatar);
+
+            int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+            // Use the split utility method to create a 2D array of TextureRegions. This is
+            // possible because this sprite sheet contains frames of equal size and they are
+            // all aligned.
+            TextureRegion[][] tmp = TextureRegion.split(oobSheet,
+                    oobSheet.getWidth() / FRAME_COLS,
+                    oobSheet.getHeight() / FRAME_ROWS);
+
+            // Place the regions into a 1D array in the correct order, starting from the top
+            // left, going across first. The Animation constructor requires a 1D array.
+            TextureRegion[] oobFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+            int index = 0;
+            for (int i = 0; i < FRAME_ROWS; i++) {
+                for (int j = 0; j < FRAME_COLS; j++) {
+                    oobFrames[index++] = tmp[i][j];
+                }
+            }
+
+            // Initialize the Animation with the frame interval and array of frames
+            oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
+
+
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
@@ -1265,7 +1300,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     //determines mouse or keyboard controls
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
-                    currentPlanet.setTexture(dying_P_Texture);
+                    //currentPlanet.setTexture(dying_P_Texture);
+                    EXP_Animation= currentPlanet.createtex(EXP_Sheet,EXP_Animation);
+                    EXP_stateTime=0f;
                 }
 
 
@@ -1281,6 +1318,15 @@ public class PlayMode extends WorldController implements ContactListener {
                     jump = true;
                     //TODO Play planet explosion sound
                 }
+
+                //                if (EXP_Animation !=null && EXP_Animation.isAnimationFinished(EXP_stateTime)) {
+//                    if (currentPlanet.getType() == 1f) {
+//                        commandPlanets.removeValue(currentPlanet, true);
+//                    }
+//                    currentPlanet.markRemoved(true);
+//                    planets.removeValue(currentPlanet, true);
+//                    //TODO Play planet explosion sound
+//                }
 
                 if (jump) {
                     if (currentPlanet.isDying()) {
@@ -1540,6 +1586,14 @@ public class PlayMode extends WorldController implements ContactListener {
 
             for (Obstacle obj : objects) {
 
+                if (obj.getName().equals("ComplexOob")) {
+                    // Get current frame of animation for the current stateTime
+                    TextureRegion currentFrame = oobAnimation.getKeyFrame(stateTime, true);
+                    canvas.begin();
+                    ((ComplexOobModel) obj).setTexture(currentFrame);
+                    obj.draw(canvas);
+                    canvas.end();
+                }
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                     // Get current frame of animation for the current stateTime
                     TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
@@ -1553,6 +1607,15 @@ public class PlayMode extends WorldController implements ContactListener {
                     TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
                     canvas.begin();
                     ((BlackHoleModel) obj).setTexture(currentFrame);
+                    obj.draw(canvas);
+                    canvas.end();
+                }
+                if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
+                    EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+                    // Get current frame of animation for the current stateTime
+                    TextureRegion currentFrame = EXP_Animation.getKeyFrame(EXP_stateTime, false);
+                    canvas.begin();
+                    ((PlanetModel) obj).setTexture(currentFrame);
                     obj.draw(canvas);
                     canvas.end();
                 }
