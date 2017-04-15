@@ -162,12 +162,6 @@ public abstract class WorldController implements Screen {
 		return null;
 	}
 
-    //        Texture imgTexture2 = new Texture(BACKG_FILE_WHITE_STAR);
-//        imgTexture2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-//        TextureRegion imgTextureRegion2 = new TextureRegion(imgTexture2);
-//        imgTextureRegion2.setRegion(0,0,imgTexture2.getWidth()*3,imgTexture2.getHeight()*3);
-//
-//        backgroundTextureWHITESTAR=imgTextureRegion2;
 	
 	/**
 	 * Returns a newly loaded filmstrip for the given file.
