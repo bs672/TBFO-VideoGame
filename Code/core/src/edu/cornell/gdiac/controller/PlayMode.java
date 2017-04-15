@@ -5,16 +5,12 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -25,10 +21,7 @@ import edu.cornell.gdiac.util.FilmStrip;
 import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.utils.ObjectMap;
-
-import javax.swing.plaf.TextUI;
 
 
 /**
@@ -52,8 +45,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     private static final String OOB_FILE  = "space/Oob/oob2.png";
-
-    private static final String BLACK_HOLE = "space/planets/blackHole.png";
 
 
     /** The texture file for the planets */
@@ -99,35 +90,10 @@ public class PlayMode extends WorldController implements ContactListener {
     //private static final String RED_P_4 = "space/planets/red.png";
 
     /** The texture file for the planets */
-    private static final String POISON_P_1 = "space/planets/sun.png";
-    private static final String POISON_P_2 = "space/planets/sun.png";
-    private static final String POISON_P_3 = "space/planets/sun.png";
-    private static final String POISON_P_4 = "space/planets/sun.png";
+    private static final String SUN_P = "space/animations/sunAnim.png";
 
+    private static final String BLACK_HOLE = "space/animations/blackHoleAnim.png";
 
-    private static final String POISON_P = "space/animations/sunAnim.png";
-
-
-
-
-
-   // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
-
-   // Animator sun = new Animator();
-
-
-
-  // Animation test2= new Animation(.125f,poison_P_Strip);
-
-
-
-
-    // Objects used
-    Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
-    Texture walkSheet;
-
-    // A variable for tracking elapsed time for the animation
-    float stateTime;
 
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
@@ -197,7 +163,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private static final float SIPHON = 0.02f;
 
-    private static final float POISON = -0.02f;
+    private static final float POISON = -0.00f;
 
     private static final float MIN_RADIUS = 1f;
 
@@ -208,6 +174,9 @@ public class PlayMode extends WorldController implements ContactListener {
     private static final float EPSILON = 0.1f;
 
     private static final int THRESHOLD = 4;
+
+    // A variable for tracking elapsed time for the animation
+    private float stateTime=0f;
 
     //0 is not paused, 1 is victory pause, 2 is defeat pause
     private int pauseState = 0;
@@ -263,13 +232,14 @@ public class PlayMode extends WorldController implements ContactListener {
     private TextureRegion red_P_3_Texture;
     //private TextureRegion red_P_4_Texture;
 
-    /** Planet texture */
-    private TextureRegion poison_P_1_Texture;
-    private TextureRegion poison_P_2_Texture;
-    private TextureRegion poison_P_3_Texture;
-    private TextureRegion poison_P_4_Texture;
+    /** Animation texture */
+    private Animation<TextureRegion> sunAnimation; // Must declare frame type (TextureRegion)
+    private Texture sunSheet;
 
-    private FilmStrip poison_P_Strip;
+    private Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
+    private Texture BH_Sheet;
+
+
 
     /** Planet texture */
     private TextureRegion command_P_Texture;
@@ -428,20 +398,11 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(RED_P_3, Texture.class);
         assets.add(RED_P_3);
 
-        manager.load(POISON_P_1, Texture.class);
-        assets.add(POISON_P_1);
-        manager.load(POISON_P_2, Texture.class);
-        assets.add(POISON_P_2);
-        manager.load(POISON_P_3, Texture.class);
-        assets.add(POISON_P_3);
-        manager.load(POISON_P_4, Texture.class);
-        assets.add(POISON_P_4);
+        manager.load(SUN_P, Texture.class);
+        assets.add(SUN_P);
 
-        manager.load(POISON_P, Texture.class);
-        assets.add(POISON_P);
-
-
-
+        manager.load(BLACK_HOLE, Texture.class);
+        assets.add(BLACK_HOLE);
 
         manager.load(COMMAND_P, Texture.class);
         assets.add(COMMAND_P);
@@ -531,12 +492,9 @@ public class PlayMode extends WorldController implements ContactListener {
         red_P_2_Texture = createTexture(manager, RED_P_2,false);
         red_P_3_Texture = createTexture(manager, RED_P_3,false);
 
-        poison_P_1_Texture = createTexture(manager,POISON_P_1,false);
-        poison_P_2_Texture = createTexture(manager,POISON_P_2,false);
-        poison_P_3_Texture = createTexture(manager,POISON_P_3,false);
-        poison_P_4_Texture = createTexture(manager,POISON_P_4,false);
+        sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
-        poison_P_Strip = createFilmStrip(manager,POISON_P,1,8,8);
+        BH_Sheet = new Texture(Gdx.files.internal(BLACK_HOLE));
 
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
 
@@ -625,7 +583,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** AIController */
     private AIController aiController;
 
-    //private String jsonString = "{\"sceneName\":\"MainScene\",\"composite\":{\"sImages\":[{\"uniqueId\":4,\"tags\":[],\"customVars\":\"Type:1\",\"x\":6.6625,\"y\":3.9375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":0.75,\"originY\":1.6875,\"layerName\":\"Default\",\"imageName\":\"ship\"},{\"uniqueId\":5,\"tags\":[],\"customVars\":\"Type:3\",\"x\":5.55,\"y\":1.7000003,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":1,\"layerName\":\"Default\",\"imageName\":\"command\"},{\"uniqueId\":6,\"tags\":[],\"x\":-3.375,\"y\":0.42499995,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":4.06875,\"originY\":4.06875,\"zIndex\":2,\"layerName\":\"Default\",\"imageName\":\"sun\"},{\"uniqueId\":7,\"tags\":[],\"x\":-3.1125002,\"y\":-2.9875,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":3,\"layerName\":\"Default\",\"imageName\":\"neutral\"},{\"uniqueId\":8,\"tags\":[],\"x\":2.1125,\"y\":-0.4375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":3,\"originY\":3,\"zIndex\":4,\"layerName\":\"Default\",\"imageName\":\"purple\"},{\"uniqueId\":9,\"tags\":[],\"x\":0.7750001,\"y\":-0.76250005,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":4.375,\"originY\":4.375,\"zIndex\":5,\"layerName\":\"Default\",\"imageName\":\"oob2\"}],\"layers\":[{\"layerName\":\"Default\",\"isVisible\":true}]},\"physicsPropertiesVO\":{}}";
+
     /**
      * Creates and initialize a new instance of the platformer game
      *
@@ -645,7 +603,7 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
-        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/Intro Level 1.dt");
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
     }
@@ -921,53 +879,30 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             //Poison Planets
            if (obj.getType() == 2f) {
-//                // Constant rows and columns of the sprite sheet
-//                int FRAME_COLS = 8, FRAME_ROWS = 1;
-//
-//
-//                    // Load the sprite sheet as a Texture
-//                    walkSheet = new Texture(Gdx.files.internal("space/animations/sunAnim.png"));
-//
-//                    // Use the split utility method to create a 2D array of TextureRegions. This is
-//                    // possible because this sprite sheet contains frames of equal size and they are
-//                    // all aligned.
-//                    TextureRegion[][] tmp = TextureRegion.split(walkSheet,
-//                            walkSheet.getWidth() / FRAME_COLS,
-//                            walkSheet.getHeight() / FRAME_ROWS);
-//
-//                    // Place the regions into a 1D array in the correct order, starting from the top
-//                    // left, going across first. The Animation constructor requires a 1D array.
-//                    TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-//                    int index = 0;
-//                    for (int i = 0; i < FRAME_ROWS; i++) {
-//                        for (int j = 0; j < FRAME_COLS; j++) {
-//                            walkFrames[index++] = tmp[i][j];
-//                        }
-//                    }
-//
-//                    // Initialize the Animation with the frame interval and array of frames
-//                    walkAnimation = new Animation<TextureRegion>(.2f, walkFrames);
-//
-//                    // Instantiate a SpriteBatch for drawing and reset the elapsed animation
-//                    // time to 0
-//                    stateTime = 0f;
+               obj.scalePicScale(new Vector2(.5f * obj.getRadius(), .5f * obj.getRadius()));
+                // Constant rows and columns of the sprite sheet
+                int FRAME_COLS = 8, FRAME_ROWS = 1;
 
+                    // Use the split utility method to create a 2D array of TextureRegions. This is
+                    // possible because this sprite sheet contains frames of equal size and they are
+                    // all aligned.
+                    TextureRegion[][] tmp = TextureRegion.split(sunSheet,
+                            sunSheet.getWidth() / FRAME_COLS,
+                            sunSheet.getHeight() / FRAME_ROWS);
 
-               double rand = Math.random();
-               if (rand <= .25) {
-                   obj.setTexture(poison_P_1_Texture);
-               }
-               if ((rand <= .5) && (rand > .25)) {
-                   obj.setTexture(poison_P_2_Texture);
-               }
-               if ((rand <= .75) && (rand > .5)) {
-                   obj.setTexture(poison_P_3_Texture);
-               }
-               if (rand > .75) {
-                   obj.setTexture(poison_P_4_Texture);
-//                        obj.setFilmStrip(poison_P_Strip);
+                    // Place the regions into a 1D array in the correct order, starting from the top
+                    // left, going across first. The Animation constructor requires a 1D array.
+                    TextureRegion[] sunFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+                    int index = 0;
+                    for (int i = 0; i < FRAME_ROWS; i++) {
+                        for (int j = 0; j < FRAME_COLS; j++) {
+                            sunFrames[index++] = tmp[i][j];
+                        }
+                    }
 
-               }
+                    // Initialize the Animation with the frame interval and array of frames
+                    sunAnimation = new Animation<TextureRegion>(.15f, sunFrames);
+
            }
             //Neutral Planets
             if (obj.getType() == 3f) {
@@ -985,16 +920,38 @@ public class PlayMode extends WorldController implements ContactListener {
                     BLACK_HOLES.get(ii).get(2), new Vector2(BLACK_HOLES.get(ii).get(3), BLACK_HOLES.get(ii).get(4)));
             BlackHoleModel b2 = new BlackHoleModel(BLACK_HOLES.get(ii+1).get(0), BLACK_HOLES.get(ii+1).get(1),
                     BLACK_HOLES.get(ii+1).get(2), new Vector2(BLACK_HOLES.get(ii+1).get(3), BLACK_HOLES.get(ii+1).get(4)));
-            b1.setTexture(blackHoleTexture);
             b1.scalePicScale(new Vector2(1.4f, 1.4f));
             b2.scalePicScale(new Vector2(1.4f, 1.4f));
-            b2.setTexture(blackHoleTexture);
             b1.setPair(b2);
             b2.setPair(b1);
             b1.setBodyType(BodyDef.BodyType.StaticBody);
             b2.setBodyType(BodyDef.BodyType.StaticBody);
             b1.setDrawScale(scale);
             b2.setDrawScale(scale);
+
+
+                    // Constant rows and columns of the sprite sheet
+                    int FRAME_COLS = 12, FRAME_ROWS = 1;
+
+                    // Use the split utility method to create a 2D array of TextureRegions. This is
+                    // possible because this sprite sheet contains frames of equal size and they are
+                    // all aligned.
+                    TextureRegion[][] tmp = TextureRegion.split(BH_Sheet,
+                            BH_Sheet.getWidth() / FRAME_COLS,
+                            BH_Sheet.getHeight() / FRAME_ROWS);
+
+                    // Place the regions into a 1D array in the correct order, starting from the top
+                    // left, going across first. The Animation constructor requires a 1D array.
+                    TextureRegion[] BH_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+                    int index = 0;
+                    for (int i = 0; i < FRAME_ROWS; i++) {
+                        for (int j = 0; j < FRAME_COLS; j++) {
+                             BH_Frames[index++] = tmp[i][j];
+                        }
+                    }
+
+                    // Initialize the Animation with the frame interval and array of frames
+                    BH_Animation = new Animation<TextureRegion>(.15f, BH_Frames);
 
             addObject(b1);
             addObject(b2);
@@ -1540,6 +1497,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public void draw(float dt) {
             canvas.clear();
+            stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
             //float camera = -carPosition;
 
@@ -1580,29 +1538,27 @@ public class PlayMode extends WorldController implements ContactListener {
 
             for (Obstacle obj : objects) {
 
-//                if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
-//                    stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-//                    System.out.println("GOT HEREEEEEEEEEEEEEEEEEEE");
-//                    System.out.println(obj.getX()+" "+ obj.getY());
-//
-//
-//                    // Get current frame of animation for the current stateTime
-//
-//                    TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-//                    canvas.begin();
-//                    //spriteBatch.draw(currentFrame, obj.getX(), obj.getY()); // Draw current frame at (50, 50)
-//                   // spriteBatch.draw(currentFrame,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,getAngle(),picScale.x, picScale.y);
-//                    //canvas.draw(currentFrame, obj.getX(), obj.getY());
-//                    //canvas.draw(currentFrame,Color.WHITE,currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),obj.getX(),obj.getY(),currentFrame.getRegionWidth()*.4f, currentFrame.getRegionHeight()*.4f);
-//                    canvas.end();
-//
-//                }
-                //else {
+                if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
+                    // Get current frame of animation for the current stateTime
+                    TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
+                    canvas.begin();
+                    ((PlanetModel) obj).setTexture(currentFrame);
+                    obj.draw(canvas);
+                    canvas.end();
+                }
+                if (obj.getName().equals("black hole")) {
+                    // Get current frame of animation for the current stateTime
+                    TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
+                    canvas.begin();
+                    ((BlackHoleModel) obj).setTexture(currentFrame);
+                    obj.draw(canvas);
+                    canvas.end();
+                }
+                else {
                     canvas.begin();
                     obj.draw(canvas);
                     canvas.end();
-                    //System.out.println("ELSE STATEMENT");
-              //  }
+                }
 
 
             }
