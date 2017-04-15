@@ -645,7 +645,7 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
-        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/Intro Level 1.dt");
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
     }
@@ -760,9 +760,9 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             else if(objectName.equals("blackHole")){
                 tempArray = new Array<Float>();
-                tempArray.add((xPos+3)*3);
-                tempArray.add((yPos+3)*3);
-                tempArray.add(2.5f*scale/0.3f);
+                tempArray.add((xPos+2.5f)*3);
+                tempArray.add((yPos+2.5f)*3);
+                tempArray.add(2.5f*scale/0.4f);
                 String custom = temp.getString("customVars");
                 int holePair = 0;
                 float direction = 0;
@@ -986,8 +986,8 @@ public class PlayMode extends WorldController implements ContactListener {
             BlackHoleModel b2 = new BlackHoleModel(BLACK_HOLES.get(ii+1).get(0), BLACK_HOLES.get(ii+1).get(1),
                     BLACK_HOLES.get(ii+1).get(2), new Vector2(BLACK_HOLES.get(ii+1).get(3), BLACK_HOLES.get(ii+1).get(4)));
             b1.setTexture(blackHoleTexture);
-            b1.scalePicScale(new Vector2(1.4f, 1.4f));
-            b2.scalePicScale(new Vector2(1.4f, 1.4f));
+            b1.scalePicScale(new Vector2(.2f * b1.getRadius(), .2f * b1.getRadius()));
+            b2.scalePicScale(new Vector2(.2f * b2.getRadius(), .2f * b2.getRadius()));
             b2.setTexture(blackHoleTexture);
             b1.setPair(b2);
             b2.setPair(b1);
