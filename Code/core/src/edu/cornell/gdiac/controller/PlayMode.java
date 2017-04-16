@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -1194,9 +1195,9 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(10 + complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(12 + complexAvatar.getMass()));
         } else if (moveDirection == -1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(-10 - complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(-12 - complexAvatar.getMass()));
         }
     }
 
@@ -1294,10 +1295,15 @@ public class PlayMode extends WorldController implements ContactListener {
                 //Game Over
 //                pauseState = 2;
                 reset();
+                return;
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
+                if(smallestRad.len() > 3* complexAvatar.getRadius() / 4) {
+                    if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
+                        complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
+                    complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
+                }
                     //determines mouse or keyboard controls
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
@@ -1365,16 +1371,17 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 airPlayerControls();
                 if(jump) {
-                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
-                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.25f);
+                    float expRad = complexAvatar.getRadius() / 2;
+                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
+                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, expRad);
                     expulsion.setGravityScale(0);
                     expulsion.setName("expulsion");
                     expulsion.setDrawScale(scale);
                     expulsion.setTexture(expulsion_Texture);
-                    expulsion.scalePicScale(new Vector2(0.3f, 0.3f));
+                    expulsion.scalePicScale(new Vector2(expRad, expRad));
                     addObject(expulsion);
                     expulsion.setLinearVelocity(launchVec.cpy().scl(2));
-                    changeMass((float)Math.PI * -0.04f);
+                    changeMass((float)Math.PI * -expRad*expRad/2);
                     Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
                 }
@@ -1488,6 +1495,14 @@ public class PlayMode extends WorldController implements ContactListener {
                     outHole = ((BlackHoleModel)bd1).getPair();
                     blackHoleWarp = true;
                 }
+            }
+            if(bd1.getName().equals("expulsion") && bd2.getName().equals("ship")) {
+                bd2.markRemoved(true);
+                aiController.removeShip((ShipModel)bd2);
+            }
+            else if(bd2.getName().equals("expulsion") && bd1.getName().equals("ship")) {
+                bd1.markRemoved(true);
+                aiController.removeShip((ShipModel)bd1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1612,7 +1627,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     canvas.end();
                 }
 
-                if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
+                else if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
                     EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
                     // Get current frame of animation for the current stateTime
                     TextureRegion currentFrame = EXP_Animation.getKeyFrame(EXP_stateTime, false);

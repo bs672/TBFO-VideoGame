@@ -164,7 +164,6 @@ public class ComplexOobModel extends ComplexObstacle {
      * maps the texture coordinates to the coordinates of Oob's outer ring of circles
      */
     public void mapTexture() {
-        System.out.println();
         // Cache objects to create the vertex buffer
         Vector2 position = center.getPosition();
         Vector2 texcoord = new Vector2(0.5f,0.5f);
@@ -188,7 +187,6 @@ public class ComplexOobModel extends ComplexObstacle {
 
             // Set the texture coords.
             texcoord.set((1+dx)/2,(1+dy)/2);
-            System.out.println(position);
 
             // append to vertex buffer
             vertices.append(position, Color.WHITE, texcoord);
@@ -247,6 +245,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public void setRadius(float f) {
         radius = f;
+        center.setRadius(radius / 2);
         for(DistanceJoint j : innerJoints) // the central joints
             j.setLength(radius);
         for(DistanceJoint j : outerJoints) { // the outer joints
@@ -301,4 +300,6 @@ public class ComplexOobModel extends ComplexObstacle {
         for(Obstacle o : bodies)
             o.setPosition(v);
     }
+
+    public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
 }
