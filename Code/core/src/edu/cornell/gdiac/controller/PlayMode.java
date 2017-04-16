@@ -1330,8 +1330,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
                     //currentPlanet.setTexture(dying_P_Texture);
-                    currentPlanet.set_sheet(EXP_Sheet);
-                    currentPlanet.createtex();
+                    currentPlanet.set_WARN_sheet(WARN_Sheet);
+                    currentPlanet.createWARNtex();
                     planet_explosion.add(currentPlanet);
                 }
 
@@ -1397,7 +1397,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 findPlanet();
             }
             if (planet_explosion.size != 0) {
-                if ((planet_explosion.get(0).get_ST()) >= (planet_explosion.get(0).get_anim().getAnimationDuration())) {
+                if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
                     if (planet_explosion.get(0).getType() == 1f) {
                         commandPlanets.removeValue(planet_explosion.get(0), true);
                     }
@@ -1657,15 +1657,16 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
                     // Get current frame of animation for the current stateTime
-                    ((PlanetModel) obj).update_ST();
-                    TextureRegion currentFrame = ((PlanetModel) obj).get_anim().getKeyFrame(((PlanetModel) obj).get_ST(), false);
+                    ((PlanetModel) obj).update_WARN_ST();
+                    TextureRegion currentFrame = ((PlanetModel) obj).get_WARN_anim().getKeyFrame(((PlanetModel) obj).get_WARN_ST(), false);
+                    System.out.println("Drawing Warning");
                     canvas.begin();
                     ((PlanetModel) obj).setTexture(currentFrame);
                     obj.draw(canvas);
                     canvas.end();
                 }
 
-                
+
 
 //                else if (obj.getName().equals("ComplexOob")) {
 //                    ((ComplexOobModel)obj).draw();
