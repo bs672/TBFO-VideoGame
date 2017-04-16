@@ -480,6 +480,11 @@ public class PauseMenu extends WorldController implements ContactListener {
         setFailure(false);
         populateLevel();
         lastInPlanet = new boolean[PLANETS.length];
+        for(Obstacle o: objects){
+            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
+                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+            }
+        }
     }
 
     /**
@@ -505,7 +510,7 @@ public class PauseMenu extends WorldController implements ContactListener {
         }
 
         currentPlanet = planets.get(3); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
