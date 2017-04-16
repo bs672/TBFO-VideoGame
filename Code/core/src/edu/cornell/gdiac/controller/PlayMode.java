@@ -1357,15 +1357,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 if (jump) {
-                    System.out.println("Jumping");
-//                    if (currentPlanet.isDying()) {
-//                        if (currentPlanet.getType() == 1f) {
-//                            commandPlanets.removeValue(currentPlanet, true);
-//                        }
-//                        currentPlanet.markRemoved(true);
-//                        planets.removeValue(currentPlanet, true);
-//                        //TODO Play planet explosion sound
-//                    }
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
@@ -1404,7 +1395,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     addObject(expulsion);
                     expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
                     changeMass(-expulsion.getMass()/2);
-                    Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
+                    Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange));
                 }
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
