@@ -179,7 +179,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     // A variable for tracking elapsed time for the animation
     private float stateTime=0f;
-    private float EXP_stateTime;
+
 
     //0 is not paused, 1 is victory pause, 2 is defeat pause
     private int pauseState = 0;
@@ -244,8 +244,11 @@ public class PlayMode extends WorldController implements ContactListener {
     private Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
     private Texture BH_Sheet;
 
-    private Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
     private Texture EXP_Sheet;
+
+
+
+
 
 
 
@@ -557,13 +560,14 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The restitution for all physics objects */
     private static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = -0.04f;
+    private static final float  BULLET_DAMAGE = -0.00f;
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
     private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
     private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     private Array<Array<Float>> BLACK_HOLES = new Array<Array<Float>>();
+
     // Physics objects for the game
     /** Reference to the character avatar */
     private OobModel avatar;
@@ -576,6 +580,8 @@ public class PlayMode extends WorldController implements ContactListener {
     private Array<PlanetModel> planets;
     //List of command planets
     private Array<PlanetModel> commandPlanets;
+    //List of dying planets
+    Array<PlanetModel> planet_explosion;
     /** list of ships */
     private Array<ShipModel> ships;
     /** vector from Oob to center of the screen */
@@ -609,6 +615,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sensorFixtures = new ObjectSet<Fixture>();
         planets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
+        planet_explosion = new Array<PlanetModel>();
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
@@ -636,6 +643,7 @@ public class PlayMode extends WorldController implements ContactListener {
         addQueue.clear();
         planets.clear();
         commandPlanets.clear();
+        planet_explosion.clear();
         ships.clear();
         world.dispose();
 
@@ -1302,8 +1310,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
                     //currentPlanet.setTexture(dying_P_Texture);
-                    EXP_Animation= currentPlanet.createtex(EXP_Sheet,EXP_Animation);
-                    EXP_stateTime=0f;
+                    currentPlanet.set_sheet(EXP_Sheet);
+                    currentPlanet.createtex();
+                    planet_explosion.add(currentPlanet);
                 }
 
 
@@ -1320,24 +1329,29 @@ public class PlayMode extends WorldController implements ContactListener {
                     //TODO Play planet explosion sound
                 }
 
-                //                if (EXP_Animation !=null && EXP_Animation.isAnimationFinished(EXP_stateTime)) {
-//                    if (currentPlanet.getType() == 1f) {
-//                        commandPlanets.removeValue(currentPlanet, true);
-//                    }
-//                    currentPlanet.markRemoved(true);
-//                    planets.removeValue(currentPlanet, true);
-//                    //TODO Play planet explosion sound
-//                }
+
+                if (planet_explosion.size != 0) {
+                    if ((planet_explosion.get(0).get_ST()) >= (planet_explosion.get(0).get_anim().getAnimationDuration())) {
+                        if (planet_explosion.get(0).getType() == 1f) {
+                            commandPlanets.removeValue(planet_explosion.get(0), true);
+                        }
+                        planet_explosion.get(0).markRemoved(true);
+                        planets.removeValue(planet_explosion.get(0), true);
+                        //TODO Play planet explosion sound
+                        planet_explosion.removeIndex(0);
+                    }
+                }
 
                 if (jump) {
-                    if (currentPlanet.isDying()) {
-                        if (currentPlanet.getType() == 1f) {
-                            commandPlanets.removeValue(currentPlanet, true);
-                        }
-                        currentPlanet.markRemoved(true);
-                        planets.removeValue(currentPlanet, true);
-                        //TODO Play planet explosion sound
-                    }
+                    System.out.println("Jumping");
+//                    if (currentPlanet.isDying()) {
+//                        if (currentPlanet.getType() == 1f) {
+//                            commandPlanets.removeValue(currentPlanet, true);
+//                        }
+//                        currentPlanet.markRemoved(true);
+//                        planets.removeValue(currentPlanet, true);
+//                        //TODO Play planet explosion sound
+//                    }
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
@@ -1548,6 +1562,8 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.clear();
             stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
+
+
             //float camera = -carPosition;
 
             // Draw background unscaled.
@@ -1587,6 +1603,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
             for (Obstacle obj : objects) {
 
+
+
                 if (obj.getName().equals("ComplexOob")) {
                     // Get current frame of animation for the current stateTime
                     TextureRegion currentFrame = oobAnimation.getKeyFrame(stateTime, true);
@@ -1613,9 +1631,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
-                    EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
                     // Get current frame of animation for the current stateTime
-                    TextureRegion currentFrame = EXP_Animation.getKeyFrame(EXP_stateTime, false);
+                    ((PlanetModel) obj).update_ST();
+                    TextureRegion currentFrame = ((PlanetModel) obj).get_anim().getKeyFrame(((PlanetModel) obj).get_ST(), false);
                     canvas.begin();
                     ((PlanetModel) obj).setTexture(currentFrame);
                     obj.draw(canvas);

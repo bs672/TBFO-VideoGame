@@ -1,8 +1,10 @@
 package edu.cornell.gdiac.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
@@ -62,7 +64,35 @@ public class PlanetModel extends WheelObstacle{
     public void setDying(boolean bool) {dying = bool;}
 
 
-    public Animation createtex(Texture sheet, Animation animation) {
+
+    private float EXP_stateTime;
+
+    public void set_ST(float val){EXP_stateTime = val;}
+
+    public float get_ST(){return EXP_stateTime;}
+
+    public void update_ST(){
+        EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+    }
+
+
+
+
+    private Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_anim(){return EXP_Animation;}
+
+
+    private Texture EXP_Sheet;
+
+    public void set_sheet(Texture val){EXP_Sheet = val;}
+
+    public Texture get_sheet(){return EXP_Sheet;}
+
+
+
+
+    public void createtex() {
 
         // Constant rows and columns of the sprite sheet
         int FRAME_COLS = 9, FRAME_ROWS = 1;
@@ -70,9 +100,9 @@ public class PlanetModel extends WheelObstacle{
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
         // all aligned.
-        TextureRegion[][] tmp = TextureRegion.split(sheet,
-                sheet.getWidth() / FRAME_COLS,
-                sheet.getHeight() / FRAME_ROWS);
+        TextureRegion[][] tmp = TextureRegion.split(EXP_Sheet,
+                EXP_Sheet.getWidth() / FRAME_COLS,
+                EXP_Sheet.getHeight() / FRAME_ROWS);
 
         // Place the regions into a 1D array in the correct order, starting from the top
         // left, going across first. The Animation constructor requires a 1D array.
@@ -85,9 +115,9 @@ public class PlanetModel extends WheelObstacle{
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        animation = new Animation<TextureRegion>(.2f, frames);
-        return animation;
+        EXP_Animation = new Animation<TextureRegion>(.2f, frames);
 
+        EXP_stateTime=0;
     }
 
 
