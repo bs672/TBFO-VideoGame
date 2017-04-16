@@ -648,7 +648,6 @@ public class PlayMode extends WorldController implements ContactListener {
         populateLevel();
         for(Obstacle o: objects){
             if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
-                System.out.println("here");
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
             }
         }
