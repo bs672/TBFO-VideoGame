@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class PlayMode extends WorldController implements ContactListener {
 
 
-    private ScreenListener listener;
+    protected ScreenListener listener;
 
     /**
      * Sets the ScreenListener for this mode
@@ -45,275 +45,275 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
 
 
-    private static final String OOB_FILE  = "space/animations/oobH.png";
+    protected static final String OOB_FILE  = "space/animations/oobH.png";
 
 
     /** The texture file for the planets */
-    private static final String BLUE_P_1 = "space/planets/blue.png";
-    private static final String BLUE_P_2 = "space/planets/blue2.png";
-    private static final String BLUE_P_3 = "space/planets/blue3.png";
+    protected static final String BLUE_P_1 = "space/planets/blue.png";
+    protected static final String BLUE_P_2 = "space/planets/blue2.png";
+    protected static final String BLUE_P_3 = "space/planets/blue3.png";
     //private static final String BLUE_P_4 = "space/planets/blue.png";
 
     /** The texture file for the planets */
-    private static final String PURPLE_P_1 = "space/planets/purple.png";
-    private static final String PURPLE_P_2 = "space/planets/purple2.png";
-    private static final String PURPLE_P_3 = "space/planets/purple3.png";
+    protected static final String PURPLE_P_1 = "space/planets/purple.png";
+    protected static final String PURPLE_P_2 = "space/planets/purple2.png";
+    protected static final String PURPLE_P_3 = "space/planets/purple3.png";
     //private static final String PURPLE_P_4 = "space/planets/purple.png";
 
     /** The texture file for the planets */
-    private static final String ORANGE_P_1 = "space/planets/orange.png";
-    private static final String ORANGE_P_2 = "space/planets/orange2.png";
-    private static final String ORANGE_P_3 = "space/planets/orange3.png";
+    protected static final String ORANGE_P_1 = "space/planets/orange.png";
+    protected static final String ORANGE_P_2 = "space/planets/orange2.png";
+    protected static final String ORANGE_P_3 = "space/planets/orange3.png";
     //private static final String ORANGE_P_4 = "space/planets/orange.png";
 
     /** The texture file for the planets */
-    private static final String SKY_P_1 = "space/planets/sky.png";
-    private static final String SKY_P_2 = "space/planets/sky2.png";
-    private static final String SKY_P_3 = "space/planets/sky3.png";
+    protected static final String SKY_P_1 = "space/planets/sky.png";
+    protected static final String SKY_P_2 = "space/planets/sky2.png";
+    protected static final String SKY_P_3 = "space/planets/sky3.png";
     //private static final String SKY_P_4 = "space/planets/sky.png";
 
     /** The texture file for the planets */
-    private static final String GREEN_P_1 = "space/planets/green.png";
-    private static final String GREEN_P_2 = "space/planets/green2.png";
-    private static final String GREEN_P_3 = "space/planets/green3.png";
+    protected static final String GREEN_P_1 = "space/planets/green.png";
+    protected static final String GREEN_P_2 = "space/planets/green2.png";
+    protected static final String GREEN_P_3 = "space/planets/green3.png";
     //private static final String GREEN_P_4 = "space/planets/green.png";
 
     /** The texture file for the planets */
-    private static final String PINK_P_1 = "space/planets/pink.png";
-    private static final String PINK_P_2 = "space/planets/pink2.png";
-    private static final String PINK_P_3 = "space/planets/pink3.png";
+    protected static final String PINK_P_1 = "space/planets/pink.png";
+    protected static final String PINK_P_2 = "space/planets/pink2.png";
+    protected static final String PINK_P_3 = "space/planets/pink3.png";
     //private static final String PINK_P_4 = "space/planets/pink.png";
 
     /** The texture file for the planets */
-    private static final String RED_P_1 = "space/planets/red.png";
-    private static final String RED_P_2 = "space/planets/red2.png";
-    private static final String RED_P_3 = "space/planets/red3.png";
+    protected static final String RED_P_1 = "space/planets/red.png";
+    protected static final String RED_P_2 = "space/planets/red2.png";
+    protected static final String RED_P_3 = "space/planets/red3.png";
     //private static final String RED_P_4 = "space/planets/red.png";
 
     /** The texture file for the planet animations */
-    private static final String SUN_P = "space/animations/sunAnim.png";
+    protected static final String SUN_P = "space/animations/sunAnim.png";
 
-    private static final String BLACK_HOLE = "space/animations/blackHoleAnim.png";
+    protected static final String BLACK_HOLE = "space/animations/blackHoleAnim.png";
 
-    private static final String EXPLOSION = "space/animations/explosionAnim.png";
+    protected static final String EXPLOSION = "space/animations/explosionAnim.png";
 
-
-    /** The texture file for the planets */
-    private static final String COMMAND_P = "space/planets/command.png";
 
     /** The texture file for the planets */
-    private static final String NEUTRAL_P = "space/planets/neutral.png";
+    protected static final String COMMAND_P = "space/planets/command.png";
 
     /** The texture file for the planets */
-    private static final String DYING_P = "space/planets/dying.png";
+    protected static final String NEUTRAL_P = "space/planets/neutral.png";
 
     /** The texture file for the planets */
-    private static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
+    protected static final String DYING_P = "space/planets/dying.png";
 
     /** The texture file for the planets */
-    private static final String PLAY_TEXTURE = "space/menus/play_planet.png";
+    protected static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
 
     /** The texture file for the planets */
-    private static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
+    protected static final String PLAY_TEXTURE = "space/menus/play_planet.png";
 
     /** The texture file for the planets */
-    private static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
+    protected static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
 
     /** The texture file for the planets */
-    private static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
+    protected static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
 
     /** The texture file for the planets */
-    private static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+    protected static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
 
-    private static final String TITLE = "space/menus/title.png";
+    /** The texture file for the planets */
+    protected static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+
+    protected static final String TITLE = "space/menus/title.png";
 
 
 
     /** Texture file for background image */
-    private static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
-    private static final String BACKG_FILE_WHITE_STAR = "space/background/white-stars.png";
-    private static final String BACKG_FILE_LG_STAR = "space/background/large-stars.png";
-    private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
-    private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
+    protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
+    protected static final String BACKG_FILE_WHITE_STAR = "space/background/white-stars.png";
+    protected static final String BACKG_FILE_LG_STAR = "space/background/large-stars.png";
+    protected static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
+    protected static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
 
 
     /** Texture file for ship */
-    private static final String SHIP_TEXTURE = "space/ships/ship.png";
+    protected static final String SHIP_TEXTURE = "space/ships/ship.png";
     /** The texture file for the bullets */
-    private static final String BULLET_TEXTURE = "space/ships/bullet.png";
+    protected static final String BULLET_TEXTURE = "space/ships/bullet.png";
     /** The texture file for mass expulsion */
-    private static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
+    protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
 
     /** Parallax values */
-    private static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
-    private static final float BG_WHITE_PARALLAX = 0.4f;
-    private static final float BG_RED_PARALLAX   = 0.9f;
-    private static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
-    private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
+    protected static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
+    protected static final float BG_WHITE_PARALLAX = 0.4f;
+    protected static final float BG_RED_PARALLAX   = 0.9f;
+    protected static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
+    protected static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
     /** The sound file for a jump */
-    private static final String JUMP_FILE = "space/audio/jump.mp3";
+    protected static final String JUMP_FILE = "space/audio/jump.mp3";
     /** The sound file for a bullet fire */
-    private static final String PEW_FILE = "space/audio/pew.mp3";
+    protected static final String PEW_FILE = "space/audio/pew.mp3";
     /** The sound file for a bullet collision */
-    private static final String POP_FILE = "space/audio/plop.mp3";
+    protected static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(16f, 12f);
+    protected static Vector2 OOB_POS = new Vector2(16f, 12f);
     /** Oob's initial radius */
-    private  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
+    protected  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
 
-    private static final float SIPHON = 0.02f;
+    protected static final float SIPHON = 0.02f;
 
-    private static final float POISON = -0.02f;
+    protected static final float POISON = -0.02f;
 
-    private static final float MIN_RADIUS = 1f;
+    protected static final float MIN_RADIUS = 1f;
 
-    private static final float DEATH_RADIUS = MIN_RADIUS*2/3;
+    protected static final float DEATH_RADIUS = MIN_RADIUS*2/3;
 
-    private static final float OOB_DEATH_RADIUS = 0.56f;
+    protected static final float OOB_DEATH_RADIUS = 0.56f;
 
-    private static final float EPSILON = 0.1f;
+    protected static final float EPSILON = 0.1f;
 
-    private static final int THRESHOLD = 4;
+    protected static final int THRESHOLD = 4;
 
     // A variable for tracking elapsed time for the animation
-    private float stateTime=0f;
-    private float EXP_stateTime;
+    protected float stateTime=0f;
+    protected float EXP_stateTime;
 
     //0 is not paused, 1 is victory pause, 2 is defeat pause
-    private int pauseState = 0;
+    protected int pauseState = 0;
 
-    private int inPause = 0;
+    protected int inPause = 0;
 
     //control = 0 is keyboard, control = 1 is mouse
-    private int control = 1;
+    protected int control = 1;
 
     /** Animation texture */
-    private Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
-    private Texture oobSheet;
+    protected Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
+    protected Texture oobSheet;
 
-    private TextureRegion blackHoleTexture;
+    protected TextureRegion blackHoleTexture;
 
     /** Planet texture */
-    private TextureRegion blue_P_1_Texture;
-    private TextureRegion blue_P_2_Texture;
-    private TextureRegion blue_P_3_Texture;
+    protected TextureRegion blue_P_1_Texture;
+    protected TextureRegion blue_P_2_Texture;
+    protected TextureRegion blue_P_3_Texture;
    // private TextureRegion blue_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion purple_P_1_Texture;
-    private TextureRegion purple_P_2_Texture;
-    private TextureRegion purple_P_3_Texture;
+    protected TextureRegion purple_P_1_Texture;
+    protected TextureRegion purple_P_2_Texture;
+    protected TextureRegion purple_P_3_Texture;
    // private TextureRegion purple_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion orange_P_1_Texture;
-    private TextureRegion orange_P_2_Texture;
-    private TextureRegion orange_P_3_Texture;
+    protected TextureRegion orange_P_1_Texture;
+    protected TextureRegion orange_P_2_Texture;
+    protected TextureRegion orange_P_3_Texture;
     //private TextureRegion orange_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion sky_P_1_Texture;
-    private TextureRegion sky_P_2_Texture;
-    private TextureRegion sky_P_3_Texture;
+    protected TextureRegion sky_P_1_Texture;
+    protected TextureRegion sky_P_2_Texture;
+    protected TextureRegion sky_P_3_Texture;
    // private TextureRegion sky_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion green_P_1_Texture;
-    private TextureRegion green_P_2_Texture;
-    private TextureRegion green_P_3_Texture;
+    protected TextureRegion green_P_1_Texture;
+    protected TextureRegion green_P_2_Texture;
+    protected TextureRegion green_P_3_Texture;
     //private TextureRegion green_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion pink_P_1_Texture;
-    private TextureRegion pink_P_2_Texture;
-    private TextureRegion pink_P_3_Texture;
+    protected TextureRegion pink_P_1_Texture;
+    protected TextureRegion pink_P_2_Texture;
+    protected TextureRegion pink_P_3_Texture;
     //private TextureRegion pink_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion red_P_1_Texture;
-    private TextureRegion red_P_2_Texture;
-    private TextureRegion red_P_3_Texture;
+    protected TextureRegion red_P_1_Texture;
+    protected TextureRegion red_P_2_Texture;
+    protected TextureRegion red_P_3_Texture;
     //private TextureRegion red_P_4_Texture;
 
     /** Animation texture */
-    private Animation<TextureRegion> sunAnimation; // Must declare frame type (TextureRegion)
-    private Texture sunSheet;
+    protected Animation<TextureRegion> sunAnimation; // Must declare frame type (TextureRegion)
+    protected Texture sunSheet;
 
-    private Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
-    private Texture BH_Sheet;
+    protected Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
+    protected Texture BH_Sheet;
 
-    private Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
-    private Texture EXP_Sheet;
+    protected Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
+    protected Texture EXP_Sheet;
 
 
-
-    /** Planet texture */
-    private TextureRegion command_P_Texture;
 
     /** Planet texture */
-    private TextureRegion neutral_P_Texture;
+    protected TextureRegion command_P_Texture;
 
     /** Planet texture */
-    private TextureRegion dying_P_Texture;
+    protected TextureRegion neutral_P_Texture;
+
+    /** Planet texture */
+    protected TextureRegion dying_P_Texture;
 
     /** Expulsion texture */
-    private TextureRegion expulsion_Texture;
+    protected TextureRegion expulsion_Texture;
 
     /** Settings texture */
-    private TextureRegion settings_Texture;
+    protected TextureRegion settings_Texture;
 
     /** Levels texture */
-    private TextureRegion levels_Texture;
+    protected TextureRegion levels_Texture;
 
     /** Play texture */
-    private TextureRegion play_Texture;
+    protected TextureRegion play_Texture;
 
     /** Settings texture */
-    private TextureRegion settings_Hover_Texture;
+    protected TextureRegion settings_Hover_Texture;
 
     /** Levels texture */
-    private TextureRegion levels_Hover_Texture;
+    protected TextureRegion levels_Hover_Texture;
 
     /** Play texture */
-    private TextureRegion play_Hover_Texture;
+    protected TextureRegion play_Hover_Texture;
 
 
 
     /** Background texture */
-    private TextureRegion backgroundMAIN;
-    private TextureRegion backgroundWHITESTAR;
-    private TextureRegion backgroundLG;
-    private TextureRegion backgroundMED;
-    private TextureRegion backgroundSM;
+    protected TextureRegion backgroundMAIN;
+    protected TextureRegion backgroundWHITESTAR;
+    protected TextureRegion backgroundLG;
+    protected TextureRegion backgroundMED;
+    protected TextureRegion backgroundSM;
 
 
 
 
 
     /** Texture asset for ship */
-    private TextureRegion ship_texture;
+    protected TextureRegion ship_texture;
     /** Texture asset for bullet */
-    private TextureRegion bullet_texture;
+    protected TextureRegion bullet_texture;
 
     //variables
-    private Vector2 smallestRad;
-    private float rad;
-    private float oldAvatarRad;
+    protected Vector2 smallestRad;
+    protected float rad;
+    protected float oldAvatarRad;
     //variables for player controls
-    boolean jump = false;
-    private float moveDirection = 0f;
-    private boolean mute = true;
-    private Vector2 launchVec;
-    private BlackHoleModel outHole;
-    private boolean blackHoleWarp;
+    protected boolean jump = false;
+    protected float moveDirection = 0f;
+    protected boolean mute = true;
+    protected Vector2 launchVec;
+    protected BlackHoleModel outHole;
+    protected boolean blackHoleWarp;
 
     public void setMute(boolean bool) {mute = bool;}
 
     /** Track asset loading from all instances and subclasses */
-    private AssetState platformAssetState = AssetState.EMPTY;
+    protected AssetState platformAssetState = AssetState.EMPTY;
 
     /**
      * Preloads the assets for this controller.
@@ -1509,6 +1509,12 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(bd2.getName().equals("expulsion") && bd1.getName().equals("ship")) {
                 bd1.markRemoved(true);
                 aiController.removeShip((ShipModel)bd1);
+            }
+            if(bd1.getName().equals("expulsion") && bd2.getName().equals("black hole")) {
+                bd1.markRemoved(true);
+            }
+            else if(bd2.getName().equals("expulsion") && bd1.getName().equals("black hole")) {
+                bd2.markRemoved(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
