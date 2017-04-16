@@ -95,6 +95,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String BLACK_HOLE = "space/animations/blackHoleAnim.png";
 
+    protected static final String WARNING = "space/animations/planetWarning.png";
+
     protected static final String EXPLOSION = "space/animations/explosionAnim.png";
 
 
@@ -249,8 +251,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private Texture EXP_Sheet;
 
-
-
+    private Texture WARN_Sheet;
 
 
 
@@ -416,6 +417,9 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(BLACK_HOLE, Texture.class);
         assets.add(BLACK_HOLE);
 
+        manager.load(WARNING, Texture.class);
+        assets.add(WARNING);
+
         manager.load(EXPLOSION, Texture.class);
         assets.add(EXPLOSION);
 
@@ -511,6 +515,8 @@ public class PlayMode extends WorldController implements ContactListener {
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
         BH_Sheet = new Texture(Gdx.files.internal(BLACK_HOLE));
+
+        WARN_Sheet = new Texture(Gdx.files.internal(WARNING));
 
         EXP_Sheet = new Texture(Gdx.files.internal(EXPLOSION));
 
@@ -1649,7 +1655,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     canvas.end();
                 }
 
-
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
                     // Get current frame of animation for the current stateTime
                     ((PlanetModel) obj).update_ST();
@@ -1659,6 +1664,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.draw(canvas);
                     canvas.end();
                 }
+
+                
 
 //                else if (obj.getName().equals("ComplexOob")) {
 //                    ((ComplexOobModel)obj).draw();
