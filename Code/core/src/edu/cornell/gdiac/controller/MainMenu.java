@@ -868,7 +868,7 @@ public class MainMenu extends WorldController implements ContactListener {
                 addObject(expulsion);
                 expulsion.setLinearVelocity(launchVec.cpy().scl(2));
                 changeMass((float)Math.PI * -0.04f);
-                Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
+                Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass() / 2);
                 complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
             }
             if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
