@@ -646,6 +646,11 @@ public class PlayMode extends WorldController implements ContactListener {
         setComplete(false);
         setFailure(false);
         populateLevel();
+        for(Obstacle o: objects){
+            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
+                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+            }
+        }
     }
 
     //Reads the data from a JSON file and turns it into game data
