@@ -505,7 +505,7 @@ public class PauseMenu extends WorldController implements ContactListener {
         }
 
         currentPlanet = planets.get(3); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
