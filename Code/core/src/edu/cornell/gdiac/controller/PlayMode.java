@@ -1344,18 +1344,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
 
-                if (planet_explosion.size != 0) {
-                    if ((planet_explosion.get(0).get_ST()) >= (planet_explosion.get(0).get_anim().getAnimationDuration())) {
-                        if (planet_explosion.get(0).getType() == 1f) {
-                            commandPlanets.removeValue(planet_explosion.get(0), true);
-                        }
-                        planet_explosion.get(0).markRemoved(true);
-                        planets.removeValue(planet_explosion.get(0), true);
-                        //TODO Play planet explosion sound
-                        planet_explosion.removeIndex(0);
-                    }
-                }
-
                 if (jump) {
                     jump();
                 } else {
@@ -1401,6 +1389,17 @@ public class PlayMode extends WorldController implements ContactListener {
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
                 findPlanet();
+            }
+            if (planet_explosion.size != 0) {
+                if ((planet_explosion.get(0).get_ST()) >= (planet_explosion.get(0).get_anim().getAnimationDuration())) {
+                    if (planet_explosion.get(0).getType() == 1f) {
+                        commandPlanets.removeValue(planet_explosion.get(0), true);
+                    }
+                    planet_explosion.get(0).markRemoved(true);
+                    planets.removeValue(planet_explosion.get(0), true);
+                    //TODO Play planet explosion sound
+                    planet_explosion.removeIndex(0);
+                }
             }
             complexAvatar.applyForce();
             complexAvatar.resetForceVec();
