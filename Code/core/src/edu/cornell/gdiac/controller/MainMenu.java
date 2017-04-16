@@ -611,7 +611,7 @@ public class MainMenu extends WorldController implements ContactListener {
         }
 
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()+canvas.getHeight()/80f - 2, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -710,9 +710,9 @@ public class MainMenu extends WorldController implements ContactListener {
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(12 + complexAvatar.getMass()));
         } else if (moveDirection == -1) {
-            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).scl(-1f * complexAvatar.getMass()));
+            complexAvatar.addToForceVec(new Vector2(smallestRad.y, -smallestRad.x).nor().scl(-12 - complexAvatar.getMass()));
         }
     }
 
@@ -793,7 +793,11 @@ public class MainMenu extends WorldController implements ContactListener {
         if (currentPlanet != null) {
             jumpTime = 0;
             smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-            complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
+            if(smallestRad.len() > 3* complexAvatar.getRadius() / 4) {
+                if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
+                    complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
+                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
+            }
             //determines mouse or keyboard controls
             for (int i = 1; i <= 2; i++) {
                 if (currentPlanet == planets.get(i)) {
