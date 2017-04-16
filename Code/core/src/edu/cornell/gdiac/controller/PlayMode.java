@@ -1385,10 +1385,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     expulsion.setTexture(expulsion_Texture);
                     expulsion.scalePicScale(new Vector2(expRad, expRad));
                     addObject(expulsion);
-                    expulsion.setLinearVelocity(launchVec.cpy().scl(2));
-                    changeMass((float)Math.PI * -expRad*expRad/2);
-                    Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
-                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
+                    expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
+                    changeMass(-expulsion.getMass()/2);
+                    Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange));
                 }
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1473,7 +1473,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
-                    changeMass(((WheelObstacle)bd2).getMass());
+                    changeMass(((WheelObstacle)bd2).getMass()/16);
                 }
                 else if(bd2.getName().equals("black hole")) {
                     outHole = ((BlackHoleModel)bd2).getPair();
@@ -1494,7 +1494,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(bd1.getName().equals("expulsion")) {
                     bd1.markRemoved(true);
-                    changeMass(((WheelObstacle)bd1).getMass());
+                    changeMass(((WheelObstacle)bd1).getMass()/16);
                 }
                 else if(bd1.getName().equals("black hole")) {
                     outHole = ((BlackHoleModel)bd1).getPair();
