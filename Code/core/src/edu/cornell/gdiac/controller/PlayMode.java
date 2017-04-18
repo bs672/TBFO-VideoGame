@@ -180,6 +180,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final int THRESHOLD = 4;
 
+    protected static final int ADJUST_COOLDOWN = 60;
+
     // A variable for tracking elapsed time for the animation
 
     private float stateTime=0f;
@@ -610,6 +612,8 @@ public class PlayMode extends WorldController implements ContactListener {
     /** AIController */
     private AIController aiController;
 
+    private int adjustCooldown;
+
 
     /**
      * Creates and initialize a new instance of the platformer game
@@ -631,6 +635,7 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
+        adjustCooldown = ADJUST_COOLDOWN;
         FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
@@ -1377,7 +1382,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     blackHoleWarp = false;
                 }
                 airPlayerControls();
-                if(jump) {
+                if(jump && complexAvatar.getRadius()>OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
                     float expRad = complexAvatar.getRadius() / 2;
                     Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
                     WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, expRad);
@@ -1390,7 +1395,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
                     changeMass(-expulsion.getMass()/2);
                     Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
-                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange));
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius()/2f)));
+                    adjustCooldown = 60;
                 }
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1451,6 +1457,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 listener.exitScreen(this, 0);
                 return;
             }
+        }
+        if(adjustCooldown > 0){
+            adjustCooldown--;
         }
     }
 
