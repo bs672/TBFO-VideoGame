@@ -1329,7 +1329,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     //determines mouse or keyboard controls
                 if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
                     currentPlanet.setDying(true);
-                    //currentPlanet.setTexture(dying_P_Texture);
                     currentPlanet.set_WARN_sheet(WARN_Sheet);
                     currentPlanet.createWARNtex();
                     planet_explosion.add(currentPlanet);
@@ -1338,19 +1337,20 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 groundPlayerControls();
 
+
                 //forced jump
                 if (currentPlanet.getRadius() < DEATH_RADIUS) {
-                    if (currentPlanet.getType() == 1f) {
-                        commandPlanets.removeValue(currentPlanet, true);
-                    }
-                    currentPlanet.markRemoved(true);
-                    planets.removeValue(currentPlanet, true);
+                    currentPlanet.setExploding(true);
+                    currentPlanet.set_sheet(EXP_Sheet);
+                    currentPlanet.createEXPtex();
                     jump = true;
                     //TODO Play planet explosion sound
                 }
 
 
+
                 if (jump) {
+                    System.out.println("JUMPED");
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
@@ -1396,15 +1396,31 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
                 findPlanet();
             }
-            if (planet_explosion.size != 0) {
-                if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
-                    if (planet_explosion.get(0).getType() == 1f) {
-                        commandPlanets.removeValue(planet_explosion.get(0), true);
+
+            if (planet_explosion.size > 0) {
+                if (planet_explosion.get(0).isDying()) {
+                    System.out.println("Planet is Dying");
+                    System.out.println("State Time" + " " + planet_explosion.get(0).get_WARN_ST());
+                    System.out.println("Animation Duration" + " " + (planet_explosion.get(0).get_WARN_anim().getAnimationDuration()));
+                    if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
+                        System.out.println("Planet is Exploding");
+                        planet_explosion.get(0).setDying(false);
+                        planet_explosion.get(0).setExploding(true);
+                        planet_explosion.get(0).set_sheet(EXP_Sheet);
+                        planet_explosion.get(0).createEXPtex();
+                        //TODO Play planet explosion sound
                     }
-                    planet_explosion.get(0).markRemoved(true);
-                    planets.removeValue(planet_explosion.get(0), true);
-                    //TODO Play planet explosion sound
-                    planet_explosion.removeIndex(0);
+                }
+                if (planet_explosion.get(0).get_EXP_ST() > -1) {
+                    if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
+                        if (planet_explosion.get(0).getType() == 1f) {
+                            commandPlanets.removeValue(planet_explosion.get(0), true);
+                        }
+                        planet_explosion.get(0).markRemoved(true);
+                        planets.removeValue(planet_explosion.get(0), true);
+                        //TODO Play planet explosion sound
+                        planet_explosion.removeIndex(0);
+                    }
                 }
             }
             complexAvatar.applyForce();
@@ -1655,11 +1671,23 @@ public class PlayMode extends WorldController implements ContactListener {
                     canvas.end();
                 }
 
-                if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying()) {
+                if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
                     // Get current frame of animation for the current stateTime
+                    System.out.println("Update State Time");
                     ((PlanetModel) obj).update_WARN_ST();
                     TextureRegion currentFrame = ((PlanetModel) obj).get_WARN_anim().getKeyFrame(((PlanetModel) obj).get_WARN_ST(), false);
                     System.out.println("Drawing Warning");
+                    canvas.begin();
+                    ((PlanetModel) obj).setTexture(currentFrame);
+                    obj.draw(canvas);
+                    canvas.end();
+                }
+
+                if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
+                    // Get current frame of animation for the current stateTime
+                    ((PlanetModel) obj).update_EXP_ST();
+                    TextureRegion currentFrame = ((PlanetModel) obj).get_EXP_anim().getKeyFrame(((PlanetModel) obj).get_EXP_ST(), false);
+                    System.out.println("Drawing Exploding");
                     canvas.begin();
                     ((PlanetModel) obj).setTexture(currentFrame);
                     obj.draw(canvas);

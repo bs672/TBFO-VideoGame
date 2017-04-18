@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
@@ -72,18 +73,18 @@ public class PlanetModel extends WheelObstacle{
 
 
 
-    private float WARN_stateTime;
+    private float WARN_stateTime = -1;
 
     public void set_WARN_ST(float val){WARN_stateTime = val;}
 
     public float get_WARN_ST(){return WARN_stateTime;}
 
 
-    private float EXP_stateTime;
+    private float EXP_stateTime= -1;
 
-    public void set_ST(float val){EXP_stateTime = val;}
+    public void set_EXP_ST(float val){EXP_stateTime = val;}
 
-    public float get_ST(){return EXP_stateTime;}
+    public float get_EXP_ST(){return EXP_stateTime;}
 
 
 
@@ -91,7 +92,7 @@ public class PlanetModel extends WheelObstacle{
         WARN_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
     }
 
-    public void update_ST(){
+    public void update_EXP_ST(){
         EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
     }
 
@@ -105,7 +106,7 @@ public class PlanetModel extends WheelObstacle{
 
     private Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
 
-    public Animation<TextureRegion> get_anim(){return EXP_Animation;}
+    public Animation<TextureRegion> get_EXP_anim(){return EXP_Animation;}
 
 
 
@@ -153,7 +154,7 @@ public class PlanetModel extends WheelObstacle{
         WARN_stateTime=0;
     }
 
-    public void createtex() {
+    public void createEXPtex() {
 
         // Constant rows and columns of the sprite sheet
         int FRAME_COLS = 5, FRAME_ROWS = 1;
@@ -179,6 +180,10 @@ public class PlanetModel extends WheelObstacle{
         EXP_Animation = new Animation<TextureRegion>(.1f, frames);
 
         EXP_stateTime=0;
+
+       // this.scalePicScale(new Vector2(1.8f,1.8f));
+       // this.scalePicScale(new Vector2(.5f * this.getRadius(), .5f * this.getRadius()));
+
     }
 
 
