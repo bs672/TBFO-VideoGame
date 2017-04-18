@@ -1355,7 +1355,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
                 if (jump) {
-                    System.out.println("JUMPED");
                     jump();
                 } else {
                     rad = currentPlanet.getRadius();
@@ -1405,11 +1404,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
             if (planet_explosion.size > 0) {
                 if (planet_explosion.get(0).isDying()) {
-                    System.out.println("Planet is Dying");
-                    System.out.println("State Time" + " " + planet_explosion.get(0).get_WARN_ST());
-                    System.out.println("Animation Duration" + " " + (planet_explosion.get(0).get_WARN_anim().getAnimationDuration()));
                     if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
-                        System.out.println("Planet is Exploding");
                         planet_explosion.get(0).setDying(false);
                         planet_explosion.get(0).setExploding(true);
                         planet_explosion.get(0).set_sheet(EXP_Sheet);
@@ -1682,10 +1677,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
                     // Get current frame of animation for the current stateTime
-                    System.out.println("Update State Time");
                     ((PlanetModel) obj).update_WARN_ST();
                     TextureRegion currentFrame = ((PlanetModel) obj).get_WARN_anim().getKeyFrame(((PlanetModel) obj).get_WARN_ST(), false);
-                    System.out.println("Drawing Warning");
                     canvas.begin();
                     ((PlanetModel) obj).setTexture(currentFrame);
                     obj.draw(canvas);
@@ -1696,7 +1689,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     // Get current frame of animation for the current stateTime
                     ((PlanetModel) obj).update_EXP_ST();
                     TextureRegion currentFrame = ((PlanetModel) obj).get_EXP_anim().getKeyFrame(((PlanetModel) obj).get_EXP_ST(), false);
-                    System.out.println("Drawing Exploding");
                     canvas.begin();
                     ((PlanetModel) obj).setTexture(currentFrame);
                     obj.draw(canvas);
