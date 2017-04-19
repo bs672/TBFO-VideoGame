@@ -42,9 +42,7 @@ public class MainMenu extends WorldController implements ContactListener {
     }
     /** The texture file for the character avatar (no animation) */
 
-
     private static final String OOB_FILE  = "space/Oob/oob2.png";
-
 
     /** The texture file for the planets */
     private static final String BLUE_P_1 = "space/planets/blue.png";
@@ -69,7 +67,6 @@ public class MainMenu extends WorldController implements ContactListener {
     private static final String SKY_P_2 = "space/planets/sky2.png";
     private static final String SKY_P_3 = "space/planets/sky3.png";
     //private static final String SKY_P_4 = "space/planets/sky.png";
-
 
     /** The texture file for the planets */
 
@@ -495,13 +492,11 @@ public class MainMenu extends WorldController implements ContactListener {
 
     private static final float[][] PLANETS = {
             {0.0f, 3.0f, 1.2f, 3f},   // NOTHING
-            {30, 10f, 1.2f, 3f},  //SETTINGS
+            {25, 10f, 1.2f, 3f},  //SETTINGS
             {15.0f, 3f, 1.2f, 3f},    //LEVEL SELECT
             {7.0f, 4.5f, 1.2f, 3f},   //PLAY
 
     };
-
-    private boolean jumpedOnce;
 
     private static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
@@ -838,7 +833,7 @@ public class MainMenu extends WorldController implements ContactListener {
         }
         else if(currentPlanet == null) { // we're floating in space
             jumpTime++;
-            if (jumpTime > 230) {
+            if (jumpTime > 300) {
                 reset();
             }
             // Gravity

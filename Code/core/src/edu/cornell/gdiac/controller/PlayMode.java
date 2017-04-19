@@ -37,7 +37,7 @@ import javax.swing.plaf.TextUI;
 public class PlayMode extends WorldController implements ContactListener {
 
 
-    private ScreenListener listener;
+    protected ScreenListener listener;
 
     /**
      * Sets the ScreenListener for this mode
@@ -51,76 +51,76 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
 
 
-    private static final String OOB_FILE  = "space/Oob/oob2.png";
+    protected static final String OOB_FILE  = "space/Oob/oob2.png";
 
-    private static final String BLACK_HOLE = "space/planets/blackHole.png";
+    protected static final String BLACK_HOLE = "space/planets/blackHole.png";
 
+    /** Timer for resetting the menu */
+    protected int jumpTime = 0;
+
+    /** Used for hover in menus */
+    protected boolean[] lastHoverPlanet;
+
+    protected static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu_planet.png";
+    protected static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_planet_hover.png";
+    protected static final String RESUME_TEXTURE = "space/menus/resume_planet.png";
+    protected static final String RESUME_HOVER_TEXTURE = "space/menus/resume_planet_hover.png";
 
     /** The texture file for the planets */
-    private static final String BLUE_P_1 = "space/planets/blue.png";
-    private static final String BLUE_P_2 = "space/planets/blue2.png";
-    private static final String BLUE_P_3 = "space/planets/blue3.png";
+    protected static final String BLUE_P_1 = "space/planets/blue.png";
+    protected static final String BLUE_P_2 = "space/planets/blue2.png";
+    protected static final String BLUE_P_3 = "space/planets/blue3.png";
     //private static final String BLUE_P_4 = "space/planets/blue.png";
 
     /** The texture file for the planets */
-    private static final String PURPLE_P_1 = "space/planets/purple.png";
-    private static final String PURPLE_P_2 = "space/planets/purple2.png";
-    private static final String PURPLE_P_3 = "space/planets/purple3.png";
+    protected static final String PURPLE_P_1 = "space/planets/purple.png";
+    protected static final String PURPLE_P_2 = "space/planets/purple2.png";
+    protected static final String PURPLE_P_3 = "space/planets/purple3.png";
     //private static final String PURPLE_P_4 = "space/planets/purple.png";
 
     /** The texture file for the planets */
-    private static final String ORANGE_P_1 = "space/planets/orange.png";
-    private static final String ORANGE_P_2 = "space/planets/orange2.png";
-    private static final String ORANGE_P_3 = "space/planets/orange3.png";
+    protected static final String ORANGE_P_1 = "space/planets/orange.png";
+    protected static final String ORANGE_P_2 = "space/planets/orange2.png";
+    protected static final String ORANGE_P_3 = "space/planets/orange3.png";
     //private static final String ORANGE_P_4 = "space/planets/orange.png";
 
     /** The texture file for the planets */
-    private static final String SKY_P_1 = "space/planets/sky.png";
-    private static final String SKY_P_2 = "space/planets/sky2.png";
-    private static final String SKY_P_3 = "space/planets/sky3.png";
+    protected static final String SKY_P_1 = "space/planets/sky.png";
+    protected static final String SKY_P_2 = "space/planets/sky2.png";
+    protected static final String SKY_P_3 = "space/planets/sky3.png";
     //private static final String SKY_P_4 = "space/planets/sky.png";
 
     /** The texture file for the planets */
-    private static final String GREEN_P_1 = "space/planets/green.png";
-    private static final String GREEN_P_2 = "space/planets/green2.png";
-    private static final String GREEN_P_3 = "space/planets/green3.png";
+    protected static final String GREEN_P_1 = "space/planets/green.png";
+    protected static final String GREEN_P_2 = "space/planets/green2.png";
+    protected static final String GREEN_P_3 = "space/planets/green3.png";
     //private static final String GREEN_P_4 = "space/planets/green.png";
 
     /** The texture file for the planets */
-    private static final String PINK_P_1 = "space/planets/pink.png";
-    private static final String PINK_P_2 = "space/planets/pink2.png";
-    private static final String PINK_P_3 = "space/planets/pink3.png";
+    protected static final String PINK_P_1 = "space/planets/pink.png";
+    protected static final String PINK_P_2 = "space/planets/pink2.png";
+    protected static final String PINK_P_3 = "space/planets/pink3.png";
     //private static final String PINK_P_4 = "space/planets/pink.png";
 
     /** The texture file for the planets */
-    private static final String RED_P_1 = "space/planets/red.png";
-    private static final String RED_P_2 = "space/planets/red2.png";
-    private static final String RED_P_3 = "space/planets/red3.png";
+    protected static final String RED_P_1 = "space/planets/red.png";
+    protected static final String RED_P_2 = "space/planets/red2.png";
+    protected static final String RED_P_3 = "space/planets/red3.png";
     //private static final String RED_P_4 = "space/planets/red.png";
 
     /** The texture file for the planets */
-    private static final String POISON_P_1 = "space/planets/sun.png";
-    private static final String POISON_P_2 = "space/planets/sun.png";
-    private static final String POISON_P_3 = "space/planets/sun.png";
-    private static final String POISON_P_4 = "space/planets/sun.png";
+    protected static final String POISON_P_1 = "space/planets/sun.png";
+    protected static final String POISON_P_2 = "space/planets/sun.png";
+    protected static final String POISON_P_3 = "space/planets/sun.png";
+    protected static final String POISON_P_4 = "space/planets/sun.png";
 
-
-    private static final String POISON_P = "space/animations/sunAnim.png";
-
-
-
-
+    protected static final String POISON_P = "space/animations/sunAnim.png";
 
    // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
 
    // Animator sun = new Animator();
 
-
-
   // Animation test2= new Animation(.125f,poison_P_Strip);
-
-
-
 
     // Objects used
     Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
@@ -129,212 +129,170 @@ public class PlayMode extends WorldController implements ContactListener {
     // A variable for tracking elapsed time for the animation
     float stateTime;
 
-    /** The texture file for the planets */
-    private static final String COMMAND_P = "space/planets/command.png";
-
-    /** The texture file for the planets */
-    private static final String NEUTRAL_P = "space/planets/neutral.png";
-
-    /** The texture file for the planets */
-    private static final String DYING_P = "space/planets/dying.png";
-
-    /** The texture file for the planets */
-    private static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
-
-    /** The texture file for the planets */
-    private static final String PLAY_TEXTURE = "space/menus/play_planet.png";
-
-    /** The texture file for the planets */
-    private static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
-
-    /** The texture file for the planets */
-    private static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
-
-    /** The texture file for the planets */
-    private static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
-
-    /** The texture file for the planets */
-    private static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
-
-    private static final String TITLE = "space/menus/title.png";
-
-
+    protected static final String COMMAND_P = "space/planets/command.png";
+    protected static final String NEUTRAL_P = "space/planets/neutral.png";
+    protected static final String DYING_P = "space/planets/dying.png";
+    protected static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
+    protected static final String PLAY_TEXTURE = "space/menus/play_planet.png";
+    protected static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
+    protected static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
+    protected static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
+    protected static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+    protected static final String TITLE = "space/menus/title.png";
+    protected static final String PAUSETITLE = "space/menus/pause.png";
+    protected static final String LEVELSTITLE = "space/menus/levels.png";
+    protected static final String SETTINGSTITLE = "space/menus/settings.png";
 
     /** Texture file for background image */
-    private static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
-    private static final String BACKG_FILE_WHITE_STAR = "space/background/white-stars.png";
-    private static final String BACKG_FILE_LG_STAR = "space/background/large-stars.png";
-    private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
-    private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
-
-
+    protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
+    protected static final String BACKG_FILE_WHITE_STAR = "space/background/white-stars.png";
+    protected static final String BACKG_FILE_LG_STAR = "space/background/large-stars.png";
+    protected static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
+    protected static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
     /** Texture file for ship */
-    private static final String SHIP_TEXTURE = "space/ships/ship.png";
+    protected static final String SHIP_TEXTURE = "space/ships/ship.png";
     /** The texture file for the bullets */
-    private static final String BULLET_TEXTURE = "space/ships/bullet.png";
+    protected static final String BULLET_TEXTURE = "space/ships/bullet.png";
     /** The texture file for mass expulsion */
-    private static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
-
+    protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
     /** Parallax values */
-    private static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
-    private static final float BG_WHITE_PARALLAX = 0.4f;
-    private static final float BG_RED_PARALLAX   = 0.9f;
-    private static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
-    private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
+    protected static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
+    protected static final float BG_WHITE_PARALLAX = 0.4f;
+    protected static final float BG_RED_PARALLAX   = 0.9f;
+    protected static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
+    protected static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
     /** The sound file for a jump */
-    private static final String JUMP_FILE = "space/audio/jump.mp3";
+    protected static final String JUMP_FILE = "space/audio/jump.mp3";
     /** The sound file for a bullet fire */
-    private static final String PEW_FILE = "space/audio/pew.mp3";
+    protected static final String PEW_FILE = "space/audio/pew.mp3";
     /** The sound file for a bullet collision */
-    private static final String POP_FILE = "space/audio/plop.mp3";
+    protected static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
-    private static Vector2 OOB_POS = new Vector2(16f, 12f);
+    protected static Vector2 OOB_POS = new Vector2(16f, 12f);
     /** Oob's initial radius */
-    private  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
+    protected  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
 
-    private static final float SIPHON = 0.02f;
-
-    private static final float POISON = -0.02f;
-
-    private static final float MIN_RADIUS = 1f;
-
-    private static final float DEATH_RADIUS = MIN_RADIUS*2/3;
-
-    private static final float OOB_DEATH_RADIUS = 0.56f;
-
-    private static final float EPSILON = 0.1f;
-
-    private static final int THRESHOLD = 4;
+    protected static final float SIPHON = 0.02f;
+    protected static final float POISON = -0.02f;
+    protected static final float MIN_RADIUS = 1f;
+    protected static final float DEATH_RADIUS = MIN_RADIUS*2/3;
+    protected static final float OOB_DEATH_RADIUS = 0.56f;
+    protected static final float EPSILON = 0.1f;
+    protected static final int THRESHOLD = 4;
 
     //0 is not paused, 1 is victory pause, 2 is defeat pause
-    private int pauseState = 0;
-
-    private int inPause = 0;
+    protected int pauseState = 0;
 
     //control = 0 is keyboard, control = 1 is mouse
-    private int control = 1;
+    protected int control = 1;
     /** Texture asset for character avatar */
-    private TextureRegion avatarTexture;
+    protected TextureRegion avatarTexture;
 
-    private TextureRegion blackHoleTexture;
-
-    /** Planet texture */
-    private TextureRegion blue_P_1_Texture;
-    private TextureRegion blue_P_2_Texture;
-    private TextureRegion blue_P_3_Texture;
-   // private TextureRegion blue_P_4_Texture;
+    protected TextureRegion blackHoleTexture;
 
     /** Planet texture */
-    private TextureRegion purple_P_1_Texture;
-    private TextureRegion purple_P_2_Texture;
-    private TextureRegion purple_P_3_Texture;
-   // private TextureRegion purple_P_4_Texture;
+    protected TextureRegion blue_P_1_Texture;
+    protected TextureRegion blue_P_2_Texture;
+    protected TextureRegion blue_P_3_Texture;
+   // protected TextureRegion blue_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion orange_P_1_Texture;
-    private TextureRegion orange_P_2_Texture;
-    private TextureRegion orange_P_3_Texture;
-    //private TextureRegion orange_P_4_Texture;
+    protected TextureRegion purple_P_1_Texture;
+    protected TextureRegion purple_P_2_Texture;
+    protected TextureRegion purple_P_3_Texture;
+   // protected TextureRegion purple_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion sky_P_1_Texture;
-    private TextureRegion sky_P_2_Texture;
-    private TextureRegion sky_P_3_Texture;
-   // private TextureRegion sky_P_4_Texture;
+    protected TextureRegion orange_P_1_Texture;
+    protected TextureRegion orange_P_2_Texture;
+    protected TextureRegion orange_P_3_Texture;
+    //protected TextureRegion orange_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion green_P_1_Texture;
-    private TextureRegion green_P_2_Texture;
-    private TextureRegion green_P_3_Texture;
-    //private TextureRegion green_P_4_Texture;
+    protected TextureRegion sky_P_1_Texture;
+    protected TextureRegion sky_P_2_Texture;
+    protected TextureRegion sky_P_3_Texture;
+   // protected TextureRegion sky_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion pink_P_1_Texture;
-    private TextureRegion pink_P_2_Texture;
-    private TextureRegion pink_P_3_Texture;
-    //private TextureRegion pink_P_4_Texture;
+    protected TextureRegion green_P_1_Texture;
+    protected TextureRegion green_P_2_Texture;
+    protected TextureRegion green_P_3_Texture;
+    //protected TextureRegion green_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion red_P_1_Texture;
-    private TextureRegion red_P_2_Texture;
-    private TextureRegion red_P_3_Texture;
-    //private TextureRegion red_P_4_Texture;
+    protected TextureRegion pink_P_1_Texture;
+    protected TextureRegion pink_P_2_Texture;
+    protected TextureRegion pink_P_3_Texture;
+    //protected TextureRegion pink_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion poison_P_1_Texture;
-    private TextureRegion poison_P_2_Texture;
-    private TextureRegion poison_P_3_Texture;
-    private TextureRegion poison_P_4_Texture;
-
-    private FilmStrip poison_P_Strip;
+    protected TextureRegion red_P_1_Texture;
+    protected TextureRegion red_P_2_Texture;
+    protected TextureRegion red_P_3_Texture;
+    //protected TextureRegion red_P_4_Texture;
 
     /** Planet texture */
-    private TextureRegion command_P_Texture;
+    protected TextureRegion poison_P_1_Texture;
+    protected TextureRegion poison_P_2_Texture;
+    protected TextureRegion poison_P_3_Texture;
+    protected TextureRegion poison_P_4_Texture;
+
+    protected FilmStrip poison_P_Strip;
 
     /** Planet texture */
-    private TextureRegion neutral_P_Texture;
-
-    /** Planet texture */
-    private TextureRegion dying_P_Texture;
-
-    /** Expulsion texture */
-    private TextureRegion expulsion_Texture;
-
-    /** Settings texture */
-    private TextureRegion settings_Texture;
-
-    /** Levels texture */
-    private TextureRegion levels_Texture;
-
-    /** Play texture */
-    private TextureRegion play_Texture;
-
-    /** Settings texture */
-    private TextureRegion settings_Hover_Texture;
-
-    /** Levels texture */
-    private TextureRegion levels_Hover_Texture;
-
-    /** Play texture */
-    private TextureRegion play_Hover_Texture;
-
-
+    protected TextureRegion command_P_Texture;
+    protected TextureRegion neutral_P_Texture;
+    protected TextureRegion dying_P_Texture;
+    protected TextureRegion expulsion_Texture;
+    protected TextureRegion settings_Texture;
+    protected TextureRegion play_Texture;
+    protected TextureRegion settings_Hover_Texture;
+    protected TextureRegion play_Hover_Texture;
+    protected TextureRegion main_Menu_Texture;
+    protected TextureRegion main_Menu_Hover_Texture;
+    protected TextureRegion levels_Texture;
+    protected TextureRegion levels_Hover_Texture;
+    protected TextureRegion resume_Texture;
+    protected TextureRegion resume_Hover_Texture;
+    protected TextureRegion level_1_Texture;
+    protected TextureRegion level_1_hover_Texture;
+    protected TextureRegion titleTexture;
+    protected TextureRegion levelTitleTexture;
+    protected TextureRegion pauseTitleTexture;
+    protected TextureRegion settingsTitleTexture;
 
     /** Background texture */
-    private TextureRegion backgroundMAIN;
-    private TextureRegion backgroundWHITESTAR;
-    private TextureRegion backgroundLG;
-    private TextureRegion backgroundMED;
-    private TextureRegion backgroundSM;
-
-
-
-
+    protected TextureRegion backgroundMAIN;
+    protected TextureRegion backgroundWHITESTAR;
+    protected TextureRegion backgroundLG;
+    protected TextureRegion backgroundMED;
+    protected TextureRegion backgroundSM;
 
     /** Texture asset for ship */
-    private TextureRegion ship_texture;
+    protected TextureRegion ship_texture;
     /** Texture asset for bullet */
-    private TextureRegion bullet_texture;
+    protected TextureRegion bullet_texture;
 
     //variables
-    private Vector2 smallestRad;
-    private float rad;
-    private float oldAvatarRad;
+    protected Vector2 smallestRad;
+    protected float rad;
+    protected float oldAvatarRad;
     //variables for player controls
     boolean jump = false;
-    private float moveDirection = 0f;
-    private boolean mute = true;
-    private Vector2 launchVec;
-    private BlackHoleModel outHole;
-    private boolean blackHoleWarp;
+    protected float moveDirection = 0f;
+    protected boolean mute = true;
+    protected Vector2 launchVec;
+    protected BlackHoleModel outHole;
+    protected boolean blackHoleWarp;
 
     public void setMute(boolean bool) {mute = bool;}
 
     /** Track asset loading from all instances and subclasses */
-    private AssetState platformAssetState = AssetState.EMPTY;
+    protected AssetState platformAssetState = AssetState.EMPTY;
 
     /**
      * Preloads the assets for this controller.
@@ -355,11 +313,35 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
 
+        manager.load(TITLE, Texture.class);
+        assets.add(TITLE);
+
+        manager.load(PAUSETITLE, Texture.class);
+        assets.add(PAUSETITLE);
+
+        manager.load(LEVELSTITLE, Texture.class);
+        assets.add(LEVELSTITLE);
+
+        manager.load(SETTINGSTITLE, Texture.class);
+        assets.add(SETTINGSTITLE);
+
         manager.load(SETTINGS_TEXTURE, Texture.class);
         assets.add(SETTINGS_TEXTURE);
 
         manager.load(SETTINGS_HOVER_TEXTURE, Texture.class);
         assets.add(SETTINGS_HOVER_TEXTURE);
+
+        manager.load(MAIN_MENU_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_TEXTURE);
+
+        manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_HOVER_TEXTURE);
+
+        manager.load(RESUME_TEXTURE, Texture.class);
+        assets.add(RESUME_TEXTURE);
+
+        manager.load(RESUME_HOVER_TEXTURE, Texture.class);
+        assets.add(RESUME_HOVER_TEXTURE);
 
         manager.load(PLAY_TEXTURE, Texture.class);
         assets.add(PLAY_TEXTURE);
@@ -580,52 +562,53 @@ public class PlayMode extends WorldController implements ContactListener {
 
     // Physics constants for initialization
     /** The new heavier gravity for this world (so it is not so floaty) */
-    private static final float  DEFAULT_GRAVITY = -14.7f;
+    protected static final float  DEFAULT_GRAVITY = -14.7f;
     /** The density for most physics objects */
-    private static final float  BASIC_DENSITY = 0.0f;
+    protected static final float  BASIC_DENSITY = 0.0f;
     /** Friction of most platforms */
-    private static final float  BASIC_FRICTION = 0.4f;
+    protected static final float  BASIC_FRICTION = 0.4f;
     /** The restitution for all physics objects */
-    private static final float  BASIC_RESTITUTION = 0.1f;
+    protected static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    private static final float  BULLET_DAMAGE = -0.04f;
+    protected static final float  BULLET_DAMAGE = -0.04f;
     /** The volume for sound effects */
-    private static final float EFFECT_VOLUME = 0.8f;
+    protected static final float EFFECT_VOLUME = 0.8f;
 
-    private Array<Array<Float>> PLANETS = new Array<Array<Float>>();
-    private Array<Array<Float>> SHIPS = new Array<Array<Float>>();
-    private Array<Array<Float>> BLACK_HOLES = new Array<Array<Float>>();
+    protected Array<Array<Float>> PLANETS = new Array<Array<Float>>();
+    protected Array<Array<Float>> SHIPS = new Array<Array<Float>>();
+    protected Array<Array<Float>> BLACK_HOLES = new Array<Array<Float>>();
     // Physics objects for the game
     /** Reference to the character avatar */
-    private OobModel avatar;
-    private ComplexOobModel complexAvatar;
+    protected OobModel avatar;
+    protected ComplexOobModel complexAvatar;
     /** Reference to current planet Oob's on */
-    private PlanetModel currentPlanet;
+    protected PlanetModel currentPlanet;
     /** last planet on */
-    private PlanetModel lastPlanet;
+    protected PlanetModel lastPlanet;
     /** List of all live planets */
-    private Array<PlanetModel> planets;
+    protected Array<PlanetModel> planets;
     //List of command planets
-    private Array<PlanetModel> commandPlanets;
+    protected Array<PlanetModel> commandPlanets;
     /** list of ships */
-    private Array<ShipModel> ships;
+    protected Array<ShipModel> ships;
     /** vector from Oob to center of the screen */
-    private Vector2 vecToCenter = new Vector2();
+    protected Vector2 vecToCenter = new Vector2();
     /** Mark set to handle more sophisticated collision callbacks */
     protected ObjectSet<Fixture> sensorFixtures;
     /** the font for the mass text on each object */
-    private BitmapFont massFont;
+    protected BitmapFont massFont;
 
-    private int returnToPlanetTimer;
+    protected int returnToPlanetTimer;
 
-    private float width;
-    private float height;
+    protected float width;
+    protected float height;
     /** if we've just loaded */
-    private boolean justLoaded = true;
+    protected boolean justLoaded = true;
     /** AIController */
-    private AIController aiController;
+    protected AIController aiController;
 
-    //private String jsonString = "{\"sceneName\":\"MainScene\",\"composite\":{\"sImages\":[{\"uniqueId\":4,\"tags\":[],\"customVars\":\"Type:1\",\"x\":6.6625,\"y\":3.9375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":0.75,\"originY\":1.6875,\"layerName\":\"Default\",\"imageName\":\"ship\"},{\"uniqueId\":5,\"tags\":[],\"customVars\":\"Type:3\",\"x\":5.55,\"y\":1.7000003,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":1,\"layerName\":\"Default\",\"imageName\":\"command\"},{\"uniqueId\":6,\"tags\":[],\"x\":-3.375,\"y\":0.42499995,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":4.06875,\"originY\":4.06875,\"zIndex\":2,\"layerName\":\"Default\",\"imageName\":\"sun\"},{\"uniqueId\":7,\"tags\":[],\"x\":-3.1125002,\"y\":-2.9875,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":3,\"layerName\":\"Default\",\"imageName\":\"neutral\"},{\"uniqueId\":8,\"tags\":[],\"x\":2.1125,\"y\":-0.4375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":3,\"originY\":3,\"zIndex\":4,\"layerName\":\"Default\",\"imageName\":\"purple\"},{\"uniqueId\":9,\"tags\":[],\"x\":0.7750001,\"y\":-0.76250005,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":4.375,\"originY\":4.375,\"zIndex\":5,\"layerName\":\"Default\",\"imageName\":\"oob2\"}],\"layers\":[{\"layerName\":\"Default\",\"isVisible\":true}]},\"physicsPropertiesVO\":{}}";
+    //protected String jsonString = "{\"sceneName\":\"MainScene\",\"composite\":{\"sImages\":[{\"uniqueId\":4,\"tags\":[],\"customVars\":\"Type:1\",\"x\":6.6625,\"y\":3.9375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":0.75,\"originY\":1.6875,\"layerName\":\"Default\",\"imageName\":\"ship\"},{\"uniqueId\":5,\"tags\":[],\"customVars\":\"Type:3\",\"x\":5.55,\"y\":1.7000003,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":1,\"layerName\":\"Default\",\"imageName\":\"command\"},{\"uniqueId\":6,\"tags\":[],\"x\":-3.375,\"y\":0.42499995,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":4.06875,\"originY\":4.06875,\"zIndex\":2,\"layerName\":\"Default\",\"imageName\":\"sun\"},{\"uniqueId\":7,\"tags\":[],\"x\":-3.1125002,\"y\":-2.9875,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":3,\"layerName\":\"Default\",\"imageName\":\"neutral\"},{\"uniqueId\":8,\"tags\":[],\"x\":2.1125,\"y\":-0.4375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":3,\"originY\":3,\"zIndex\":4,\"layerName\":\"Default\",\"imageName\":\"purple\"},{\"uniqueId\":9,\"tags\":[],\"x\":0.7750001,\"y\":-0.76250005,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":4.375,\"originY\":4.375,\"zIndex\":5,\"layerName\":\"Default\",\"imageName\":\"oob2\"}],\"layers\":[{\"layerName\":\"Default\",\"isVisible\":true}]},\"physicsPropertiesVO\":{}}";
+
     /**
      * Creates and initialize a new instance of the platformer game
      *
@@ -648,6 +631,7 @@ public class PlayMode extends WorldController implements ContactListener {
         FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
+        jumpTime = 0;
     }
 
     /**
@@ -1210,7 +1194,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void jump(){
         if(!mute)
             SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(10)));
+        complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(smallestRad.cpy().nor().scl(13)));
         lastPlanet = currentPlanet;
         currentPlanet = null;
     }
@@ -1264,6 +1248,17 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    public void gravity() {
+
+    }
+
+    public boolean screenSwitch() {
+        return false;
+    }
+
+    public void hover() {
+    }
+
     /**
      * The core gameplay loop of this world.
      *
@@ -1300,6 +1295,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 pauseState = 2;
             }
             if (currentPlanet != null) {
+                jumpTime = 0;
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
                 complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
                     //determines mouse or keyboard controls
@@ -1307,10 +1303,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentPlanet.setDying(true);
                     currentPlanet.setTexture(dying_P_Texture);
                 }
-
-
+                if (screenSwitch()) {return;}
                 groundPlayerControls();
-
+                hover();
                 //forced jump
                 if (currentPlanet.getRadius() < DEATH_RADIUS) {
                     if (currentPlanet.getType() == 1f) {
@@ -1349,6 +1344,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             else if(currentPlanet == null) { // we're floating in space
+                jumpTime++;
+                if (jumpTime > 300) {reset();}
+                gravity();
                 if(blackHoleWarp) {
                     Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
                     complexAvatar.setX(newPos.x);

@@ -34,49 +34,55 @@ import javax.swing.plaf.TextUI;
  * Created by Jaiveer on 4/12/17.
  */
 
-public class MainMenu2 extends PlayMode {
+public class PauseMenu2 extends PlayMode {
 
     protected static float[][] PLANETS = {
-            {0.0f, 3.0f, 1.2f, 3f},   // NOTHING
-            {25, 10f, 1.2f, 3f},  //SETTINGS
-            {15.0f, 3f, 1.2f, 3f},    //LEVEL SELECT
-            {7.0f, 4.5f, 1.2f, 3f},   //PLAY
+            {23.0f, 4f, 1.3f, 3f},  // MAIN MENU
+            {23, 10f, 1.3f, 3f}, //SETTINGS
+            {10.0f, 3f, 1.3f, 3f},    //LEVEL SELECT
+            {15.0f, 8.5f, 1.5f, 3f}   //PLAY
 
     };
 
     protected static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
+    public PauseMenu2() {
+        super();
+    }
+
     public void loadContent(AssetManager manager) {
         if (platformAssetState != AssetState.LOADING) {
             return;
         }
-        avatarTexture = createTexture(manager, OOB_FILE, false);
-        expulsion_Texture = createTexture(manager, EXPULSION_TEXTURE, false);
+        avatarTexture = createTexture(manager,OOB_FILE,false);
+        expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
+        neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
+        play_Texture = createTexture(manager,PLAY_TEXTURE, false);
+        main_Menu_Texture = createTexture(manager,MAIN_MENU_TEXTURE,false);
+        main_Menu_Hover_Texture = createTexture(manager,MAIN_MENU_HOVER_TEXTURE,false);
+        settings_Texture = createTexture(manager,SETTINGS_TEXTURE, false);
+        settings_Hover_Texture = createTexture(manager,SETTINGS_HOVER_TEXTURE, false);
+        levels_Texture = createTexture(manager,LEVELS_TEXTURE, false);
+        levels_Hover_Texture = createTexture(manager,LEVELS_HOVER_TEXTURE, false);
+        resume_Texture = createTexture(manager,RESUME_TEXTURE, false);
+        resume_Hover_Texture = createTexture(manager,RESUME_HOVER_TEXTURE, false);
 
-        neutral_P_Texture = createTexture(manager, NEUTRAL_P, false);
-        settings_Texture = createTexture(manager, SETTINGS_TEXTURE, false);
-        levels_Texture = createTexture(manager, LEVELS_TEXTURE, false);
-        play_Texture = createTexture(manager, PLAY_TEXTURE, false);
-
-        settings_Hover_Texture = createTexture(manager, SETTINGS_HOVER_TEXTURE, false);
-        levels_Hover_Texture = createTexture(manager, LEVELS_HOVER_TEXTURE, false);
-        play_Hover_Texture = createTexture(manager, PLAY_HOVER_TEXTURE, false);
-
-        TEXTURES[0][0] = neutral_P_Texture;
-        TEXTURES[0][1] = neutral_P_Texture;
+        TEXTURES[0][0] = main_Menu_Texture;
+        TEXTURES[0][1] = main_Menu_Hover_Texture;
         TEXTURES[1][0] = settings_Texture;
         TEXTURES[1][1] = settings_Hover_Texture;
         TEXTURES[2][0] = levels_Texture;
-        TEXTURES[3][0] = play_Texture;
         TEXTURES[2][1] = levels_Hover_Texture;
-        TEXTURES[3][1] = play_Hover_Texture;
+        TEXTURES[3][0] = resume_Texture;
+        TEXTURES[3][1] = resume_Hover_Texture;
 
-        backgroundMAIN = createTexture(manager, BACKG_FILE_MAIN, false);
-        backgroundWHITESTAR = createTexture(manager, BACKG_FILE_WHITE_STAR, false);
-        backgroundLG = createTexture(manager, BACKG_FILE_LG_STAR, false);
-        backgroundMED = createTexture(manager, BACKG_FILE_MED_STAR, false);
-        backgroundSM = createTexture(manager, BACKG_FILE_SM_STAR, false);
-        titleTexture = createTexture(manager, TITLE, true);
+
+        backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
+        backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
+        backgroundLG = createTexture(manager,BACKG_FILE_LG_STAR,false);
+        backgroundMED = createTexture(manager,BACKG_FILE_MED_STAR,false);
+        backgroundSM = createTexture(manager,BACKG_FILE_SM_STAR,false);
+        pauseTitleTexture = createTexture(manager,PAUSETITLE, true);
 
         ship_texture = createTexture(manager, SHIP_TEXTURE, false);
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
@@ -87,10 +93,6 @@ public class MainMenu2 extends PlayMode {
         sounds.allocate(manager, POP_FILE);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
-    }
-
-    public MainMenu2() {
-        super();
     }
 
     public void reset() {
@@ -148,54 +150,6 @@ public class MainMenu2 extends PlayMode {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
 
-    public boolean screenSwitch() {
-
-        for (int i = 1; i <= 2; i++) {
-            if (currentPlanet == planets.get(i)) {
-                listener.exitScreen(this, i);
-                return true;
-            }
-        }
-        if (currentPlanet == planets.get(3)) {
-            listener.exitScreen(this, 4);
-            return true;
-        }
-        else return false;
-    }
-
-    public void hover() {
-        Vector2 mouse = InputController.getInstance().getCursor();
-        for (int i = 0; i < PLANETS.length; i++) {
-            float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
-            if ((Math.sqrt(d) < planets.get(i).getRadius())) {
-                if (lastHoverPlanet[i] == false) {
-                    planets.get(i).setTexture(TEXTURES[i][1]);
-                    planets.get(i).setRadius(planets.get(i).getRadius() * 1.1f);
-                    planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
-                }
-                lastHoverPlanet[i] = true;
-            } else if (lastHoverPlanet[i] == true) {
-                planets.get(i).setTexture(TEXTURES[i][0]);
-                planets.get(i).setRadius(planets.get(i).getRadius() * 1 / 1.1f);
-                planets.get(i).scalePicScale(new Vector2(1 / 1.2f, 1 / 1.2f));
-                lastHoverPlanet[i] = false;
-            }
-        }
-    }
-
-    public void gravity() {
-        // Gravity
-        Vector2 tempVec1 = new Vector2(0, 0);
-        for (int i = 0; i < planets.size; i++) {
-            //if (planets.get(i) != lastPlanet) {
-            tempVec1.set(complexAvatar.getPosition().cpy().sub(planets.get(i).getPosition()));
-            float r = Math.abs(tempVec1.len() - planets.get(i).getRadius());
-            float k = complexAvatar.getMass()*planets.get(i).getMass();
-            complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 1f*k/(r*r), -tempVec1.y * 1f*k/(r*r)));
-            //}
-        }
-    }
-
     public void update(float dt) {
         scrollScreen();
         width = canvas.getWidth() / 32;
@@ -213,9 +167,35 @@ public class MainMenu2 extends PlayMode {
             smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
             complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
             //determines mouse or keyboard controls
-            if (screenSwitch()) {return;}
+            for (int i = 1; i <= 2; i++) {
+                if (currentPlanet == planets.get(i)) {
+                    listener.exitScreen(this, i);
+                    return;
+                }
+            }
+            if (currentPlanet == planets.get(3)) {
+                listener.exitScreen(this, 4);
+                return;
+            }
             groundPlayerControls();
-            hover();
+            Vector2 mouse = InputController.getInstance().getCursor();
+            for (int i = 0; i < PLANETS.length; i++) {
+                float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
+                if ((Math.sqrt(d) < planets.get(i).getRadius())) {
+                    if (lastHoverPlanet[i] == false) {
+                        planets.get(i).setTexture(TEXTURES[i][1]);
+                        planets.get(i).setRadius(planets.get(i).getRadius()*1.1f);
+                        planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
+                    }
+                    lastHoverPlanet[i] = true;
+                }
+                else if (lastHoverPlanet[i] == true) {
+                    planets.get(i).setTexture(TEXTURES[i][0]);
+                    planets.get(i).setRadius(planets.get(i).getRadius()*1/1.1f);
+                    planets.get(i).scalePicScale(new Vector2(1/1.2f, 1/1.2f));
+                    lastHoverPlanet[i] = false;
+                }
+            }
             if (jump) {
                 jump();
             } else {
@@ -233,7 +213,17 @@ public class MainMenu2 extends PlayMode {
             if (jumpTime > 300) {
                 reset();
             }
-            gravity();
+            // Gravity
+            Vector2 tempVec1 = new Vector2(0, 0);
+            for (int i = 0; i < planets.size; i++) {
+                //if (planets.get(i) != lastPlanet) {
+                tempVec1.set(complexAvatar.getPosition().cpy().sub(planets.get(i).getPosition()));
+                float r = Math.abs(tempVec1.len() - planets.get(i).getRadius());
+                float k = complexAvatar.getMass()*planets.get(i).getMass();
+                complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 1f*k/(r*r), -tempVec1.y * 1f*k/(r*r)));
+                //}
+            }
+
             airPlayerControls();
             if(jump) {
                 Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
@@ -287,7 +277,7 @@ public class MainMenu2 extends PlayMode {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-        canvas.draw(titleTexture, Color.WHITE, canvas.getWidth() / 2 - (titleTexture.getRegionWidth() / 2) + 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
+        canvas.draw(pauseTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (pauseTitleTexture.getRegionWidth() / 2) + 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
         canvas.end();
         canvas.begin();
         for (Obstacle obj : objects) {

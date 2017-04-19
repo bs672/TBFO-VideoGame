@@ -80,7 +80,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
 		controllers = new WorldController[7];
-		controllers[0] = new MainMenu();
+		controllers[0] = new MainMenu2();
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect();
 		controllers[3] = new PauseMenu();
