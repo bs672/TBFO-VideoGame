@@ -91,6 +91,7 @@ public class MainMenu2 extends PlayMode {
 
     public MainMenu2() {
         super();
+        play = false;
     }
 
     public void reset() {
@@ -114,9 +115,10 @@ public class MainMenu2 extends PlayMode {
         setFailure(false);
         populateLevel();
         lastHoverPlanet = new boolean[PLANETS.length];
+        play = false;
     }
 
-    private void populateLevel() {
+    protected void populateLevel() {
 
         // Create Planets
         String pname = "planet";
@@ -149,7 +151,6 @@ public class MainMenu2 extends PlayMode {
     }
 
     public boolean screenSwitch() {
-
         for (int i = 1; i <= 2; i++) {
             if (currentPlanet == planets.get(i)) {
                 listener.exitScreen(this, i);
@@ -164,7 +165,7 @@ public class MainMenu2 extends PlayMode {
     }
 
     public void hover() {
-        Vector2 mouse = InputController.getInstance().getCursor();
+        Vector2 mouse = InputController.getInstance().getCursor(canvas);
         for (int i = 0; i < PLANETS.length; i++) {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
@@ -181,83 +182,6 @@ public class MainMenu2 extends PlayMode {
                 lastHoverPlanet[i] = false;
             }
         }
-    }
-
-    public void gravity() {
-        // Gravity
-        Vector2 tempVec1 = new Vector2(0, 0);
-        for (int i = 0; i < planets.size; i++) {
-            //if (planets.get(i) != lastPlanet) {
-            tempVec1.set(complexAvatar.getPosition().cpy().sub(planets.get(i).getPosition()));
-            float r = Math.abs(tempVec1.len() - planets.get(i).getRadius());
-            float k = complexAvatar.getMass()*planets.get(i).getMass();
-            complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 1f*k/(r*r), -tempVec1.y * 1f*k/(r*r)));
-            //}
-        }
-    }
-
-    public void update(float dt) {
-        scrollScreen();
-        width = canvas.getWidth() / 32;
-        height = canvas.getHeight() / 18;
-        if (InputController.getInstance().getChange()) {
-            if (control == 1) {
-                control = 0;
-            } else {
-                control = 1;
-            }
-        }
-
-        if (currentPlanet != null) {
-            jumpTime = 0;
-            smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-            complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
-            //determines mouse or keyboard controls
-            if (screenSwitch()) {return;}
-            groundPlayerControls();
-            hover();
-            if (jump) {
-                jump();
-            } else {
-                if(complexAvatar.getLinearVelocity().len() < 7) {
-                    moveAroundPlanet();
-                }
-                if(smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
-                    lastPlanet = currentPlanet;
-                    currentPlanet = null;
-                }
-            }
-        }
-        else if(currentPlanet == null) { // we're floating in space
-            jumpTime++;
-            if (jumpTime > 300) {
-                reset();
-            }
-            gravity();
-            airPlayerControls();
-            if(jump) {
-                Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
-                WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.25f);
-                expulsion.setGravityScale(0);
-                expulsion.setName("expulsion");
-                expulsion.setDrawScale(scale);
-                expulsion.setTexture(expulsion_Texture);
-                expulsion.scalePicScale(new Vector2(0.3f, 0.3f));
-                addObject(expulsion);
-                expulsion.setLinearVelocity(launchVec.cpy().scl(2));
-                changeMass((float)Math.PI * -0.04f);
-                Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
-                complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
-            }
-            if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
-                complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
-            findPlanet();
-        }
-        complexAvatar.applyForce();
-        complexAvatar.resetForceVec();
-
-        // If we use sound, we must remember this.
-        SoundController.getInstance().update();
     }
 
     public void draw(float dt) {

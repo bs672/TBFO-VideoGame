@@ -184,7 +184,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final int THRESHOLD = 4;
 
     //0 is not paused, 1 is victory pause, 2 is defeat pause
-    protected int pauseState = 0;
 
     //control = 0 is keyboard, control = 1 is mouse
     protected int control = 1;
@@ -600,6 +599,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected int returnToPlanetTimer;
 
+    protected boolean play;
+
     protected float width;
     protected float height;
     /** if we've just loaded */
@@ -632,6 +633,7 @@ public class PlayMode extends WorldController implements ContactListener {
         String jsonString = json.readString();
         jsonParse(jsonString);
         jumpTime = 0;
+        play = true;
     }
 
     /**
@@ -654,12 +656,12 @@ public class PlayMode extends WorldController implements ContactListener {
         ships.clear();
         world.dispose();
 
-        pauseState = 0;
         world = new World(gravity,false);
         world.setContactListener(this);
         setComplete(false);
         setFailure(false);
         populateLevel();
+        play = true;
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -1205,10 +1207,12 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            pauseState = 3;
+            if (play) {
+                listener.exitScreen(this, 3);
+            }
         }
         if (control==1){
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             mouse = mouse.sub(currentPlanet.getPosition());
             float angle = mouse.angle();
             Vector2 oob = complexAvatar.getPosition();
@@ -1236,10 +1240,12 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            pauseState = 3;
+            if (play) {
+                listener.exitScreen(this, 3);
+            }
         }
         if (control==1){
-            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
+            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
             jump = InputController.getInstance().getMouseJump();
         }
         else{
@@ -1248,15 +1254,29 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
-    public void gravity() {
-
-    }
-
     public boolean screenSwitch() {
         return false;
     }
 
+    public void gravity() {
+//        // Gravity
+//        Vector2 tempVec1 = new Vector2(0, 0);
+//        for (int i = 0; i < planets.size; i++) {
+//            //if (planets.get(i) != lastPlanet) {
+//            tempVec1.set(complexAvatar.getPosition().cpy().sub(planets.get(i).getPosition()));
+//            float r = Math.abs(tempVec1.len() - planets.get(i).getRadius());
+//            float k = complexAvatar.getMass()*planets.get(i).getMass();
+//            complexAvatar.addToForceVec(new Vector2(-tempVec1.x * 1f*k/(r*r), -tempVec1.y * 1f*k/(r*r)));
+//            //}
+//        }
+    }
+
     public void hover() {
+
+    }
+
+    public boolean clickScreenSwitch() {
+        return false;
     }
 
     /**
@@ -1272,136 +1292,129 @@ public class PlayMode extends WorldController implements ContactListener {
     public void update(float dt) {
         if(InputController.getInstance().debugJustPressed())
             setDebug(!isDebug());
-        if (pauseState == 0) {
-            scrollScreen();
-            width = canvas.getWidth() / 32;
-            height = canvas.getHeight() / 18;
-            if (InputController.getInstance().getChange()) {
-                if (control == 1) {
-                    control = 0;
-                } else {
-                    control = 1;
-                }
+        scrollScreen();
+        width = canvas.getWidth() / 32;
+        height = canvas.getHeight() / 18;
+        if (InputController.getInstance().getChange()) {
+            if (control == 1) {
+                control = 0;
+            } else {
+                control = 1;
             }
-            if (commandPlanets.size == 0) {
-                //We win the game!
-                pauseState = 1;
-            }
+        }
+        if (commandPlanets.size == 0) {
+            //We win the game!
+            if (play) listener.exitScreen(this, 0);
+        }
 //            if (complexAvatar.getX() < 0 || complexAvatar.getX() > width || complexAvatar.getY() < 0 || complexAvatar.getY() > height)
 //                //Off the screen
 //                pauseState = 2;
-            if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
-                //Game Over
-                pauseState = 2;
+        if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
+            //Game Over
+            listener.exitScreen(this, 0);
+        }
+        if (currentPlanet != null) {
+            jumpTime = 0;
+            smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
+            complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
+                //determines mouse or keyboard controls
+            if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
+                currentPlanet.setDying(true);
+                currentPlanet.setTexture(dying_P_Texture);
             }
-            if (currentPlanet != null) {
-                jumpTime = 0;
-                smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17-complexAvatar.getMass()));
-                    //determines mouse or keyboard controls
-                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
-                    currentPlanet.setDying(true);
-                    currentPlanet.setTexture(dying_P_Texture);
-                }
-                if (screenSwitch()) {return;}
-                groundPlayerControls();
+            if (screenSwitch()) {return;}
+            groundPlayerControls();
+            if (!play) {
                 hover();
-                //forced jump
-                if (currentPlanet.getRadius() < DEATH_RADIUS) {
+            }
+            //forced jump
+            if (currentPlanet.getRadius() < DEATH_RADIUS) {
+                if (currentPlanet.getType() == 1f) {
+                    commandPlanets.removeValue(currentPlanet, true);
+                }
+                currentPlanet.markRemoved(true);
+                planets.removeValue(currentPlanet, true);
+                jump = true;
+                //TODO Play planet explosion sound
+            }
+
+            if (jump) {
+                if (!play) {
+                    if (clickScreenSwitch()) {
+                        return;
+                    }
+                }
+                if (currentPlanet.isDying()) {
                     if (currentPlanet.getType() == 1f) {
                         commandPlanets.removeValue(currentPlanet, true);
                     }
                     currentPlanet.markRemoved(true);
                     planets.removeValue(currentPlanet, true);
-                    jump = true;
                     //TODO Play planet explosion sound
                 }
-
-                if (jump) {
-                    if (currentPlanet.isDying()) {
-                        if (currentPlanet.getType() == 1f) {
-                            commandPlanets.removeValue(currentPlanet, true);
-                        }
-                        currentPlanet.markRemoved(true);
-                        planets.removeValue(currentPlanet, true);
-                        //TODO Play planet explosion sound
-                    }
-                    jump();
-                } else {
-                    rad = currentPlanet.getRadius();
-                    if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
-                        siphonPlanet();
-                    } else if (currentPlanet.getType() == 2f) {
-                        changeMass(POISON);
-                    }
-                    if(complexAvatar.getLinearVelocity().len() < 7) {
-                        moveAroundPlanet();
-                    }
-                    if(smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
-                        lastPlanet = currentPlanet;
-                        currentPlanet = null;
-                    }
+                jump();
+            } else {
+                rad = currentPlanet.getRadius();
+                if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                    siphonPlanet();
+                } else if (currentPlanet.getType() == 2f) {
+                    changeMass(POISON);
+                }
+                if(complexAvatar.getLinearVelocity().len() < 7) {
+                    moveAroundPlanet();
+                }
+                if(smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
+                    lastPlanet = currentPlanet;
+                    currentPlanet = null;
                 }
             }
-            else if(currentPlanet == null) { // we're floating in space
-                jumpTime++;
-                if (jumpTime > 300) {reset();}
+        }
+        else if(currentPlanet == null) { // we're floating in space
+            jumpTime++;
+            if ((jumpTime > 300) & !play ) {reset();}
+            if (!play) {
                 gravity();
-                if(blackHoleWarp) {
-                    Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
-                    complexAvatar.setX(newPos.x);
-                    complexAvatar.setY(newPos.y);
-                    complexAvatar.setLinearVelocity(outHole.getOutVelocity());
-                    blackHoleWarp = false;
-                }
-                airPlayerControls();
-                if(jump) {
-                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
-                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.25f);
-                    expulsion.setGravityScale(0);
-                    expulsion.setName("expulsion");
-                    expulsion.setDrawScale(scale);
-                    expulsion.setTexture(expulsion_Texture);
-                    expulsion.scalePicScale(new Vector2(0.3f, 0.3f));
-                    addObject(expulsion);
-                    expulsion.setLinearVelocity(launchVec.cpy().scl(2));
-                    changeMass((float)Math.PI * -0.04f);
-                    Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
-                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
-                }
-                if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
-                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
-                findPlanet();
             }
-            complexAvatar.applyForce();
-            complexAvatar.resetForceVec();
-
-            // If we use sound, we must remember this.
-            SoundController.getInstance().update();
-
-
-            loopCommandPlanets();
-
-            loopConvertPlanet();
-
-            aiController.update(dt);
-
-            shootBullet();
+            if(blackHoleWarp) {
+                Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
+                complexAvatar.setX(newPos.x);
+                complexAvatar.setY(newPos.y);
+                complexAvatar.setLinearVelocity(outHole.getOutVelocity());
+                blackHoleWarp = false;
+            }
+            airPlayerControls();
+            if(jump) {
+                Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
+                WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, 0.25f);
+                expulsion.setGravityScale(0);
+                expulsion.setName("expulsion");
+                expulsion.setDrawScale(scale);
+                expulsion.setTexture(expulsion_Texture);
+                expulsion.scalePicScale(new Vector2(0.3f, 0.3f));
+                addObject(expulsion);
+                expulsion.setLinearVelocity(launchVec.cpy().scl(2));
+                changeMass((float)Math.PI * -0.04f);
+                Vector2 velocityChange = launchVec.cpy().scl(-5*expulsion.getMass() / complexAvatar.getMass());
+                complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().add(velocityChange));
+            }
+            if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
+                complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
+            findPlanet();
         }
-        else{
-            // Go to Pause Menu
-            if (pauseState == 3) {
-                pauseState = 0;
-                listener.exitScreen(this, 3);
-                return;
-            }
-            // Go to Main Menu
-            else {
-                pauseState = 0;
-                listener.exitScreen(this, 0);
-                return;
-            }
-        }
+        complexAvatar.applyForce();
+        complexAvatar.resetForceVec();
+
+        // If we use sound, we must remember this.
+        SoundController.getInstance().update();
+
+
+        loopCommandPlanets();
+
+        loopConvertPlanet();
+
+        aiController.update(dt);
+
+        shootBullet();
     }
 
     /**
