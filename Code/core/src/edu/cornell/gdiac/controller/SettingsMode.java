@@ -427,6 +427,11 @@ public class SettingsMode extends WorldController implements ContactListener {
         setFailure(false);
         populateLevel();
         lastInPlanet = new boolean[PLANETS.length];
+        for(Obstacle o: objects){
+            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
+                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+            }
+        }
     }
 
     /**
@@ -525,7 +530,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             }
         }
         groundPlayerControls();
-        Vector2 mouse = InputController.getInstance().getCursor();
+        Vector2 mouse = InputController.getInstance().getCursor(canvas);
         for (int i = 0; i < PLANETS.length; i++) {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
@@ -611,14 +616,14 @@ public class SettingsMode extends WorldController implements ContactListener {
             LG_S_X = 0;
         }
         else {
-            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
+            LG_S_X = -(backgroundLG.getRegionWidth()-canvas.getWidth())/2;
         }
 
         if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
             LG_S_Y = 0;
         }
         else {
-            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
+            LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
 
 

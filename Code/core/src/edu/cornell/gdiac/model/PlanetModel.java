@@ -1,5 +1,11 @@
 package edu.cornell.gdiac.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
@@ -28,6 +34,8 @@ public class PlanetModel extends WheelObstacle{
 
     private boolean dying;
 
+    private boolean exploding;
+
     private int spawnCooldown = SPAWN_COOLDOWN;
 
     public boolean canSpawn(){
@@ -46,7 +54,10 @@ public class PlanetModel extends WheelObstacle{
         }
     }
 
+
     public boolean isDying() {return dying;}
+
+    public boolean isExploding() {return exploding;}
 
     public void setType(float val){type = val;}
 
@@ -57,6 +68,127 @@ public class PlanetModel extends WheelObstacle{
     public int getConvert(){return becomingCommand;}
 
     public void setDying(boolean bool) {dying = bool;}
+
+    public void setExploding(boolean bool) {exploding = bool;}
+
+
+
+    private float WARN_stateTime = -1;
+
+    public void set_WARN_ST(float val){WARN_stateTime = val;}
+
+    public float get_WARN_ST(){return WARN_stateTime;}
+
+
+    private float EXP_stateTime= -1;
+
+    public void set_EXP_ST(float val){EXP_stateTime = val;}
+
+    public float get_EXP_ST(){return EXP_stateTime;}
+
+
+
+    public void update_WARN_ST(){
+        WARN_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+    }
+
+    public void update_EXP_ST(){
+        EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+    }
+
+
+
+
+    private Animation<TextureRegion> WARN_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_WARN_anim(){return WARN_Animation;}
+
+
+    private Animation<TextureRegion> EXP_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_EXP_anim(){return EXP_Animation;}
+
+
+
+    private Texture WARN_Sheet;
+
+    public void set_WARN_sheet(Texture val){WARN_Sheet = val;}
+
+    public Texture get_WARN_sheet(){return WARN_Sheet;}
+
+
+    private Texture EXP_Sheet;
+
+    public void set_sheet(Texture val){EXP_Sheet = val;}
+
+    public Texture get_sheet(){return EXP_Sheet;}
+
+
+
+
+    public void createWARNtex() {
+
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 6, FRAME_ROWS = 1;
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(WARN_Sheet,
+                WARN_Sheet.getWidth() / FRAME_COLS,
+                WARN_Sheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        WARN_Animation = new Animation<TextureRegion>(.3f, frames);
+
+        WARN_stateTime=0;
+    }
+
+    public void createEXPtex() {
+
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 5, FRAME_ROWS = 1;
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(EXP_Sheet,
+                EXP_Sheet.getWidth() / FRAME_COLS,
+                EXP_Sheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        EXP_Animation = new Animation<TextureRegion>(.1f, frames);
+
+        EXP_stateTime=0;
+
+       // this.scalePicScale(new Vector2(1.8f,1.8f));
+       // this.scalePicScale(new Vector2(.5f * this.getRadius(), .5f * this.getRadius()));
+
+    }
+
+
+
+
 
     /**
      * Creates a new planet at the given position.

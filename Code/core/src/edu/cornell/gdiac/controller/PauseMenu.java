@@ -480,6 +480,11 @@ public class PauseMenu extends WorldController implements ContactListener {
         setFailure(false);
         populateLevel();
         lastInPlanet = new boolean[PLANETS.length];
+        for(Obstacle o: objects){
+            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
+                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+            }
+        }
     }
 
     /**
@@ -505,7 +510,7 @@ public class PauseMenu extends WorldController implements ContactListener {
         }
 
         currentPlanet = planets.get(3); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS, 50);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -629,7 +634,7 @@ public class PauseMenu extends WorldController implements ContactListener {
             listener.exitScreen(this, 100);
         }
         if (control==1){
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             mouse = mouse.sub(currentPlanet.getPosition());
             float angle = mouse.angle();
             Vector2 oob = complexAvatar.getPosition();
@@ -660,7 +665,7 @@ public class PauseMenu extends WorldController implements ContactListener {
             listener.exitScreen(this, 100);
         }
         if (control==1){
-            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor());
+            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
             jump = InputController.getInstance().getMouseJump();
         }
         else{
@@ -706,7 +711,7 @@ public class PauseMenu extends WorldController implements ContactListener {
 
             groundPlayerControls();
             // Hover effects
-            Vector2 mouse = InputController.getInstance().getCursor();
+            Vector2 mouse = InputController.getInstance().getCursor(canvas);
             for (int i = 0; i < PLANETS.length; i++) {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
                 if ((Math.sqrt(d) < planets.get(i).getRadius())) {
@@ -915,14 +920,14 @@ public class PauseMenu extends WorldController implements ContactListener {
             LG_S_X = 0;
         }
         else {
-            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
+            LG_S_X = -(backgroundLG.getRegionWidth()-canvas.getWidth())/2;
         }
 
         if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
             LG_S_Y = 0;
         }
         else {
-            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
+            LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
 
         canvas.draw(backgroundMAIN, Color.GRAY, 0, 0,canvas.getWidth(),canvas.getHeight());
