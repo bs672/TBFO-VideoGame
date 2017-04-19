@@ -945,11 +945,11 @@ public class GameCanvas {
 	 * To work properly, the image should be wide enough to fill the screen. However,
 	 * it can be of any height.
 	 *
-	 * @param image  Texture to draw as an overlay
+	 * @param image  TextureRegion to draw as an overlay
 	 * @param x 	The x-coordinate of the bottom left corner
 	 * @param y 	The y-coordinate of the bottom left corner
 	 */
-	public void drawWrapped(Texture image, float x, float y) {
+	public void drawWrapped(TextureRegion image, float x, float y) {
 		positionCache.set(x,y);
 		wrapPosition(positionCache);
 
