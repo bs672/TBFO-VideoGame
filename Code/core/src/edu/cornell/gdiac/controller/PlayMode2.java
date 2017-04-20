@@ -1086,7 +1086,7 @@ public class PlayMode2 extends WorldController implements ContactListener {
     //Shoot bullet from ship
     public void shootBullet(){
         if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size / 4; i++) {
+            for (int i = 0; i < aiController.bulletData.size; i += 4) {
                 BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
                 bullet.setDensity(0.0f);
@@ -1147,7 +1147,7 @@ public class PlayMode2 extends WorldController implements ContactListener {
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 30) || returnToPlanetTimer >= 30)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
