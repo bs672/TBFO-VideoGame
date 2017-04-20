@@ -51,11 +51,6 @@ public class ComplexOobModel extends ComplexObstacle {
     /** A vector arry to track the last position of each edge for texture mapping*/
     private Array<Vector2> edgePosns;
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> f9488166a5fe585885101d6756dda63af38c477e
     /** Bools for Oob play state */
     private boolean normal;
     private boolean growing;
@@ -147,13 +142,6 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Texture get_Dying_sheet(){return Dying_Sheet;}
 
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> f9488166a5fe585885101d6756dda63af38c477e
     /**
      * Creates a new ragdoll with its head at the given position.
      *
@@ -407,12 +395,6 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
 
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> f9488166a5fe585885101d6756dda63af38c477e
     public boolean isNormal() {return normal;}
     public void setNormal(boolean bool) {
         normal = bool; growing = false; command = false; flying=false; hurting= false; dying= false;
@@ -458,11 +440,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createNormaltex() {
 
         // Constant rows and columns of the sprite sheet
-<<<<<<< HEAD
-        int FRAME_COLS = 4, FRAME_ROWS = 1;
-=======
         int FRAME_COLS = 8, FRAME_ROWS = 1;
->>>>>>> f9488166a5fe585885101d6756dda63af38c477e
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -625,14 +603,5 @@ public class ComplexOobModel extends ComplexObstacle {
 
         // Initialize the Animation with the frame interval and array of frames
         Dying_Animation = new Animation<TextureRegion>(.5f, frames);
-
     }
-
-<<<<<<< HEAD
 }
-
-
-=======
-
-}
->>>>>>> f9488166a5fe585885101d6756dda63af38c477e
