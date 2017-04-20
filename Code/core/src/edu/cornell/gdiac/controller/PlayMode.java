@@ -55,13 +55,13 @@ public class PlayMode extends WorldController implements ContactListener {
 //    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
 //    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
 
-    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
+    protected static final String OOB_NORMAL_FILE =   "space/animations/OobBlink.png";
     //"space/planets/start.png";
     protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
-    protected static final String OOB_FLYING_FILE = "space/animations/planetWarning.png";
-    protected static final String OOB_HURTING_FILE = "space/animations/sunAnim.png";
-    protected static final String OOB_DYING_FILE = "space/animations/oobH.png";
+    protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
+    protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
+    protected static final String OOB_DYING_FILE = "space/animations/planetWarning.png";
 
 
     /** The texture file for the planets */
@@ -207,6 +207,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final int THRESHOLD = 4;
 
     protected static final int ADJUST_COOLDOWN = 60;
+
+
 
     // A variable for tracking elapsed time for the animation
 
@@ -1271,7 +1273,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Vector2 radDir;
         for (int i = 0; i < planets.size; i++) {
             radDir = new Vector2(complexAvatar.getX() - planets.get(i).getX(), complexAvatar.getY() - planets.get(i).getY());
-            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 60) || returnToPlanetTimer >= 60)) {
+            if (radDir.len() < smallestRad.len() && ((!lastPlanet.equals(planets.get(i)) && returnToPlanetTimer < 30) || returnToPlanetTimer >= 30)) {
                 smallestRad = radDir.cpy();
                 closestPlanet = i;
             }
@@ -1622,6 +1624,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (bd2.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
                     complexAvatar.setHurting(true);
+                    complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
                         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
@@ -1644,6 +1647,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (bd1.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
                     complexAvatar.setHurting(true);
+                    complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
                         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
@@ -1797,12 +1801,19 @@ public class PlayMode extends WorldController implements ContactListener {
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
                     }
-                    else if ( ((ComplexOobModel) obj).isHurting() ) {
+                    else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     }
-                    else {
+
+                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        complexAvatar.decCooldown();
+                    }
+                    if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
                     }
+
+
 
                     ((ComplexOobModel) obj).setTexture(currentFrame);
 
