@@ -45,7 +45,23 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
 
 
-    protected static final String OOB_FILE  = "space/animations/oobH.png";
+    //protected static final String OOB_FILE  = "space/animations/oobH.png";
+
+//    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
+//    //"space/planets/start.png";
+//    protected static final String OOB_GROWING_FILE = "space/animations/oobH.png";
+//    protected static final String OOB_COMMAND_FILE = "space/planets/command.png";
+//    protected static final String OOB_FLYING_FILE = "space/animations/oobHappy.png";
+//    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
+//    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
+
+    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
+    //"space/planets/start.png";
+    protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
+    protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
+    protected static final String OOB_FLYING_FILE = "space/animations/planetWarning.png";
+    protected static final String OOB_HURTING_FILE = "space/animations/sunAnim.png";
+    protected static final String OOB_DYING_FILE = "space/animations/oobH.png";
 
 
     /** The texture file for the planets */
@@ -176,6 +192,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_DEATH_RADIUS = 0.56f;
 
+    protected static final float OOB_WARNING_RADIUS = 0.8f;
+
     protected static final float EPSILON = 0.1f;
 
     protected static final int THRESHOLD = 4;
@@ -196,8 +214,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int control = 1;
 
     /** Animation texture */
-    protected Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
-    protected Texture oobSheet;
+   // protected Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
+   // protected Texture oobSheet;
 
     protected TextureRegion blackHoleTexture;
 
@@ -250,6 +268,15 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
     protected Texture BH_Sheet;
 
+
+    //private Texture Oob_Sheet;
+
+    protected Texture Oob_Normal_Sheet;
+    protected Texture Oob_Growing_Sheet;
+    protected Texture Oob_Command_Sheet;
+    protected Texture Oob_Flying_Sheet;
+    protected Texture Oob_Hurting_Sheet;
+    protected Texture Oob_Dying_Sheet;
 
     private Texture EXP_Sheet;
 
@@ -340,8 +367,21 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         platformAssetState = AssetState.LOADING;
-        manager.load(OOB_FILE, Texture.class);
-        assets.add(OOB_FILE);
+//        manager.load(OOB_FILE, Texture.class);
+//        assets.add(OOB_FILE);
+
+        manager.load(OOB_NORMAL_FILE, Texture.class);
+        assets.add(OOB_NORMAL_FILE);
+        manager.load(OOB_GROWING_FILE, Texture.class);
+        assets.add(OOB_GROWING_FILE);
+        manager.load(OOB_COMMAND_FILE, Texture.class);
+        assets.add(OOB_COMMAND_FILE);
+        manager.load(OOB_FLYING_FILE, Texture.class);
+        assets.add(OOB_FLYING_FILE);
+        manager.load(OOB_HURTING_FILE, Texture.class);
+        assets.add(OOB_HURTING_FILE);
+        manager.load(OOB_DYING_FILE, Texture.class);
+        assets.add(OOB_DYING_FILE);
 
         manager.load(SETTINGS_TEXTURE, Texture.class);
         assets.add(SETTINGS_TEXTURE);
@@ -481,7 +521,13 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
-        oobSheet = new Texture(Gdx.files.internal(OOB_FILE));
+        //oobSheet = new Texture(Gdx.files.internal(OOB_FILE));
+        Oob_Normal_Sheet = new Texture(Gdx.files.internal(OOB_NORMAL_FILE));
+        Oob_Growing_Sheet = new Texture(Gdx.files.internal(OOB_GROWING_FILE));
+        Oob_Command_Sheet = new Texture(Gdx.files.internal(OOB_COMMAND_FILE));
+        Oob_Flying_Sheet = new Texture(Gdx.files.internal(OOB_FLYING_FILE));
+        Oob_Hurting_Sheet = new Texture(Gdx.files.internal(OOB_HURTING_FILE));
+        Oob_Dying_Sheet = new Texture(Gdx.files.internal(OOB_DYING_FILE));
 
         blackHoleTexture = createTexture(manager, BLACK_HOLE, false);
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
@@ -517,6 +563,8 @@ public class PlayMode extends WorldController implements ContactListener {
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
         BH_Sheet = new Texture(Gdx.files.internal(BLACK_HOLE));
+
+        //Oob_Sheet = new Texture(Gdx.files.internal(OOB_FILE));
 
         WARN_Sheet = new Texture(Gdx.files.internal(WARNING));
 
@@ -1026,27 +1074,48 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS, .4f*OOB_RADIUS));
         addObject(complexAvatar);
 
-            int FRAME_COLS = 8, FRAME_ROWS = 1;
+//        complexAvatar.set_Normal_sheet(Oob_Sheet);
+//        complexAvatar.createNormaltex();
 
-            // Use the split utility method to create a 2D array of TextureRegions. This is
-            // possible because this sprite sheet contains frames of equal size and they are
-            // all aligned.
-            TextureRegion[][] tmp = TextureRegion.split(oobSheet,
-                    oobSheet.getWidth() / FRAME_COLS,
-                    oobSheet.getHeight() / FRAME_ROWS);
+        complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);
+        complexAvatar.createNormaltex();
 
-            // Place the regions into a 1D array in the correct order, starting from the top
-            // left, going across first. The Animation constructor requires a 1D array.
-            TextureRegion[] oobFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-            int index = 0;
-            for (int i = 0; i < FRAME_ROWS; i++) {
-                for (int j = 0; j < FRAME_COLS; j++) {
-                    oobFrames[index++] = tmp[i][j];
-                }
-            }
+        complexAvatar.set_Growing_sheet(Oob_Growing_Sheet);
+        complexAvatar.createGrowingtex();
 
-            // Initialize the Animation with the frame interval and array of frames
-            oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
+        complexAvatar.set_Command_sheet(Oob_Command_Sheet);
+        complexAvatar.createCommandtex();
+
+        complexAvatar.set_Flying_sheet(Oob_Flying_Sheet);
+        complexAvatar.createFlyingtex();
+
+        complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);
+        complexAvatar.createHurtingtex();
+
+        complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);
+        complexAvatar.createDyingtex();
+
+//            int FRAME_COLS = 8, FRAME_ROWS = 1;
+//
+//            // Use the split utility method to create a 2D array of TextureRegions. This is
+//            // possible because this sprite sheet contains frames of equal size and they are
+//            // all aligned.
+//            TextureRegion[][] tmp = TextureRegion.split(oobSheet,
+//                    oobSheet.getWidth() / FRAME_COLS,
+//                    oobSheet.getHeight() / FRAME_ROWS);
+//
+//            // Place the regions into a 1D array in the correct order, starting from the top
+//            // left, going across first. The Animation constructor requires a 1D array.
+//            TextureRegion[] oobFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+//            int index = 0;
+//            for (int i = 0; i < FRAME_ROWS; i++) {
+//                for (int j = 0; j < FRAME_COLS; j++) {
+//                    oobFrames[index++] = tmp[i][j];
+//                }
+//            }
+//
+//            // Initialize the Animation with the frame interval and array of frames
+//            oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
 
 
 
@@ -1340,6 +1409,22 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
 
+                //determines Oob's face on planet
+                if (currentPlanet.getType() == 0f) {
+                    complexAvatar.setGrowing(true);
+                }
+                else if (currentPlanet.getType() == 1f) {
+                    complexAvatar.setCommand(true);
+                }
+                else if (currentPlanet.getType() == 2f) {
+                    complexAvatar.setHurting(true);
+                }
+                else if (currentPlanet.getType() == 3f) {
+                    complexAvatar.setNormal(true);
+                }
+
+
+
                 groundPlayerControls();
 
 
@@ -1373,6 +1458,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             else if(currentPlanet == null) { // we're floating in space
+                  complexAvatar.setFlying(true);
                 if(blackHoleWarp) {
                     Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
                     complexAvatar.setX(newPos.x);
@@ -1400,6 +1486,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
                 findPlanet();
+            }
+
+            if (complexAvatar.getRadius() <= OOB_WARNING_RADIUS) {
+                complexAvatar.setDying(true);
             }
 
             if (planet_explosion.size > 0) {
@@ -1496,6 +1586,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if(bd1.getName().equals("Oob")) {
                 if (bd2.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
+                    complexAvatar.setHurting(true);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
                         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
@@ -1517,6 +1608,7 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(bd2.getName().equals("Oob")) {
                 if (bd1.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
+                    complexAvatar.setHurting(true);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
                         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
@@ -1652,9 +1744,34 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 if (obj.getName().equals("ComplexOob")) {
                     // Get current frame of animation for the current stateTime
-                    TextureRegion currentFrame = oobAnimation.getKeyFrame(stateTime, true);
-                    canvas.begin();
+                    //if ( ((ComplexOobModel) obj).isNormal()) {
+                   // TextureRegion currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                    //}
+
+                    TextureRegion currentFrame;
+
+                    if ( ((ComplexOobModel) obj).isNormal()) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isCommand() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isFlying() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isHurting() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    }
+                    else {
+                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                    }
+
                     ((ComplexOobModel) obj).setTexture(currentFrame);
+
+                    canvas.begin();
                     obj.draw(canvas);
                     canvas.end();
                 }
