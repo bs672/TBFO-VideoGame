@@ -326,17 +326,12 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;
 
-
     /** Background texture */
     protected TextureRegion backgroundMAIN;
     protected TextureRegion backgroundWHITESTAR;
     protected TextureRegion backgroundLG;
     protected TextureRegion backgroundMED;
     protected TextureRegion backgroundSM;
-
-
-
-
 
     /** Texture asset for ship */
     protected TextureRegion ship_texture;
@@ -1113,32 +1108,6 @@ public class PlayMode extends WorldController implements ContactListener {
         addObject(complexAvatar);
         loadAnim();
 
-//        complexAvatar.set_Normal_sheet(Oob_Sheet);
-//        complexAvatar.createNormaltex();
-
-
-
-//            int FRAME_COLS = 8, FRAME_ROWS = 1;
-//
-//            // Use the split utility method to create a 2D array of TextureRegions. This is
-//            // possible because this sprite sheet contains frames of equal size and they are
-//            // all aligned.
-//            TextureRegion[][] tmp = TextureRegion.split(oobSheet,
-//                    oobSheet.getWidth() / FRAME_COLS,
-//                    oobSheet.getHeight() / FRAME_ROWS);
-//
-//            // Place the regions into a 1D array in the correct order, starting from the top
-//            // left, going across first. The Animation constructor requires a 1D array.
-//            TextureRegion[] oobFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-//            int index = 0;
-//            for (int i = 0; i < FRAME_ROWS; i++) {
-//                for (int j = 0; j < FRAME_COLS; j++) {
-//                    oobFrames[index++] = tmp[i][j];
-//                }
-//            }
-//
-//            // Initialize the Animation with the frame interval and array of frames
-//            oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
 
 
 
