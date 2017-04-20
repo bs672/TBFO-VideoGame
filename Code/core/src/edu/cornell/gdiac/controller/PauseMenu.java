@@ -155,22 +155,7 @@ public class PauseMenu extends PlayMode {
         complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS/2, .4f*OOB_RADIUS/2));
         addObject(complexAvatar);
 
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
-
-        TextureRegion[][] tmp = TextureRegion.split(oobSheet,
-                oobSheet.getWidth() / FRAME_COLS,
-                oobSheet.getHeight() / FRAME_ROWS);
-
-        TextureRegion[] oobFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                oobFrames[index++] = tmp[i][j];
-            }
-        }
-
-        // Initialize the Animation with the frame interval and array of frames
-        oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
+        loadAnim();
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }

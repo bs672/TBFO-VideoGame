@@ -460,6 +460,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             planets.add(obj);
         }
 
+
         currentPlanet = planets.get(1); //The first planet is always the starting planet
 
     }
