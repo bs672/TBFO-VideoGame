@@ -440,7 +440,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createNormaltex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
+        int FRAME_COLS = 20, FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -460,14 +460,14 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Normal_Animation = new Animation<TextureRegion>(.5f, frames);
+        Normal_Animation = new Animation<TextureRegion>(.15f, frames);
 
     }
 
     public void createGrowingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
+        int FRAME_COLS = 12, FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -498,7 +498,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createCommandtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 4, FRAME_ROWS = 1;
+        int FRAME_COLS = 5, FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -518,7 +518,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Command_Animation = new Animation<TextureRegion>(.5f, frames);
+        Command_Animation = new Animation<TextureRegion>(.3f, frames);
 
     }
 
@@ -526,7 +526,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createFlyingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
+        int FRAME_COLS = 20, FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -546,7 +546,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Flying_Animation = new Animation<TextureRegion>(.3f, frames);
+        Flying_Animation = new Animation<TextureRegion>(.15f, frames);
 
     }
 
@@ -554,7 +554,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createHurtingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 4, FRAME_ROWS = 1;
+        int FRAME_COLS = 10, FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -574,7 +574,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Hurting_Animation = new Animation<TextureRegion>(.5f, frames);
+        Hurting_Animation = new Animation<TextureRegion>(.15f, frames);
 
     }
 
@@ -582,7 +582,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createDyingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 4, FRAME_ROWS = 1;
+        int FRAME_COLS = 6, FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -602,6 +602,6 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Dying_Animation = new Animation<TextureRegion>(.5f, frames);
+        Dying_Animation = new Animation<TextureRegion>(.1f, frames);
     }
 }

@@ -55,13 +55,13 @@ public class PlayMode extends WorldController implements ContactListener {
 //    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
 //    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
 
-    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
+    protected static final String OOB_NORMAL_FILE =   "space/animations/OobBlink.png";
     //"space/planets/start.png";
     protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
-    protected static final String OOB_FLYING_FILE = "space/animations/planetWarning.png";
-    protected static final String OOB_HURTING_FILE = "space/animations/sunAnim.png";
-    protected static final String OOB_DYING_FILE = "space/animations/oobH.png";
+    protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
+    protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
+    protected static final String OOB_DYING_FILE = "space/animations/planetWarning.png";
 
 
     /** The texture file for the planets */
