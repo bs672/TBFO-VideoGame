@@ -750,7 +750,7 @@ public class PauseMenu extends WorldController implements ContactListener {
         }
         else if(currentPlanet == null) { // we're floating in space
             jumpTime++;
-            if (jumpTime > 180) {
+            if ((jumpTime > 180)) {
                 reset();
             }
             airPlayerControls();
