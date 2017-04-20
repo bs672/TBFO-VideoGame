@@ -50,7 +50,6 @@ public class MainMenu2 extends PlayMode {
         if (platformAssetState != AssetState.LOADING) {
             return;
         }
-        avatarTexture = createTexture(manager, OOB_FILE, false);
         expulsion_Texture = createTexture(manager, EXPULSION_TEXTURE, false);
 
         neutral_P_Texture = createTexture(manager, NEUTRAL_P, false);
@@ -92,11 +91,13 @@ public class MainMenu2 extends PlayMode {
     public MainMenu2() {
         super();
         play = false;
+        jumpTime = 0;
+        lastHoverPlanet = new boolean[PLANETS.length];
     }
 
     public void reset() {
+        returnToPlanetTimer = 0;
         justLoaded = true;
-        jumpTime = 0;
         Vector2 gravity = new Vector2(world.getGravity() );
 
         for(Obstacle obj : objects) {
@@ -106,6 +107,7 @@ public class MainMenu2 extends PlayMode {
         addQueue.clear();
         planets.clear();
         commandPlanets.clear();
+        planet_explosion.clear();
         ships.clear();
         world.dispose();
 
@@ -114,8 +116,15 @@ public class MainMenu2 extends PlayMode {
         setComplete(false);
         setFailure(false);
         populateLevel();
+        for(Obstacle o: objects){
+            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
+                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+            }
+        }
+        jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
         play = false;
+        jumpTime = 0;
     }
 
     protected void populateLevel() {
@@ -138,14 +147,30 @@ public class MainMenu2 extends PlayMode {
         }
 
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS/2, 50);
         complexAvatar.setDrawScale(scale);
-        complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
         complexAvatar.setSensor(true);
         complexAvatar.setName("ComplexOob");
-        complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS, .4f*OOB_RADIUS));
+        complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS/2, .4f*OOB_RADIUS/2));
         addObject(complexAvatar);
+
+        int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+        TextureRegion[][] tmp = TextureRegion.split(oobSheet,
+                oobSheet.getWidth() / FRAME_COLS,
+                oobSheet.getHeight() / FRAME_ROWS);
+
+        TextureRegion[] oobFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                oobFrames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
@@ -185,46 +210,9 @@ public class MainMenu2 extends PlayMode {
     }
 
     public void draw(float dt) {
-        canvas.clear();
-
+        super.draw(dt);
         canvas.begin();
-
-        int LG_S_X;
-        int LG_S_Y;
-
-        if ((backgroundLG.getRegionWidth()-canvas.getWidth())>0) {
-            LG_S_X = 0;
-        }
-        else {
-            LG_S_X = (backgroundLG.getRegionWidth()-canvas.getWidth())/2;
-        }
-
-        if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
-            LG_S_Y = 0;
-        }
-        else {
-            LG_S_Y = (backgroundLG.getRegionHeight()-canvas.getHeight())/2;
-        }
-
-        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-        canvas.draw(titleTexture, Color.WHITE, canvas.getWidth() / 2 - (titleTexture.getRegionWidth() / 2) + 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
+        canvas.draw(titleTexture, Color.WHITE, canvas.getWidth() / 2 - (titleTexture.getRegionWidth() / 2) + 50, 400, canvas.getWidth()/2, canvas.getHeight()/2);
         canvas.end();
-        canvas.begin();
-        for (Obstacle obj : objects) {
-            obj.draw(canvas);
-
-        }
-        canvas.end();
-        if (isDebug()) {
-            canvas.beginDebug();
-            for (Obstacle obj : objects) {
-                obj.drawDebug(canvas);
-            }
-            canvas.endDebug();
-        }
     }
 }
