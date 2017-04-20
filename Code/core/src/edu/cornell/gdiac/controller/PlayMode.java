@@ -1162,6 +1162,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
+                System.out.println("can spawn");
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
@@ -1174,7 +1175,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2);
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1183,6 +1184,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setDrawScale(scale);
                 sh.scalePicScale(new Vector2(.2f, .2f));
                 sh.setTexture(ship_texture);
+                if (sh.getType() == 2) {
+                    sh.scalePicScale(new Vector2(2f, 2f));
+                }
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
                 addObject(sh);
@@ -1193,9 +1197,12 @@ public class PlayMode extends WorldController implements ContactListener {
 
     public void loopConvertPlanet() {
         for (int i = 0; i < planets.size; i++) {
-            if (planets.get(i).getConvert() > 180) {
-                planets.get(i).setType(1);
-                commandPlanets.add(planets.get(i));
+            if (planets.get(i).getType() != 1) {
+                if (planets.get(i).getConvert() > 500) {
+                    planets.get(i).setType(1);
+                    commandPlanets.add(planets.get(i));
+                    planets.get(i).setConvert(0);
+                }
             }
         }
     }

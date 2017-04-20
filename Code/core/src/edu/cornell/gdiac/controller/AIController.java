@@ -204,14 +204,20 @@ public class AIController {
                 s.setPosition(s.getPosition().cpy().add(tempVec1));
             }
             else {
+                int bigPlanet = -1;
+                for (int j = 0; j < planets.size; j++) {
+                    if ((planets.get(j).getRadius() > planets.get(bigPlanet).getRadius()) && (planets.get(j).getType() != 1)) {
+                        bigPlanet = j;
+                    }
+                }
                 // tempVec1 is planet to ship
-                tempVec1.set(s.getPosition().cpy().sub(planets.get(cloPl).getPosition()));
+                tempVec1.set(s.getPosition().cpy().sub(planets.get(bigPlanet).getPosition()));
                 tempVec3.set(-tempVec3.y, tempVec3.x);
                 tempVec3.scl(s.getMoveSpeed()/tempVec3.len());
                 tempVec1.set(s.getPosition().cpy().add(tempVec3));
-                tempVec1.sub(planets.get(cloPl).getPosition());
-                tempVec1.scl((planets.get(cloPl).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
-                s.setPosition(planets.get(cloPl).getPosition().cpy().add(tempVec1));
+                tempVec1.sub(planets.get(bigPlanet).getPosition());
+                tempVec1.scl((planets.get(bigPlanet).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+                s.setPosition(planets.get(bigPlanet).getPosition().cpy().add(tempVec1));
             }
         }
     }
