@@ -285,17 +285,12 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;
 
-
     /** Background texture */
     protected TextureRegion backgroundMAIN;
     protected TextureRegion backgroundWHITESTAR;
     protected TextureRegion backgroundLG;
     protected TextureRegion backgroundMED;
     protected TextureRegion backgroundSM;
-
-
-
-
 
     /** Texture asset for ship */
     protected TextureRegion ship_texture;
@@ -1067,12 +1062,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 oobFrames[index++] = tmp[i][j];
             }
         }
-
         // Initialize the Animation with the frame interval and array of frames
         oobAnimation = new Animation<TextureRegion>(.15f, oobFrames);
-
-
-
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
 
