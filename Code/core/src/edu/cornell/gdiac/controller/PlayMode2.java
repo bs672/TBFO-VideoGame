@@ -34,7 +34,7 @@ import javax.swing.plaf.TextUI;
 /**
  * Created by Matt Loughney on 2/28/2017.
  */
-public class PlayMode extends WorldController implements ContactListener {
+public class PlayMode2 extends WorldController implements ContactListener {
 
 
     protected ScreenListener listener;
