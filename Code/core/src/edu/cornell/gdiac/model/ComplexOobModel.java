@@ -51,6 +51,8 @@ public class ComplexOobModel extends ComplexObstacle {
     /** A vector arry to track the last position of each edge for texture mapping*/
     private Array<Vector2> edgePosns;
 
+    protected static int SHOT_COOLDOWN;
+
     /** Bools for Oob play state */
     private boolean normal;
     private boolean growing;
@@ -141,6 +143,13 @@ public class ComplexOobModel extends ComplexObstacle {
     public void set_Dying_sheet(Texture val){Dying_Sheet = val;}
 
     public Texture get_Dying_sheet(){return Dying_Sheet;}
+
+
+    public void set_Shot_Cooldown(int c) {SHOT_COOLDOWN = c; }
+
+    public int get_Shot_Cooldown() {return SHOT_COOLDOWN; }
+
+    public void decCooldown() {SHOT_COOLDOWN--; }
 
     /**
      * Creates a new ragdoll with its head at the given position.

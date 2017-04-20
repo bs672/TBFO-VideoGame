@@ -208,6 +208,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final int ADJUST_COOLDOWN = 60;
 
+
+
     // A variable for tracking elapsed time for the animation
 
     private float stateTime=0f;
@@ -1615,6 +1617,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (bd2.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
                     complexAvatar.setHurting(true);
+                    complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
                         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
@@ -1637,6 +1640,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (bd1.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
                     complexAvatar.setHurting(true);
+                    complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
                         SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
@@ -1790,12 +1794,19 @@ public class PlayMode extends WorldController implements ContactListener {
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
                     }
-                    else if ( ((ComplexOobModel) obj).isHurting() ) {
+                    else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     }
-                    else {
+
+                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        complexAvatar.decCooldown();
+                    }
+                    if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
                     }
+
+
 
                     ((ComplexOobModel) obj).setTexture(currentFrame);
 
