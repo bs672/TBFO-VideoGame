@@ -1100,7 +1100,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
         // Create Oob
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS, 50);
+        complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS);
         complexAvatar.setDrawScale(scale);
         //complexAvatar.setTexture(avatarTexture);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1324,8 +1324,6 @@ public class PlayMode extends WorldController implements ContactListener {
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
-
-            System.out.println("HERE");
             reset();
         }
         if(InputController.getInstance().didPause()){
@@ -1409,6 +1407,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+//        System.out.println(complexAvatar.getPosition());
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1432,7 +1431,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (currentPlanet != null) {
             smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-            if(smallestRad.len() > 3* complexAvatar.getRadius() / 4) {
+            if(smallestRad.len() > 0.9f*complexAvatar.getRadius()) {
                 if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
                     complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
                 complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
@@ -1775,44 +1774,47 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
                 if (obj.getName().equals("ComplexOob")) {
+                    ((ComplexOobModel)obj).draw();
+
+
                     // Get current frame of animation for the current stateTime
                     //if ( ((ComplexOobModel) obj).isNormal()) {
                    // TextureRegion currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
                     //}
 
-                    TextureRegion currentFrame;
-
-                    if ( ((ComplexOobModel) obj).isNormal()) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isCommand() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isFlying() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
-                    }
-                    else  {
-                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                    }
-
-                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                        complexAvatar.decCooldown();
-                    }
-                    if ( ((ComplexOobModel) obj).isDying() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
-                    }
-
-
-
-                    ((ComplexOobModel) obj).setTexture(currentFrame);
-
-                    canvas.begin();
-                    obj.draw(canvas);
-                    canvas.end();
+//                    TextureRegion currentFrame;
+//
+//                    if ( ((ComplexOobModel) obj).isNormal()) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( ((ComplexOobModel) obj).isCommand() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( ((ComplexOobModel) obj).isFlying() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else  {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+//                    }
+//
+//                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+//                        complexAvatar.decCooldown();
+//                    }
+//                    if ( ((ComplexOobModel) obj).isDying() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+//                    }
+//
+//
+//
+//                    ((ComplexOobModel) obj).setTexture(currentFrame);
+//
+//                    canvas.begin();
+//                    obj.draw(canvas);
+//                    canvas.end();
                 }
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                     // Get current frame of animation for the current stateTime
@@ -1854,7 +1856,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 //                else if (obj.getName().equals("ComplexOob")) {
-//                    ((ComplexOobModel)obj).draw();
 //                }
 
                 else {
