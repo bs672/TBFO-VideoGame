@@ -60,6 +60,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
+    protected static final String OOB_TELEPORTING_FILE = "space/animations/oobHappy.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/planetWarning.png";
 
@@ -281,6 +282,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture Oob_Growing_Sheet;
     protected Texture Oob_Command_Sheet;
     protected Texture Oob_Flying_Sheet;
+    protected Texture Oob_Teleporting_Sheet;
     protected Texture Oob_Hurting_Sheet;
     protected Texture Oob_Dying_Sheet;
 
@@ -384,6 +386,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(OOB_COMMAND_FILE);
         manager.load(OOB_FLYING_FILE, Texture.class);
         assets.add(OOB_FLYING_FILE);
+        manager.load(OOB_TELEPORTING_FILE, Texture.class);
+        assets.add(OOB_TELEPORTING_FILE);
         manager.load(OOB_HURTING_FILE, Texture.class);
         assets.add(OOB_HURTING_FILE);
         manager.load(OOB_DYING_FILE, Texture.class);
@@ -556,6 +560,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Oob_Growing_Sheet = new Texture(Gdx.files.internal(OOB_GROWING_FILE));
         Oob_Command_Sheet = new Texture(Gdx.files.internal(OOB_COMMAND_FILE));
         Oob_Flying_Sheet = new Texture(Gdx.files.internal(OOB_FLYING_FILE));
+        Oob_Teleporting_Sheet = new Texture(Gdx.files.internal(OOB_TELEPORTING_FILE));
         Oob_Hurting_Sheet = new Texture(Gdx.files.internal(OOB_HURTING_FILE));
         Oob_Dying_Sheet = new Texture(Gdx.files.internal(OOB_DYING_FILE));
 
@@ -1129,6 +1134,9 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.set_Flying_sheet(Oob_Flying_Sheet);
         complexAvatar.createFlyingtex();
 
+        complexAvatar.set_Teleporting_sheet(Oob_Teleporting_Sheet);
+        complexAvatar.createTeleportingtex();
+
         complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);
         complexAvatar.createHurtingtex();
 
@@ -1325,7 +1333,6 @@ public class PlayMode extends WorldController implements ContactListener {
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
 
-            System.out.println("HERE");
             reset();
         }
         if(InputController.getInstance().didPause()){
@@ -1634,6 +1641,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(bd2.getName().equals("black hole")) {
                     outHole = ((BlackHoleModel)bd2).getPair();
+                    complexAvatar.setTeleporting(true);
                     blackHoleWarp = true;
                 }
 
@@ -1659,6 +1667,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(bd1.getName().equals("black hole")) {
                     outHole = ((BlackHoleModel)bd1).getPair();
+                    complexAvatar.setTeleporting(true);
                     blackHoleWarp = true;
                 }
             }
@@ -1797,6 +1806,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isTeleporting() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
                     }
                     else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
