@@ -1616,7 +1616,9 @@ public class PlayMode extends WorldController implements ContactListener {
             if(bd1.getName().equals("Oob")) {
                 if (bd2.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
-                    complexAvatar.setHurting(true);
+                    if (complexAvatar.getRadius() > OOB_WARNING_RADIUS) {
+                        complexAvatar.setHurting(true);
+                    }
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
@@ -1639,7 +1641,9 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(bd2.getName().equals("Oob")) {
                 if (bd1.getName().equals("bullet")) {
                     oldAvatarRad = complexAvatar.getRadius();
-                    complexAvatar.setHurting(true);
+                    if (complexAvatar.getRadius() > OOB_WARNING_RADIUS) {
+                        complexAvatar.setHurting(true);
+                    }
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)

@@ -469,7 +469,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Normal_Animation = new Animation<TextureRegion>(.15f, frames);
+        Normal_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
@@ -555,7 +555,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Flying_Animation = new Animation<TextureRegion>(.15f, frames);
+        Flying_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
@@ -583,7 +583,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Hurting_Animation = new Animation<TextureRegion>(.15f, frames);
+        Hurting_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
