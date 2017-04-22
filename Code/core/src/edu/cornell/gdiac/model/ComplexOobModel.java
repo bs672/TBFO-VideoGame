@@ -58,6 +58,7 @@ public class ComplexOobModel extends ComplexObstacle {
     private boolean growing;
     private boolean command;
     private boolean flying;
+    private boolean teleporting;
     private boolean hurting;
     private boolean dying;
 
@@ -115,6 +116,19 @@ public class ComplexOobModel extends ComplexObstacle {
     public void set_Flying_sheet(Texture val){Flying_Sheet = val;}
 
     public Texture get_Flying_sheet(){return Flying_Sheet;}
+
+
+
+    private Animation<TextureRegion> Teleporting_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_Teleporting_anim(){return Teleporting_Animation;}
+
+
+    private Texture Teleporting_Sheet;
+
+    public void set_Teleporting_sheet(Texture val){Teleporting_Sheet = val;}
+
+    public Texture get_Teleporting_sheet(){return Teleporting_Sheet;}
 
 
 
@@ -418,32 +432,37 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public boolean isNormal() {return normal;}
     public void setNormal(boolean bool) {
-        normal = bool; growing = false; command = false; flying=false; hurting= false; dying= false;
+        normal = bool; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying= false;
     }
 
     public boolean isGrowing() {return growing;}
     public void setGrowing(boolean bool) {
-        normal = false; growing = bool; command = false; flying=false; hurting= false; dying= false;
+        normal = false; growing = bool; command = false; flying=false; teleporting=false; hurting= false; dying= false;
     }
 
     public boolean isCommand() {return command;}
     public void setCommand(boolean bool) {
-        normal = false; growing = false; command = bool; flying=false; hurting= false; dying= false;
+        normal = false; growing = false; command = bool; flying=false; teleporting=false; hurting= false; dying= false;
     }
 
     public boolean isFlying() {return flying;}
     public void setFlying(boolean bool) {
-        normal = false; growing = false; command = false; flying = bool; hurting= false; dying= false;
+        normal = false; growing = false; command = false; flying = bool; teleporting=false; hurting= false; dying= false;
+    }
+
+    public boolean isTeleporting() {return teleporting;}
+    public void setTeleporting(boolean bool) {
+        normal = false; growing = false; command = false; flying = false; teleporting=bool; hurting= false; dying= false;
     }
 
     public boolean isHurting() {return hurting;}
     public void setHurting(boolean bool) {
-        normal = false; growing = false; command = false; flying=false; hurting = bool; dying= false;
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting = bool; dying= false;
     }
 
     public boolean isDying() {return dying;}
     public void setDying(boolean bool) {
-        normal = false; growing = false; command = false; flying=false; hurting= false; dying = bool;
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying = bool;
     }
 
     public void reset_face() {
@@ -451,6 +470,7 @@ public class ComplexOobModel extends ComplexObstacle {
         growing =false;
         command = false;
         flying=false;
+        teleporting=false;
         hurting=false;
         dying=false;
     }
@@ -481,7 +501,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Normal_Animation = new Animation<TextureRegion>(.15f, frames);
+        Normal_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
@@ -567,7 +587,34 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Flying_Animation = new Animation<TextureRegion>(.15f, frames);
+        Flying_Animation = new Animation<TextureRegion>(.05f, frames);
+
+    }
+
+    public void createTeleportingtex() {
+
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(Teleporting_Sheet,
+                Teleporting_Sheet.getWidth() / FRAME_COLS,
+                Teleporting_Sheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        Teleporting_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
@@ -595,7 +642,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Hurting_Animation = new Animation<TextureRegion>(.15f, frames);
+        Hurting_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
