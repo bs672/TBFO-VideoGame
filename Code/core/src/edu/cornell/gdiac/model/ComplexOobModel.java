@@ -171,14 +171,14 @@ public class ComplexOobModel extends ComplexObstacle {
      * @param x  Initial x position of the ragdoll head
      * @param y  Initial y position of the ragdoll head
      */
-    public ComplexOobModel(float x, float y, float rad, int ringCircles) {
+    public ComplexOobModel(float x, float y, float rad) {
         super(x,y);
         forceVec = new Vector2();
-        size = ringCircles;
+        size = 50;
         setPosition(x,y);
-        this.radius = rad;
+        radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
-        center = new WheelObstacle(x, y, 0.4f);
+        center = new WheelObstacle(x, y, radius / 2);
         center.setBodyType(BodyDef.BodyType.DynamicBody);
         center.setName("OobCenter");
         body = center.getBody();
@@ -187,11 +187,11 @@ public class ComplexOobModel extends ComplexObstacle {
         outerJoints = new Array<DistanceJoint>();
         float angle = 0;
         for(int i = 0; i < size; i++) { // create outer circles counter-clockwise from 0 degrees
-            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / ringCircles));
+            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / size));
             wheel.setBodyType(BodyDef.BodyType.DynamicBody);
             wheel.setName("Oob");
             bodies.add(wheel);
-            angle += 2 * Math.PI / ringCircles;
+            angle += 2 * Math.PI / size;
         }
         for(Obstacle b : bodies)
             b.setGravityScale(0);
@@ -202,7 +202,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
         // Create a transform to center the polygon
         transform = new Affine2();
-        transform.setToTranslation(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+        transform.setToScaling(40,40);
 
         mapTexture();
     }
@@ -216,7 +216,7 @@ public class ComplexOobModel extends ComplexObstacle {
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
             jointDef.length = radius;
-            jointDef.dampingRatio = 0.5f;
+            jointDef.dampingRatio = 0.9f;
             jointDef.frequencyHz = 5;
             Joint joint = world.createJoint(jointDef);
             joints.add(joint);
@@ -234,7 +234,9 @@ public class ComplexOobModel extends ComplexObstacle {
             }
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
-            jointDef.length = 2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2);
+            jointDef.dampingRatio = 0.7f;
+            jointDef.frequencyHz = 10;
+            jointDef.length = 2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2)*0.7f;
             joint = world.createJoint(jointDef);
             joints.add(joint);
             outerJoints.add((DistanceJoint)joint);
@@ -250,10 +252,15 @@ public class ComplexOobModel extends ComplexObstacle {
      * InputProcessor methods.
      */
     public void draw () {
-        for(int i = 0; i < size; i++)
-            moveIndex(i, bodies.get(i+1).getX(), bodies.get(i+1).getY());
-//        System.out.println(vertices);
-//        System.out.println();
+        for(int i = 0; i < bodies.size; i++)
+            moveIndex(i, bodies.get(i).getX(), bodies.get(i).getY());
+//        System.out.println(edgePosns);
+//        System.out.println(edgePosns.get(0) + " after moveIndex");
+//        System.out.println(edgePosns + " after moveIndex");
+//        System.out.println(edgePosns + " is edgePosns");
+//        for(int i = 0; i < bodies.size; i++)
+//            System.out.print(bodies.get(i).getPosition() + ", ");
+//        System.out.println(" is real posns");
         batch.begin();
         batch.draw(img,vertices,indices,transform);
         batch.end();
@@ -269,8 +276,9 @@ public class ComplexOobModel extends ComplexObstacle {
         float dx = newX-edgePosns.get(edgeIndex).x;
         float dy = newY-edgePosns.get(edgeIndex).y; // Inverts the y-axis
         vertices.nudge(edgeIndex,dx,dy);
-        edgePosns.get(edgeIndex).set(newX, newY);
-
+        edgePosns.set(edgeIndex, new Vector2(newX, newY));
+//        edgePosns.get(edgeIndex).x = newX;
+//        edgePosns.get(edgeIndex).y = newY;
     }
 
     /**
@@ -280,25 +288,28 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public void mapTexture() {
         // Cache objects to create the vertex buffer
-        Vector2 position = center.getPosition();
+        Vector2 position = center.getPosition().cpy().add(new Vector2(center.getRadius(), center.getRadius()));
         Vector2 texcoord = new Vector2(0.5f,0.5f);
 
         // Go around in a circle, starting at the right
         float step = (float)(Math.PI*2)/size;
-        vertices = new VertexBuffer(size+1);
+        vertices = new VertexBuffer(bodies.size);
         vertices.append(position, Color.WHITE, texcoord);
 
         edgePosns = new Array<Vector2>();
+        edgePosns.add(position);
 
         float dx, dy;
-        for(int i = 0; i < size; i++) {
+        for(int i = 1; i < bodies.size; i++) {
             // Compute position on unit circle
-            double angle = i*step;
+            double angle = (i-1)*step;
             dx = (float)Math.cos(angle);
             dy = (float)Math.sin(angle);
 
+            WheelObstacle w = (WheelObstacle) bodies.get(i);
+
             // Set the position
-            position.set(bodies.get(i+1).getPosition());
+            position.set(w.getPosition()).add(new Vector2(w.getRadius(), w.getRadius()));
 
             // Set the texture coords.
             texcoord.set((1+dx)/2,(1+dy)/2);
@@ -309,6 +320,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Create the indices as a fan to the right
+        // the size field is the number of circles on edge of Oob
         indices = new short[size*3];
         for(int i = 0; i < size-1; i++) {
             indices[3*i  ]  = 0;
@@ -316,8 +328,8 @@ public class ComplexOobModel extends ComplexObstacle {
             indices[3*i+2]  = (short)(i+2);
         }
         indices[3*size-3]  = 0;
-        indices[3*size-2]  = (short)(3*size-1);
-        indices[3*size-1]  = (short)(3*size);
+        indices[3*size-2]  = (short)(size-1);
+        indices[3*size-1]  = (short)(1);
     }
 
     /**
@@ -364,7 +376,7 @@ public class ComplexOobModel extends ComplexObstacle {
         for(DistanceJoint j : innerJoints) // the central joints
             j.setLength(radius);
         for(DistanceJoint j : outerJoints) { // the outer joints
-            j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2));
+            j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2)*0.7f);
         }
         for(int i = 1; i < bodies.size; i++)
             ((WheelObstacle)bodies.get(i)).setRadius(radius*(float)Math.sin(Math.PI / (bodies.size - 1)));
@@ -411,10 +423,10 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Vector2 getForceVec() {return forceVec;}
 
-    public void setPosition(Vector2 v) {
-        for(Obstacle o : bodies)
-            o.setPosition(v);
-    }
+//    public void setPosition(Vector2 v) {
+//        for(Obstacle o : bodies)
+//            o.setPosition(v);
+//    }
 
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
 
