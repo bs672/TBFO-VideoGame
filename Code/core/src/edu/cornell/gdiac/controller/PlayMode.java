@@ -349,8 +349,13 @@ public class PlayMode extends WorldController implements ContactListener {
     protected float moveDirection = 0f;
     protected boolean mute = true;
     protected Vector2 launchVec;
+    // the linked black holes we are interacting with
+    protected BlackHoleModel inHole;
     protected BlackHoleModel outHole;
+    // says whether we are warping to another black hole
     protected boolean blackHoleWarp;
+    // says whether the player can use controls
+    protected boolean playerControl;
 
     public void setMute(boolean bool) {mute = bool;}
 
@@ -722,6 +727,7 @@ public class PlayMode extends WorldController implements ContactListener {
         String jsonString = json.readString();
         jsonParse(jsonString);
         play = true;
+        playerControl = true;
     }
 
     /**
@@ -730,6 +736,8 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        playerControl = true;
+        blackHoleWarp = false;
         returnToPlanetTimer = 0;
         justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );
@@ -1360,13 +1368,14 @@ public class PlayMode extends WorldController implements ContactListener {
         if(InputController.getInstance().didPause()){
             listener.exitScreen(this, 3);
         }
-        if (control==1){
-            launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
-            jump = InputController.getInstance().getMouseJump();
-        }
-        else{
-            jump = InputController.getInstance().getJump();
-            moveDirection = InputController.getInstance().getHorizontal();
+        if(playerControl) {
+            if (control == 1) {
+                launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
+                jump = InputController.getInstance().getMouseJump();
+            } else {
+                jump = InputController.getInstance().getJump();
+                moveDirection = InputController.getInstance().getHorizontal();
+            }
         }
     }
 
@@ -1407,7 +1416,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-//        System.out.println(complexAvatar.getPosition());
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1509,11 +1517,21 @@ public class PlayMode extends WorldController implements ContactListener {
                 gravity();
             }
             if(blackHoleWarp) {
-                Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
-                complexAvatar.setX(newPos.x);
-                complexAvatar.setY(newPos.y);
-                complexAvatar.setLinearVelocity(outHole.getOutVelocity());
-                blackHoleWarp = false;
+                Vector2 oobToHole = new Vector2(inHole.getX() - complexAvatar.getX(), inHole.getY() - complexAvatar.getY());
+                if(oobToHole.len() < complexAvatar.getRadius() + 0.5f) {
+                    Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
+                    complexAvatar.setX(newPos.x);
+                    complexAvatar.setY(newPos.y);
+                    complexAvatar.setLinearVelocity(outHole.getOutVelocity());
+                    inHole.setRadius(inHole.getOldRadius());
+                    playerControl = true;
+                    blackHoleWarp = false;
+                }
+                else {
+                    complexAvatar.resetForceVec();
+                    complexAvatar.addToForceVec(oobToHole.cpy().scl(2.5f));
+                    complexAvatar.addToForceVec(new Vector2(oobToHole.y, -oobToHole.x).scl(1f));
+                }
             }
             airPlayerControls();
             if(jump && complexAvatar.getRadius()>OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
@@ -1630,7 +1648,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(((WheelObstacle)bd2).getMass()/16);
                 }
                 else if(bd2.getName().equals("black hole")) {
+                    playerControl = false;
                     outHole = ((BlackHoleModel)bd2).getPair();
+                    inHole = ((BlackHoleModel)bd2);
+                    if(inHole.getRadius() != 0f)
+                        inHole.setOldRadius(inHole.getRadius());
+                    inHole.setRadius(0f);
+                    complexAvatar.setLinearVelocity(Vector2.Zero);
                     blackHoleWarp = true;
                 }
 
@@ -1653,7 +1677,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(((WheelObstacle)bd1).getMass()/16);
                 }
                 else if(bd1.getName().equals("black hole")) {
+                    playerControl = false;
                     outHole = ((BlackHoleModel)bd1).getPair();
+                    inHole = ((BlackHoleModel)bd1);
+                    complexAvatar.setLinearVelocity(Vector2.Zero);
+                    if(inHole.getRadius() != 0f)
+                        inHole.setOldRadius(inHole.getRadius());
+                    inHole.setRadius(0f);
                     blackHoleWarp = true;
                 }
             }
@@ -1774,7 +1804,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
                 if (obj.getName().equals("ComplexOob")) {
-                    ((ComplexOobModel)obj).draw();
+//                    ((ComplexOobModel)obj).draw();
 
 
                     // Get current frame of animation for the current stateTime
@@ -1782,39 +1812,39 @@ public class PlayMode extends WorldController implements ContactListener {
                    // TextureRegion currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
                     //}
 
-//                    TextureRegion currentFrame;
-//
-//                    if ( ((ComplexOobModel) obj).isNormal()) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( ((ComplexOobModel) obj).isCommand() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( ((ComplexOobModel) obj).isFlying() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else  {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-//                    }
-//
-//                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-//                        complexAvatar.decCooldown();
-//                    }
-//                    if ( ((ComplexOobModel) obj).isDying() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
-//                    }
-//
-//
-//
-//                    ((ComplexOobModel) obj).setTexture(currentFrame);
-//
-//                    canvas.begin();
-//                    obj.draw(canvas);
-//                    canvas.end();
+                    TextureRegion currentFrame;
+
+                    if ( ((ComplexOobModel) obj).isNormal()) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isCommand() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isFlying() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                    }
+                    else  {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    }
+
+                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        complexAvatar.decCooldown();
+                    }
+                    if ( ((ComplexOobModel) obj).isDying() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                    }
+
+
+
+                    ((ComplexOobModel) obj).setTexture(currentFrame);
+
+                    canvas.begin();
+                    obj.draw(canvas);
+                    canvas.end();
                 }
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                     // Get current frame of animation for the current stateTime

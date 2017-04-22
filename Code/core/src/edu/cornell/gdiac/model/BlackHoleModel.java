@@ -18,6 +18,9 @@ public class BlackHoleModel extends WheelObstacle{
     // the black hole paired with this one
     private BlackHoleModel pair;
 
+    // used when we interact with BlackHoleModels
+    private float oldRadius;
+
     private Vector2 outVelocity;
 
     public void setOutVelocity(Vector2 v) {outVelocity = v;}
@@ -27,6 +30,10 @@ public class BlackHoleModel extends WheelObstacle{
     public void setPair(BlackHoleModel b) {pair = b;}
 
     public BlackHoleModel getPair() {return pair; }
+
+    public float getOldRadius() {return oldRadius; }
+
+    public void setOldRadius(float f) {oldRadius = f; }
 
     /**
      * Creates a new planet at the given position.

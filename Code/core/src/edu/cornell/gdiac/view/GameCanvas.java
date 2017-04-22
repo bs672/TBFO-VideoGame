@@ -138,7 +138,7 @@ public class GameCanvas {
 	 *
 	 * @return the width of this canvas
 	 */
-	public int getWidth() {
+public int getWidth() {
 		return Gdx.graphics.getWidth();
 	}
 	
