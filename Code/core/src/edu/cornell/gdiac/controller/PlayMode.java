@@ -23,6 +23,7 @@ import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
 /**
@@ -716,7 +717,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(true);
+        setDebug(false);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -1403,7 +1404,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         else if(comingOut) { // leaving the other black hole
             oobToHole = new Vector2(outHole.getX() - complexAvatar.getX(), outHole.getY() - complexAvatar.getY());
-            complexAvatar.setLinearVelocity(outHole.getOutVelocity());
+            complexAvatar.setLinearVelocity(outHole.getOutVelocity().cpy().scl(6f));
             if(oobToHole.len() > outHole.getOldRadius() + complexAvatar.getRadius() + 0.5f) {
                 outHole.setRadius(outHole.getOldRadius());
                 comingOut = false;
@@ -1841,50 +1842,44 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
                 if (obj.getName().equals("ComplexOob")) {
-//                    ((ComplexOobModel)obj).draw();
+                    ((ComplexOobModel)obj).draw();
 
+//                    TextureRegion currentFrame;
+//
+//                    if ( ((ComplexOobModel) obj).isNormal()) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( ((ComplexOobModel) obj).isCommand() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( blackHoleWarp && !comingOut ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else if ( ((ComplexOobModel) obj).isFlying() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+//                    }
+//                    else  {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+//                    }
+//
+//                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+//                        complexAvatar.decCooldown();
+//                    }
+//                    if ( ((ComplexOobModel) obj).isDying() ) {
+//                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+//                    }
+//
+//
+//
+//                    ((ComplexOobModel) obj).setTexture(currentFrame);
 
-                    // Get current frame of animation for the current stateTime
-                    //if ( ((ComplexOobModel) obj).isNormal()) {
-                   // TextureRegion currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
-                    //}
-
-                    TextureRegion currentFrame;
-
-                    if ( ((ComplexOobModel) obj).isNormal()) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isCommand() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( blackHoleWarp && !comingOut ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isFlying() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
-                    }
-                    else  {
-                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                    }
-
-                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                        complexAvatar.decCooldown();
-                    }
-                    if ( ((ComplexOobModel) obj).isDying() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
-                    }
-
-
-
-                    ((ComplexOobModel) obj).setTexture(currentFrame);
-
-                    canvas.begin();
-                    obj.draw(canvas);
-                    canvas.end();
+//                    canvas.begin();
+//                    obj.draw(canvas);
+//                    canvas.end();
                 }
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                     // Get current frame of animation for the current stateTime

@@ -252,15 +252,8 @@ public class ComplexOobModel extends ComplexObstacle {
      * InputProcessor methods.
      */
     public void draw () {
-        for(int i = 0; i < bodies.size; i++)
-            moveIndex(i, bodies.get(i).getX(), bodies.get(i).getY());
-//        System.out.println(edgePosns);
-//        System.out.println(edgePosns.get(0) + " after moveIndex");
-//        System.out.println(edgePosns + " after moveIndex");
-//        System.out.println(edgePosns + " is edgePosns");
-//        for(int i = 0; i < bodies.size; i++)
-//            System.out.print(bodies.get(i).getPosition() + ", ");
-//        System.out.println(" is real posns");
+        for(int i = 1; i < bodies.size; i++)
+            moveIndex(i-1, bodies.get(i).getX(), bodies.get(i).getY());
         batch.begin();
         batch.draw(img,vertices,indices,transform);
         batch.end();
@@ -274,11 +267,9 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public void moveIndex(int edgeIndex, float newX, float newY) {
         float dx = newX-edgePosns.get(edgeIndex).x;
-        float dy = newY-edgePosns.get(edgeIndex).y; // Inverts the y-axis
+        float dy = newY-edgePosns.get(edgeIndex).y;
         vertices.nudge(edgeIndex,dx,dy);
         edgePosns.set(edgeIndex, new Vector2(newX, newY));
-//        edgePosns.get(edgeIndex).x = newX;
-//        edgePosns.get(edgeIndex).y = newY;
     }
 
     /**
@@ -288,48 +279,42 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public void mapTexture() {
         // Cache objects to create the vertex buffer
-        Vector2 position = center.getPosition().cpy().add(new Vector2(center.getRadius(), center.getRadius()));
         Vector2 texcoord = new Vector2(0.5f,0.5f);
 
         // Go around in a circle, starting at the right
         float step = (float)(Math.PI*2)/size;
         vertices = new VertexBuffer(bodies.size);
-        vertices.append(position, Color.WHITE, texcoord);
 
         edgePosns = new Array<Vector2>();
-        edgePosns.add(position);
 
         float dx, dy;
         for(int i = 1; i < bodies.size; i++) {
             // Compute position on unit circle
             double angle = (i-1)*step;
             dx = (float)Math.cos(angle);
-            dy = (float)Math.sin(angle);
+            dy = -(float)Math.sin(angle);
 
             WheelObstacle w = (WheelObstacle) bodies.get(i);
 
             // Set the position
-            position.set(w.getPosition()).add(new Vector2(w.getRadius(), w.getRadius()));
+            Vector2 position = w.getPosition().cpy();
 
             // Set the texture coords.
             texcoord.set((1+dx)/2,(1+dy)/2);
 
             // append to vertex buffer
-            vertices.append(position, Color.WHITE, texcoord);
+            vertices.append(position, Color.WHITE, texcoord.cpy());
             edgePosns.add(position);
         }
 
         // Create the indices as a fan to the right
         // the size field is the number of circles on edge of Oob
-        indices = new short[size*3];
-        for(int i = 0; i < size-1; i++) {
+        indices = new short[(size-1)*3];
+        for(int i = 0; i < size-2; i++) {
             indices[3*i  ]  = 0;
             indices[3*i+1]  = (short)(i+1);
             indices[3*i+2]  = (short)(i+2);
         }
-        indices[3*size-3]  = 0;
-        indices[3*size-2]  = (short)(size-1);
-        indices[3*size-1]  = (short)(1);
     }
 
     /**
@@ -350,8 +335,8 @@ public class ComplexOobModel extends ComplexObstacle {
      *
      * @param value  the object texture for drawing purposes.
      */
-    public void setTexture(TextureRegion value) {
-        center.setTexture(value);
+    public void setTexture(Texture value) {
+        img = value;
     }
 
     public void scalePicScale(Vector2 v) {
