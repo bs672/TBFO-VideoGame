@@ -143,12 +143,6 @@ public class LevelSelect extends WorldController implements ContactListener {
     private static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
     private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
-    /** The sound file for a jump */
-    private static final String JUMP_FILE = "space/audio/jump.mp3";
-    /** The sound file for a bullet fire */
-    private static final String PEW_FILE = "space/audio/pew.mp3";
-    /** The sound file for a bullet collision */
-    private static final String POP_FILE = "space/audio/plop.mp3";
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(0f, 0f);
     /** Oob's initial radius */
@@ -290,12 +284,6 @@ public class LevelSelect extends WorldController implements ContactListener {
         manager.load(BULLET_TEXTURE, Texture.class);
         assets.add(BULLET_TEXTURE);
 
-        manager.load(JUMP_FILE, Sound.class);
-        assets.add(JUMP_FILE);
-        manager.load(PEW_FILE, Sound.class);
-        assets.add(PEW_FILE);
-        manager.load(POP_FILE, Sound.class);
-        assets.add(POP_FILE);
 
         super.preLoadContent(manager);
     }
@@ -345,9 +333,6 @@ public class LevelSelect extends WorldController implements ContactListener {
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
-        sounds.allocate(manager, JUMP_FILE);
-        sounds.allocate(manager, PEW_FILE);
-        sounds.allocate(manager, POP_FILE);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
