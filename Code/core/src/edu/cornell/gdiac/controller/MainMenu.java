@@ -97,7 +97,6 @@ public class MainMenu extends PlayMode {
     }
 
     public void reset() {
-        System.out.println("HERE");
         returnToPlanetTimer = 0;
         justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );

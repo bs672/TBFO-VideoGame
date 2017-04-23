@@ -423,10 +423,10 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Vector2 getForceVec() {return forceVec;}
 
-//    public void setPosition(Vector2 v) {
-//        for(Obstacle o : bodies)
-//            o.setPosition(v);
-//    }
+    public void setPosition(Vector2 v) {
+        setX(v.x);
+        setY(v.y);
+    }
 
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
 

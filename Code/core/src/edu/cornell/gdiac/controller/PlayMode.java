@@ -356,6 +356,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected BlackHoleModel outHole;
     // says whether we are warping to another black hole
     protected boolean blackHoleWarp;
+    // says whether we are coming out of a black hole
+    protected boolean comingOut;
     // says whether the player can use controls
     protected boolean playerControl;
 
@@ -743,6 +745,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void reset() {
         playerControl = true;
         blackHoleWarp = false;
+        comingOut = false;
         returnToPlanetTimer = 0;
         justLoaded = true;
         Vector2 gravity = new Vector2(world.getGravity() );
@@ -1387,6 +1390,34 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    public void handleBlackHole() {
+        Vector2 oobToHole = new Vector2(inHole.getX() - complexAvatar.getX(), inHole.getY() - complexAvatar.getY());
+
+        if(oobToHole.len() < complexAvatar.getRadius() + 0.5f) { // transition between black holes
+            Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
+            complexAvatar.setX(newPos.x);
+            complexAvatar.setY(newPos.y);
+            complexAvatar.setLinearVelocity(outHole.getOutVelocity());
+            inHole.setRadius(inHole.getOldRadius());
+            comingOut = true;
+        }
+        else if(comingOut) { // leaving the other black hole
+            oobToHole = new Vector2(outHole.getX() - complexAvatar.getX(), outHole.getY() - complexAvatar.getY());
+            complexAvatar.setLinearVelocity(outHole.getOutVelocity());
+            if(oobToHole.len() > outHole.getOldRadius() + complexAvatar.getRadius() + 0.5f) {
+                outHole.setRadius(outHole.getOldRadius());
+                comingOut = false;
+                playerControl = true;
+                blackHoleWarp = false;
+            }
+        }
+        else { // entering the first black hole
+            complexAvatar.resetForceVec();
+            Vector2 newVelocity = oobToHole.cpy().nor().scl(2f).add(new Vector2(oobToHole.cpy().nor().y, -oobToHole.cpy().nor().x).scl(8f));
+            complexAvatar.setLinearVelocity(newVelocity);
+        }
+    }
+
     public boolean screenSwitch() {
         return false;
     }
@@ -1525,21 +1556,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 gravity();
             }
             if(blackHoleWarp) {
-                Vector2 oobToHole = new Vector2(inHole.getX() - complexAvatar.getX(), inHole.getY() - complexAvatar.getY());
-                if(oobToHole.len() < complexAvatar.getRadius() + 0.5f) {
-                    Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(0.2f + outHole.getRadius() + complexAvatar.getRadius()));
-                    complexAvatar.setX(newPos.x);
-                    complexAvatar.setY(newPos.y);
-                    complexAvatar.setLinearVelocity(outHole.getOutVelocity());
-                    inHole.setRadius(inHole.getOldRadius());
-                    playerControl = true;
-                    blackHoleWarp = false;
-                }
-                else {
-                    complexAvatar.resetForceVec();
-                    complexAvatar.addToForceVec(oobToHole.cpy().scl(2.5f));
-                    complexAvatar.addToForceVec(new Vector2(oobToHole.y, -oobToHole.x).scl(1f));
-                }
+                handleBlackHole();
             }
             airPlayerControls();
             if(jump && complexAvatar.getRadius()>OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
@@ -1664,6 +1681,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(inHole.getRadius() != 0f)
                         inHole.setOldRadius(inHole.getRadius());
                     inHole.setRadius(0f);
+                    if(outHole.getRadius() != 0f)
+                        outHole.setOldRadius(outHole.getRadius());
+                    outHole.setRadius(0);
                     complexAvatar.setLinearVelocity(Vector2.Zero);
                     complexAvatar.setTeleporting(true);
                     blackHoleWarp = true;
@@ -1697,6 +1717,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(inHole.getRadius() != 0f)
                         inHole.setOldRadius(inHole.getRadius());
                     inHole.setRadius(0f);
+                    if(outHole.getRadius() != 0f)
+                        outHole.setOldRadius(outHole.getRadius());
+                    outHole.setRadius(0);
                     complexAvatar.setTeleporting(true);
                     blackHoleWarp = true;
                 }
@@ -1837,11 +1860,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     else if ( ((ComplexOobModel) obj).isCommand() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
                     }
+                    else if ( blackHoleWarp ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+                    }
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
-                    }
-                    else if ( ((ComplexOobModel) obj).isTeleporting() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
                     }
                     else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
