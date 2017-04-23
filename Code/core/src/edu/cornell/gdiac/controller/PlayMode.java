@@ -62,7 +62,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/oobHappy.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
-    protected static final String OOB_DYING_FILE = "space/animations/planetWarning.png";
+    protected static final String OOB_DYING_FILE = "space/animations/oobDying.png";
 
 
     /** The texture file for the planets */
@@ -201,7 +201,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_DEATH_RADIUS = 0.56f;
 
-    protected static final float OOB_WARNING_RADIUS = 0.8f;
+    protected static final float OOB_WARNING_RADIUS = .85f;
 
     protected static final float EPSILON = 0.1f;
 
