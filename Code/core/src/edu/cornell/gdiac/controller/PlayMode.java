@@ -702,6 +702,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Array<Array<Float>> PLANETS = new Array<Array<Float>>();
     protected Array<Array<Float>> SHIPS = new Array<Array<Float>>();
     protected Array<Array<Float>> BLACK_HOLES = new Array<Array<Float>>();
+    protected Array<Array<Float>> ASTEROIDS = new Array<Array<Float>>();
 
     // Physics objects for the game
     /** Reference to the character avatar */
@@ -819,6 +820,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Array<Array<Float>> planetArray = new Array<Array<Float>>();
         Array<Array<Float>> shipArray = new Array<Array<Float>>();
         Array<Array<Float>> blackHoleArray = new Array<Array<Float>>();
+        Array<Array<Float>> asteroidArray = new Array<Array<Float>>();
         ObjectMap<Integer, Array<Float>> bhmap = new ObjectMap<Integer, Array<Float>>();
         Array<Float> tempArray;
         float scale;
@@ -889,6 +891,14 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(objectName.equals("oob2")){
                 OOB_RADIUS = scale / 0.35f;
             }
+            else if(objectName.equals("asteroid")){
+                tempArray = new Array<Float>();
+                tempArray = new Array<Float>();
+                tempArray.add((xPos+3)*3);
+                tempArray.add((yPos+3)*3);
+                tempArray.add(2.5f*scale/0.4f);
+                asteroidArray.add(tempArray);
+            }
             else if(objectName.equals("blackHole")){
                 tempArray = new Array<Float>();
                 tempArray.add((xPos+2.5f)*3);
@@ -925,6 +935,7 @@ public class PlayMode extends WorldController implements ContactListener {
         PLANETS = planetArray;
         SHIPS = shipArray;
         BLACK_HOLES =blackHoleArray;
+        ASTEROIDS = asteroidArray;
 
     }
 
@@ -1130,6 +1141,20 @@ public class PlayMode extends WorldController implements ContactListener {
 
             addObject(b1);
             addObject(b2);
+        }
+
+        //Create Asteroids
+        for (int i = 0; i<ASTEROIDS.size; i++){
+            AsteroidModel asteroid = new AsteroidModel(ASTEROIDS.get(i).get(0), ASTEROIDS.get(i).get(1), ASTEROIDS.get(i).get(2));
+            asteroid.setBodyType(BodyDef.BodyType.StaticBody);
+            asteroid.setDensity(BASIC_DENSITY);
+            asteroid.setFriction(BASIC_FRICTION);
+            asteroid.setRestitution(BASIC_RESTITUTION);
+            asteroid.setDrawScale(scale);
+            asteroid.setTexture(asteroid_Texture);
+            asteroid.scalePicScale(new Vector2(.2f * asteroid.getRadius(), .2f * asteroid.getRadius()));
+            asteroid.setName("asteroid");
+            addObject(asteroid);
         }
 
         // Create Ships
@@ -1782,6 +1807,18 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             else if(bd2.getName().equals("expulsion") && bd1.getName().equals("black hole")) {
                 bd2.markRemoved(true);
+            }
+            if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
+                //LOSE
+                System.out.println("here");
+                listener.exitScreen(this, 0);
+                //reset();
+            }
+            else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
+                //LOSE
+                System.out.println("HERE");
+                listener.exitScreen(this, 0);
+                //reset();
             }
         } catch (Exception e) {
             e.printStackTrace();
