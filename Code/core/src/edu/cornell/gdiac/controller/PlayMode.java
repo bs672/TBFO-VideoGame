@@ -55,14 +55,15 @@ public class PlayMode extends WorldController implements ContactListener {
 //    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
 //    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
 
-    protected static final String OOB_NORMAL_FILE =   "space/animations/OobBlink.png";
+    protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     //"space/planets/start.png";
     protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/oobHappy.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
-    protected static final String OOB_DYING_FILE = "space/animations/oobDying.png";
+    protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
+    protected static final String OOB_MAX_FILE = "space/animations/sunAnim.png";
 
 
     /** The texture file for the planets */
@@ -203,6 +204,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
+    protected static final float OOB_MAX_RADIUS = 2.5f;
+
     protected static final float EPSILON = 0.1f;
 
     protected static final int THRESHOLD = 4;
@@ -285,6 +288,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture Oob_Teleporting_Sheet;
     protected Texture Oob_Hurting_Sheet;
     protected Texture Oob_Dying_Sheet;
+    protected Texture Oob_Max_Sheet;
 
     private Texture EXP_Sheet;
 
@@ -399,6 +403,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(OOB_HURTING_FILE);
         manager.load(OOB_DYING_FILE, Texture.class);
         assets.add(OOB_DYING_FILE);
+        manager.load(OOB_MAX_FILE, Texture.class);
+        assets.add(OOB_MAX_FILE);
 
         manager.load(SETTINGS_TEXTURE, Texture.class);
         assets.add(SETTINGS_TEXTURE);
@@ -570,6 +576,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Oob_Teleporting_Sheet = new Texture(Gdx.files.internal(OOB_TELEPORTING_FILE));
         Oob_Hurting_Sheet = new Texture(Gdx.files.internal(OOB_HURTING_FILE));
         Oob_Dying_Sheet = new Texture(Gdx.files.internal(OOB_DYING_FILE));
+        Oob_Max_Sheet = new Texture(Gdx.files.internal(OOB_MAX_FILE));
 
         blackHoleTexture = createTexture(manager, BLACK_HOLE, false);
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
@@ -1153,6 +1160,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
         complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);
         complexAvatar.createDyingtex();
+
+        complexAvatar.set_Max_sheet(Oob_Max_Sheet);
+        complexAvatar.createMaxtex();
     }
 
 
@@ -1532,8 +1542,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 jump();
             } else {
                 rad = currentPlanet.getRadius();
-                if (rad > DEATH_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                float Oob_rad= complexAvatar.getRadius();
+                if (rad > DEATH_RADIUS && Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
                     siphonPlanet();
+                } else if (Oob_rad >= OOB_MAX_RADIUS) {
+                   complexAvatar.setMax(true);
                 } else if (currentPlanet.getType() == 2f) {
                     changeMass(POISON);
                 }
@@ -1866,7 +1879,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
                     }
-                    else  {
+                    else {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     }
 
@@ -1876,6 +1889,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                    }
+                    if ( ((ComplexOobModel) obj).isMax() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
                     }
 
 
