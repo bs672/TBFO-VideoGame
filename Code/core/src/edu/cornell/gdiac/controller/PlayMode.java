@@ -2,6 +2,7 @@ package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -56,6 +57,9 @@ public class PlayMode extends WorldController implements ContactListener {
 //    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
 //    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
 
+    public static Music music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
+
+
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     //"space/planets/start.png";
     protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
@@ -108,6 +112,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String RED_P_2 = "space/planets/red2.png";
     protected static final String RED_P_3 = "space/planets/red3.png";
     //private static final String RED_P_4 = "space/planets/red.png";
+
+    protected static final String ASTEROID = "space/planets/asteroid.png";
 
     /** The texture file for the planet animations */
     protected static final String SUN_P = "space/animations/sunAnim.png";
@@ -183,11 +189,14 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
     /** The sound file for a jump */
-    protected static final String JUMP_FILE = "space/audio/jump.mp3";
-    /** The sound file for a bullet fire */
-    protected static final String PEW_FILE = "space/audio/pew.mp3";
-    /** The sound file for a bullet collision */
-    protected static final String POP_FILE = "space/audio/plop.mp3";
+    protected static final String JUMP_SOUND = "audio/jump.wav";
+    /** The sound file for a planet explosion */
+    protected static final String EXPLOSION_SOUND = "audio/explosion.wav";
+    //Mothership sound
+    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.wav";
+    //Sound for bullet fire
+    protected static final String SHOOTING_SOUND = "audio/shooting.wav";
+
     /** The initial position of Oob */
     protected static Vector2 OOB_POS = new Vector2(16f, 12f);
     /** Oob's initial radius */
@@ -272,6 +281,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion red_P_3_Texture;
     //private TextureRegion red_P_4_Texture;
 
+    protected TextureRegion asteroid_Texture;
+
     /** Animation texture */
     protected Animation<TextureRegion> sunAnimation; // Must declare frame type (TextureRegion)
     protected Texture sunSheet;
@@ -354,7 +365,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //variables for player controls
     protected boolean jump = false;
     protected float moveDirection = 0f;
-    protected boolean mute = true;
+    protected boolean mute = false;
     protected Vector2 launchVec;
     // the linked black holes we are interacting with
     protected BlackHoleModel inHole;
@@ -522,6 +533,9 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(DYING_P, Texture.class);
         assets.add(DYING_P);
 
+        manager.load(ASTEROID, Texture.class);
+        assets.add(ASTEROID);
+
         manager.load(BACKG_FILE_MAIN, Texture.class);
         assets.add(BACKG_FILE_MAIN);
         manager.load(BACKG_FILE_MAIN, Texture.class);
@@ -542,14 +556,17 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(BULLET_TEXTURE, Texture.class);
         assets.add(BULLET_TEXTURE);
 
-        manager.load(JUMP_FILE, Sound.class);
-        assets.add(JUMP_FILE);
-        manager.load(PEW_FILE, Sound.class);
-        assets.add(PEW_FILE);
-        manager.load(POP_FILE, Sound.class);
-        assets.add(POP_FILE);
+        manager.load(JUMP_SOUND, Sound.class);
+        assets.add(JUMP_SOUND);
+        manager.load(EXPLOSION_SOUND, Sound.class);
+        assets.add(EXPLOSION_SOUND);
+        manager.load(MOTHERSHIP_SOUND, Sound.class);
+        assets.add(MOTHERSHIP_SOUND);
+        manager.load(SHOOTING_SOUND, Sound.class);
+        assets.add(SHOOTING_SOUND);
 
         super.preLoadContent(manager);
+
     }
 
     /**
@@ -610,6 +627,13 @@ public class PlayMode extends WorldController implements ContactListener {
         red_P_2_Texture = createTexture(manager, RED_P_2,false);
         red_P_3_Texture = createTexture(manager, RED_P_3,false);
 
+        asteroid_Texture = createTexture(manager, ASTEROID, false);
+
+        Sound explosionSound = Gdx.audio.newSound(Gdx.files.internal(EXPLOSION_SOUND));
+        Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal(JUMP_SOUND));
+        Sound mothershipSound = Gdx.audio.newSound(Gdx.files.internal(MOTHERSHIP_SOUND));
+        Sound shootingSound = Gdx.audio.newSound(Gdx.files.internal(SHOOTING_SOUND));
+
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
         BH_Sheet = new Texture(Gdx.files.internal(BLACK_HOLE));
@@ -636,9 +660,10 @@ public class PlayMode extends WorldController implements ContactListener {
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
-        sounds.allocate(manager, JUMP_FILE);
-        sounds.allocate(manager, PEW_FILE);
-        sounds.allocate(manager, POP_FILE);
+        sounds.allocate(manager, JUMP_SOUND);
+        sounds.allocate(manager, EXPLOSION_SOUND);
+        sounds.allocate(manager, MOTHERSHIP_SOUND);
+        sounds.allocate(manager, SHOOTING_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
@@ -715,6 +740,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected boolean[] lastHoverPlanet;
     protected boolean play;
     protected int jumpTime;
+    //Should we play the jump sound?
+    protected boolean forceJump;
 
 
     /**
@@ -1250,9 +1277,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setTexture(bullet_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
+                if(!mute) {
+                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME);
+                }
             }
             aiController.bulletData.clear();
         }
+
     }
 
     public void scrollScreen() {
@@ -1304,8 +1335,6 @@ public class PlayMode extends WorldController implements ContactListener {
         if (smallestRad.len() < planets.get(closestPlanet).getRadius() + complexAvatar.getRadius() + EPSILON) {
             currentPlanet = planets.get(closestPlanet);
             returnToPlanetTimer = 0;
-            if(!mute)
-                SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
         }
     }
 
@@ -1343,12 +1372,13 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Make Oob jump
     public void jump(){
-        if(!mute)
-            SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
+        if(!mute && !forceJump)
+            SoundController.getInstance().play(JUMP_SOUND,JUMP_SOUND,false,EFFECT_VOLUME);
         Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
         complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
         lastPlanet = currentPlanet;
         currentPlanet = null;
+        forceJump = false;
     }
 
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
@@ -1530,8 +1560,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 currentPlanet.setExploding(true);
                 currentPlanet.set_sheet(EXP_Sheet);
                 currentPlanet.createEXPtex();
+                forceJump = true;
                 jump = true;
-                //TODO Play planet explosion sound
+                if(!mute) {
+                    SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
+                }
             }
 
             if (jump) {
@@ -1606,7 +1639,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     planet_explosion.get(0).setExploding(true);
                     planet_explosion.get(0).set_sheet(EXP_Sheet);
                     planet_explosion.get(0).createEXPtex();
-                    //TODO Play planet explosion sound
                 }
             }
             if (planet_explosion.get(0).get_EXP_ST() > -1) {
@@ -1616,7 +1648,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     planet_explosion.get(0).markRemoved(true);
                     planets.removeValue(planet_explosion.get(0), true);
-                    //TODO Play planet explosion sound
                     planet_explosion.removeIndex(0);
                 }
             }
@@ -1678,7 +1709,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
-                        SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
+                        SoundController.getInstance().play(SHOOTING_SOUND,SHOOTING_SOUND,false,EFFECT_VOLUME);
                 }
                 else if (bd2.getName().equals("ship")) {
                     bd2.markRemoved(true);
@@ -1713,7 +1744,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
                     if(!mute)
-                        SoundController.getInstance().play(POP_FILE,POP_FILE,false,EFFECT_VOLUME);
+                        SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false,EFFECT_VOLUME);
                 }
                 else if (bd1.getName().equals("ship")) {
                     bd1.markRemoved(true);

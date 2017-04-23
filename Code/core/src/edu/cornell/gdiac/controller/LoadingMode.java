@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.controllers.*;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.util.*;
+import com.badlogic.gdx.audio.*;
 
 /**
  * Class that provides a loading screen for the state of the game.
@@ -72,7 +73,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private Texture playButton;
 	/** Texture atlas to support a progress bar */
 	private Texture statusBar;
-
 	
 	// statusBar is a "texture atlas." Break it up into parts.
 	/** Left cap to the status background (grey region) */

@@ -88,9 +88,10 @@ public class PauseMenu extends PlayMode {
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
-        sounds.allocate(manager, JUMP_FILE);
-        sounds.allocate(manager, PEW_FILE);
-        sounds.allocate(manager, POP_FILE);
+        sounds.allocate(manager, JUMP_SOUND);
+        sounds.allocate(manager, EXPLOSION_SOUND);
+        sounds.allocate(manager, MOTHERSHIP_SOUND);
+        sounds.allocate(manager, SHOOTING_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
