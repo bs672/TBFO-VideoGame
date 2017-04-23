@@ -61,6 +61,7 @@ public class ComplexOobModel extends ComplexObstacle {
     private boolean teleporting;
     private boolean hurting;
     private boolean dying;
+    private boolean max;
 
     /** Variables for Oob animation */
 
@@ -157,6 +158,21 @@ public class ComplexOobModel extends ComplexObstacle {
     public void set_Dying_sheet(Texture val){Dying_Sheet = val;}
 
     public Texture get_Dying_sheet(){return Dying_Sheet;}
+
+
+
+
+    private Animation<TextureRegion> Max_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_Max_anim(){return Max_Animation;}
+
+
+    private Texture Max_Sheet;
+
+    public void set_Max_sheet(Texture val){Max_Sheet = val;}
+
+    public Texture get_Max_sheet(){return Max_Sheet;}
+
 
 
     public void set_Shot_Cooldown(int c) {SHOT_COOLDOWN = c; }
@@ -417,38 +433,44 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public boolean isNormal() {return normal;}
     public void setNormal(boolean bool) {
-        normal = bool; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying= false;
+        normal = bool; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isGrowing() {return growing;}
     public void setGrowing(boolean bool) {
-        normal = false; growing = bool; command = false; flying=false; teleporting=false; hurting= false; dying= false;
+        normal = false; growing = bool; command = false; flying=false; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isCommand() {return command;}
     public void setCommand(boolean bool) {
-        normal = false; growing = false; command = bool; flying=false; teleporting=false; hurting= false; dying= false;
+        normal = false; growing = false; command = bool; flying=false; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isFlying() {return flying;}
     public void setFlying(boolean bool) {
-        normal = false; growing = false; command = false; flying = bool; teleporting=false; hurting= false; dying= false;
+        normal = false; growing = false; command = false; flying = bool; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isTeleporting() {return teleporting;}
     public void setTeleporting(boolean bool) {
-        normal = false; growing = false; command = false; flying = false; teleporting=bool; hurting= false; dying= false;
+        normal = false; growing = false; command = false; flying = false; teleporting=bool; hurting= false; dying= false; max= false;
     }
 
     public boolean isHurting() {return hurting;}
     public void setHurting(boolean bool) {
-        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting = bool; dying= false;
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting = bool; dying= false; max= false;
     }
 
     public boolean isDying() {return dying;}
     public void setDying(boolean bool) {
-        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying = bool;
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying = bool; max= false;
     }
+
+    public boolean isMax() {return max;}
+    public void setMax(boolean bool) {
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying = false; max= bool;
+    }
+
 
     public void reset_face() {
         normal=false;
@@ -458,15 +480,20 @@ public class ComplexOobModel extends ComplexObstacle {
         teleporting=false;
         hurting=false;
         dying=false;
+        max=false;
     }
 
+
+    public enum Face {
+        NORMAL, GROWING, COMMAND, FLYING, TELEPORTING, HURTING, DYING, MAX
+    }
 
 
 
     public void createNormaltex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 40, FRAME_ROWS = 1;
+        int FRAME_COLS = 5, FRAME_ROWS = 5;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -486,7 +513,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Normal_Animation = new Animation<TextureRegion>(.05f, frames);
+        Normal_Animation = new Animation<TextureRegion>(.1f, frames);
 
     }
 
@@ -655,6 +682,32 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Dying_Animation = new Animation<TextureRegion>(.1f, frames);
+        Dying_Animation = new Animation<TextureRegion>(.15f, frames);
+    }
+
+    public void createMaxtex() {
+
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 4, FRAME_ROWS = 3;
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(Max_Sheet,
+                Max_Sheet.getWidth() / FRAME_COLS,
+                Max_Sheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        Max_Animation = new Animation<TextureRegion>(.15f, frames);
     }
 }
