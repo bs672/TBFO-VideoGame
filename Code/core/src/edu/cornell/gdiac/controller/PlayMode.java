@@ -1811,13 +1811,11 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
                 //LOSE
-                System.out.println("here");
                 listener.exitScreen(this, 0);
                 //reset();
             }
             else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
                 //LOSE
-                System.out.println("HERE");
                 listener.exitScreen(this, 0);
                 //reset();
             }
