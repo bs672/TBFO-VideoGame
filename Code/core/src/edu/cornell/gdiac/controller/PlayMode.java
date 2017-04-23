@@ -1413,7 +1413,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         else { // entering the first black hole
             complexAvatar.resetForceVec();
-            Vector2 newVelocity = oobToHole.cpy().nor().scl(2f).add(new Vector2(oobToHole.cpy().nor().y, -oobToHole.cpy().nor().x).scl(8f));
+            Vector2 newVelocity = oobToHole.cpy().nor().scl(3f).add(new Vector2(oobToHole.cpy().nor().y, -oobToHole.cpy().nor().x).scl(8f));
             complexAvatar.setLinearVelocity(newVelocity);
         }
     }
@@ -1860,7 +1860,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     else if ( ((ComplexOobModel) obj).isCommand() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
                     }
-                    else if ( blackHoleWarp ) {
+                    else if ( blackHoleWarp && !comingOut ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
                     }
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
