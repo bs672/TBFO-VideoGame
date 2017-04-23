@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonReader;
@@ -1855,40 +1856,49 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
                 if (obj.getName().equals("ComplexOob")) {
-                    ((ComplexOobModel)obj).draw();
 
-//                    TextureRegion currentFrame;
-//
-//                    if ( ((ComplexOobModel) obj).isNormal()) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( ((ComplexOobModel) obj).isCommand() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( blackHoleWarp && !comingOut ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else if ( ((ComplexOobModel) obj).isFlying() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
-//                    }
-//                    else  {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-//                    }
-//
-//                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-//                        complexAvatar.decCooldown();
-//                    }
-//                    if ( ((ComplexOobModel) obj).isDying() ) {
-//                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
-//                    }
-//
-//
-//
-//                    ((ComplexOobModel) obj).setTexture(currentFrame);
+                    TextureRegion currentFrame;
+
+                    if ( ((ComplexOobModel) obj).isNormal()) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isCommand() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( blackHoleWarp && !comingOut ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+                    }
+                    else if ( ((ComplexOobModel) obj).isFlying() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                    }
+                    else  {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    }
+
+                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        complexAvatar.decCooldown();
+                    }
+                    if ( ((ComplexOobModel) obj).isDying() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                    }
+
+                    Texture texture = currentFrame.getTexture();
+                    if(!texture.getTextureData().isPrepared())
+                        texture.getTextureData().prepare();
+                    Pixmap pixmap = texture.getTextureData().consumePixmap();
+                    Pixmap newPixmap = new Pixmap(currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), pixmap.getFormat());
+
+                    newPixmap.drawPixmap(pixmap, 0, 0, currentFrame.getRegionWidth(), 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
+
+                    ((ComplexOobModel) obj).setTexture(new Texture(newPixmap));
+
+                    ((ComplexOobModel)obj).draw();
+                    newPixmap.dispose();
+                    pixmap.dispose();
 
 //                    canvas.begin();
 //                    obj.draw(canvas);
