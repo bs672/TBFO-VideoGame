@@ -51,6 +51,9 @@ public class ComplexOobModel extends ComplexObstacle {
     /** A vector arry to track the last position of each edge for texture mapping*/
     private Array<Vector2> edgePosns;
 
+    private int FRAME_COLS;
+    private int FRAME_ROWS;
+
     protected static int SHOT_COOLDOWN;
 
     /** Bools for Oob play state */
@@ -58,8 +61,10 @@ public class ComplexOobModel extends ComplexObstacle {
     private boolean growing;
     private boolean command;
     private boolean flying;
+    private boolean teleporting;
     private boolean hurting;
     private boolean dying;
+    private boolean max;
 
     /** Variables for Oob animation */
 
@@ -118,6 +123,19 @@ public class ComplexOobModel extends ComplexObstacle {
 
 
 
+    private Animation<TextureRegion> Teleporting_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_Teleporting_anim(){return Teleporting_Animation;}
+
+
+    private Texture Teleporting_Sheet;
+
+    public void set_Teleporting_sheet(Texture val){Teleporting_Sheet = val;}
+
+    public Texture get_Teleporting_sheet(){return Teleporting_Sheet;}
+
+
+
 
     private Animation<TextureRegion> Hurting_Animation; // Must declare frame type (TextureRegion)
 
@@ -145,6 +163,21 @@ public class ComplexOobModel extends ComplexObstacle {
     public Texture get_Dying_sheet(){return Dying_Sheet;}
 
 
+
+
+    private Animation<TextureRegion> Max_Animation; // Must declare frame type (TextureRegion)
+
+    public Animation<TextureRegion> get_Max_anim(){return Max_Animation;}
+
+
+    private Texture Max_Sheet;
+
+    public void set_Max_sheet(Texture val){Max_Sheet = val;}
+
+    public Texture get_Max_sheet(){return Max_Sheet;}
+
+
+
     public void set_Shot_Cooldown(int c) {SHOT_COOLDOWN = c; }
 
     public int get_Shot_Cooldown() {return SHOT_COOLDOWN; }
@@ -157,14 +190,14 @@ public class ComplexOobModel extends ComplexObstacle {
      * @param x  Initial x position of the ragdoll head
      * @param y  Initial y position of the ragdoll head
      */
-    public ComplexOobModel(float x, float y, float rad, int ringCircles) {
+    public ComplexOobModel(float x, float y, float rad) {
         super(x,y);
         forceVec = new Vector2();
-        size = ringCircles;
+        size = 40;
         setPosition(x,y);
-        this.radius = rad;
+        radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
-        center = new WheelObstacle(x, y, 0.4f);
+        center = new WheelObstacle(x, y, radius / 2);
         center.setBodyType(BodyDef.BodyType.DynamicBody);
         center.setName("OobCenter");
         body = center.getBody();
@@ -173,11 +206,11 @@ public class ComplexOobModel extends ComplexObstacle {
         outerJoints = new Array<DistanceJoint>();
         float angle = 0;
         for(int i = 0; i < size; i++) { // create outer circles counter-clockwise from 0 degrees
-            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / ringCircles));
+            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / size));
             wheel.setBodyType(BodyDef.BodyType.DynamicBody);
             wheel.setName("Oob");
             bodies.add(wheel);
-            angle += 2 * Math.PI / ringCircles;
+            angle += 2 * Math.PI / size;
         }
         for(Obstacle b : bodies)
             b.setGravityScale(0);
@@ -188,7 +221,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
         // Create a transform to center the polygon
         transform = new Affine2();
-        transform.setToTranslation(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+        transform.setToScaling(40,40);
 
         mapTexture();
     }
@@ -202,7 +235,7 @@ public class ComplexOobModel extends ComplexObstacle {
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
             jointDef.length = radius;
-            jointDef.dampingRatio = 0.5f;
+            jointDef.dampingRatio = 0.9f;
             jointDef.frequencyHz = 5;
             Joint joint = world.createJoint(jointDef);
             joints.add(joint);
@@ -220,7 +253,9 @@ public class ComplexOobModel extends ComplexObstacle {
             }
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
-            jointDef.length = 2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2);
+            jointDef.dampingRatio = 0.7f;
+            jointDef.frequencyHz = 10;
+            jointDef.length = 2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2)*0.7f;
             joint = world.createJoint(jointDef);
             joints.add(joint);
             outerJoints.add((DistanceJoint)joint);
@@ -236,10 +271,8 @@ public class ComplexOobModel extends ComplexObstacle {
      * InputProcessor methods.
      */
     public void draw () {
-        for(int i = 0; i < size; i++)
-            moveIndex(i, bodies.get(i+1).getX(), bodies.get(i+1).getY());
-//        System.out.println(vertices);
-//        System.out.println();
+        for(int i = 1; i < bodies.size; i++)
+            moveIndex(i-1, bodies.get(i).getX(), bodies.get(i).getY());
         batch.begin();
         batch.draw(img,vertices,indices,transform);
         batch.end();
@@ -253,10 +286,9 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public void moveIndex(int edgeIndex, float newX, float newY) {
         float dx = newX-edgePosns.get(edgeIndex).x;
-        float dy = newY-edgePosns.get(edgeIndex).y; // Inverts the y-axis
+        float dy = newY-edgePosns.get(edgeIndex).y;
         vertices.nudge(edgeIndex,dx,dy);
-        edgePosns.get(edgeIndex).set(newX, newY);
-
+        edgePosns.set(edgeIndex, new Vector2(newX, newY));
     }
 
     /**
@@ -266,44 +298,42 @@ public class ComplexOobModel extends ComplexObstacle {
      */
     public void mapTexture() {
         // Cache objects to create the vertex buffer
-        Vector2 position = center.getPosition();
         Vector2 texcoord = new Vector2(0.5f,0.5f);
 
         // Go around in a circle, starting at the right
         float step = (float)(Math.PI*2)/size;
-        vertices = new VertexBuffer(size+1);
-        vertices.append(position, Color.WHITE, texcoord);
+        vertices = new VertexBuffer(bodies.size-1);
 
         edgePosns = new Array<Vector2>();
 
         float dx, dy;
-        for(int i = 0; i < size; i++) {
+        for(int i = 1; i < bodies.size; i++) {
             // Compute position on unit circle
-            double angle = i*step;
+            double angle = (i-1)*step;
             dx = (float)Math.cos(angle);
-            dy = (float)Math.sin(angle);
+            dy = -(float)Math.sin(angle);
+
+            WheelObstacle w = (WheelObstacle) bodies.get(i);
 
             // Set the position
-            position.set(bodies.get(i+1).getPosition());
+            Vector2 position = w.getPosition().cpy();
 
             // Set the texture coords.
             texcoord.set((1+dx)/2,(1+dy)/2);
 
             // append to vertex buffer
-            vertices.append(position, Color.WHITE, texcoord);
+            vertices.append(position, Color.WHITE, texcoord.cpy());
             edgePosns.add(position);
         }
 
         // Create the indices as a fan to the right
-        indices = new short[size*3];
-        for(int i = 0; i < size-1; i++) {
+        // the size field is the number of circles on edge of Oob
+        indices = new short[(size-1)*3];
+        for(int i = 0; i < size-2; i++) {
             indices[3*i  ]  = 0;
             indices[3*i+1]  = (short)(i+1);
             indices[3*i+2]  = (short)(i+2);
         }
-        indices[3*size-3]  = 0;
-        indices[3*size-2]  = (short)(3*size-1);
-        indices[3*size-1]  = (short)(3*size);
     }
 
     /**
@@ -325,7 +355,15 @@ public class ComplexOobModel extends ComplexObstacle {
      * @param value  the object texture for drawing purposes.
      */
     public void setTexture(TextureRegion value) {
-        center.setTexture(value);
+        img = value.getTexture();
+        float baseX = ((float)value.getRegionX()) / img.getWidth();
+        float baseY = ((float)value.getRegionY()) / img.getHeight();
+        float step = (float)(Math.PI*2)/size;
+        for(int i = 0; i < size; i++) {
+            float offsetX = (((float)Math.cos(i*step) + 1) / 2) * (1f / FRAME_COLS);
+            float offsetY = ((-(float)Math.sin(i*step) + 1) / 2) * (1f / FRAME_ROWS);
+            vertices.setTexCoords(i, baseX + offsetX, baseY + offsetY);
+        }
     }
 
     public void scalePicScale(Vector2 v) {
@@ -350,7 +388,7 @@ public class ComplexOobModel extends ComplexObstacle {
         for(DistanceJoint j : innerJoints) // the central joints
             j.setLength(radius);
         for(DistanceJoint j : outerJoints) { // the outer joints
-            j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2));
+            j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2)*0.7f);
         }
         for(int i = 1; i < bodies.size; i++)
             ((WheelObstacle)bodies.get(i)).setRadius(radius*(float)Math.sin(Math.PI / (bodies.size - 1)));
@@ -398,58 +436,81 @@ public class ComplexOobModel extends ComplexObstacle {
     public Vector2 getForceVec() {return forceVec;}
 
     public void setPosition(Vector2 v) {
-        for(Obstacle o : bodies)
-            o.setPosition(v);
+        setX(v.x);
+        setY(v.y);
     }
 
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
 
+    public Array<DistanceJoint> getOuterJoints() {return outerJoints; }
+
     public boolean isNormal() {return normal;}
     public void setNormal(boolean bool) {
-        normal = bool; growing = false; command = false; flying=false; hurting= false; dying= false;
+        normal = bool; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isGrowing() {return growing;}
     public void setGrowing(boolean bool) {
-        normal = false; growing = bool; command = false; flying=false; hurting= false; dying= false;
+        normal = false; growing = bool; command = false; flying=false; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isCommand() {return command;}
     public void setCommand(boolean bool) {
-        normal = false; growing = false; command = bool; flying=false; hurting= false; dying= false;
+        normal = false; growing = false; command = bool; flying=false; teleporting=false; hurting= false; dying= false; max= false;
     }
 
     public boolean isFlying() {return flying;}
     public void setFlying(boolean bool) {
-        normal = false; growing = false; command = false; flying = bool; hurting= false; dying= false;
+        normal = false; growing = false; command = false; flying = bool; teleporting=false; hurting= false; dying= false; max= false;
+    }
+
+    public boolean isTeleporting() {return teleporting;}
+    public void setTeleporting(boolean bool) {
+        normal = false; growing = false; command = false; flying = false; teleporting=bool; hurting= false; dying= false; max= false;
     }
 
     public boolean isHurting() {return hurting;}
     public void setHurting(boolean bool) {
-        normal = false; growing = false; command = false; flying=false; hurting = bool; dying= false;
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting = bool; dying= false; max= false;
     }
 
     public boolean isDying() {return dying;}
     public void setDying(boolean bool) {
-        normal = false; growing = false; command = false; flying=false; hurting= false; dying = bool;
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying = bool; max= false;
     }
+
+    public boolean isMax() {return max;}
+    public void setMax(boolean bool) {
+        normal = false; growing = false; command = false; flying=false; teleporting=false; hurting= false; dying = false; max= bool;
+    }
+
 
     public void reset_face() {
         normal=false;
         growing =false;
         command = false;
         flying=false;
+        teleporting=false;
         hurting=false;
         dying=false;
+        max=false;
     }
 
 
+    public enum Face {
+        NORMAL, GROWING, COMMAND, FLYING, TELEPORTING, HURTING, DYING, MAX
+    }
 
+    public void setAnimDimensions(int cols, int rows) {
+        FRAME_COLS = cols;
+        FRAME_ROWS = rows;
+    }
 
     public void createNormaltex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 20, FRAME_ROWS = 1;
+        FRAME_COLS = 8;
+        FRAME_ROWS = 7;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -469,14 +530,16 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Normal_Animation = new Animation<TextureRegion>(.15f, frames);
+        Normal_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
     public void createGrowingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 12, FRAME_ROWS = 1;
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
+
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -496,7 +559,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Growing_Animation = new Animation<TextureRegion>(.3f, frames);
+        Growing_Animation = new Animation<TextureRegion>(.1f, frames);
 
 
         // this.scalePicScale(new Vector2(1.8f,1.8f));
@@ -507,7 +570,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createCommandtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 5, FRAME_ROWS = 1;
+        FRAME_COLS = 5;
+        FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -535,7 +599,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createFlyingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 20, FRAME_ROWS = 1;
+        FRAME_COLS = 40;
+        FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -555,7 +620,35 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Flying_Animation = new Animation<TextureRegion>(.15f, frames);
+        Flying_Animation = new Animation<TextureRegion>(.05f, frames);
+
+    }
+
+    public void createTeleportingtex() {
+
+        // Constant rows and columns of the sprite sheet
+        FRAME_COLS = 3;
+        FRAME_ROWS = 2;
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(Teleporting_Sheet,
+                Teleporting_Sheet.getWidth() / FRAME_COLS,
+                Teleporting_Sheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        Teleporting_Animation = new Animation<TextureRegion>(.1f, frames);
 
     }
 
@@ -563,7 +656,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createHurtingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 10, FRAME_ROWS = 1;
+        FRAME_COLS = 25;
+        FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -583,7 +677,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Hurting_Animation = new Animation<TextureRegion>(.15f, frames);
+        Hurting_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
@@ -591,7 +685,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createDyingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 6, FRAME_ROWS = 1;
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -611,6 +706,33 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Dying_Animation = new Animation<TextureRegion>(.1f, frames);
+        Dying_Animation = new Animation<TextureRegion>(.15f, frames);
+    }
+
+    public void createMaxtex() {
+
+        // Constant rows and columns of the sprite sheet
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(Max_Sheet,
+                Max_Sheet.getWidth() / FRAME_COLS,
+                Max_Sheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        Max_Animation = new Animation<TextureRegion>(.15f, frames);
     }
 }
