@@ -85,8 +85,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(1);
 		controllers[3] = new PauseMenu();
-<<<<<<< HEAD
-		controllers[4] = new PlayMode("Tutorial1");
+		controllers[4] = new PlayMode("MainScene");
 		controllers[5] = new PlayMode("Tutorial1");
 		controllers[6] = new PlayMode("MainScene");
 		controllers[7] = new PlayMode("Tutorial1");
@@ -96,11 +95,6 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[11] = new PlayMode("Tutorial");
 		controllers[12] = new PlayMode("Tutorial");
 
-=======
-		controllers[4] = new PlayMode();
-		controllers[5] = new PlayMode();
-		controllers[6] = new PlayMode();
->>>>>>> parent of 531ff2b... playmode string
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
 		}
