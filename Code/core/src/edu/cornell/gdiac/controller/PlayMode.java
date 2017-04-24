@@ -254,8 +254,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int control = 1;
 
     /** Animation texture */
-   // protected Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
-   // protected Texture oobSheet;
+    // protected Animation<TextureRegion> oobAnimation; // Must declare frame type (TextureRegion)
+    // protected Texture oobSheet;
 
     protected TextureRegion blackHoleTexture;
 
@@ -263,13 +263,13 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion blue_P_1_Texture;
     protected TextureRegion blue_P_2_Texture;
     protected TextureRegion blue_P_3_Texture;
-   // private TextureRegion blue_P_4_Texture;
+    // private TextureRegion blue_P_4_Texture;
 
     /** Planet texture */
     protected TextureRegion purple_P_1_Texture;
     protected TextureRegion purple_P_2_Texture;
     protected TextureRegion purple_P_3_Texture;
-   // private TextureRegion purple_P_4_Texture;
+    // private TextureRegion purple_P_4_Texture;
 
     /** Planet texture */
     protected TextureRegion orange_P_1_Texture;
@@ -281,7 +281,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion sky_P_1_Texture;
     protected TextureRegion sky_P_2_Texture;
     protected TextureRegion sky_P_3_Texture;
-   // private TextureRegion sky_P_4_Texture;
+    // private TextureRegion sky_P_4_Texture;
 
     /** Planet texture */
     protected TextureRegion green_P_1_Texture;
@@ -407,6 +407,10 @@ public class PlayMode extends WorldController implements ContactListener {
     protected boolean comingOut;
     // says whether the player can use controls
     protected boolean playerControl;
+    // a counter for displaying win/lose message
+    protected int messageCounter;
+    // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won
+    protected int gameState;
 
     public void setMute(boolean bool) {mute = bool;}
 
@@ -807,6 +811,8 @@ public class PlayMode extends WorldController implements ContactListener {
         jsonParse(jsonString);
         play = true;
         playerControl = true;
+        gameState = 0;
+        messageCounter = 0;
     }
 
     /**
@@ -844,6 +850,8 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         play = true;
+        gameState = 0;
+        messageCounter = 0;
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -1096,32 +1104,32 @@ public class PlayMode extends WorldController implements ContactListener {
                 commandPlanets.add(obj);
             }
             //Poison Planets
-           if (obj.getType() == 2f) {
-               obj.scalePicScale(new Vector2(.5f * obj.getRadius(), .5f * obj.getRadius()));
+            if (obj.getType() == 2f) {
+                obj.scalePicScale(new Vector2(.5f * obj.getRadius(), .5f * obj.getRadius()));
                 // Constant rows and columns of the sprite sheet
                 int FRAME_COLS = 8, FRAME_ROWS = 1;
 
-                    // Use the split utility method to create a 2D array of TextureRegions. This is
-                    // possible because this sprite sheet contains frames of equal size and they are
-                    // all aligned.
-                    TextureRegion[][] tmp = TextureRegion.split(sunSheet,
-                            sunSheet.getWidth() / FRAME_COLS,
-                            sunSheet.getHeight() / FRAME_ROWS);
+                // Use the split utility method to create a 2D array of TextureRegions. This is
+                // possible because this sprite sheet contains frames of equal size and they are
+                // all aligned.
+                TextureRegion[][] tmp = TextureRegion.split(sunSheet,
+                        sunSheet.getWidth() / FRAME_COLS,
+                        sunSheet.getHeight() / FRAME_ROWS);
 
-                    // Place the regions into a 1D array in the correct order, starting from the top
-                    // left, going across first. The Animation constructor requires a 1D array.
-                    TextureRegion[] sunFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-                    int index = 0;
-                    for (int i = 0; i < FRAME_ROWS; i++) {
-                        for (int j = 0; j < FRAME_COLS; j++) {
-                            sunFrames[index++] = tmp[i][j];
-                        }
+                // Place the regions into a 1D array in the correct order, starting from the top
+                // left, going across first. The Animation constructor requires a 1D array.
+                TextureRegion[] sunFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+                int index = 0;
+                for (int i = 0; i < FRAME_ROWS; i++) {
+                    for (int j = 0; j < FRAME_COLS; j++) {
+                        sunFrames[index++] = tmp[i][j];
                     }
+                }
 
-                    // Initialize the Animation with the frame interval and array of frames
-                    sunAnimation = new Animation<TextureRegion>(.15f, sunFrames);
+                // Initialize the Animation with the frame interval and array of frames
+                sunAnimation = new Animation<TextureRegion>(.15f, sunFrames);
 
-           }
+            }
             //Neutral Planets
             if (obj.getType() == 3f) {
                 obj.setTexture(neutral_P_Texture);
@@ -1150,28 +1158,28 @@ public class PlayMode extends WorldController implements ContactListener {
             b2.setDrawScale(scale);
 
 
-                    // Constant rows and columns of the sprite sheet
-                    int FRAME_COLS = 12, FRAME_ROWS = 1;
+            // Constant rows and columns of the sprite sheet
+            int FRAME_COLS = 12, FRAME_ROWS = 1;
 
-                    // Use the split utility method to create a 2D array of TextureRegions. This is
-                    // possible because this sprite sheet contains frames of equal size and they are
-                    // all aligned.
-                    TextureRegion[][] tmp = TextureRegion.split(BH_Sheet,
-                            BH_Sheet.getWidth() / FRAME_COLS,
-                            BH_Sheet.getHeight() / FRAME_ROWS);
+            // Use the split utility method to create a 2D array of TextureRegions. This is
+            // possible because this sprite sheet contains frames of equal size and they are
+            // all aligned.
+            TextureRegion[][] tmp = TextureRegion.split(BH_Sheet,
+                    BH_Sheet.getWidth() / FRAME_COLS,
+                    BH_Sheet.getHeight() / FRAME_ROWS);
 
-                    // Place the regions into a 1D array in the correct order, starting from the top
-                    // left, going across first. The Animation constructor requires a 1D array.
-                    TextureRegion[] BH_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-                    int index = 0;
-                    for (int i = 0; i < FRAME_ROWS; i++) {
-                        for (int j = 0; j < FRAME_COLS; j++) {
-                             BH_Frames[index++] = tmp[i][j];
-                        }
-                    }
+            // Place the regions into a 1D array in the correct order, starting from the top
+            // left, going across first. The Animation constructor requires a 1D array.
+            TextureRegion[] BH_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+            int index = 0;
+            for (int i = 0; i < FRAME_ROWS; i++) {
+                for (int j = 0; j < FRAME_COLS; j++) {
+                    BH_Frames[index++] = tmp[i][j];
+                }
+            }
 
-                    // Initialize the Animation with the frame interval and array of frames
-                    BH_Animation = new Animation<TextureRegion>(.15f, BH_Frames);
+            // Initialize the Animation with the frame interval and array of frames
+            BH_Animation = new Animation<TextureRegion>(.15f, BH_Frames);
 
             addObject(b1);
             addObject(b2);
@@ -1572,177 +1580,189 @@ public class PlayMode extends WorldController implements ContactListener {
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
-        scrollScreen();
-        width = canvas.getWidth() / 32;
-        height = canvas.getHeight() / 18;
-        if (InputController.getInstance().getChange()) {
-            if (control == 1) {
-                control = 0;
-            } else {
-                control = 1;
-            }
-        }
-        if (commandPlanets.size == 0) {
-            // Won the level
-            if (play) listener.exitScreen(this, 2);
-        }
-        if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
-            // We lost the level
-            listener.exitScreen(this, 100);
-        }
-        if (currentPlanet != null) {
-            smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
-            if(smallestRad.len() > 0.9f*complexAvatar.getRadius()) {
-                if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
-                    complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
-                complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
-            }
-            //determines mouse or keyboard controls
-            if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
-                currentPlanet.setDying(true);
-                //currentPlanet.setTexture(dying_P_Texture);
-                currentPlanet.set_WARN_sheet(WARN_Sheet);
-                currentPlanet.createWARNtex();
-                planet_explosion.add(currentPlanet);
-            }
-
-            //determines Oob's face on planet
-            if (currentPlanet.getType() == 0f) {
-                complexAvatar.setGrowing(true);
-            }
-            else if (currentPlanet.getType() == 1f) {
-                complexAvatar.setCommand(true);
-            }
-            else if (currentPlanet.getType() == 2f) {
-                complexAvatar.setHurting(true);
-            }
-            else if (currentPlanet.getType() == 3f) {
-                complexAvatar.setNormal(true);
-            }
-
-
-
-            if (screenSwitch()) {return;}
-            groundPlayerControls();
-            if (!play) {
-                hover();
-            }
-
-            //forced jump
-            if (currentPlanet.getRadius() < DEATH_RADIUS) {
-                currentPlanet.setExploding(true);
-                currentPlanet.set_sheet(EXP_Sheet);
-                currentPlanet.createEXPtex();
-                forceJump = true;
-                jump = true;
-                if(!mute) {
-                    SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
+        if (gameState == 0) {
+            scrollScreen();
+            width = canvas.getWidth() / 32;
+            height = canvas.getHeight() / 18;
+            if (InputController.getInstance().getChange()) {
+                if (control == 1) {
+                    control = 0;
+                } else {
+                    control = 1;
                 }
             }
-
-            if (jump) {
-                if (!play) {
-                    if (clickScreenSwitch()) {
-                        return;
-                    }
+            if (commandPlanets.size == 0 & play) {
+                // Won the level
+                messageCounter = 0;
+                gameState = 2;
+            }
+            if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
+                // Lost the level
+                messageCounter = 0;
+                gameState = 1;
+            }
+            if (currentPlanet != null) {
+                smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
+                if (smallestRad.len() > 0.9f * complexAvatar.getRadius()) {
+                    if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
+                        complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
+                    complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
                 }
-                jump();
-            } else {
-                rad = currentPlanet.getRadius();
-                float Oob_rad= complexAvatar.getRadius();
-                if (rad > DEATH_RADIUS && Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
-                    siphonPlanet();
-                } else if (Oob_rad >= OOB_MAX_RADIUS) {
-                   complexAvatar.setMax(true);
+                //determines mouse or keyboard controls
+                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS) {
+                    currentPlanet.setDying(true);
+                    //currentPlanet.setTexture(dying_P_Texture);
+                    currentPlanet.set_WARN_sheet(WARN_Sheet);
+                    currentPlanet.createWARNtex();
+                    planet_explosion.add(currentPlanet);
+                }
+
+                //determines Oob's face on planet
+                if (currentPlanet.getType() == 0f) {
+                    complexAvatar.setGrowing(true);
+                } else if (currentPlanet.getType() == 1f) {
+                    complexAvatar.setCommand(true);
                 } else if (currentPlanet.getType() == 2f) {
-                    changeMass(POISON);
+                    complexAvatar.setHurting(true);
+                } else if (currentPlanet.getType() == 3f) {
+                    complexAvatar.setNormal(true);
                 }
-                if(complexAvatar.getLinearVelocity().len() < 7) {
-                    moveAroundPlanet();
-                }
-                if(smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
-                    lastPlanet = currentPlanet;
-                    currentPlanet = null;
-                }
-            }
-        }
-        else if(currentPlanet == null) { // we’re floating in space
-            complexAvatar.setFlying(true);
-            jumpTime++;
-            if ((jumpTime > 300) & !play) {
-                reset();
-            }
-            if (!play) {
-                gravity();
-            }
-            if(blackHoleWarp) {
-                handleBlackHole();
-            }
-            airPlayerControls();
-            if(jump && complexAvatar.getRadius()>OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
-                float expRad = complexAvatar.getRadius() / 2;
-                Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
-                WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, expRad);
-                expulsion.setGravityScale(0);
-                expulsion.setName("expulsion");
-                expulsion.setDrawScale(scale);
-                expulsion.setTexture(expulsion_Texture);
-                expulsion.scalePicScale(new Vector2(expRad*1.3f, expRad*1.3f));
-                addObject(expulsion);
-                expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
-                changeMass(-expulsion.getMass()/2);
-                Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
-                complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius()/2f)));
-                adjustCooldown = 60;
-                if(!mute){
-                    SoundController.getInstance().play(EXPULSION_SOUND,EXPULSION_SOUND,false,EFFECT_VOLUME);
-                }
-            }
-            if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
-                complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
-            findPlanet();
-        }
-
-        if (complexAvatar.getRadius() <= OOB_WARNING_RADIUS) {
-            complexAvatar.setDying(true);
-        }
 
 
-        if (planet_explosion.size > 0) {
-            if (planet_explosion.get(0).isDying()) {
-                if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
-                    planet_explosion.get(0).setDying(false);
-                    planet_explosion.get(0).setExploding(true);
-                    planet_explosion.get(0).set_sheet(EXP_Sheet);
-                    planet_explosion.get(0).createEXPtex();
+                if (screenSwitch()) {
+                    return;
                 }
-            }
-            if (planet_explosion.get(0).get_EXP_ST() > -1) {
-                if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
-                    if (planet_explosion.get(0).getType() == 1f) {
-                        commandPlanets.removeValue(planet_explosion.get(0), true);
+                groundPlayerControls();
+                if (!play) {
+                    hover();
+                }
+
+                //forced jump
+                if (currentPlanet.getRadius() < DEATH_RADIUS) {
+                    currentPlanet.setExploding(true);
+                    currentPlanet.set_sheet(EXP_Sheet);
+                    currentPlanet.createEXPtex();
+                    forceJump = true;
+                    jump = true;
+                    if (!mute) {
+                        SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                     }
-                    planet_explosion.get(0).markRemoved(true);
-                    planets.removeValue(planet_explosion.get(0), true);
-                    planet_explosion.removeIndex(0);
+                }
+
+                if (jump) {
+                    if (!play) {
+                        if (clickScreenSwitch()) {
+                            return;
+                        }
+                    }
+                    jump();
+                } else {
+                    rad = currentPlanet.getRadius();
+                    float Oob_rad = complexAvatar.getRadius();
+                    if (rad > DEATH_RADIUS && Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                        siphonPlanet();
+                    } else if (Oob_rad >= OOB_MAX_RADIUS) {
+                        complexAvatar.setMax(true);
+                    } else if (currentPlanet.getType() == 2f) {
+                        changeMass(POISON);
+                    }
+                    if (complexAvatar.getLinearVelocity().len() < 7) {
+                        moveAroundPlanet();
+                    }
+                    if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
+                        lastPlanet = currentPlanet;
+                        currentPlanet = null;
+                    }
+                }
+            } else if (currentPlanet == null) { // we’re floating in space
+                complexAvatar.setFlying(true);
+                jumpTime++;
+                if ((jumpTime > 300) & !play) {
+                    reset();
+                }
+                if (!play) {
+                    gravity();
+                }
+                if (blackHoleWarp) {
+                    handleBlackHole();
+                }
+                airPlayerControls();
+                if (jump && complexAvatar.getRadius() > OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
+                    float expRad = complexAvatar.getRadius() / 2;
+                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
+                    WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, expRad);
+                    expulsion.setGravityScale(0);
+                    expulsion.setName("expulsion");
+                    expulsion.setDrawScale(scale);
+                    expulsion.setTexture(expulsion_Texture);
+                    expulsion.scalePicScale(new Vector2(expRad * 1.3f, expRad * 1.3f));
+                    addObject(expulsion);
+                    expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
+                    changeMass(-expulsion.getMass() / 2);
+                    Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
+                    adjustCooldown = 60;
+                    if (!mute) {
+                        SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, EFFECT_VOLUME);
+                    }
+                }
+                if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
+                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
+                findPlanet();
+            }
+
+            if (complexAvatar.getRadius() <= OOB_WARNING_RADIUS) {
+                complexAvatar.setDying(true);
+            }
+
+
+            if (planet_explosion.size > 0) {
+                if (planet_explosion.get(0).isDying()) {
+                    if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
+                        planet_explosion.get(0).setDying(false);
+                        planet_explosion.get(0).setExploding(true);
+                        planet_explosion.get(0).set_sheet(EXP_Sheet);
+                        planet_explosion.get(0).createEXPtex();
+                    }
+                }
+                if (planet_explosion.get(0).get_EXP_ST() > -1) {
+                    if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
+                        if (planet_explosion.get(0).getType() == 1f) {
+                            commandPlanets.removeValue(planet_explosion.get(0), true);
+                        }
+                        planet_explosion.get(0).markRemoved(true);
+                        planets.removeValue(planet_explosion.get(0), true);
+                        planet_explosion.removeIndex(0);
+                    }
                 }
             }
+            for (Joint j : complexAvatar.getOuterJoints()) {
+                Vector2 dist = j.getAnchorA().cpy().sub(j.getAnchorB());
+                if (dist.len() > 3 * ((DistanceJoint) j).getLength())
+                    complexAvatar.getForceVec().scl(0.5f);
+            }
+            complexAvatar.applyForce();
+            complexAvatar.resetForceVec();
+            // If we use sound, we must remember this.
+            SoundController.getInstance().update();
+            loopCommandPlanets();
+            loopConvertPlanet();
+            aiController.update(dt);
+            shootBullet();
+            if (adjustCooldown > 0) {
+                adjustCooldown--;
+            }
         }
-        for(Joint j : complexAvatar.getOuterJoints()) {
-            Vector2 dist = j.getAnchorA().cpy().sub(j.getAnchorB());
-            if(dist.len() > 3*((DistanceJoint)j).getLength())
-                complexAvatar.getForceVec().scl(0.5f);
-        }
-        complexAvatar.applyForce();
-        complexAvatar.resetForceVec();
-        // If we use sound, we must remember this.
-        SoundController.getInstance().update();
-        loopCommandPlanets();
-        loopConvertPlanet();
-        aiController.update(dt);
-        shootBullet();
-        if(adjustCooldown > 0){
-            adjustCooldown--;
+        else {
+            messageCounter++;
+            if (messageCounter > 350) {
+                if (gameState == 2) {
+                    listener.exitScreen(this, 2);
+                }
+                else {
+                    reset();
+                }
+            }
         }
     }
 
@@ -1930,19 +1950,16 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Timing values from parent loop
      */
     public void draw(float dt) {
-            canvas.clear();
-            stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+        canvas.clear();
+        stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+        //float camera = -carPosition;
 
+        // Draw background unscaled.
+        canvas.begin();
 
-
-            //float camera = -carPosition;
-
-            // Draw background unscaled.
-            canvas.begin();
-
-            //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
-            // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
-            // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
+        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
+        // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
+        // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
 
         int LG_S_X;
         int LG_S_Y;
@@ -1970,128 +1987,128 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
-            canvas.end();
+        canvas.end();
 
-            for (Obstacle obj : objects) {
+        for (Obstacle obj : objects) {
 
 
 
-                if (obj.getName().equals("ComplexOob")) {
+            if (obj.getName().equals("ComplexOob")) {
 
-                    TextureRegion currentFrame;
+                TextureRegion currentFrame;
 
-                    if ( ((ComplexOobModel) obj).isNormal()) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(8,7);
-                    }
-                    else if ( ((ComplexOobModel) obj).isGrowing() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
-                    }
-                    else if ( ((ComplexOobModel) obj).isCommand() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(5,1);
-                    }
-                    else if ( blackHoleWarp ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(3,2);
-                    }
-                    else if ( ((ComplexOobModel) obj).isFlying() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(40,1);
-                    }
-                    else  {
-                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(25,1);
-                    }
-
-                    if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(25,1);
-                        complexAvatar.decCooldown();
-                    }
-                    if ( ((ComplexOobModel) obj).isDying() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
-                    }
-
-                    if ( ((ComplexOobModel) obj).isMax() ) {
-                        currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
-                    }
-
-                    ((ComplexOobModel) obj).setTexture(currentFrame);
-                    ((ComplexOobModel) obj).draw();
-
-                    canvas.begin();
-                    obj.draw(canvas);
-                    canvas.end();
+                if ( ((ComplexOobModel) obj).isNormal()) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(8,7);
                 }
-                if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
-                    // Get current frame of animation for the current stateTime
-                    TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
-                    canvas.begin();
-                    ((PlanetModel) obj).setTexture(currentFrame);
-                    obj.draw(canvas);
-                    canvas.end();
+                else if ( ((ComplexOobModel) obj).isGrowing() ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
-                if (obj.getName().equals("black hole")) {
-                    // Get current frame of animation for the current stateTime
-                    TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
-                    canvas.begin();
-                    ((BlackHoleModel) obj).setTexture(currentFrame);
-                    obj.draw(canvas);
-                    canvas.end();
+                else if ( ((ComplexOobModel) obj).isCommand() ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(5,1);
+                }
+                else if ( blackHoleWarp ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(3,2);
+                }
+                else if ( ((ComplexOobModel) obj).isFlying() ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(40,1);
+                }
+                else  {
+                    currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(25,1);
                 }
 
-                if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
-                    // Get current frame of animation for the current stateTime
-                    ((PlanetModel) obj).update_WARN_ST();
-                    TextureRegion currentFrame = ((PlanetModel) obj).get_WARN_anim().getKeyFrame(((PlanetModel) obj).get_WARN_ST(), false);
-                    canvas.begin();
-                    ((PlanetModel) obj).setTexture(currentFrame);
-                    obj.draw(canvas);
-                    canvas.end();
+                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(25,1);
+                    complexAvatar.decCooldown();
+                }
+                if ( ((ComplexOobModel) obj).isDying() ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
 
-                if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
-                    // Get current frame of animation for the current stateTime
-                    ((PlanetModel) obj).update_EXP_ST();
-                    TextureRegion currentFrame = ((PlanetModel) obj).get_EXP_anim().getKeyFrame(((PlanetModel) obj).get_EXP_ST(), false);
-                    canvas.begin();
-                    ((PlanetModel) obj).setTexture(currentFrame);
-                    obj.draw(canvas);
-                    canvas.end();
+                if ( ((ComplexOobModel) obj).isMax() ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
 
+                ((ComplexOobModel) obj).setTexture(currentFrame);
+                ((ComplexOobModel) obj).draw();
 
+                canvas.begin();
+                obj.draw(canvas);
+                canvas.end();
+            }
+            if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
+                // Get current frame of animation for the current stateTime
+                TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
+                canvas.begin();
+                ((PlanetModel) obj).setTexture(currentFrame);
+                obj.draw(canvas);
+                canvas.end();
+            }
+            if (obj.getName().equals("black hole")) {
+                // Get current frame of animation for the current stateTime
+                TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
+                canvas.begin();
+                ((BlackHoleModel) obj).setTexture(currentFrame);
+                obj.draw(canvas);
+                canvas.end();
+            }
 
+            if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
+                // Get current frame of animation for the current stateTime
+                ((PlanetModel) obj).update_WARN_ST();
+                TextureRegion currentFrame = ((PlanetModel) obj).get_WARN_anim().getKeyFrame(((PlanetModel) obj).get_WARN_ST(), false);
+                canvas.begin();
+                ((PlanetModel) obj).setTexture(currentFrame);
+                obj.draw(canvas);
+                canvas.end();
+            }
+
+            if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
+                // Get current frame of animation for the current stateTime
+                ((PlanetModel) obj).update_EXP_ST();
+                TextureRegion currentFrame = ((PlanetModel) obj).get_EXP_anim().getKeyFrame(((PlanetModel) obj).get_EXP_ST(), false);
+                canvas.begin();
+                ((PlanetModel) obj).setTexture(currentFrame);
+                obj.draw(canvas);
+                canvas.end();
+            }
 //                else if (obj.getName().equals("ComplexOob")) {
 //                }
 
-                else {
-                    canvas.begin();
-                    obj.draw(canvas);
-                    canvas.end();
-                }
-
-
+            else {
+                canvas.begin();
+                obj.draw(canvas);
+                canvas.end();
             }
+        }
 
-            if (isDebug()) {
-                canvas.beginDebug();
-                for (Obstacle obj : objects) {
-                    obj.drawDebug(canvas);
-                }
-                canvas.endDebug();
+        if (isDebug()) {
+            canvas.beginDebug();
+            for (Obstacle obj : objects) {
+                obj.drawDebug(canvas);
             }
-            canvas.begin();
+            canvas.endDebug();
+        }
+        canvas.begin();
 //            for (int i = 0; i < planets.size; i++) {
 //                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX()*40f, planets.get(i).getY() * 40f);
 //            }
 //            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
-            canvas.end();
-
+        if (gameState == 1) {
+            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
+        if (gameState == 2) {
+            canvas.drawText("YOU WON!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+        }
+        canvas.end();
+    }
 
 }
