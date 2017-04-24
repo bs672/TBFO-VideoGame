@@ -89,11 +89,11 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[5] = new PlayMode("Tutorial1");
 		controllers[6] = new PlayMode("MainScene");
 		controllers[7] = new PlayMode("Tutorial1");
-		controllers[8] = new PlayMode("Tutorial");
-		controllers[9] = new PlayMode("Tutorial");
-		controllers[10] = new PlayMode("Tutorial");
-		controllers[11] = new PlayMode("Tutorial");
-		controllers[12] = new PlayMode("Tutorial");
+		controllers[8] = new PlayMode("Tutorial1");
+		controllers[9] = new PlayMode("Tutorial1");
+		controllers[10] = new PlayMode("Tutorial1");
+		controllers[11] = new PlayMode("Tutorial1");
+		controllers[12] = new PlayMode("Tutorial1");
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
