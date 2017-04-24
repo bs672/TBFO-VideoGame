@@ -62,7 +62,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
-    protected static final String OOB_GROWING_FILE = "space/animations/OobEating.png";
+    protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
