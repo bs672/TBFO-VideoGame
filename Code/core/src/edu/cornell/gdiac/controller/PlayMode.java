@@ -786,7 +786,7 @@ public class PlayMode extends WorldController implements ContactListener {
      *
      * The game has default gravity and other settings
      */
-    public PlayMode(String level) {
+    public PlayMode() {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
         setDebug(false);
         setComplete(false);
@@ -802,7 +802,7 @@ public class PlayMode extends WorldController implements ContactListener {
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
         adjustCooldown = ADJUST_COOLDOWN;
-        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/"+level+".dt");
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
         play = true;
