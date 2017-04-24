@@ -54,6 +54,7 @@ public class MainMenu extends PlayMode {
         expulsion_Texture = createTexture(manager, EXPULSION_TEXTURE, false);
 
         neutral_P_Texture = createTexture(manager, NEUTRAL_P, false);
+        green_P_1_Texture = createTexture(manager, GREEN_P_1, false);
         settings_Texture = createTexture(manager, SETTINGS_TEXTURE, false);
         levels_Texture = createTexture(manager, LEVELS_TEXTURE, false);
         play_Texture = createTexture(manager, PLAY_TEXTURE, false);
@@ -62,8 +63,8 @@ public class MainMenu extends PlayMode {
         levels_Hover_Texture = createTexture(manager, LEVELS_HOVER_TEXTURE, false);
         play_Hover_Texture = createTexture(manager, PLAY_HOVER_TEXTURE, false);
 
-        TEXTURES[0][0] = neutral_P_Texture;
-        TEXTURES[0][1] = neutral_P_Texture;
+        TEXTURES[0][0] = green_P_1_Texture;
+        TEXTURES[0][1] = green_P_1_Texture;
         TEXTURES[1][0] = settings_Texture;
         TEXTURES[1][1] = settings_Hover_Texture;
         TEXTURES[2][0] = levels_Texture;
@@ -187,8 +188,8 @@ public class MainMenu extends PlayMode {
     public void hover() {
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
         for (int i = 0; i < PLANETS.length; i++) {
-            float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
-            if ((Math.sqrt(d) < planets.get(i).getRadius())) {
+            float d = (((mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX())) + ((mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY())));
+            if ((Math.sqrt(d) < planets.get(i).getRadius()*1.5f)) {
                 if (lastHoverPlanet[i] == false) {
                     planets.get(i).setTexture(TEXTURES[i][1]);
                     planets.get(i).setRadius(planets.get(i).getRadius() * 1.1f);

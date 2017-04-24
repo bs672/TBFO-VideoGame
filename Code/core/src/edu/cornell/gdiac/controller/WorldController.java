@@ -684,4 +684,9 @@ public abstract class WorldController implements Screen {
 		this.listener = listener;
 	}
 
+	/**
+	 * Used to set the number of unlocked levels in the loading screen
+	 */
+	public void setUnlocked(int unlocked) {
+	}
 }

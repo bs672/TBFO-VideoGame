@@ -46,6 +46,7 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	private int lastScreen = 0;
 	private int lastPlayScreen = 4;
+	private int unlocked;
 
 	/**
 	 * Creates a new game from the configuration settings.
@@ -79,18 +80,26 @@ public class GDXRoot extends Game implements ScreenListener {
 		//canvas.setWidth(1100);
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
-		controllers = new WorldController[7];
+		controllers = new WorldController[13];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect();
+		controllers[2] = new LevelSelect(1);
 		controllers[3] = new PauseMenu();
-		controllers[4] = new PlayMode("MainScene");
-		controllers[5] = new PlayMode("Tutoral");
-		controllers[6] = new PlayMode("Tutorial1");
+		controllers[4] = new PlayMode("Tutorial1");
+		controllers[5] = new PlayMode("Tutorial1");
+		controllers[6] = new PlayMode("MainScene");
+		controllers[7] = new PlayMode("Tutorial1");
+		controllers[8] = new PlayMode("Tutorial");
+		controllers[9] = new PlayMode("Tutorial");
+		controllers[10] = new PlayMode("Tutorial");
+		controllers[11] = new PlayMode("Tutorial");
+		controllers[12] = new PlayMode("Tutorial");
+
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
 		}
 		current = 0;
+		unlocked = 1;
 		loading.setScreenListener(this);
 
 		setScreen(loading);
@@ -179,11 +188,18 @@ public class GDXRoot extends Game implements ScreenListener {
 		}
 		// LEVEL SELECT
 		else if (screen == controllers[2]) {
+			if (exitCode < 2) {
+				current = exitCode;
+			}
+			else if (exitCode == 2) {
+				current = lastScreen;
+			}
+			else {
+				current = exitCode + 1;
+			}
 			lastScreen = 2;
-			current = exitCode;
 			controllers[current].reset();
 			setScreen(controllers[current]);
-			System.out.println("exit to " + exitCode);
 		}
 		// PAUSE MENU
 		else if (screen == controllers[3]) {
@@ -197,25 +213,42 @@ public class GDXRoot extends Game implements ScreenListener {
 			setScreen(controllers[current]);
 			lastScreen = 3;
 		}
-		else if (screen == controllers[4]) {
-			lastScreen = 4;
-			lastPlayScreen = 4;
-			current = exitCode;
-			controllers[current].reset();
-			setScreen(controllers[current]);
+		else {
+			for (int i = 4; i < 11; i++) {
+				if (screen == controllers[i]) {
+					lastScreen = i;
+					lastPlayScreen = i;
+					current = exitCode;
+					if (exitCode == 2) {
+						unlocked = Math.max(unlocked, i-2);
+						System.out.println("new unlocked " + unlocked);
+						controllers[2].reset();
+						controllers[2].setUnlocked(unlocked);
+					}
+					controllers[current].reset();
+					setScreen(controllers[current]);
+				}
+			}
+			if (screen == controllers[12]) {
+				lastScreen = 12;
+				lastPlayScreen = 12;
+				current = exitCode;
+				controllers[current].reset();
+				setScreen(controllers[current]);
+			}
 		}
-		else if (exitCode == WorldController.EXIT_NEXT) {
-			current = (current+1) % controllers.length;
-			controllers[current].reset();
-			setScreen(controllers[current]);
-		} else if (exitCode == WorldController.EXIT_PREV) {
-			current = (current+controllers.length-1) % controllers.length;
-			controllers[current].reset();
-			setScreen(controllers[current]);
-		} else if (exitCode == WorldController.EXIT_QUIT) {
-			// We quit the main application
-			Gdx.app.exit();
-		}
+//		else if (exitCode == WorldController.EXIT_NEXT) {
+//			current = (current+1) % controllers.length;
+//			controllers[current].reset();
+//			setScreen(controllers[current]);
+//		} else if (exitCode == WorldController.EXIT_PREV) {
+//			current = (current+controllers.length-1) % controllers.length;
+//			controllers[current].reset();
+//			setScreen(controllers[current]);
+//		} else if (exitCode == WorldController.EXIT_QUIT) {
+//			// We quit the main application
+//			Gdx.app.exit();
+//		}
 	}
 
 }

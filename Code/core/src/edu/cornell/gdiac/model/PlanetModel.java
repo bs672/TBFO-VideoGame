@@ -63,15 +63,13 @@ public class PlanetModel extends WheelObstacle{
 
     public float getType(){return type;}
 
-    public void convert(){becomingCommand++;}
-
     public int getConvert(){return becomingCommand;}
+
+    public void setConvert(int x){becomingCommand = x;}
 
     public void setDying(boolean bool) {dying = bool;}
 
     public void setExploding(boolean bool) {exploding = bool;}
-
-
 
     private float WARN_stateTime = -1;
 
@@ -211,6 +209,13 @@ public class PlanetModel extends WheelObstacle{
         becomingCommand = 0;
 
         setName("Planet");
+    }
+
+    public void convert() {
+        if (type != 1) {
+            becomingCommand++;
+        }
+        System.out.println(becomingCommand);
     }
 
     public void drawDebug(GameCanvas canvas) {
