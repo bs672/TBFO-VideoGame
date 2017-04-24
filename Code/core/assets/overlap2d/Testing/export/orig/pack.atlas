@@ -11,30 +11,37 @@ asteroid
   orig: 480, 480
   offset: 0, 0
   index: -1
-blackHole
+asteroidBelt
   rotate: false
   xy: 2, 2
   size: 480, 480
   orig: 480, 480
   offset: 0, 0
   index: -1
-blue
+blackHole
   rotate: false
   xy: 1186, 1357
   size: 480, 480
   orig: 480, 480
   offset: 0, 0
   index: -1
-command
+blue
   rotate: false
   xy: 704, 875
   size: 480, 480
   orig: 480, 480
   offset: 0, 0
   index: -1
-neutral
+command
   rotate: false
   xy: 1186, 875
+  size: 480, 480
+  orig: 480, 480
+  offset: 0, 0
+  index: -1
+neutral
+  rotate: false
+  xy: 655, 393
   size: 480, 480
   orig: 480, 480
   offset: 0, 0
@@ -48,7 +55,7 @@ oob2
   index: -1
 purple
   rotate: false
-  xy: 655, 393
+  xy: 1137, 393
   size: 480, 480
   orig: 480, 480
   offset: 0, 0

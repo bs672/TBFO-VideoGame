@@ -39,7 +39,7 @@ public class LevelSelect extends PlayMode {
     protected static final float[][] PLANETS = {
             {15f, 6.5f, 1.1f, 3f},    // BACK
             {10f, 3.5f, 1.1f, 3f},  // MAIN MENU
-            {23f, 3.5f, 1.1f, 3f},   // SETTINGS
+            {22.8f, 3.5f, 1.1f, 3f},   // SETTINGS
 
             {7.8f, 7f, 1.1f, 3f},    // LEVEL 1
             {7.52f, 10.5f, 1.1f, 3f},    // LEVEL 2
