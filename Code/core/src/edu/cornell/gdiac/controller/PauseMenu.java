@@ -92,6 +92,7 @@ public class PauseMenu extends PlayMode {
         sounds.allocate(manager, EXPLOSION_SOUND);
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
+        sounds.allocate(manager, EXPULSION_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
@@ -140,7 +141,7 @@ public class PauseMenu extends PlayMode {
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            obj.scalePicScale(new Vector2(.19f * obj.getRadius(), .19f * obj.getRadius()));
             obj.setName(pname + ii);
             obj.setTexture(TEXTURES[ii][0]);
             addObject(obj);

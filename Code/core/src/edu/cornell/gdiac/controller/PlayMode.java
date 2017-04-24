@@ -63,11 +63,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
-    //"space/planets/start.png";
-    protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
+    protected static final String OOB_GROWING_FILE = "space/animations/OobEating.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
-    protected static final String OOB_TELEPORTING_FILE = "space/animations/oobHappy.png";
+    protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/sunAnim.png";
@@ -115,7 +114,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String RED_P_3 = "space/planets/red3.png";
     //private static final String RED_P_4 = "space/planets/red.png";
 
-    protected static final String ASTEROID = "space/planets/asteroid.png";
+    protected static final String ASTEROID = "space/planets/asteroidBelt.png";
 
     /** The texture file for the planet animations */
     protected static final String SUN_P = "space/animations/sunAnim.png";
@@ -198,6 +197,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String MOTHERSHIP_SOUND = "audio/motherShip.wav";
     //Sound for bullet fire
     protected static final String SHOOTING_SOUND = "audio/shooting.wav";
+
+    protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
 
     /** The initial position of Oob */
     protected static Vector2 OOB_POS = new Vector2(16f, 12f);
@@ -566,6 +567,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(MOTHERSHIP_SOUND);
         manager.load(SHOOTING_SOUND, Sound.class);
         assets.add(SHOOTING_SOUND);
+        manager.load(EXPULSION_SOUND, Sound.class);
+        assets.add(EXPULSION_SOUND);
 
         super.preLoadContent(manager);
 
@@ -635,6 +638,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal(JUMP_SOUND));
         Sound mothershipSound = Gdx.audio.newSound(Gdx.files.internal(MOTHERSHIP_SOUND));
         Sound shootingSound = Gdx.audio.newSound(Gdx.files.internal(SHOOTING_SOUND));
+        Sound expulsionSound = Gdx.audio.newSound(Gdx.files.internal(EXPULSION_SOUND));
 
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
@@ -666,6 +670,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, EXPLOSION_SOUND);
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
+        sounds.allocate(manager, EXPULSION_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
@@ -956,7 +961,7 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            obj.scalePicScale(new Vector2(.19f * obj.getRadius(), .19f * obj.getRadius()));
             obj.setName(pname);
             if (obj.getType() == 0f || obj.getType() == 3f) {
 
@@ -1648,6 +1653,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                 complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius()/2f)));
                 adjustCooldown = 60;
+                if(!mute){
+                    SoundController.getInstance().play(EXPULSION_SOUND,EXPULSION_SOUND,false,EFFECT_VOLUME);
+                }
             }
             if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                 complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1812,13 +1820,11 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
                 //LOSE
-                System.out.println("here");
                 listener.exitScreen(this, 0);
                 //reset();
             }
             else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
                 //LOSE
-                System.out.println("HERE");
                 listener.exitScreen(this, 0);
                 //reset();
             }
@@ -1930,29 +1936,37 @@ public class PlayMode extends WorldController implements ContactListener {
 
                     if ( ((ComplexOobModel) obj).isNormal()) {
                         currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(8,7);
                     }
                     else if ( ((ComplexOobModel) obj).isGrowing() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(6,5);
                     }
                     else if ( ((ComplexOobModel) obj).isCommand() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(5,1);
                     }
                     else if ( blackHoleWarp ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(3,2);
                     }
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(40,1);
                     }
                     else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(10,1);
                     }
 
                     if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(10,1);
                         complexAvatar.decCooldown();
                     }
                     if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
                     }
                     ((ComplexOobModel) obj).setTexture(currentFrame);
                     ((ComplexOobModel) obj).draw();
