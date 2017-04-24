@@ -140,6 +140,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
     protected static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
     protected static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+    protected static final String TITLE = "space/menus/title.png";
     protected static final String PAUSETITLE = "space/menus/pause.png";
     protected static final String LEVELSTITLE = "space/menus/levels.png";
     protected static final String SETTINGSTITLE = "space/menus/settings.png";
@@ -147,7 +148,44 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String RESUME_HOVER_TEXTURE = "space/menus/resume_planet_hover.png";
     protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
     protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
-    protected static final String TITLE = "space/menus/title.png";
+    protected static final String LEVEL1_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL1_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL1_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL2_TEXTURE = "space/menus/level2.png";
+    protected static final String LEVEL2_LOCK_TEXTURE = "space/menus/level2_locked.png";
+    protected static final String LEVEL2_HOVER_TEXTURE = "space/menus/level2_hover.png";
+    protected static final String LEVEL3_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL3_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL3_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL4_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL4_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL4_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL5_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL5_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL5_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL6_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL6_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL6_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL7_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL7_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL7_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL8_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL8_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL8_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL9_TEXTURE = "space/menus/level1.png";
+    protected static final String LEVEL9_LOCK_TEXTURE = "space/menus/level1_locked.png";
+    protected static final String LEVEL9_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String[][] LEVELS_TEXTURES = {
+            {LEVEL1_TEXTURE, LEVEL1_HOVER_TEXTURE, LEVEL1_LOCK_TEXTURE},
+            {LEVEL2_TEXTURE, LEVEL2_HOVER_TEXTURE, LEVEL2_LOCK_TEXTURE},
+            {LEVEL3_TEXTURE, LEVEL3_HOVER_TEXTURE, LEVEL3_LOCK_TEXTURE},
+            {LEVEL4_TEXTURE, LEVEL4_HOVER_TEXTURE, LEVEL4_LOCK_TEXTURE},
+            {LEVEL5_TEXTURE, LEVEL5_HOVER_TEXTURE, LEVEL5_LOCK_TEXTURE},
+            {LEVEL6_TEXTURE, LEVEL6_HOVER_TEXTURE, LEVEL6_LOCK_TEXTURE},
+            {LEVEL7_TEXTURE, LEVEL7_HOVER_TEXTURE, LEVEL7_LOCK_TEXTURE},
+            {LEVEL8_TEXTURE, LEVEL8_HOVER_TEXTURE, LEVEL8_LOCK_TEXTURE},
+            {LEVEL9_TEXTURE, LEVEL9_HOVER_TEXTURE, LEVEL9_LOCK_TEXTURE},
+    };
 
     /** Texture file for background image */
     protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
@@ -298,29 +336,46 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Expulsion texture */
     protected TextureRegion expulsion_Texture;
 
-    /** Settings texture */
     protected TextureRegion settings_Texture;
-
-    /** Levels texture */
     protected TextureRegion levels_Texture;
-
-    /** Play texture */
     protected TextureRegion play_Texture;
-
-    /** Settings texture */
     protected TextureRegion settings_Hover_Texture;
-
-    /** Levels texture */
     protected TextureRegion levels_Hover_Texture;
-
-    /** Play texture */
     protected TextureRegion play_Hover_Texture;
     protected TextureRegion main_Menu_Texture;
     protected TextureRegion main_Menu_Hover_Texture;
     protected TextureRegion resume_Texture;
     protected TextureRegion resume_Hover_Texture;
+    protected TextureRegion level1_Texture;
+    protected TextureRegion level1_Lock_Texture;
+    protected TextureRegion level1_Hover_Texture;
+    protected TextureRegion level2_Texture;
+    protected TextureRegion level2_Lock_Texture;
+    protected TextureRegion level2_Hover_Texture;
+    protected TextureRegion level3_Texture;
+    protected TextureRegion level3_Lock_Texture;
+    protected TextureRegion level3_Hover_Texture;
+    protected TextureRegion level4_Texture;
+    protected TextureRegion level4_Lock_Texture;
+    protected TextureRegion level4_Hover_Texture;
+    protected TextureRegion level5_Texture;
+    protected TextureRegion level5_Lock_Texture;
+    protected TextureRegion level5_Hover_Texture;
+    protected TextureRegion level6_Texture;
+    protected TextureRegion level6_Lock_Texture;
+    protected TextureRegion level6_Hover_Texture;
+    protected TextureRegion level7_Texture;
+    protected TextureRegion level7_Lock_Texture;
+    protected TextureRegion level7_Hover_Texture;
+    protected TextureRegion level8_Texture;
+    protected TextureRegion level8_Lock_Texture;
+    protected TextureRegion level8_Hover_Texture;
+    protected TextureRegion level9_Texture;
+    protected TextureRegion level9_Lock_Texture;
+    protected TextureRegion level9_Hover_Texture;
     protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;
+    protected TextureRegion levelsTitleTexture;
 
     /** Background texture */
     protected TextureRegion backgroundMAIN;
@@ -396,45 +451,46 @@ public class PlayMode extends WorldController implements ContactListener {
 
         manager.load(SETTINGS_TEXTURE, Texture.class);
         assets.add(SETTINGS_TEXTURE);
-
         manager.load(SETTINGS_HOVER_TEXTURE, Texture.class);
         assets.add(SETTINGS_HOVER_TEXTURE);
-
         manager.load(PLAY_TEXTURE, Texture.class);
         assets.add(PLAY_TEXTURE);
-
         manager.load(PLAY_HOVER_TEXTURE, Texture.class);
         assets.add(PLAY_HOVER_TEXTURE);
-
         manager.load(LEVELS_TEXTURE, Texture.class);
         assets.add(LEVELS_TEXTURE);
-
         manager.load(LEVELS_HOVER_TEXTURE, Texture.class);
         assets.add(LEVELS_HOVER_TEXTURE);
+        manager.load(RESUME_TEXTURE, Texture.class);
+        assets.add(RESUME_TEXTURE);
+        manager.load(RESUME_HOVER_TEXTURE, Texture.class);
+        assets.add(RESUME_HOVER_TEXTURE);
+        manager.load(MAIN_MENU_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_TEXTURE);
+        manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
+        assets.add(MAIN_MENU_HOVER_TEXTURE);
 
         manager.load(TITLE, Texture.class);
         assets.add(TITLE);
-
         manager.load(PAUSETITLE, Texture.class);
         assets.add(PAUSETITLE);
-
         manager.load(LEVELSTITLE, Texture.class);
         assets.add(LEVELSTITLE);
-
         manager.load(SETTINGSTITLE, Texture.class);
         assets.add(SETTINGSTITLE);
 
-        manager.load(RESUME_TEXTURE, Texture.class);
-        assets.add(RESUME_TEXTURE);
-
-        manager.load(RESUME_HOVER_TEXTURE, Texture.class);
-        assets.add(RESUME_HOVER_TEXTURE);
-
-        manager.load(MAIN_MENU_TEXTURE, Texture.class);
-        assets.add(MAIN_MENU_TEXTURE);
-
-        manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
-        assets.add(MAIN_MENU_HOVER_TEXTURE);
+        manager.load(LEVEL1_TEXTURE, Texture.class);
+        assets.add(LEVEL1_TEXTURE);
+        manager.load(LEVEL1_LOCK_TEXTURE, Texture.class);
+        assets.add(LEVEL1_LOCK_TEXTURE);
+        manager.load(LEVEL1_HOVER_TEXTURE, Texture.class);
+        assets.add(LEVEL1_HOVER_TEXTURE);
+        manager.load(LEVEL2_TEXTURE, Texture.class);
+        assets.add(LEVEL2_TEXTURE);
+        manager.load(LEVEL2_LOCK_TEXTURE, Texture.class);
+        assets.add(LEVEL2_LOCK_TEXTURE);
+        manager.load(LEVEL2_HOVER_TEXTURE, Texture.class);
+        assets.add(LEVEL2_HOVER_TEXTURE);
 
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
@@ -746,7 +802,7 @@ public class PlayMode extends WorldController implements ContactListener {
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
         adjustCooldown = ADJUST_COOLDOWN;
-        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/MainScene.dt");
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/Tutorial1.dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
         play = true;
@@ -1523,7 +1579,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (commandPlanets.size == 0) {
             //We win the game!
-            if (play) listener.exitScreen(this, 0);
+            if (play) listener.exitScreen(this, 2);
         }
         if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
             //Game Over

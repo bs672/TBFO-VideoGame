@@ -188,8 +188,8 @@ public class MainMenu extends PlayMode {
     public void hover() {
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
         for (int i = 0; i < PLANETS.length; i++) {
-            float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
-            if ((Math.sqrt(d) < planets.get(i).getRadius())) {
+            float d = (((mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX())) + ((mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY())));
+            if ((Math.sqrt(d) < planets.get(i).getRadius()*1.5f)) {
                 if (lastHoverPlanet[i] == false) {
                     planets.get(i).setTexture(TEXTURES[i][1]);
                     planets.get(i).setRadius(planets.get(i).getRadius() * 1.1f);
