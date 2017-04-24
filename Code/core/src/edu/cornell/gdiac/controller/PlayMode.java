@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonReader;
@@ -960,7 +961,7 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.19f * obj.getRadius(), .19f * obj.getRadius()));
+            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname);
             if (obj.getType() == 0f || obj.getType() == 3f) {
 
@@ -1645,7 +1646,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 expulsion.setName("expulsion");
                 expulsion.setDrawScale(scale);
                 expulsion.setTexture(expulsion_Texture);
-                expulsion.scalePicScale(new Vector2(expRad, expRad));
+                expulsion.scalePicScale(new Vector2(expRad*1.3f, expRad*1.3f));
                 addObject(expulsion);
                 expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
                 changeMass(-expulsion.getMass()/2);
@@ -1935,45 +1936,40 @@ public class PlayMode extends WorldController implements ContactListener {
 
                     if ( ((ComplexOobModel) obj).isNormal()) {
                         currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(8,7);
                     }
                     else if ( ((ComplexOobModel) obj).isGrowing() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
                     }
                     else if ( ((ComplexOobModel) obj).isCommand() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(5,1);
                     }
-                    else if ( blackHoleWarp && !comingOut ) {
+                    else if ( blackHoleWarp ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(3,2);
                     }
                     else if ( ((ComplexOobModel) obj).isFlying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(40,1);
                     }
                     else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(25,1);
                     }
 
                     if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(10,1);
                         complexAvatar.decCooldown();
                     }
                     if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
                     }
                     ((ComplexOobModel) obj).setTexture(currentFrame);
-
-//                    Texture texture = currentFrame.getTexture();
-//                    if(!texture.getTextureData().isPrepared())
-//                        texture.getTextureData().prepare();
-//                    Pixmap pixmap = texture.getTextureData().consumePixmap();
-//                    Pixmap newPixmap = new Pixmap(currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), pixmap.getFormat());
-//
-//                    newPixmap.drawPixmap(pixmap, 0, 0, currentFrame.getRegionWidth(), 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
-//
-//                    ((ComplexOobModel) obj).setTexture(new Texture(newPixmap));
-//
-//                    ((ComplexOobModel)obj).draw();
-//                    newPixmap.dispose();
-//                    pixmap.dispose();
+                    ((ComplexOobModel) obj).draw();
 
                     canvas.begin();
                     obj.draw(canvas);

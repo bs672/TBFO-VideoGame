@@ -51,6 +51,9 @@ public class ComplexOobModel extends ComplexObstacle {
     /** A vector arry to track the last position of each edge for texture mapping*/
     private Array<Vector2> edgePosns;
 
+    private int FRAME_COLS;
+    private int FRAME_ROWS;
+
     protected static int SHOT_COOLDOWN;
 
     /** Bools for Oob play state */
@@ -190,7 +193,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public ComplexOobModel(float x, float y, float rad) {
         super(x,y);
         forceVec = new Vector2();
-        size = 50;
+        size = 35;
         setPosition(x,y);
         radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
@@ -299,7 +302,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
         // Go around in a circle, starting at the right
         float step = (float)(Math.PI*2)/size;
-        vertices = new VertexBuffer(bodies.size);
+        vertices = new VertexBuffer(bodies.size-1);
 
         edgePosns = new Array<Vector2>();
 
@@ -352,8 +355,17 @@ public class ComplexOobModel extends ComplexObstacle {
      * @param value  the object texture for drawing purposes.
      */
     public void setTexture(TextureRegion value) {
-        //img = value;
-        center.setTexture(value);
+        img = value.getTexture();
+        float baseX = ((float)value.getRegionX()) / img.getWidth();
+        float baseY = ((float)value.getRegionY()) / img.getHeight();
+        float step = (float)(Math.PI*2)/size;
+        for(int i = 0; i < size; i++) {
+            float offsetX = (((float)Math.cos(i*step) + 1) / 2) * (1f / FRAME_COLS);
+            float offsetY = ((-(float)Math.sin(i*step) + 1) / 2) * (1f / FRAME_ROWS);
+            vertices.setTexCoords(i, baseX + offsetX, baseY + offsetY);
+            System.out.println(FRAME_COLS + " " + FRAME_ROWS);
+//            System.out.println(offsetX + " " + offsetY);
+        }
     }
 
     public void scalePicScale(Vector2 v) {
@@ -489,12 +501,16 @@ public class ComplexOobModel extends ComplexObstacle {
         NORMAL, GROWING, COMMAND, FLYING, TELEPORTING, HURTING, DYING, MAX
     }
 
-
+    public void setAnimDimensions(int cols, int rows) {
+        FRAME_COLS = cols;
+        FRAME_ROWS = rows;
+    }
 
     public void createNormaltex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 7;
+        FRAME_COLS = 8;
+        FRAME_ROWS = 7;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -521,7 +537,9 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createGrowingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 4, FRAME_ROWS = 3;
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
+
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -552,7 +570,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createCommandtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 5, FRAME_ROWS = 1;
+        FRAME_COLS = 5;
+        FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -580,7 +599,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createFlyingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 40, FRAME_ROWS = 1;
+        FRAME_COLS = 40;
+        FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -607,7 +627,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createTeleportingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 3, FRAME_ROWS = 2;
+        FRAME_COLS = 3;
+        FRAME_ROWS = 2;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -635,7 +656,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createHurtingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 10, FRAME_ROWS = 1;
+        FRAME_COLS = 25;
+        FRAME_ROWS = 1;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -663,7 +685,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createDyingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 4, FRAME_ROWS = 3;
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -689,7 +712,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createMaxtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 4, FRAME_ROWS = 3;
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
