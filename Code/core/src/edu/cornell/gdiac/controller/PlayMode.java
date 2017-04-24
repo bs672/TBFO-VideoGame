@@ -69,7 +69,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
-    protected static final String OOB_MAX_FILE = "space/animations/sunAnim.png";
+    protected static final String OOB_MAX_FILE = "space/animations/OobFull.png";
 
 
     /** The texture file for the planets */
@@ -205,7 +205,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Oob's initial radius */
     protected  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
 
-    protected static final float SIPHON = 0.02f;
+    protected static final float SIPHON = 0.03f;
 
     protected static final float POISON = -0.02f;
 
@@ -217,7 +217,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
-    protected static final float OOB_MAX_RADIUS = 2.5f;
+    protected static final float OOB_MAX_RADIUS = 2f;
 
     protected static final float EPSILON = 0.1f;
 
@@ -898,12 +898,11 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(objectName.equals("oob2")){
                 OOB_RADIUS = scale / 0.35f;
             }
-            else if(objectName.equals("asteroid")){
-                tempArray = new Array<Float>();
+            else if(objectName.equals("asteroidBelt")){
                 tempArray = new Array<Float>();
                 tempArray.add((xPos+3)*3);
                 tempArray.add((yPos+3)*3);
-                tempArray.add(2.5f*scale/0.4f);
+                tempArray.add((2.5f*scale/0.4f)*3);
                 asteroidArray.add(tempArray);
             }
             else if(objectName.equals("blackHole")){
@@ -1152,14 +1151,14 @@ public class PlayMode extends WorldController implements ContactListener {
 
         //Create Asteroids
         for (int i = 0; i<ASTEROIDS.size; i++){
-            AsteroidModel asteroid = new AsteroidModel(ASTEROIDS.get(i).get(0), ASTEROIDS.get(i).get(1), ASTEROIDS.get(i).get(2));
+            AsteroidModel asteroid = new AsteroidModel(ASTEROIDS.get(i).get(0), ASTEROIDS.get(i).get(1), ASTEROIDS.get(i).get(2),ASTEROIDS.get(i).get(2));
             asteroid.setBodyType(BodyDef.BodyType.StaticBody);
             asteroid.setDensity(BASIC_DENSITY);
             asteroid.setFriction(BASIC_FRICTION);
             asteroid.setRestitution(BASIC_RESTITUTION);
             asteroid.setDrawScale(scale);
             asteroid.setTexture(asteroid_Texture);
-            asteroid.scalePicScale(new Vector2(.2f * asteroid.getRadius(), .2f * asteroid.getRadius()));
+            asteroid.scalePicScale(new Vector2(.09f * asteroid.getWidth(), .09f * asteroid.getHeight()));
             asteroid.setName("asteroid");
             addObject(asteroid);
         }
@@ -1961,13 +1960,19 @@ public class PlayMode extends WorldController implements ContactListener {
 
                     if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(10,1);
+                        ((ComplexOobModel) obj).setAnimDimensions(25,1);
                         complexAvatar.decCooldown();
                     }
                     if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
                         ((ComplexOobModel) obj).setAnimDimensions(4,3);
                     }
+
+                    if ( ((ComplexOobModel) obj).isMax() ) {
+                        currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
+                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                    }
+
                     ((ComplexOobModel) obj).setTexture(currentFrame);
                     ((ComplexOobModel) obj).draw();
 
