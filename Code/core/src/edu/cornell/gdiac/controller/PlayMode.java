@@ -1570,13 +1570,13 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-        System.out.println(complexAvatar.getCenter().getX());
-        System.out.println(complexAvatar.getCenter().getY());
-        System.out.println("CURRENTPLANET");
-        if(currentPlanet != null) {
-            System.out.println(currentPlanet.getX());
-            System.out.println(currentPlanet.getY());
-        }
+//        System.out.println(complexAvatar.getCenter().getX());
+//        System.out.println(complexAvatar.getCenter().getY());
+//        System.out.println("CURRENTPLANET");
+//        if(currentPlanet != null) {
+//            System.out.println(currentPlanet.getX());
+//            System.out.println(currentPlanet.getY());
+//        }
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1603,6 +1603,8 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
+                if(smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius() + 1f)
+                    complexAvatar.setPosition(currentPlanet.getPosition().x, currentPlanet.getPosition().cpy().y + currentPlanet.getRadius() + complexAvatar.getRadius() + 1f);
                 if (smallestRad.len() > 0.9f * complexAvatar.getRadius()) {
                     if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
                         complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
