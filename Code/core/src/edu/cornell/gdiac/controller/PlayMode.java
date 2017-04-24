@@ -1686,6 +1686,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
         }
+        for(Joint j : complexAvatar.getOuterJoints()) {
+            Vector2 dist = j.getAnchorA().cpy().sub(j.getAnchorB());
+            if(dist.len() > 3*((DistanceJoint)j).getLength())
+                complexAvatar.getForceVec().scl(0.5f);
+        }
         complexAvatar.applyForce();
         complexAvatar.resetForceVec();
         // If we use sound, we must remember this.
