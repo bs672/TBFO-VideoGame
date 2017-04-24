@@ -417,8 +417,8 @@ public class VertexBuffer {
         if (index >= size) throw new IllegalArgumentException("VertexBuffer has size "+size+" < "+index);
         if (size < 0) throw new IllegalArgumentException("Index "+index+" is negative");
         int off = STRIDE * index;
-        data[size + 3] = u;
-        data[size + 4] = v;
+        data[off + 3] = u;
+        data[off + 4] = v;
     }
 
 	/**
