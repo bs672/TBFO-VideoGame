@@ -1957,21 +1957,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     ((ComplexOobModel) obj).setTexture(currentFrame);
                     ((ComplexOobModel) obj).draw();
 
-//                    Texture texture = currentFrame.getTexture();
-//                    if(!texture.getTextureData().isPrepared())
-//                        texture.getTextureData().prepare();
-//                    Pixmap pixmap = texture.getTextureData().consumePixmap();
-//                    Pixmap newPixmap = new Pixmap(currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), pixmap.getFormat());
-//
-//                    newPixmap.drawPixmap(pixmap, 0, 0, currentFrame.getRegionX(), 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
-//
-//                    ((ComplexOobModel) obj).setTexture(new Texture(newPixmap));
-//
-//                    ((ComplexOobModel)obj).draw();
-//                    newPixmap.dispose();
-//                    pixmap.dispose();
-
-
                     canvas.begin();
                     obj.draw(canvas);
                     canvas.end();

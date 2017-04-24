@@ -363,9 +363,6 @@ public class ComplexOobModel extends ComplexObstacle {
             float offsetX = (((float)Math.cos(i*step) + 1) / 2) * (1f / FRAME_COLS);
             float offsetY = ((-(float)Math.sin(i*step) + 1) / 2) * (1f / FRAME_ROWS);
             vertices.setTexCoords(i, baseX + offsetX, baseY + offsetY);
-            if(baseY + offsetY < 0 || baseY + offsetY > 1)
-                System.out.println(baseY + offsetY);
-//            System.out.println((baseX + offsetX) + " " + (baseY + offsetY));
         }
     }
 
