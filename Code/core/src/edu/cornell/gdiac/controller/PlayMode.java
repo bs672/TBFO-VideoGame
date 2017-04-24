@@ -44,7 +44,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     /** The texture file for the character avatar (no animation) */
 
-
     //protected static final String OOB_FILE  = "space/animations/oobH.png";
 
 //    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
@@ -115,7 +114,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String EXPLOSION = "space/animations/explosionAnim.png";
 
-
     /** The texture file for the planets */
     protected static final String COMMAND_P = "space/planets/command.png";
 
@@ -127,22 +125,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
     /** The texture file for the planets */
     protected static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
-
-    /** The texture file for the planets */
     protected static final String PLAY_TEXTURE = "space/menus/play_planet.png";
-
-    /** The texture file for the planets */
     protected static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
-
-    /** The texture file for the planets */
     protected static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
-
-    /** The texture file for the planets */
     protected static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
-
-    /** The texture file for the planets */
     protected static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
-
     protected static final String PAUSETITLE = "space/menus/pause.png";
     protected static final String LEVELSTITLE = "space/menus/levels.png";
     protected static final String SETTINGSTITLE = "space/menus/settings.png";
@@ -150,10 +137,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String RESUME_HOVER_TEXTURE = "space/menus/resume_planet_hover.png";
     protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
     protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
-
     protected static final String TITLE = "space/menus/title.png";
-
-
 
     /** Texture file for background image */
     protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
@@ -162,15 +146,12 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
     protected static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
-
-
     /** Texture file for ship */
     protected static final String SHIP_TEXTURE = "space/ships/ship.png";
     /** The texture file for the bullets */
     protected static final String BULLET_TEXTURE = "space/ships/bullet.png";
     /** The texture file for mass expulsion */
     protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
-
 
     /** Parallax values */
     protected static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
@@ -207,8 +188,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final int THRESHOLD = 4;
 
     protected static final int ADJUST_COOLDOWN = 60;
-
-
 
     // A variable for tracking elapsed time for the animation
 
@@ -274,9 +253,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
     protected Texture BH_Sheet;
 
-
     //private Texture Oob_Sheet;
-
     protected Texture Oob_Normal_Sheet;
     protected Texture Oob_Growing_Sheet;
     protected Texture Oob_Command_Sheet;
@@ -287,10 +264,6 @@ public class PlayMode extends WorldController implements ContactListener {
     private Texture EXP_Sheet;
 
     private Texture WARN_Sheet;
-
-
-
-
 
     /** Planet texture */
     protected TextureRegion command_P_Texture;
