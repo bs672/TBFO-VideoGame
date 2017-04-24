@@ -198,6 +198,8 @@ public class PlayMode extends WorldController implements ContactListener {
     //Sound for bullet fire
     protected static final String SHOOTING_SOUND = "audio/shooting.wav";
 
+    protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
+
     /** The initial position of Oob */
     protected static Vector2 OOB_POS = new Vector2(16f, 12f);
     /** Oob's initial radius */
@@ -565,6 +567,8 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(MOTHERSHIP_SOUND);
         manager.load(SHOOTING_SOUND, Sound.class);
         assets.add(SHOOTING_SOUND);
+        manager.load(EXPULSION_SOUND, Sound.class);
+        assets.add(EXPULSION_SOUND);
 
         super.preLoadContent(manager);
 
@@ -634,6 +638,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal(JUMP_SOUND));
         Sound mothershipSound = Gdx.audio.newSound(Gdx.files.internal(MOTHERSHIP_SOUND));
         Sound shootingSound = Gdx.audio.newSound(Gdx.files.internal(SHOOTING_SOUND));
+        Sound expulsionSound = Gdx.audio.newSound(Gdx.files.internal(EXPULSION_SOUND));
 
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
@@ -665,6 +670,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, EXPLOSION_SOUND);
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
+        sounds.allocate(manager, EXPULSION_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
@@ -1647,6 +1653,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f*(complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                 complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius()/2f)));
                 adjustCooldown = 60;
+                if(!mute){
+                    SoundController.getInstance().play(EXPULSION_SOUND,EXPULSION_SOUND,false,EFFECT_VOLUME);
+                }
             }
             if(complexAvatar.getCenter().getLinearVelocity().len() < 4)
                 complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));

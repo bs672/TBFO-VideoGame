@@ -92,6 +92,7 @@ public class PauseMenu extends PlayMode {
         sounds.allocate(manager, EXPLOSION_SOUND);
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
+        sounds.allocate(manager, EXPULSION_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
     }
