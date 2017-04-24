@@ -786,7 +786,7 @@ public class PlayMode extends WorldController implements ContactListener {
      *
      * The game has default gravity and other settings
      */
-    public PlayMode() {
+    public PlayMode(String level) {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
         setDebug(false);
         setComplete(false);
@@ -802,7 +802,7 @@ public class PlayMode extends WorldController implements ContactListener {
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
         adjustCooldown = ADJUST_COOLDOWN;
-        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/Tutorial1.dt");
+        FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/"+level+".dt");
         String jsonString = json.readString();
         jsonParse(jsonString);
         play = true;
@@ -1576,12 +1576,12 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         if (commandPlanets.size == 0) {
-            //We win the game!
+            // Won the level
             if (play) listener.exitScreen(this, 2);
         }
         if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
-            //Game Over
-            listener.exitScreen(this, 0);
+            // We lost the level
+            listener.exitScreen(this, 100);
         }
         if (currentPlanet != null) {
             smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());

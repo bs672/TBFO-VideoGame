@@ -46,7 +46,7 @@ public class PauseMenu extends PlayMode {
     protected static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
     public PauseMenu() {
-        super();
+        super("MainScene");
         play = false;
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];

@@ -58,7 +58,7 @@ public class LevelSelect extends PlayMode {
     protected static int unlocked;
 
     public LevelSelect(int unlocked) {
-        super();
+        super("MainScene");
         play = false;
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
