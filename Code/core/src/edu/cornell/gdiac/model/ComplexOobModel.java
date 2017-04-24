@@ -351,8 +351,9 @@ public class ComplexOobModel extends ComplexObstacle {
      *
      * @param value  the object texture for drawing purposes.
      */
-    public void setTexture(Texture value) {
-        img = value;
+    public void setTexture(TextureRegion value) {
+        //img = value;
+        center.setTexture(value);
     }
 
     public void scalePicScale(Vector2 v) {
@@ -493,7 +494,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createNormaltex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 5, FRAME_ROWS = 5;
+        int FRAME_COLS = 8, FRAME_ROWS = 7;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -513,14 +514,14 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Normal_Animation = new Animation<TextureRegion>(.1f, frames);
+        Normal_Animation = new Animation<TextureRegion>(.05f, frames);
 
     }
 
     public void createGrowingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 12, FRAME_ROWS = 1;
+        int FRAME_COLS = 6, FRAME_ROWS = 5;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -540,7 +541,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Growing_Animation = new Animation<TextureRegion>(.3f, frames);
+        Growing_Animation = new Animation<TextureRegion>(.1f, frames);
 
 
         // this.scalePicScale(new Vector2(1.8f,1.8f));
@@ -606,7 +607,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createTeleportingtex() {
 
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
+        int FRAME_COLS = 3, FRAME_ROWS = 2;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
@@ -626,7 +627,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Teleporting_Animation = new Animation<TextureRegion>(.05f, frames);
+        Teleporting_Animation = new Animation<TextureRegion>(.1f, frames);
 
     }
 

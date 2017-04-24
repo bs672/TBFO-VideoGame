@@ -62,11 +62,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
-    //"space/planets/start.png";
-    protected static final String OOB_GROWING_FILE = "space/animations/blackHoleAnim.png";
+    protected static final String OOB_GROWING_FILE = "space/animations/OobEating.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
-    protected static final String OOB_TELEPORTING_FILE = "space/animations/oobHappy.png";
+    protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/sunAnim.png";
@@ -114,7 +113,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String RED_P_3 = "space/planets/red3.png";
     //private static final String RED_P_4 = "space/planets/red.png";
 
-    protected static final String ASTEROID = "space/planets/asteroid.png";
+    protected static final String ASTEROID = "space/planets/asteroidBelt.png";
 
     /** The texture file for the planet animations */
     protected static final String SUN_P = "space/animations/sunAnim.png";
@@ -961,7 +960,7 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            obj.scalePicScale(new Vector2(.19f * obj.getRadius(), .19f * obj.getRadius()));
             obj.setName(pname);
             if (obj.getType() == 0f || obj.getType() == 3f) {
 
@@ -1960,24 +1959,25 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ( ((ComplexOobModel) obj).isDying() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
                     }
+                    ((ComplexOobModel) obj).setTexture(currentFrame);
 
-                    Texture texture = currentFrame.getTexture();
-                    if(!texture.getTextureData().isPrepared())
-                        texture.getTextureData().prepare();
-                    Pixmap pixmap = texture.getTextureData().consumePixmap();
-                    Pixmap newPixmap = new Pixmap(currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), pixmap.getFormat());
+//                    Texture texture = currentFrame.getTexture();
+//                    if(!texture.getTextureData().isPrepared())
+//                        texture.getTextureData().prepare();
+//                    Pixmap pixmap = texture.getTextureData().consumePixmap();
+//                    Pixmap newPixmap = new Pixmap(currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), pixmap.getFormat());
+//
+//                    newPixmap.drawPixmap(pixmap, 0, 0, currentFrame.getRegionWidth(), 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
+//
+//                    ((ComplexOobModel) obj).setTexture(new Texture(newPixmap));
+//
+//                    ((ComplexOobModel)obj).draw();
+//                    newPixmap.dispose();
+//                    pixmap.dispose();
 
-                    newPixmap.drawPixmap(pixmap, 0, 0, currentFrame.getRegionWidth(), 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
-
-                    ((ComplexOobModel) obj).setTexture(new Texture(newPixmap));
-
-                    ((ComplexOobModel)obj).draw();
-                    newPixmap.dispose();
-                    pixmap.dispose();
-
-//                    canvas.begin();
-//                    obj.draw(canvas);
-//                    canvas.end();
+                    canvas.begin();
+                    obj.draw(canvas);
+                    canvas.end();
                 }
                 if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                     // Get current frame of animation for the current stateTime
