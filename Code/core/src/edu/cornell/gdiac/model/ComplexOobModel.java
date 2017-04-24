@@ -193,7 +193,7 @@ public class ComplexOobModel extends ComplexObstacle {
     public ComplexOobModel(float x, float y, float rad) {
         super(x,y);
         forceVec = new Vector2();
-        size = 50;
+        size = 40;
         setPosition(x,y);
         radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
@@ -363,8 +363,6 @@ public class ComplexOobModel extends ComplexObstacle {
             float offsetX = (((float)Math.cos(i*step) + 1) / 2) * (1f / FRAME_COLS);
             float offsetY = ((-(float)Math.sin(i*step) + 1) / 2) * (1f / FRAME_ROWS);
             vertices.setTexCoords(i, baseX + offsetX, baseY + offsetY);
-            System.out.println(FRAME_COLS + " " + FRAME_ROWS);
-//            System.out.println(offsetX + " " + offsetY);
         }
     }
 
@@ -443,6 +441,8 @@ public class ComplexOobModel extends ComplexObstacle {
     }
 
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
+
+    public Array<DistanceJoint> getOuterJoints() {return outerJoints; }
 
     public boolean isNormal() {return normal;}
     public void setNormal(boolean bool) {
