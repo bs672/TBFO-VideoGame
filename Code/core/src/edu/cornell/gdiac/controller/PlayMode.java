@@ -63,7 +63,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
-    protected static final String OOB_GROWING_FILE = "space/animations/OobEating.png";
+    protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
@@ -961,7 +961,7 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setFriction(BASIC_FRICTION);
             obj.setRestitution(BASIC_RESTITUTION);
             obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.19f * obj.getRadius(), .19f * obj.getRadius()));
+            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname);
             if (obj.getType() == 0f || obj.getType() == 3f) {
 
@@ -1646,7 +1646,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 expulsion.setName("expulsion");
                 expulsion.setDrawScale(scale);
                 expulsion.setTexture(expulsion_Texture);
-                expulsion.scalePicScale(new Vector2(expRad, expRad));
+                expulsion.scalePicScale(new Vector2(expRad*1.3f, expRad*1.3f));
                 addObject(expulsion);
                 expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
                 changeMass(-expulsion.getMass()/2);
@@ -1945,7 +1945,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     else if ( ((ComplexOobModel) obj).isGrowing() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(6,5);
+                        ((ComplexOobModel) obj).setAnimDimensions(4,3);
                     }
                     else if ( ((ComplexOobModel) obj).isCommand() ) {
                         currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
@@ -1961,7 +1961,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     else  {
                         currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
-                        ((ComplexOobModel) obj).setAnimDimensions(10,1);
+                        ((ComplexOobModel) obj).setAnimDimensions(25,1);
                     }
 
                     if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
