@@ -643,7 +643,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-        canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth() / 2 - (settingsTexture.getRegionWidth() / 2) - 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
+        canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth() /3 , 5*canvas.getHeight()/8, canvas.getWidth()/3, canvas.getHeight()/3);
         canvas.end();
         canvas.begin();
         for (Obstacle obj : objects) {
