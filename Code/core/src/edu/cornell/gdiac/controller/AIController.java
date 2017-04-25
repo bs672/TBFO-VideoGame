@@ -224,7 +224,8 @@ public class AIController {
 
     //Shoots if the ship is in range of oob
     public void shootInRange(ShipModel s){
-        tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
+        if (s.getType() != 2) {
+            tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
             if (s.getCooldown() == 0) {
                 if (s.getBurstCount() != 0) {
                     if (s.getDelay() == 0) {
@@ -237,25 +238,25 @@ public class AIController {
                         }
                         s.decBurstCount();
                         s.setDelay(DELAY);
-                    }
-                    else {
+                    } else {
                         s.decDelay();
                     }
-                }
-                else {
+                } else {
                     s.setCooldown(COOLDOWN);
                     s.setBurstCount(BURSTCOUNT);
                 }
-            }
-            else {
+            } else {
                 s.decCooldown();
             }
+        }
     }
 
     // Convert if ship is in range
     public void convertInRange(ShipModel s){
         if (s.getInOrbit()) {
-            targetPlanets.get(s).convert();
+            if (targetPlanets.get(s).getType() != 1) {
+                targetPlanets.get(s).convert();
+            }
         }
     }
 
