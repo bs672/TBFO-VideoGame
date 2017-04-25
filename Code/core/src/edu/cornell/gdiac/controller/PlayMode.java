@@ -1292,7 +1292,6 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
-//                System.out.println("can spawn");
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;

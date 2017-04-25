@@ -221,7 +221,6 @@ public class GDXRoot extends Game implements ScreenListener {
 					current = exitCode;
 					if (exitCode == 2) {
 						unlocked = Math.max(unlocked, i-2);
-						System.out.println("new unlocked " + unlocked);
 						controllers[2].reset();
 						controllers[2].setUnlocked(unlocked);
 					}
