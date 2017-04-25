@@ -818,6 +818,7 @@ public class PlayMode extends WorldController implements ContactListener {
         playerControl = true;
         gameState = 0;
         messageCounter = 0;
+        InputController.getInstance().setCenterCamera(true);
     }
 
     /**
@@ -1510,6 +1511,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if(InputController.getInstance().didPause()){
             if (play) listener.exitScreen(this, 3);
+            InputController.getInstance().setCenterCamera(true);
         }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor(canvas);
@@ -1541,6 +1543,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if(InputController.getInstance().didPause()){
             if (play) listener.exitScreen(this, 3);
+            InputController.getInstance().setCenterCamera(true);
         }
         if(playerControl) {
             if (control == 1) {
@@ -1641,6 +1644,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (commandPlanets.size == 0 & play) {
                 // Won the level
+                InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 2;
             }
@@ -1811,6 +1815,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if (messageCounter > 240) {
                 if (gameState == 2) {
                     listener.exitScreen(this, 2);
+                    InputController.getInstance().setCenterCamera(true);
                 }
                 else {
                     reset();
@@ -1938,11 +1943,13 @@ public class PlayMode extends WorldController implements ContactListener {
             if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
                 //LOSE
                 listener.exitScreen(this, 0);
+                InputController.getInstance().setCenterCamera(true);
                 //reset();
             }
             else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
                 //LOSE
                 listener.exitScreen(this, 0);
+                InputController.getInstance().setCenterCamera(true);
                 //reset();
             }
         } catch (Exception e) {
