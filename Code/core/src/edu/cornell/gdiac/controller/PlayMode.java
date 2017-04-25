@@ -1493,9 +1493,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob jump
     public void jump(){
         if(!forceJump) {
-            System.out.println(SoundController.getInstance().getMute());
-            System.out.println("jump");
-            SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.5f);
+            SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.7f);
         }
         Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
         complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
@@ -1621,13 +1619,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-//        System.out.println(complexAvatar.getCenter().getX());
-//        System.out.println(complexAvatar.getCenter().getY());
-//        System.out.println("CURRENTPLANET");
-//        if(currentPlanet != null) {
-//            System.out.println(currentPlanet.getX());
-//            System.out.println(currentPlanet.getY());
-//        }
+
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1758,7 +1750,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
                     adjustCooldown = 60;
-                    SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, EFFECT_VOLUME);
+                    SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
                 if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1813,7 +1805,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         else {
             messageCounter++;
-            if (messageCounter > 350) {
+            if (messageCounter > 240) {
                 if (gameState == 2) {
                     listener.exitScreen(this, 2);
                 }
@@ -2162,7 +2154,7 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
         if (gameState == 2) {
-            canvas.drawText("YOU WON!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
         canvas.end();
     }
