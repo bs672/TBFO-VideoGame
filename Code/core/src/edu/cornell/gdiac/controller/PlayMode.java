@@ -905,7 +905,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 tempArray.add((yPos+3)*3);
                 tempArray.add(2.5f*scale/0.4f);
                 tempArray.add(1.0f);
-                System.out.println(temp);
                 String custom = temp.getString("customVars");
                 //It will start with spawn:
                 tempArray.add(Float.parseFloat(custom.substring(6)));
