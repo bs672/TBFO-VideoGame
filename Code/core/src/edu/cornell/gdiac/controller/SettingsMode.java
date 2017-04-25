@@ -322,9 +322,9 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {0.0f, 4f, 1.1f, 3f},   // MAIN MENU
-            {25, 8f, 0.9f, 3f},  // MUTE
-            {15.0f, 11f, 1.5f, 3f},    // BACK
+            {16.0f, 4f, 1.1f, 3f},   // MAIN MENU
+            {16f, 8f, 0.9f, 3f},  // MUTE
+            {16.0f, 11f, 1.5f, 3f},    // BACK
     };
 
     private boolean jumpedOnce;
@@ -424,10 +424,6 @@ public class SettingsMode extends WorldController implements ContactListener {
      */
     private void populateLevel() {
 
-        PLANETS[0][0] = canvas.getWidth()/80f;
-        PLANETS[1][0] = canvas.getWidth()/80f;
-        PLANETS[2][0] = canvas.getWidth()/80f;
-
         // Create Planets
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.length; ii++) {
@@ -476,9 +472,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     }
 
 
-    public void scrollScreen() {
-    }
-
 
 
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob's on a planet
@@ -491,6 +484,39 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
         else{
             jump = InputController.getInstance().getJump();
+        }
+    }
+
+    public void scrollScreen() {
+        if(currentPlanet != null) {
+            vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
+            for (Obstacle o : objects) {
+                if (justLoaded) {
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
+                    justLoaded = false;
+                }
+                else {
+                    if(o.equals(complexAvatar)) {
+                        for(Obstacle p : complexAvatar.getBodies()) {
+                            p.setPosition(p.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                        }
+                    }
+                    else
+                        o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                }
+            }
+        }
+        else {
+            vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar)) {
+                    for(Obstacle p : complexAvatar.getBodies()) {
+                        p.setPosition(p.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                    }
+                }
+                else
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+            }
         }
     }
 

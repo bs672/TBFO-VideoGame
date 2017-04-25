@@ -415,7 +415,16 @@ public class PlayMode extends WorldController implements ContactListener {
     // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won
     protected int gameState;
 
-    public void setMute(boolean bool) {mute = bool;}
+    public void toggleMute() {
+        if (mute){
+            mute = false;
+            music.stop();
+        }
+        else{
+            mute = true;
+            music.play();
+        }
+    }
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
