@@ -74,6 +74,12 @@ public class InputController {
 
 	private boolean mouseJump;
 
+	private boolean scrollUp;
+	private boolean scrollDown;
+	private boolean scrollLeft;
+	private boolean scrollRight;
+	private boolean centerCamera;
+
 	private boolean change;
 	/** The cursar position (for raddoll) */
 	private Vector2 cursar;
@@ -97,6 +103,14 @@ public class InputController {
 	public float getHorizontal() {
 		return horizontal;
 	}
+
+	public void setCenterCamera(boolean b) {centerCamera = b; }
+
+	public boolean getCenterCamera() {return centerCamera; }
+	public boolean getScrollUp() { return scrollUp; }
+	public boolean getScrollDown() { return scrollDown; }
+	public boolean getScrollLeft() { return scrollLeft; }
+	public boolean getScrollRight() { return scrollRight; }
 
 	//Returns whether Oob is jumping
 
@@ -158,6 +172,7 @@ public class InputController {
 		xbox = new XBox360Controller(0);
 		cursar = new Vector2();
 		crosscache = new Vector2();
+		centerCamera = true;
 	}
 
 	/**
@@ -246,6 +261,14 @@ public class InputController {
 		else{
 			pressed = false;
 		}
+
+		if((Gdx.input.isKeyJustPressed(Input.Keys.Y))){
+			change = true;
+		}
+		else{
+			change = false;
+		}
+
 		//Changing modes, JUST FOR DEMO
 		if((Gdx.input.isKeyJustPressed(Input.Keys.M))){
 			change = true;
@@ -255,8 +278,34 @@ public class InputController {
 		}
 
 		jump = (secondary ? jump : false);
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			spaceJustPressed = true;
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+			centerCamera = true;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+			scrollUp = true;
+			centerCamera = false;
+		}
+		else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+			scrollDown = true;
+			scrollUp = false;
+			centerCamera = false;
+		}
+		else {
+			scrollUp = false;
+			scrollDown = false;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+			scrollLeft = true;
+			centerCamera = false;
+		}
+		else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+			scrollRight = true;
+			scrollLeft = false;
+			centerCamera = false;
+		}
+		else {
+			scrollLeft = false;
+			scrollRight = false;
 		}
 		if(!Gdx.input.isKeyPressed(Input.Keys.SPACE) && spaceJustPressed) {
 			jump = true;

@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -218,6 +219,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SHOOTING_SOUND = "audio/shooting.wav";
 
     protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
+
+    private static final float SCROLL_SPEED = 0.5f;
 
     /** The initial position of Oob */
     protected static Vector2 OOB_POS = new Vector2(16f, 12f);
@@ -821,6 +824,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        InputController.getInstance().setCenterCamera(true);
         playerControl = true;
         blackHoleWarp = false;
         comingOut = false;
@@ -1581,7 +1585,32 @@ public class PlayMode extends WorldController implements ContactListener {
             setDebug(!isDebug());
         }
         if (gameState == 0) {
-            scrollScreen();
+            if(InputController.getInstance().getCenterCamera())
+                scrollScreen();
+            else {
+                if(InputController.getInstance().getScrollUp()) {
+                    for(Obstacle o : objects) {
+                        o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
+                    }
+                }
+                else if(InputController.getInstance().getScrollDown()) {
+                    for(Obstacle o : objects) {
+                        o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
+                    }
+                }
+                if(InputController.getInstance().getScrollLeft()) {
+                    for(Obstacle o : objects) {
+                        o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
+                    }
+                }
+                else if(InputController.getInstance().getScrollRight()) {
+                    for(Obstacle o : objects) {
+                        o.setPosition(o.getPosition().x - SCROLL_SPEED, o.getPosition().y);
+                    }
+                }
+                if(InputController.getInstance().didReset())
+                    reset();
+            }
             width = canvas.getWidth() / 32;
             height = canvas.getHeight() / 18;
             if (InputController.getInstance().getChange()) {
@@ -1634,7 +1663,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (screenSwitch()) {
                     return;
                 }
+
                 groundPlayerControls();
+
                 if (!play) {
                     hover();
                 }
