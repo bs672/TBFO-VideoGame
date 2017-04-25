@@ -54,6 +54,7 @@ public class PlanetModel extends WheelObstacle{
         }
     }
 
+    public void setCooldown(int s){spawnCooldown = s;}
 
     public boolean isDying() {return dying;}
 
@@ -215,7 +216,7 @@ public class PlanetModel extends WheelObstacle{
         if (type != 1) {
             becomingCommand++;
         }
-        System.out.println(becomingCommand);
+//        System.out.println(becomingCommand);
     }
 
     public void drawDebug(GameCanvas canvas) {
