@@ -440,6 +440,13 @@ public class ComplexOobModel extends ComplexObstacle {
         setY(y);
     }
 
+    public void addToPosition(float x, float y) {
+        for(Obstacle o : bodies) {
+            o.setX(o.getX() + x);
+            o.setY(o.getY() + y);
+        }
+    }
+
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }
 
     public Array<DistanceJoint> getOuterJoints() {return outerJoints; }
