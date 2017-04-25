@@ -1514,7 +1514,7 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            listener.exitScreen(this, 3);
+            if (play) listener.exitScreen(this, 3);
         }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor(canvas);
@@ -1545,7 +1545,7 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            listener.exitScreen(this, 3);
+            if (play) listener.exitScreen(this, 3);
         }
         if(playerControl) {
             if (control == 1) {
