@@ -51,6 +51,8 @@ import com.badlogic.gdx.utils.*;
  */
 public class SoundController {
 
+	public boolean mute;
+
 	/**
 	 * Inner class to track and active sound instance
 	 * 
@@ -115,7 +117,7 @@ public class SoundController {
 	/** 
 	 * Creates a new SoundController with the default settings.
 	 */
-	private SoundController() {
+	private SoundController(boolean muteSet) {
 		soundbank = new IdentityMap<String,Sound>();
 		actives = new IdentityMap<String,ActiveSound>();
 		collection = new Array<String>();
@@ -123,8 +125,12 @@ public class SoundController {
 		timeLimit = DEFAULT_LIMIT;
 		frameLimit = DEFAULT_FRAME;
 		current = 0;
+		mute = muteSet;
 	}
 
+	public void setMute(boolean set){mute = set;}
+
+	public boolean getMute(){return mute;}
 	/**
 	 * Returns the single instance for the SoundController
 	 * 
@@ -134,7 +140,7 @@ public class SoundController {
 	 */
 	public static SoundController getInstance() {
 		if (controller == null) {
-			controller = new SoundController();
+			controller = new SoundController(false);
 		}
 		return controller;
 	}
@@ -289,35 +295,39 @@ public class SoundController {
 	 * @return True if the sound was successfully played
 	 */
 	public boolean play(String key, String filename, boolean loop, float volume) {
-		// Get the sound for the file
-		if (!soundbank.containsKey(filename) || current >= frameLimit) {
-			return false;
-		}
-
-		// If there is a sound for this key, stop it
-		Sound sound = soundbank.get(filename);
-		if (actives.containsKey(key)) {
-			ActiveSound snd = actives.get(key);
-			if (!snd.loop && snd.lifespan > cooldown) {
-				// This is a workaround for the OS X sound bug
-				//snd.sound.stop(snd.id);
-				snd.sound.setVolume(snd.id, 0.0f); 
-			} else {
-				return true;
+		if(!mute) {
+			// Get the sound for the file
+			if (!soundbank.containsKey(filename) || current >= frameLimit) {
+				return false;
 			}
+
+			// If there is a sound for this key, stop it
+			Sound sound = soundbank.get(filename);
+			if (actives.containsKey(key)) {
+				ActiveSound snd = actives.get(key);
+				if (!snd.loop && snd.lifespan > cooldown) {
+					// This is a workaround for the OS X sound bug
+					//snd.sound.stop(snd.id);
+					snd.sound.setVolume(snd.id, 0.0f);
+				} else {
+					return true;
+				}
+			}
+
+			// Play the new sound and add it
+			long id = sound.play(volume);
+			if (id == -1) {
+				return false;
+			} else if (loop) {
+				sound.setLooping(id, true);
+			}
+
+			actives.put(key, new ActiveSound(sound, id, loop));
+			current++;
+			return true;
 		}
-		
-		// Play the new sound and add it
-		long id = sound.play(volume);
-		if (id == -1) {
+		else
 			return false;
-		} else if (loop) {
-			sound.setLooping(id, true);
-		}
-		
-		actives.put(key,new ActiveSound(sound,id,loop));
-		current++;
-		return true;
 	}
 	
 	/**
