@@ -238,7 +238,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
-    protected static final float OOB_MAX_RADIUS = 2.5f;
+    protected static final float OOB_MAX_RADIUS = 2.0f;
 
     protected static final float EPSILON = 0.1f;
 
