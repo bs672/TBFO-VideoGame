@@ -207,7 +207,7 @@ public class PauseMenu extends PlayMode {
     public void draw(float dt) {
         super.draw(dt);
         canvas.begin();
-        canvas.draw(pauseTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (pauseTitleTexture.getRegionWidth() / 2) + 50, 550, pauseTitleTexture.getRegionWidth(), pauseTitleTexture.getRegionHeight());
+        canvas.draw(pauseTitleTexture, Color.WHITE, canvas.getWidth() /3 , 5*canvas.getHeight()/8, canvas.getWidth()/3, canvas.getHeight()/3);
 
         //canvas.draw(pauseTitleTexture, Color.WHITE, pauseTitleTexture.getRegionWidth() / 2 - (pauseTitleTexture.getRegionWidth() / 2) + 50, 400, canvas.getWidth(), canvas.getHeight());
         canvas.end();
