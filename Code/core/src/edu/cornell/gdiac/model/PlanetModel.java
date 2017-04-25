@@ -54,6 +54,7 @@ public class PlanetModel extends WheelObstacle{
         }
     }
 
+    public void setCooldown(int s){spawnCooldown = s;}
 
     public boolean isDying() {return dying;}
 
