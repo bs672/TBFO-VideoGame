@@ -64,7 +64,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
-    protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
+    protected static final String OOB_COMMAND_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
@@ -1705,7 +1705,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 } else {
                     rad = currentPlanet.getRadius();
                     float Oob_rad = complexAvatar.getRadius();
-                    if (rad > DEATH_RADIUS && Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                    if ((rad > DEATH_RADIUS &&
+                            ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
+                            || (currentPlanet.getType() == 1f)))) {
                         siphonPlanet();
                     } else if (Oob_rad >= OOB_MAX_RADIUS) {
                         complexAvatar.setMax(true);
@@ -2028,8 +2030,29 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
 
+
+//        if (currentPlanet!=null) {
+//            canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+//        }
+//        else if (!InputController.getInstance().getCenterCamera()){
+//            if (InputController.getInstance().getScrollUp()) {
+//                canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y-SCROLL_SPEED, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+//            }
+//            if (InputController.getInstance().getScrollUp()) {
+//                canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y+SCROLL_SPEED, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+//            }
+//            if (InputController.getInstance().getScrollLeft()) {
+//                canvas.draw(backgroundLG, Color.WHITE, LG_S_X+SCROLL_SPEED, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+//            }
+//            if (InputController.getInstance().getScrollRight()) {
+//                canvas.draw(backgroundLG, Color.WHITE, LG_S_X-SCROLL_SPEED, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+//            }
+//
+//        else {
+//            canvas.draw(backgroundLG, Color.WHITE, LG_S_X+ vecToCenter.cpy().scl(1f / 25).x, LG_S_Y+ vecToCenter.cpy().scl(1f / 25).y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+//        }
 
 
 
@@ -2053,7 +2076,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if ( ((ComplexOobModel) obj).isCommand() ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-                    ((ComplexOobModel) obj).setAnimDimensions(5,1);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
                 else if ( blackHoleWarp ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
