@@ -311,7 +311,7 @@ public class LevelSelect extends PlayMode {
     public void draw(float dt) {
         super.draw(dt);
         canvas.begin();
-        canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (levelsTitleTexture.getRegionWidth() / 2) + 50, 550, levelsTitleTexture.getRegionWidth(), levelsTitleTexture.getRegionHeight());
+        canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (levelsTitleTexture.getRegionWidth() / 2), 550, levelsTitleTexture.getRegionWidth(), levelsTitleTexture.getRegionHeight());
         canvas.end();
     }
 }

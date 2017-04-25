@@ -59,9 +59,6 @@ public class PlayMode extends WorldController implements ContactListener {
 //    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
 //    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
 
-    public static Music music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
-
-
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
@@ -399,7 +396,6 @@ public class PlayMode extends WorldController implements ContactListener {
     //variables for player controls
     protected boolean jump = false;
     protected float moveDirection = 0f;
-    protected boolean mute = false;
     protected Vector2 launchVec;
     // the linked black holes we are interacting with
     protected BlackHoleModel inHole;
@@ -414,8 +410,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int messageCounter;
     // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won
     protected int gameState;
-
-    public void setMute(boolean bool) {mute = bool;}
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
@@ -1309,6 +1303,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2);
+                    System.out.println("mother ship launched");
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1331,8 +1326,9 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopConvertPlanet() {
         for (int i = 0; i < planets.size; i++) {
             if (planets.get(i).getType() != 1) {
-                if (planets.get(i).getConvert() > 500) {
+                if (planets.get(i).getConvert() > 60) {
                     planets.get(i).setType(1);
+                    planets.get(i).setTexture(command_P_Texture);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                 }
@@ -1358,13 +1354,47 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setTexture(bullet_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
-                if(!mute) {
-                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME);
-                }
+                SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME);
+
             }
             aiController.bulletData.clear();
         }
 
+    }
+
+    public void unlockedScrollScreen() {
+        if(InputController.getInstance().getScrollUp()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(0, -SCROLL_SPEED);
+                else
+                    o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
+            }
+        }
+        else if(InputController.getInstance().getScrollDown()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(0, SCROLL_SPEED);
+                else
+                    o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
+            }
+        }
+        if(InputController.getInstance().getScrollLeft()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(SCROLL_SPEED, 0);
+                else
+                    o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
+            }
+        }
+        else if(InputController.getInstance().getScrollRight()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(-SCROLL_SPEED, 0);
+                else
+                    o.setPosition(o.getPosition().x - SCROLL_SPEED, o.getPosition().y);
+            }
+        }
     }
 
     public void scrollScreen() {
@@ -1453,8 +1483,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Make Oob jump
     public void jump(){
-        if(!mute && !forceJump)
-            SoundController.getInstance().play(JUMP_SOUND,JUMP_SOUND,false,EFFECT_VOLUME);
+        if(!forceJump) {
+            System.out.println(SoundController.getInstance().getMute());
+            System.out.println("jump");
+            SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.5f);
+        }
         Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
         complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
         lastPlanet = currentPlanet;
@@ -1468,7 +1501,7 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            listener.exitScreen(this, 3);
+            if (play) listener.exitScreen(this, 3);
         }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor(canvas);
@@ -1499,7 +1532,7 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            listener.exitScreen(this, 3);
+            if (play) listener.exitScreen(this, 3);
         }
         if(playerControl) {
             if (control == 1) {
@@ -1517,8 +1550,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
         if(oobToHole.len() < complexAvatar.getRadius() + 0.5f) { // transition between black holes
             Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
-            complexAvatar.setX(newPos.x);
-            complexAvatar.setY(newPos.y);
+            complexAvatar.addToPosition(newPos.x - complexAvatar.getX(), newPos.y - complexAvatar.getY());
+
+//            complexAvatar.setX(newPos.x);
+//            complexAvatar.setY(newPos.y);
             complexAvatar.setLinearVelocity(outHole.getOutVelocity());
             inHole.setRadius(inHole.getOldRadius());
             comingOut = true;
@@ -1577,7 +1612,13 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-
+//        System.out.println(complexAvatar.getCenter().getX());
+//        System.out.println(complexAvatar.getCenter().getY());
+//        System.out.println("CURRENTPLANET");
+//        if(currentPlanet != null) {
+//            System.out.println(currentPlanet.getX());
+//            System.out.println(currentPlanet.getY());
+//        }
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1585,28 +1626,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if(InputController.getInstance().getCenterCamera())
                 scrollScreen();
             else {
-                if(InputController.getInstance().getScrollUp()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
-                    }
-                }
-                else if(InputController.getInstance().getScrollDown()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
-                    }
-                }
-                if(InputController.getInstance().getScrollLeft()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
-                    }
-                }
-                else if(InputController.getInstance().getScrollRight()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x - SCROLL_SPEED, o.getPosition().y);
-                    }
-                }
-                if(InputController.getInstance().didReset())
-                    reset();
+                unlockedScrollScreen();
             }
             width = canvas.getWidth() / 32;
             height = canvas.getHeight() / 18;
@@ -1674,9 +1694,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentPlanet.createEXPtex();
                     forceJump = true;
                     jump = true;
-                    if (!mute) {
-                        SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
-                    }
+                    SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                 }
 
                 if (jump) {
@@ -1732,9 +1750,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
                     adjustCooldown = 60;
-                    if (!mute) {
-                        SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, EFFECT_VOLUME);
-                    }
+                    SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, EFFECT_VOLUME);
                 }
                 if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1839,8 +1855,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
-                    if(!mute)
-                        SoundController.getInstance().play(SHOOTING_SOUND,SHOOTING_SOUND,false,EFFECT_VOLUME);
+                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME);
                 }
                 else if (bd2.getName().equals("ship")) {
                     bd2.markRemoved(true);
@@ -1874,8 +1889,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
-                    if(!mute)
-                        SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false,EFFECT_VOLUME);
+                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false,EFFECT_VOLUME);
                 }
                 else if (bd1.getName().equals("ship")) {
                     bd1.markRemoved(true);
