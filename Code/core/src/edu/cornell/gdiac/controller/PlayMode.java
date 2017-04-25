@@ -1376,6 +1376,41 @@ public class PlayMode extends WorldController implements ContactListener {
 
     }
 
+    public void unlockedScrollScreen() {
+        if(InputController.getInstance().getScrollUp()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(0, -SCROLL_SPEED);
+                else
+                    o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
+            }
+        }
+        else if(InputController.getInstance().getScrollDown()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(0, SCROLL_SPEED);
+                else
+                    o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
+            }
+        }
+        if(InputController.getInstance().getScrollLeft()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(SCROLL_SPEED, 0);
+                else
+                    o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
+            }
+        }
+        else if(InputController.getInstance().getScrollRight()) {
+            for(Obstacle o : objects) {
+                if(o.equals(complexAvatar))
+                    complexAvatar.addToPosition(-SCROLL_SPEED, 0);
+                else
+                    o.setPosition(o.getPosition().x - SCROLL_SPEED, o.getPosition().y);
+            }
+        }
+    }
+
     public void scrollScreen() {
         if(currentPlanet != null) {
             vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
@@ -1526,8 +1561,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
         if(oobToHole.len() < complexAvatar.getRadius() + 0.5f) { // transition between black holes
             Vector2 newPos = outHole.getPosition().cpy().add(outHole.getOutVelocity().cpy().nor().scl(complexAvatar.getRadius() + 0.5f));
-            complexAvatar.setX(newPos.x);
-            complexAvatar.setY(newPos.y);
+            complexAvatar.addToPosition(newPos.x - complexAvatar.getX(), newPos.y - complexAvatar.getY());
+
+//            complexAvatar.setX(newPos.x);
+//            complexAvatar.setY(newPos.y);
             complexAvatar.setLinearVelocity(outHole.getOutVelocity());
             inHole.setRadius(inHole.getOldRadius());
             comingOut = true;
@@ -1594,28 +1631,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if(InputController.getInstance().getCenterCamera())
                 scrollScreen();
             else {
-                if(InputController.getInstance().getScrollUp()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
-                    }
-                }
-                else if(InputController.getInstance().getScrollDown()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
-                    }
-                }
-                if(InputController.getInstance().getScrollLeft()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
-                    }
-                }
-                else if(InputController.getInstance().getScrollRight()) {
-                    for(Obstacle o : objects) {
-                        o.setPosition(o.getPosition().x - SCROLL_SPEED, o.getPosition().y);
-                    }
-                }
-                if(InputController.getInstance().didReset())
-                    reset();
+                unlockedScrollScreen();
             }
             width = canvas.getWidth() / 32;
             height = canvas.getHeight() / 18;
