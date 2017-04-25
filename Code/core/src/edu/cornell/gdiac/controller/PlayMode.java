@@ -1991,21 +1991,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
 
-
-
-
-
-
-
-
-    /**
-     * Draw the physics objects together with foreground and background
-     *
-     * This is completely overridden to support custom background and foreground art.
-     *
-     * @param dt Timing values from parent loop
-     */
-    public void draw(float dt) {
+    public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
         //float camera = -carPosition;
@@ -2065,7 +2051,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
         canvas.end();
+    }
 
+
+
+    public void drawObjects(){
         for (Obstacle obj : objects) {
 
 
@@ -2186,6 +2176,20 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
         canvas.end();
+    }
+
+
+    /**
+     * Draw the physics objects together with foreground and background
+     *
+     * This is completely overridden to support custom background and foreground art.
+     *
+     * @param dt Timing values from parent loop
+     */
+    public void draw(float dt) {
+
+        drawBackground();
+        drawObjects();
     }
 
 }
