@@ -194,7 +194,7 @@ public class ComplexOobModel extends ComplexObstacle {
         super(x,y);
         forceVec = new Vector2();
         size = 40;
-        setPosition(x,y);
+        super.setPosition(x,y);
         radius = rad;
         setBodyType(BodyDef.BodyType.DynamicBody);
         center = new WheelObstacle(x, y, radius / 2);
@@ -435,9 +435,9 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Vector2 getForceVec() {return forceVec;}
 
-    public void setPosition(Vector2 v) {
-        setX(v.x);
-        setY(v.y);
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y);
     }
 
     public Array<DistanceJoint> getInnerJoints() {return innerJoints; }

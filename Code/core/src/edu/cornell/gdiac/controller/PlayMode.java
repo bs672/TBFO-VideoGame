@@ -1575,6 +1575,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1601,6 +1602,8 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
+                if(smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius() + 1f)
+                    complexAvatar.setPosition(currentPlanet.getPosition().x, currentPlanet.getPosition().cpy().y + currentPlanet.getRadius() + complexAvatar.getRadius() + 1f);
                 if (smallestRad.len() > 0.9f * complexAvatar.getRadius()) {
                     if (smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius())
                         complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - 2 * complexAvatar.getMass()));
