@@ -239,7 +239,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
-    protected static final float OOB_MAX_RADIUS = 2f;
+    protected static final float OOB_MAX_RADIUS = 2.5f;
 
     protected static final float EPSILON = 0.1f;
 
@@ -1299,11 +1299,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
-                if (Math.random()<0.5){
+                if (Math.random()<0.0){
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
 //                    sh.setAggroRange(20f);
                 }
-                else if (Math.random() < 0.75){
+                else if (Math.random() < 0.0){
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 else {
