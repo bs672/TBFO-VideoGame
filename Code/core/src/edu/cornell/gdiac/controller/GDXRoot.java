@@ -94,17 +94,17 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers = new WorldController[13];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect(1);
+		controllers[2] = new LevelSelect(9);
 		controllers[3] = new PauseMenu();
-		controllers[4] = new PlayMode("Combination");
-		controllers[5] = new PlayMode("Tutorial2");
-		controllers[6] = new PlayMode("MainScene");
-		controllers[7] = new PlayMode("Tutorial1");
+		controllers[4] = new PlayMode("Intro Level");
+		controllers[5] = new PlayMode("Tutoral");
+		controllers[6] = new PlayMode("Level 3");
+		controllers[7] = new PlayMode("Intro Level 1");
 		controllers[8] = new PlayMode("Tutorial1");
-		controllers[9] = new PlayMode("Tutorial1");
-		controllers[10] = new PlayMode("Tutorial1");
-		controllers[11] = new PlayMode("Tutorial1");
-		controllers[12] = new PlayMode("Tutorial1");
+		controllers[9] = new PlayMode("Tutorial2");
+		controllers[10] = new PlayMode("Level 2");
+		controllers[11] = new PlayMode("MainScene");
+		controllers[12] = new PlayMode("Combination");
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
@@ -209,18 +209,23 @@ public class GDXRoot extends Game implements ScreenListener {
 		}
 		// LEVEL SELECT
 		else if (screen == controllers[2]) {
-			if (exitCode < 2) {
-				current = exitCode;
+			if(current!=12) {
+				if (exitCode < 2) {
+					current = exitCode;
+				} else if (exitCode == 2) {
+					current = lastScreen;
+				} else {
+					current = exitCode + 1;
+				}
+				lastScreen = 2;
+				controllers[current].reset();
+				setScreen(controllers[current]);
 			}
-			else if (exitCode == 2) {
-				current = lastScreen;
+			else{
+				lastScreen = 2;
+				controllers[current].reset();
+				setScreen(controllers[2]);
 			}
-			else {
-				current = exitCode + 1;
-			}
-			lastScreen = 2;
-			controllers[current].reset();
-			setScreen(controllers[current]);
 		}
 		// PAUSE MENU
 		else if (screen == controllers[3]) {
