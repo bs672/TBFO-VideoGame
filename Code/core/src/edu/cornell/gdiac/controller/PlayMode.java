@@ -909,6 +909,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 tempArray.add((yPos+3)*3);
                 tempArray.add(2.5f*scale/0.4f);
                 tempArray.add(1.0f);
+                String custom = temp.getString("customVars");
+                //It will start with spawn:
+                tempArray.add(Float.parseFloat(custom.substring(6)));
                 planetArray.add(tempArray);
             }
             else if(objectName.equals("sun")){
@@ -1106,6 +1109,7 @@ public class PlayMode extends WorldController implements ContactListener {
             if (obj.getType() == 1f) {
                 obj.setTexture(command_P_Texture);
                 commandPlanets.add(obj);
+                obj.setCooldown(Math.round(PLANETS.get(ii).get(4)));
             }
             //Poison Planets
             if (obj.getType() == 2f) {
@@ -1292,7 +1296,6 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopCommandPlanets(){
         for(PlanetModel c: commandPlanets){
             if (c.canSpawn()){
-//                System.out.println("can spawn");
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
@@ -1574,13 +1577,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-//        System.out.println(complexAvatar.getCenter().getX());
-//        System.out.println(complexAvatar.getCenter().getY());
-//        System.out.println("CURRENTPLANET");
-//        if(currentPlanet != null) {
-//            System.out.println(currentPlanet.getX());
-//            System.out.println(currentPlanet.getY());
-//        }
+
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }

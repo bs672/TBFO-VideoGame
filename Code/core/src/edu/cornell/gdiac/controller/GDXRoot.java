@@ -85,7 +85,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(1);
 		controllers[3] = new PauseMenu();
-		controllers[4] = new PlayMode("Tutorial1");
+		controllers[4] = new PlayMode("MainScene");
 		controllers[5] = new PlayMode("Tutorial1");
 		controllers[6] = new PlayMode("MainScene");
 		controllers[7] = new PlayMode("Tutorial1");
@@ -221,7 +221,6 @@ public class GDXRoot extends Game implements ScreenListener {
 					current = exitCode;
 					if (exitCode == 2) {
 						unlocked = Math.max(unlocked, i-2);
-						System.out.println("new unlocked " + unlocked);
 						controllers[2].reset();
 						controllers[2].setUnlocked(unlocked);
 					}
