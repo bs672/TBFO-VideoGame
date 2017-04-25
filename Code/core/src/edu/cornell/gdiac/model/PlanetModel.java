@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
@@ -78,6 +79,8 @@ public class PlanetModel extends WheelObstacle{
 
     public float get_WARN_ST(){return WARN_stateTime;}
 
+    public Array<ShipModel> ships;
+
 
     private float EXP_stateTime= -1;
 
@@ -122,8 +125,11 @@ public class PlanetModel extends WheelObstacle{
 
     public Texture get_sheet(){return EXP_Sheet;}
 
+    public void addShip(ShipModel ship) {ships.add(ship);}
 
+    public void removeShip(ShipModel ship) {ships.removeValue(ship, true);}
 
+    public Array<ShipModel> getShips() {return ships;}
 
     public void createWARNtex() {
 
@@ -185,10 +191,6 @@ public class PlanetModel extends WheelObstacle{
 
     }
 
-
-
-
-
     /**
      * Creates a new planet at the given position.
      *
@@ -208,6 +210,31 @@ public class PlanetModel extends WheelObstacle{
         this.type = t;
         dying=false;
         becomingCommand = 0;
+        ships = new Array<ShipModel>();
+
+        setName("Planet");
+    }
+
+    /**
+     * Creates a new planet at the given position.
+     *
+     * The size is expressed in physics units NOT pixels.  In order for
+     * drawing to work properly, you MUST set the drawScale. The drawScale
+     * converts the physics units to pixels.
+     *
+     * @param x  		Initial x position of the avatar center
+     * @param y  		Initial y position of the avatar center
+     * @param radius		The object radius in physics units
+     * @param t         The type of the planet
+     */
+    public PlanetModel(float x, float y, float radius, float t, Array<ShipModel>ships) {
+        super(x,y,radius);
+        setDensity(PLANET_DENSITY);
+        setFixedRotation(true);
+        this.type = t;
+        dying=false;
+        becomingCommand = 0;
+        this.ships = ships;
 
         setName("Planet");
     }

@@ -322,8 +322,8 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static final float[][] PLANETS = {
-            {16.0f, 4f, 1.1f, 3f},   // MAIN MENU
-            {16f, 8f, 0.9f, 3f},  // MUTE
+            {16.0f, 1f, 1.1f, 3f},   // MAIN MENU
+            {16f, 7f, 1.5f, 3f},  // MUTE
             {16.0f, 11f, 1.5f, 3f},    // BACK
     };
 
@@ -565,7 +565,6 @@ public class SettingsMode extends WorldController implements ContactListener {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
                 if (Math.sqrt(d) < planets.get(i).getRadius()) {
                     listener.exitScreen(this, i);
-                    System.out.println(i);
                     return;
                 }
             }
