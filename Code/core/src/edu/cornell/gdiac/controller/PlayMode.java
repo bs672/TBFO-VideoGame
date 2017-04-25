@@ -1303,6 +1303,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2);
+                    System.out.println("mother ship launched");
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1325,8 +1326,9 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopConvertPlanet() {
         for (int i = 0; i < planets.size; i++) {
             if (planets.get(i).getType() != 1) {
-                if (planets.get(i).getConvert() > 500) {
+                if (planets.get(i).getConvert() > 60) {
                     planets.get(i).setType(1);
+                    planets.get(i).setTexture(command_P_Texture);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                 }
@@ -1499,7 +1501,7 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            listener.exitScreen(this, 3);
+            if (play) listener.exitScreen(this, 3);
         }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor(canvas);
@@ -1530,7 +1532,7 @@ public class PlayMode extends WorldController implements ContactListener {
             reset();
         }
         if(InputController.getInstance().didPause()){
-            listener.exitScreen(this, 3);
+            if (play) listener.exitScreen(this, 3);
         }
         if(playerControl) {
             if (control == 1) {
@@ -1610,7 +1612,13 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-
+//        System.out.println(complexAvatar.getCenter().getX());
+//        System.out.println(complexAvatar.getCenter().getY());
+//        System.out.println("CURRENTPLANET");
+//        if(currentPlanet != null) {
+//            System.out.println(currentPlanet.getX());
+//            System.out.println(currentPlanet.getY());
+//        }
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }

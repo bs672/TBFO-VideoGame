@@ -11,7 +11,7 @@ public class ShipModel extends CapsuleObstacle{
 
     private static final float WIDTH = 0.3f;
     private static final float HEIGHT = 0.6f;
-    private static final float MOTHER_MASS = 0.6f;
+    private static final float MOTHER_MASS = 1f;
 
     private static final float DAMPING = 5.0f;
     private static final float MOVE_SPEED = 0.1f;
