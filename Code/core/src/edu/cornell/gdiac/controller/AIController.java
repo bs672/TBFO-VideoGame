@@ -42,7 +42,7 @@ public class AIController {
     /** burst delay */
     private static final int DELAY = 5;
     /** distance from orbiting planet */
-    private static final float ORBIT_DISTANCE = 5.0f;
+    private static final float ORBIT_DISTANCE = 3.0f;
 
     public void addShip(ShipModel ship, PlanetModel planet){
         ships.add(ship);
@@ -159,6 +159,16 @@ public class AIController {
                 s.setPosition(s.getPosition().cpy().add(tempVec1));
             }
         }
+    }
+
+    public void findBigPlanet(ShipModel s) {
+        PlanetModel bigPlanet = planets.get(0);
+        for (int j = 0; j < planets.size; j++) {
+            if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
+                bigPlanet = planets.get(j);
+            }
+        }
+        targetPlanets.put(s, bigPlanet);
     }
 
     /**

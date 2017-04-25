@@ -1301,17 +1301,16 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
-                if (Math.random()<0.0){
+                if (Math.random()<0.5){
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
 //                    sh.setAggroRange(20f);
                 }
-                else if (Math.random() < 0.0){
+                else if (Math.random() < 1.0){
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2);
-                    System.out.println("mother ship launched");
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1327,6 +1326,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setGravityScale(0.0f);
                 addObject(sh);
                 aiController.addShip(sh, c);
+                if(sh.getType() == 2)
+                    aiController.findBigPlanet(sh);
                 c.addShip(sh);
             }
         }
