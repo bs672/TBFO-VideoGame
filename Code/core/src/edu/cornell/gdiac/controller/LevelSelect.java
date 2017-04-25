@@ -76,45 +76,16 @@ public class LevelSelect extends PlayMode {
         settings_Texture = createTexture(manager,SETTINGS_TEXTURE, false);
         settings_Hover_Texture = createTexture(manager,SETTINGS_HOVER_TEXTURE, false);
         levelsTitleTexture = createTexture(manager,LEVELSTITLE, true);
-        resume_Texture = createTexture(manager,RESUME_TEXTURE, false);
-        resume_Hover_Texture = createTexture(manager,RESUME_HOVER_TEXTURE, false);
-
-//        LEVELS_TEXTURE_REGIONS[0][0] = createTexture(manager,LEVEL1_TEXTURE,false);
-//        LEVELS_TEXTURES[0][1] = createTexture(manager, LEVEL1_LOCK_TEXTURE, false);
-//        LEVELS_TEXTURES[0][2] = createTexture(manager,LEVEL1_HOVER_TEXTURE,false);
-//        LEVELS_TEXTURES[1][0] = createTexture(manager,LEVEL2_TEXTURE,false);
-//        LEVELS_TEXTURES[2][0] = createTexture(manager, LEVEL2_LOCK_TEXTURE, false);
-//        level2_Hover_Texture = createTexture(manager,LEVEL2_HOVER_TEXTURE,false);
-//        level3_Texture = createTexture(manager,LEVEL3_TEXTURE,false);
-//        level3_Lock_Texture = createTexture(manager, LEVEL3_LOCK_TEXTURE, false);
-//        level3_Hover_Texture = createTexture(manager,LEVEL3_HOVER_TEXTURE,false);
-//        level4_Texture = createTexture(manager,LEVEL4_TEXTURE,false);
-//        level4_Lock_Texture = createTexture(manager, LEVEL4_LOCK_TEXTURE, false);
-//        level4_Hover_Texture = createTexture(manager,LEVEL4_HOVER_TEXTURE,false);
-//        level5_Texture = createTexture(manager,LEVEL5_TEXTURE,false);
-//        level5_Lock_Texture = createTexture(manager, LEVEL5_LOCK_TEXTURE, false);
-//        level5_Hover_Texture = createTexture(manager,LEVEL5_HOVER_TEXTURE,false);
-//        level6_Texture = createTexture(manager,LEVEL6_TEXTURE,false);
-//        level6_Lock_Texture = createTexture(manager, LEVEL6_LOCK_TEXTURE, false);
-//        level6_Hover_Texture = createTexture(manager,LEVEL6_HOVER_TEXTURE,false);
-//        level7_Texture = createTexture(manager,LEVEL7_TEXTURE,false);
-//        level7_Lock_Texture = createTexture(manager, LEVEL7_LOCK_TEXTURE, false);
-//        level7_Hover_Texture = createTexture(manager,LEVEL7_HOVER_TEXTURE,false);
-//        level8_Texture = createTexture(manager,LEVEL8_TEXTURE,false);
-//        level8_Lock_Texture = createTexture(manager, LEVEL8_LOCK_TEXTURE, false);
-//        level8_Hover_Texture = createTexture(manager,LEVEL8_HOVER_TEXTURE,false);
-//        level9_Texture = createTexture(manager,LEVEL9_TEXTURE,false);
-//        level9_Lock_Texture = createTexture(manager, LEVEL9_LOCK_TEXTURE, false);
-//        level9_Hover_Texture = createTexture(manager,LEVEL9_HOVER_TEXTURE,false);
-
+        back_Texture = createTexture(manager, BACK_TEXTURE, false);
+        back_Hover_Texture = createTexture(manager, BACK_HOVER_TEXTURE, false);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 3; j++) {
                 LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[i][j], false);
             }
         }
 
-        TEXTURES[0][0] = resume_Texture;
-        TEXTURES[0][1] = resume_Hover_Texture;
+        TEXTURES[0][0] = back_Texture;
+        TEXTURES[0][1] = back_Hover_Texture;
         TEXTURES[1][0] = main_Menu_Texture;
         TEXTURES[1][1] = main_Menu_Hover_Texture;
         TEXTURES[2][0] = settings_Texture;
@@ -311,7 +282,7 @@ public class LevelSelect extends PlayMode {
     public void draw(float dt) {
         super.draw(dt);
         canvas.begin();
-        canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (levelsTitleTexture.getRegionWidth() / 2) + 50, 550, levelsTitleTexture.getRegionWidth(), levelsTitleTexture.getRegionHeight());
+        canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (levelsTitleTexture.getRegionWidth() / 2), 550, levelsTitleTexture.getRegionWidth(), levelsTitleTexture.getRegionHeight());
         canvas.end();
     }
 }

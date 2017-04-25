@@ -15,6 +15,7 @@ package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.assets.loaders.*;
@@ -33,6 +34,10 @@ import edu.cornell.gdiac.util.*;
  * and you would draw it as a root class in an architecture specification.  
  */
 public class GDXRoot extends Game implements ScreenListener {
+	protected static Music music;
+
+	protected static boolean mute;
+
 	/** AssetManager to load game assets (textures, sounds, etc.) */
 	private AssetManager manager;
 	/** Drawing context to display graphics (VIEW CLASS) */
@@ -64,6 +69,10 @@ public class GDXRoot extends Game implements ScreenListener {
 		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 	}
 
+	public static boolean getMute(){return mute;}
+
+	public static void setMute(boolean a){mute = a;}
+
 	/**
 	 * Called when the Application is first created.
 	 *
@@ -71,6 +80,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * the asynchronous loader for all other assets.
 	 */
 	public void create() {
+		music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
+		mute = false;
 		canvas  = new GameCanvas();
 		//canvas.setFullscreen(true,true);
 		//canvas.setSize(1140,740);
@@ -85,8 +96,8 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(1);
 		controllers[3] = new PauseMenu();
-		controllers[4] = new PlayMode("MainScene");
-		controllers[5] = new PlayMode("Tutorial1");
+		controllers[4] = new PlayMode("Tutorial1");
+		controllers[5] = new PlayMode("Tutorial2");
 		controllers[6] = new PlayMode("MainScene");
 		controllers[7] = new PlayMode("Tutorial1");
 		controllers[8] = new PlayMode("Tutorial1");
@@ -141,6 +152,16 @@ public class GDXRoot extends Game implements ScreenListener {
 		super.resize(width,height);
 	}
 
+	public void toggleMute() {
+		if (music.isPlaying()) {
+			SoundController.getInstance().setMute(true);
+			music.stop();
+		} else {
+			SoundController.getInstance().setMute(false);
+			music.play();
+		}
+	}
+
 	/**
 	 * The given screen has made a request to exit its player mode.
 	 *
@@ -183,7 +204,7 @@ public class GDXRoot extends Game implements ScreenListener {
 				lastScreen = 1;
 			}
 			else if (exitCode == 1) {
-			    // controllers[4].setMute(false);
+				toggleMute();
             }
 		}
 		// LEVEL SELECT

@@ -164,10 +164,10 @@ public class MainMenu extends PlayMode {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
 
         //Play background music!
-        if(!mute) {
-            music.setVolume(0.3f);
-            music.setLooping(true);
-            music.play();
+        if(!GDXRoot.getMute()) {
+            GDXRoot.music.setVolume(0.3f);
+            GDXRoot.music.setLooping(true);
+            GDXRoot.music.play();
         }
     }
 
