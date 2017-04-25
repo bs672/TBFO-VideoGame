@@ -137,7 +137,7 @@ public class InputController {
 	}
 
 	public boolean debugJustPressed() {
-		if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+		if(Gdx.input.isKeyJustPressed(Input.Keys.G))
 			return true;
 		return false;
 	}

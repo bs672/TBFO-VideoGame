@@ -216,7 +216,7 @@ public class PlanetModel extends WheelObstacle{
         if (type != 1) {
             becomingCommand++;
         }
-        System.out.println(becomingCommand);
+//        System.out.println(becomingCommand);
     }
 
     public void drawDebug(GameCanvas canvas) {
