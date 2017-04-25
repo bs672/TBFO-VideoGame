@@ -147,6 +147,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SETTINGSTITLE = "space/menus/settings.png";
     protected static final String RESUME_TEXTURE = "space/menus/resume_planet.png";
     protected static final String RESUME_HOVER_TEXTURE = "space/menus/resume_planet_hover.png";
+    protected static final String BACK_TEXTURE = "space/menus/back_planet.png";
+    protected static final String BACK_HOVER_TEXTURE = "space/menus/back_hover_planet.png";
     protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
     protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
     protected static final String LEVEL1_TEXTURE = "space/menus/level1.png";
@@ -379,6 +381,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;
     protected TextureRegion levelsTitleTexture;
+    protected TextureRegion back_Texture;
+    protected TextureRegion back_Hover_Texture;
 
     /** Background texture */
     protected TextureRegion backgroundMAIN;
@@ -485,6 +489,10 @@ public class PlayMode extends WorldController implements ContactListener {
         assets.add(MAIN_MENU_TEXTURE);
         manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
         assets.add(MAIN_MENU_HOVER_TEXTURE);
+        manager.load(BACK_TEXTURE, Texture.class);
+        assets.add(BACK_TEXTURE);
+        manager.load(BACK_HOVER_TEXTURE, Texture.class);
+        assets.add(BACK_HOVER_TEXTURE);
 
         manager.load(TITLE, Texture.class);
         assets.add(TITLE);
@@ -766,9 +774,9 @@ public class PlayMode extends WorldController implements ContactListener {
     protected PlanetModel lastPlanet;
     /** List of all live planets */
     protected Array<PlanetModel> planets;
-    //List of command planets
+    // List of command planets
     protected Array<PlanetModel> commandPlanets;
-    //List of dying planets
+    // List of dying planets
     Array<PlanetModel> planet_explosion;
     /** list of ships */
     protected Array<ShipModel> ships;
@@ -1334,6 +1342,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setGravityScale(0.0f);
                 addObject(sh);
                 aiController.addShip(sh, c);
+                c.addShip(sh);
             }
         }
     }
@@ -1689,7 +1698,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setNormal(true);
                 }
 
-
                 if (screenSwitch()) {
                     return;
                 }
@@ -1791,6 +1799,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (planet_explosion.get(0).get_EXP_ST() > -1) {
                     if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
                         if (planet_explosion.get(0).getType() == 1f) {
+                            for (ShipModel sh : planet_explosion.get(0).getShips()) {
+                                sh.markRemoved(true);
+                                aiController.removeShip(sh);
+                            }
                             commandPlanets.removeValue(planet_explosion.get(0), true);
                         }
                         planet_explosion.get(0).markRemoved(true);
