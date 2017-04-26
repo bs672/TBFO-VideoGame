@@ -283,7 +283,8 @@ public class LevelSelect extends PlayMode {
         super.drawBackground();
 
         canvas.begin();
-        canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() /3 , canvas.getHeight()/8, canvas.getWidth()/3, canvas.getHeight()/3);
+     //   canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() /3 , canvas.getHeight()/8, canvas.getWidth()/3, canvas.getHeight()/3);
+        canvas.draw(levelsTitleTexture, Color.WHITE, 3*canvas.getWidth() /9 , 2*canvas.getHeight()/8, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
         super.drawObjects();
     }
