@@ -73,7 +73,7 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
     private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
-    private static final String SETTINGS = "space/menus/settings.png";
+    private static final String SETTINGS = "space/menus/settings_text.png";
 
 
 
@@ -324,7 +324,7 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final float[][] PLANETS = {
             {16.0f, 1f, 1.1f, 3f},   // MAIN MENU
             {16f, 7f, 1.5f, 3f},  // MUTE
-            {16.0f, 11f, 1.5f, 3f},    // BACK
+            {16.0f, 10f, 1.5f, 3f},    // BACK
     };
 
     private boolean jumpedOnce;
@@ -643,7 +643,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-        canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth() /3 , 5*canvas.getHeight()/8, canvas.getWidth()/3, canvas.getHeight()/3);
+        canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth() /4 , 5*canvas.getHeight()/8, canvas.getWidth()/2, canvas.getHeight()/3);
         canvas.end();
         canvas.begin();
         for (Obstacle obj : objects) {

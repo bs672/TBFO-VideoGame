@@ -1647,11 +1647,14 @@ public class PlayMode extends WorldController implements ContactListener {
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 2;
+
             }
             if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
                 // Lost the level
+                InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 1;
+
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
@@ -2039,7 +2042,7 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
-
+        //canvas.draw(backgroundLG, Color.WHITE, canvas.getWidth() /3 , canvas.getHeight()/8, canvas.getWidth()/3, canvas.getHeight()/3);
 
 //        if (currentPlanet!=null) {
 //            canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
@@ -2078,41 +2081,43 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(8,7);
                 }
-                else if ( ((ComplexOobModel) obj).isGrowing() ) {
+                else if ( ((ComplexOobModel) obj).isGrowing()) {
                     currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
-                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
-                }
-                else if ( ((ComplexOobModel) obj).isCommand() ) {
-                    currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
                 else if ( blackHoleWarp ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(3,2);
                 }
-                else if ( ((ComplexOobModel) obj).isFlying() ) {
+                else if ( ((ComplexOobModel) obj).isFlying() || gameState == 2) {
                     currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(40,1);
                 }
-                else  {
+                else if ( ((ComplexOobModel) obj).isHurting() || gameState == 1)  {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
                 }
+                else {
+                    currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                }
 
-                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0 && gameState == 0 ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
                     complexAvatar.decCooldown();
                 }
-                if ( ((ComplexOobModel) obj).isDying() ) {
+                if ( ((ComplexOobModel) obj).isDying() && gameState == 0) {
                     currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
 
-                if ( ((ComplexOobModel) obj).isMax() ) {
+                if ( ((ComplexOobModel) obj).isMax() && gameState == 0) {
                     currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
+
+
 
                 ((ComplexOobModel) obj).setTexture(currentFrame);
                 ((ComplexOobModel) obj).draw();
@@ -2157,8 +2162,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-//                else if (obj.getName().equals("ComplexOob")) {
-//                }
+
 
             else {
                 canvas.begin();
@@ -2186,6 +2190,7 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
         canvas.end();
+
     }
 
 }
