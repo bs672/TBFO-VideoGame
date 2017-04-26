@@ -206,9 +206,11 @@ public class MainMenu extends PlayMode {
     }
 
     public void draw(float dt) {
-        super.draw(dt);
+        super.drawBackground();
+
         canvas.begin();
         canvas.draw(titleTexture, Color.WHITE, canvas.getWidth() /4 , 9*canvas.getHeight()/16, canvas.getWidth()/2, canvas.getHeight()/2);
         canvas.end();
+        super.drawObjects();
     }
 }
