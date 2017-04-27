@@ -137,6 +137,8 @@ public class InputController {
 		return debugPressed && !debugPrevious;
 	}
 
+	public void toggleControls(){ wasd = !wasd; }
+
 	public boolean debugJustPressed() {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.G))
 			return true;
@@ -174,6 +176,7 @@ public class InputController {
 		cursar = new Vector2();
 		crosscache = new Vector2();
 		centerCamera = true;
+		wasd = true;
 	}
 
 	/**
@@ -282,6 +285,7 @@ public class InputController {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			centerCamera = true;
 		}
+
 		if(wasd) {
 			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
 				scrollUp = true;
@@ -307,10 +311,10 @@ public class InputController {
 			}
 		}
 		else {
-			if (Gdx.input.isKeyPressed(Input.Keys.I)) {
+			if (Gdx.input.isKeyPressed(Input.Keys.O)) {
 				scrollUp = true;
 				centerCamera = false;
-			} else if (Gdx.input.isKeyPressed(Input.Keys.K)) {
+			} else if (Gdx.input.isKeyPressed(Input.Keys.L)) {
 				scrollDown = true;
 				scrollUp = false;
 				centerCamera = false;
@@ -318,10 +322,10 @@ public class InputController {
 				scrollUp = false;
 				scrollDown = false;
 			}
-			if (Gdx.input.isKeyPressed(Input.Keys.J)) {
+			if (Gdx.input.isKeyPressed(Input.Keys.K)) {
 				scrollLeft = true;
 				centerCamera = false;
-			} else if (Gdx.input.isKeyPressed(Input.Keys.L)) {
+			} else if (Gdx.input.isKeyPressed(Input.Keys.SEMICOLON)) {
 				scrollRight = true;
 				scrollLeft = false;
 				centerCamera = false;

@@ -206,6 +206,9 @@ public class GDXRoot extends Game implements ScreenListener {
 			else if (exitCode == 1) {
 				toggleMute();
             }
+            else if(exitCode == 3) {
+				InputController.getInstance().toggleControls();
+			}
 		}
 		// LEVEL SELECT
 		else if (screen == controllers[2]) {
@@ -240,7 +243,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			lastScreen = 3;
 		}
 		else {
-			for (int i = 4; i < 11; i++) {
+			for (int i = 4; i < controllers.length - 1; i++) {
 				if (screen == controllers[i]) {
 					lastScreen = i;
 					lastPlayScreen = i;
@@ -254,7 +257,7 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(controllers[current]);
 				}
 			}
-			if (screen == controllers[12]) {
+			if (screen == controllers[controllers.length - 1]) {
 				lastScreen = 12;
 				lastPlayScreen = 12;
 				current = exitCode;

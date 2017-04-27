@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -266,6 +267,8 @@ public class SettingsMode extends WorldController implements ContactListener {
         TEXTURES[1][1] = mute_Texture; //TODO: FIX THIS
         TEXTURES[2][0] = back_Texture;    // BACK
         TEXTURES[2][1] = back_hover_Texture;
+        TEXTURES[3][0] = main_Menu_Texture;    // BACK
+        TEXTURES[3][1] = main_Menu_Hover_Texture;
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -325,6 +328,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             {0f, 0f, 1.1f, 3f},   // MAIN MENU
             {15f, 8f, 1.5f, 3f},  // MUTE
             {15f, 11.5f, 1.5f, 3f},    // BACK
+            {15f, 15f, 1.5f, 3f} // left/right handed
     };
 
     private boolean jumpedOnce;
@@ -645,8 +649,22 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X, LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X, LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+
+
+
+
         canvas.draw(settingsTexture, Color.WHITE, 3*canvas.getWidth() /9 , 11*canvas.getHeight()/16, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
+
         canvas.begin();
         for (Obstacle obj : objects) {
             if (obj.getName() != "ComplexOob") {

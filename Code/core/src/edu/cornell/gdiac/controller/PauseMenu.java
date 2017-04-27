@@ -111,6 +111,9 @@ public class PauseMenu extends PlayMode {
         commandPlanets.clear();
         planet_explosion.clear();
         ships.clear();
+        text.clear();
+        stars.clear();
+        med_stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -158,8 +161,22 @@ public class PauseMenu extends PlayMode {
         addObject(complexAvatar);
 
         loadAnim();
+        setBG();
+        set_med_BG();
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
+
+
+
+
+       titlecoord.set(   canvas.getWidth() /4 , 5*canvas.getHeight()/8  );
+       titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/3  );
+
+
+        text.add (titlecoord);
+        text.add (titlesize);
+
+
     }
 
     public boolean screenSwitch() {
@@ -206,9 +223,13 @@ public class PauseMenu extends PlayMode {
 
     public void draw(float dt) {
         super.drawBackground();
-        canvas.begin();
-        canvas.draw(pauseTitleTexture, Color.WHITE, canvas.getWidth() /4 , 5*canvas.getHeight()/8, canvas.getWidth()/2, canvas.getHeight()/3);
 
+
+
+        canvas.begin();
+       // canvas.draw(pauseTitleTexture, Color.WHITE, canvas.getWidth() /4 , 5*canvas.getHeight()/8, canvas.getWidth()/2, canvas.getHeight()/3);
+
+        canvas.draw(pauseTitleTexture, Color.WHITE, text.get(0).x, text.get(0).y,   text.get(1).x, text.get(1).y);
         //canvas.draw(pauseTitleTexture, Color.WHITE, pauseTitleTexture.getRegionWidth() / 2 - (pauseTitleTexture.getRegionWidth() / 2) + 50, 400, canvas.getWidth(), canvas.getHeight());
         canvas.end();
         super.drawObjects();
