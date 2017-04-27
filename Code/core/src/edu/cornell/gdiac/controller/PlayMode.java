@@ -1917,7 +1917,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (stars.size>0) {
             delta_star_pos();
-            if (stars.get(0).x>backgroundLG.getRegionWidth()){
+            if (Math.abs(stars.get(0).x)>backgroundLG.getRegionWidth()){
                delta_y=stars.get(0).y-LG_S_Y_START;
                 stars.clear();
                 setBG();
@@ -1925,7 +1925,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     stars.get(i).y += delta_y;
                 }
             }
-            else if (stars.get(0).y>backgroundLG.getRegionHeight()){
+            else if (Math.abs(stars.get(0).y)>backgroundLG.getRegionHeight()){
                 delta_x=stars.get(0).x-LG_S_X_START;
                 stars.clear();
                 setBG();
@@ -1936,7 +1936,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (med_stars.size>0) {
             delta_star_med_pos();
-            if (med_stars.get(0).x>backgroundMED.getRegionWidth()){
+            if (Math.abs(med_stars.get(0).x)>backgroundMED.getRegionWidth()){
                 med_delta_y=med_stars.get(0).y-med_Y_START;
                 med_stars.clear();
                 set_med_BG();
@@ -1944,7 +1944,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     med_stars.get(i).y += med_delta_y;
                 }
             }
-            else if (med_stars.get(0).y>backgroundMED.getRegionHeight()){
+            else if (Math.abs(med_stars.get(0).y)>backgroundMED.getRegionHeight()){
                 med_delta_x=med_stars.get(0).x-med_X_START;
                 med_stars.clear();
                 set_med_BG();
