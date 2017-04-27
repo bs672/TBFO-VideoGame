@@ -72,7 +72,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Animation<TextureRegion> get_Normal_anim(){return Normal_Animation;}
 
-
+    public VertexBatch getVertexBatch() {return batch; }
 
     private Texture Normal_Sheet;
 

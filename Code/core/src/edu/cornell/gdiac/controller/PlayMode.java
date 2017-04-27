@@ -1831,7 +1831,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if(playerControl) {
             if (control == 1) {
-                launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
+                launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas)).scl(-1);
                 jump = InputController.getInstance().getMouseJump();
             } else {
                 jump = InputController.getInstance().getJump();
@@ -2083,7 +2083,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(-expulsion.getMass() / 2);
                     Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
-                    adjustCooldown = 60;
+                    adjustCooldown = 30;
                     SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
                 if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
@@ -2301,22 +2301,15 @@ public class PlayMode extends WorldController implements ContactListener {
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
 
+    public void resize() {
+        try {
+            complexAvatar.getVertexBatch().getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+        catch(Exception e) {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
+    }
 
     public void drawBackground(){
         canvas.clear();
@@ -2366,8 +2359,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
         canvas.end();
     }
-
-
 
     public void drawObjects(){
         for (Obstacle obj : objects) {
