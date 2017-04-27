@@ -214,6 +214,8 @@ public class LevelSelect extends PlayMode {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
 
+    public void unlockedScrollScreen(){}
+
     public void setUnlocked(int newUnlock) {
         if (newUnlock > unlocked) {
             unlocked = newUnlock;

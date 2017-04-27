@@ -49,6 +49,17 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     /** The texture file for the character avatar (no animation) */
+
+    //protected static final String OOB_FILE  = "space/animations/oobH.png";
+
+//    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
+//    //"space/planets/start.png";
+//    protected static final String OOB_GROWING_FILE = "space/animations/oobH.png";
+//    protected static final String OOB_COMMAND_FILE = "space/planets/command.png";
+//    protected static final String OOB_FLYING_FILE = "space/animations/oobHappy.png";
+//    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
+//    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
+
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/OobGrowing.png";
@@ -57,6 +68,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/OobFull.png";
+
 
     /** The texture file for the planets */
     protected static final String BLUE_P_1 = "space/planets/blue.png";
@@ -337,6 +349,33 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion main_Menu_Hover_Texture;
     protected TextureRegion resume_Texture;
     protected TextureRegion resume_Hover_Texture;
+    protected TextureRegion level1_Texture;
+    protected TextureRegion level1_Lock_Texture;
+    protected TextureRegion level1_Hover_Texture;
+    protected TextureRegion level2_Texture;
+    protected TextureRegion level2_Lock_Texture;
+    protected TextureRegion level2_Hover_Texture;
+    protected TextureRegion level3_Texture;
+    protected TextureRegion level3_Lock_Texture;
+    protected TextureRegion level3_Hover_Texture;
+    protected TextureRegion level4_Texture;
+    protected TextureRegion level4_Lock_Texture;
+    protected TextureRegion level4_Hover_Texture;
+    protected TextureRegion level5_Texture;
+    protected TextureRegion level5_Lock_Texture;
+    protected TextureRegion level5_Hover_Texture;
+    protected TextureRegion level6_Texture;
+    protected TextureRegion level6_Lock_Texture;
+    protected TextureRegion level6_Hover_Texture;
+    protected TextureRegion level7_Texture;
+    protected TextureRegion level7_Lock_Texture;
+    protected TextureRegion level7_Hover_Texture;
+    protected TextureRegion level8_Texture;
+    protected TextureRegion level8_Lock_Texture;
+    protected TextureRegion level8_Hover_Texture;
+    protected TextureRegion level9_Texture;
+    protected TextureRegion level9_Lock_Texture;
+    protected TextureRegion level9_Hover_Texture;
     protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;
     protected TextureRegion levelsTitleTexture;
@@ -1469,10 +1508,6 @@ public class PlayMode extends WorldController implements ContactListener {
         med_stars.add (med_size_9);
     }
 
-
-
-
-
     public void loadAnim() {
         complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);
         complexAvatar.createNormaltex();
@@ -1500,7 +1535,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     }
-
 
     /**
      * Returns whether to process the update loop
@@ -1672,8 +1706,8 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void delta_pos() {
-            text.get(0).x += (vecToCenter.x);
-            text.get(0).y += (vecToCenter.y);
+        text.get(0).x += (vecToCenter.x);
+        text.get(0).y += (vecToCenter.y);
     }
 
     public void delta_star_pos() {
@@ -1879,7 +1913,7 @@ public class PlayMode extends WorldController implements ContactListener {
         if (stars.size>0) {
             delta_star_pos();
             if (stars.get(0).x>backgroundLG.getRegionWidth()){
-               delta_y=stars.get(0).y-LG_S_Y_START;
+                delta_y=stars.get(0).y-LG_S_Y_START;
                 stars.clear();
                 setBG();
                 for (int i = 0; i < stars.size; i+=2) {
@@ -2007,7 +2041,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     float Oob_rad = complexAvatar.getRadius();
                     if ((rad > DEATH_RADIUS &&
                             ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                            || (currentPlanet.getType() == 1f)))) {
+                                    || (currentPlanet.getType() == 1f)))) {
                         siphonPlanet();
                     } else if (Oob_rad >= OOB_MAX_RADIUS) {
                         complexAvatar.setMax(true);
@@ -2082,8 +2116,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         }
                         planet_explosion.get(0).markRemoved(true);
                         planets.removeValue(planet_explosion.get(0), true);
-                        aiController.removePlanet(planet_explosion.get(0));
-
                         planet_explosion.removeIndex(0);
                     }
                 }
@@ -2095,7 +2127,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             complexAvatar.applyForce();
             complexAvatar.resetForceVec();
-            // If we use sound, we must rememb er this.
+            // If we use sound, we must remember this.
             SoundController.getInstance().update();
             loopCommandPlanets();
             loopConvertPlanet();
@@ -2107,9 +2139,6 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         else {
             messageCounter++;
-            complexAvatar.resetForceVec();
-            Vector2 vel = new Vector2(0, 0);
-            complexAvatar.setLinearVelocity(vel);
             if (messageCounter > 240) {
                 if (gameState == 2) {
                     listener.exitScreen(this, 2);
@@ -2272,7 +2301,24 @@ public class PlayMode extends WorldController implements ContactListener {
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
 
-    public void drawBackground () {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
         // delta_pos();
@@ -2286,45 +2332,52 @@ public class PlayMode extends WorldController implements ContactListener {
         // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
 
 
-        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.draw(backgroundSM, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         //canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 
 
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(0).x, med_stars.get(0).y, med_stars.get(1).x, med_stars.get(1).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(0).x, med_stars.get(0).y,   med_stars.get(1).x, med_stars.get(1).y);
 
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(2).x, med_stars.get(2).y, med_stars.get(3).x, med_stars.get(3).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(4).x, med_stars.get(4).y, med_stars.get(5).x, med_stars.get(5).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(6).x, med_stars.get(6).y, med_stars.get(7).x, med_stars.get(7).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(8).x, med_stars.get(8).y, med_stars.get(9).x, med_stars.get(9).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(10).x, med_stars.get(10).y, med_stars.get(11).x, med_stars.get(11).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(12).x, med_stars.get(12).y, med_stars.get(13).x, med_stars.get(13).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(14).x, med_stars.get(14).y, med_stars.get(15).x, med_stars.get(15).y);
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(16).x, med_stars.get(16).y, med_stars.get(17).x, med_stars.get(17).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(2).x, med_stars.get(2).y,   med_stars.get(3).x, med_stars.get(3).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(4).x, med_stars.get(4).y,   med_stars.get(5).x, med_stars.get(5).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(6).x, med_stars.get(6).y,   med_stars.get(7).x, med_stars.get(7).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(8).x, med_stars.get(8).y,   med_stars.get(9).x, med_stars.get(9).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(10).x, med_stars.get(10).y,   med_stars.get(11).x, med_stars.get(11).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(12).x, med_stars.get(12).y,   med_stars.get(13).x, med_stars.get(13).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(14).x, med_stars.get(14).y,   med_stars.get(15).x, med_stars.get(15).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(16).x, med_stars.get(16).y,   med_stars.get(17).x, med_stars.get(17).y);
 
 
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(0).x, stars.get(0).y, stars.get(1).x, stars.get(1).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(0).x, stars.get(0).y,   stars.get(1).x, stars.get(1).y);
 
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(2).x, stars.get(2).y, stars.get(3).x, stars.get(3).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(4).x, stars.get(4).y, stars.get(5).x, stars.get(5).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(6).x, stars.get(6).y, stars.get(7).x, stars.get(7).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(8).x, stars.get(8).y, stars.get(9).x, stars.get(9).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(10).x, stars.get(10).y, stars.get(11).x, stars.get(11).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(12).x, stars.get(12).y, stars.get(13).x, stars.get(13).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y, stars.get(15).x, stars.get(15).y);
-        canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y, stars.get(17).x, stars.get(17).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(2).x, stars.get(2).y,   stars.get(3).x, stars.get(3).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(4).x, stars.get(4).y,   stars.get(5).x, stars.get(5).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(6).x, stars.get(6).y,   stars.get(7).x, stars.get(7).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(8).x, stars.get(8).y,   stars.get(9).x, stars.get(9).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(10).x, stars.get(10).y,   stars.get(11).x, stars.get(11).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(12).x, stars.get(12).y,   stars.get(13).x, stars.get(13).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y,   stars.get(15).x, stars.get(15).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y,   stars.get(17).x, stars.get(17).y);
+
+
+
+
         canvas.end();
-
     }
 
 
 
     public void drawObjects(){
         for (Obstacle obj : objects) {
+
+
+
             if (obj.getName().equals("ComplexOob")) {
+
                 TextureRegion currentFrame;
+
                 if ( ((ComplexOobModel) obj).isNormal()) {
                     currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(8,7);
@@ -2345,7 +2398,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
                 }
-                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {}
                 else {
                     currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
@@ -2366,8 +2418,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
 
+
+
                 ((ComplexOobModel) obj).setTexture(currentFrame);
                 ((ComplexOobModel) obj).draw();
+
                 canvas.begin();
                 obj.draw(canvas);
                 canvas.end();
@@ -2388,6 +2443,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
+
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_WARN_ST();
@@ -2397,6 +2453,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
+
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_EXP_ST();
@@ -2428,10 +2485,10 @@ public class PlayMode extends WorldController implements ContactListener {
 //            }
 //            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
         if (gameState == 1) {
-            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
         }
         if (gameState == 2) {
-            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
         }
         canvas.end();
 

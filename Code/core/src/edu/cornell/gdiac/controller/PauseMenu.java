@@ -179,6 +179,8 @@ public class PauseMenu extends PlayMode {
 
     }
 
+    public void unlockedScrollScreen(){}
+
     public boolean screenSwitch() {
         for (int i = 0; i <= 2; i++) {
             if (currentPlanet == planets.get(i)) {

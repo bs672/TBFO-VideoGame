@@ -205,6 +205,8 @@ public class MainMenu extends PlayMode {
         else return false;
     }
 
+    public void unlockedScrollScreen(){}
+
     public void hover() {
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
         for (int i = 0; i < PLANETS.length; i++) {
