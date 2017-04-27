@@ -96,10 +96,14 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(9);
 		controllers[3] = new PauseMenu();
+		controllers[4] = new PlayMode("Tutorial1Level1");
+		controllers[5] = new PlayMode("Tutorial1");
+		controllers[6] = new PlayMode("MainScene");
+		controllers[7] = new PlayMode("Tutorial1");
 		controllers[4] = new PlayMode("Intro Level");
-		controllers[5] = new PlayMode("Tutoral");
-		controllers[6] = new PlayMode("Level 3");
-		controllers[7] = new PlayMode("Intro Level 1");
+		controllers[5] = new PlayMode("Intro Level 1");
+		controllers[6] = new PlayMode("Intro Level 2");
+		controllers[7] = new PlayMode("Intro Level 3");
 		controllers[8] = new PlayMode("Tutorial1");
 		controllers[9] = new PlayMode("Tutorial2");
 		controllers[10] = new PlayMode("Level 2");
@@ -171,6 +175,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
+		InputController.getInstance().setCenterCamera(true);
 		if (screen == loading) {
 			for(int ii = 0; ii < controllers.length; ii++) {
 				controllers[ii].loadContent(manager);

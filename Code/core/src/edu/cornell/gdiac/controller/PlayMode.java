@@ -1508,10 +1508,6 @@ public class PlayMode extends WorldController implements ContactListener {
         med_stars.add (med_size_9);
     }
 
-
-
-
-
     public void loadAnim() {
         complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);
         complexAvatar.createNormaltex();
@@ -1539,7 +1535,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     }
-
 
     /**
      * Returns whether to process the update loop
@@ -1711,8 +1706,8 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void delta_pos() {
-            text.get(0).x += (vecToCenter.x);
-            text.get(0).y += (vecToCenter.y);
+        text.get(0).x += (vecToCenter.x);
+        text.get(0).y += (vecToCenter.y);
     }
 
     public void delta_star_pos() {
@@ -2046,7 +2041,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     float Oob_rad = complexAvatar.getRadius();
                     if ((rad > DEATH_RADIUS &&
                             ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                            || (currentPlanet.getType() == 1f)))) {
+                                    || (currentPlanet.getType() == 1f)))) {
                         siphonPlanet();
                     } else if (Oob_rad >= OOB_MAX_RADIUS) {
                         complexAvatar.setMax(true);
@@ -2326,7 +2321,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-       // delta_pos();
+        // delta_pos();
         //float camera = -carPosition;
 
         // Draw background unscaled.
@@ -2490,10 +2485,10 @@ public class PlayMode extends WorldController implements ContactListener {
 //            }
 //            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
         if (gameState == 1) {
-            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
         }
         if (gameState == 2) {
-            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
         }
         canvas.end();
 

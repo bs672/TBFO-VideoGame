@@ -49,11 +49,18 @@ public class AIController {
         targetPlanets.put(ship, planet);
     }
 
+    public void removePlanet(PlanetModel planet){
+        planets.removeValue(planet, true);
+    }
+
     public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, ComplexOobModel oob, Vector2 scale) {
         this.scale = scale;
         this.ships = ships;
         this.planets = planets;
         targetPlanets = new ObjectMap<ShipModel, PlanetModel>();
+        avatar = oob;
+        tempVec1 = new Vector2();
+        tempVec2 = new Vector2();
         for(int i = 0; i < ships.size; i++)
             if (ships.get(i).getType() == 2) {
                 PlanetModel bigPlanet = planets.get(0);
@@ -65,11 +72,18 @@ public class AIController {
                 targetPlanets.put(ships.get(i), bigPlanet);
             }
             else {
-                targetPlanets.put(ships.get(i), planets.get(i));
+                Vector2 tempVec3 = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+                int cloPl = -1;
+                for (int j = 0; j < planets.size; j++) {
+                    tempVec2.set(ships.get(i).getPosition().cpy().sub(planets.get(j).getPosition()));
+                    if (tempVec2.len() - planets.get(j).getRadius() < tempVec3.len()) {
+                        tempVec3 = tempVec2.cpy();
+                        tempVec3.scl((tempVec3.len() - planets.get(j).getRadius()) / tempVec3.len());
+                        cloPl = j;
+                    }
+                }
+                targetPlanets.put(ships.get(i), planets.get(cloPl));
             }
-        avatar = oob;
-        tempVec1 = new Vector2();
-        tempVec2 = new Vector2();
         wanderers = new ObjectSet<ShipModel>();
     }
 
@@ -122,6 +136,9 @@ public class AIController {
     public void peacefulPathfind(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
+        if (!planets.contains(targetPlanets.get(s), false)) {
+            s.setInOrbit(false);
+        }
         if(s.getInOrbit()) {
             if(wanderers.contains(s))
                 wanderers.remove(s);
@@ -178,7 +195,10 @@ public class AIController {
      */
     public void moveToBigPlanet(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-        s.setInOrbit(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE < EPSILON);
+        s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
+        if (!planets.contains(targetPlanets.get(s), false)) {
+            s.setInOrbit(false);
+        }
         if(s.getInOrbit()) {
             if(wanderers.contains(s))
                 wanderers.remove(s);
