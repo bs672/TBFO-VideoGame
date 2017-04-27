@@ -45,6 +45,11 @@ public class MainMenu extends PlayMode {
 
     };
 
+
+
+
+
+
     protected static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
 
     public void loadContent(AssetManager manager) {
@@ -113,6 +118,9 @@ public class MainMenu extends PlayMode {
         commandPlanets.clear();
         planet_explosion.clear();
         ships.clear();
+        text.clear();
+        stars.clear();
+        med_stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -160,6 +168,9 @@ public class MainMenu extends PlayMode {
         addObject(complexAvatar);
 
         loadAnim();
+        setBG();
+        set_med_BG();
+
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
 
@@ -169,6 +180,15 @@ public class MainMenu extends PlayMode {
             GDXRoot.music.setLooping(true);
             GDXRoot.music.play();
         }
+
+
+
+        titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
+        titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
+
+
+        text.add (titlecoord);
+        text.add (titlesize);
     }
 
     public boolean screenSwitch() {
@@ -205,11 +225,15 @@ public class MainMenu extends PlayMode {
         }
     }
 
+
+
     public void draw(float dt) {
         super.drawBackground();
 
+
+
         canvas.begin();
-        canvas.draw(titleTexture, Color.WHITE, canvas.getWidth() /4 , 9*canvas.getHeight()/16, canvas.getWidth()/2, canvas.getHeight()/2);
+        canvas.draw(titleTexture, Color.WHITE, text.get(0).x, text.get(0).y,   text.get(1).x, text.get(1).y);
         canvas.end();
         super.drawObjects();
     }

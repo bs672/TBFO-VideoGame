@@ -643,8 +643,22 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X, LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X, LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+
+
+
+
         canvas.draw(settingsTexture, Color.WHITE, 3*canvas.getWidth() /9 , 11*canvas.getHeight()/16, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
+
         canvas.begin();
         for (Obstacle obj : objects) {
             if (obj.getName() != "ComplexOob") {
