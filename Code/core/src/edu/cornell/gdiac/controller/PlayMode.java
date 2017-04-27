@@ -48,17 +48,6 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     /** The texture file for the character avatar (no animation) */
-
-    //protected static final String OOB_FILE  = "space/animations/oobH.png";
-
-//    protected static final String OOB_NORMAL_FILE =   "space/animations/oobH.png";
-//    //"space/planets/start.png";
-//    protected static final String OOB_GROWING_FILE = "space/animations/oobH.png";
-//    protected static final String OOB_COMMAND_FILE = "space/planets/command.png";
-//    protected static final String OOB_FLYING_FILE = "space/animations/oobHappy.png";
-//    protected static final String OOB_HURTING_FILE = "space/planets/blackHole_old.png";
-//    protected static final String OOB_DYING_FILE = "space/planets/dying.png";
-
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
@@ -67,7 +56,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/OobFull.png";
-
 
     /** The texture file for the planets */
     protected static final String BLUE_P_1 = "space/planets/blue.png";
@@ -348,33 +336,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion main_Menu_Hover_Texture;
     protected TextureRegion resume_Texture;
     protected TextureRegion resume_Hover_Texture;
-    protected TextureRegion level1_Texture;
-    protected TextureRegion level1_Lock_Texture;
-    protected TextureRegion level1_Hover_Texture;
-    protected TextureRegion level2_Texture;
-    protected TextureRegion level2_Lock_Texture;
-    protected TextureRegion level2_Hover_Texture;
-    protected TextureRegion level3_Texture;
-    protected TextureRegion level3_Lock_Texture;
-    protected TextureRegion level3_Hover_Texture;
-    protected TextureRegion level4_Texture;
-    protected TextureRegion level4_Lock_Texture;
-    protected TextureRegion level4_Hover_Texture;
-    protected TextureRegion level5_Texture;
-    protected TextureRegion level5_Lock_Texture;
-    protected TextureRegion level5_Hover_Texture;
-    protected TextureRegion level6_Texture;
-    protected TextureRegion level6_Lock_Texture;
-    protected TextureRegion level6_Hover_Texture;
-    protected TextureRegion level7_Texture;
-    protected TextureRegion level7_Lock_Texture;
-    protected TextureRegion level7_Hover_Texture;
-    protected TextureRegion level8_Texture;
-    protected TextureRegion level8_Lock_Texture;
-    protected TextureRegion level8_Hover_Texture;
-    protected TextureRegion level9_Texture;
-    protected TextureRegion level9_Lock_Texture;
-    protected TextureRegion level9_Hover_Texture;
     protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;
     protected TextureRegion levelsTitleTexture;
@@ -1790,6 +1751,8 @@ public class PlayMode extends WorldController implements ContactListener {
                         }
                         planet_explosion.get(0).markRemoved(true);
                         planets.removeValue(planet_explosion.get(0), true);
+                        aiController.removePlanet(planet_explosion.get(0));
+
                         planet_explosion.removeIndex(0);
                     }
                 }
@@ -1801,7 +1764,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             complexAvatar.applyForce();
             complexAvatar.resetForceVec();
-            // If we use sound, we must remember this.
+            // If we use sound, we must rememb er this.
             SoundController.getInstance().update();
             loopCommandPlanets();
             loopConvertPlanet();
@@ -1813,6 +1776,9 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         else {
             messageCounter++;
+            complexAvatar.resetForceVec();
+            Vector2 vel = new Vector2(0, 0);
+            complexAvatar.setLinearVelocity(vel);
             if (messageCounter > 350) {
                 if (gameState == 2) {
                     listener.exitScreen(this, 2);
@@ -1973,31 +1939,6 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Unused ContactListener method */
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Draw the physics objects together with foreground and background
      *
@@ -2008,18 +1949,9 @@ public class PlayMode extends WorldController implements ContactListener {
     public void draw(float dt) {
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-        //float camera = -carPosition;
-
-        // Draw background unscaled.
         canvas.begin();
-
-        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
-        // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
-        // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
-
         int LG_S_X;
         int LG_S_Y;
-
         if ((backgroundLG.getRegionWidth()-canvas.getWidth())>0) {
             LG_S_X = 0;
         }
@@ -2033,26 +1965,21 @@ public class PlayMode extends WorldController implements ContactListener {
         else {
             LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
         }
-
-        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        if (gameState == 0) {
+            canvas.draw(backgroundMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        }
+        else {
+            canvas.draw(backgroundMAIN, Color.GRAY, 0, 0, canvas.getWidth(), canvas.getHeight());
+        }
         canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-
-
-
-
         canvas.end();
 
         for (Obstacle obj : objects) {
-
-
-
             if (obj.getName().equals("ComplexOob")) {
-
                 TextureRegion currentFrame;
-
                 if ( ((ComplexOobModel) obj).isNormal()) {
                     currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(8,7);
@@ -2077,7 +2004,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
                 }
-
                 if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
@@ -2092,10 +2018,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
-
                 ((ComplexOobModel) obj).setTexture(currentFrame);
                 ((ComplexOobModel) obj).draw();
-
                 canvas.begin();
                 obj.draw(canvas);
                 canvas.end();
@@ -2116,7 +2040,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_WARN_ST();
@@ -2126,7 +2049,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_EXP_ST();

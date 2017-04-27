@@ -55,6 +55,10 @@ public class AIController {
         targetPlanets.put(ship, planet);
     }
 
+    public void removePlanet(PlanetModel planet){
+        planets.removeValue(planet, true);
+    }
+
     public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, ComplexOobModel oob, Vector2 scale) {
         this.scale = scale;
         this.ships = ships;
@@ -128,6 +132,9 @@ public class AIController {
     public void peacefulPathfind(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
+        if (!planets.contains(targetPlanets.get(s), false)) {
+            s.setInOrbit(false);
+        }
         if(s.getInOrbit()) {
             if(wanderers.contains(s))
                 wanderers.remove(s);
@@ -175,6 +182,9 @@ public class AIController {
     public void findBigPlanet(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
+        if (!planets.contains(targetPlanets.get(s), false)) {
+            s.setInOrbit(false);
+        }
         if(s.getInOrbit()) {
             if(wanderers.contains(s))
                 wanderers.remove(s);
