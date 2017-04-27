@@ -1193,7 +1193,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             //Poison Planets
             if (obj.getType() == 2f) {
-                obj.scalePicScale(new Vector2(.5f * obj.getRadius(), .5f * obj.getRadius()));
+                obj.scalePicScale(new Vector2(1.2f, 1.2f));
                 // Constant rows and columns of the sprite sheet
                 int FRAME_COLS = 8, FRAME_ROWS = 1;
 
