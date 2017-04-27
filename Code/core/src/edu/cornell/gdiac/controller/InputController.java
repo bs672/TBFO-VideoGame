@@ -72,6 +72,7 @@ public class InputController {
 	private boolean leftClickJustPressed;
 	private boolean spaceJustPressed;
 
+	private boolean wasd;
 	private boolean mouseJump;
 
 	private boolean scrollUp;
@@ -281,31 +282,53 @@ public class InputController {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			centerCamera = true;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			scrollUp = true;
-			centerCamera = false;
-		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			scrollDown = true;
-			scrollUp = false;
-			centerCamera = false;
+		if(wasd) {
+			if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+				scrollUp = true;
+				centerCamera = false;
+			} else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+				scrollDown = true;
+				scrollUp = false;
+				centerCamera = false;
+			} else {
+				scrollUp = false;
+				scrollDown = false;
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+				scrollLeft = true;
+				centerCamera = false;
+			} else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+				scrollRight = true;
+				scrollLeft = false;
+				centerCamera = false;
+			} else {
+				scrollLeft = false;
+				scrollRight = false;
+			}
 		}
 		else {
-			scrollUp = false;
-			scrollDown = false;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			scrollLeft = true;
-			centerCamera = false;
-		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			scrollRight = true;
-			scrollLeft = false;
-			centerCamera = false;
-		}
-		else {
-			scrollLeft = false;
-			scrollRight = false;
+			if (Gdx.input.isKeyPressed(Input.Keys.I)) {
+				scrollUp = true;
+				centerCamera = false;
+			} else if (Gdx.input.isKeyPressed(Input.Keys.K)) {
+				scrollDown = true;
+				scrollUp = false;
+				centerCamera = false;
+			} else {
+				scrollUp = false;
+				scrollDown = false;
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.J)) {
+				scrollLeft = true;
+				centerCamera = false;
+			} else if (Gdx.input.isKeyPressed(Input.Keys.L)) {
+				scrollRight = true;
+				scrollLeft = false;
+				centerCamera = false;
+			} else {
+				scrollLeft = false;
+				scrollRight = false;
+			}
 		}
 		if(!Gdx.input.isKeyPressed(Input.Keys.SPACE) && spaceJustPressed) {
 			jump = true;
