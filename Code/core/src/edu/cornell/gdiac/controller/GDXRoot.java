@@ -257,7 +257,7 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(controllers[current]);
 				}
 			}
-			if (screen == controllers[controllers.length]) {
+			if (screen == controllers[controllers.length - 1]) {
 				lastScreen = 12;
 				lastPlayScreen = 12;
 				current = exitCode;

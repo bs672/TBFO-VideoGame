@@ -2355,9 +2355,6 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(16).x, med_stars.get(16).y,   med_stars.get(17).x, med_stars.get(17).y);
 
 
-        System.out.println(text);
-        System.out.println(stars);
-
         canvas.draw(backgroundLG, Color.WHITE, stars.get(0).x, stars.get(0).y,   stars.get(1).x, stars.get(1).y);
 
         canvas.draw(backgroundLG, Color.WHITE, stars.get(2).x, stars.get(2).y,   stars.get(3).x, stars.get(3).y);
