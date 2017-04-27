@@ -2009,6 +2009,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setNormal(true);
                 }
 
+                //makes sure Oob's face is correctly oriented
+                complexAvatar.setAngle((float)Math.atan2(smallestRad.y, smallestRad.x));
+
                 if (screenSwitch()) {
                     return;
                 }
@@ -2086,8 +2089,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     adjustCooldown = 30;
                     SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
-                if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
-                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
+                if (complexAvatar.getCenter().getLinearVelocity().len() < 5)
+                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(5));
                 findPlanet();
             }
 
@@ -2306,8 +2309,6 @@ public class PlayMode extends WorldController implements ContactListener {
             complexAvatar.getVertexBatch().getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
         catch(Exception e) {
-
-
         }
     }
 
