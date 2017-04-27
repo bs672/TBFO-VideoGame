@@ -321,10 +321,10 @@ public class SettingsMode extends WorldController implements ContactListener {
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
-    private static final float[][] PLANETS = {
-            {16.0f, 1f, 1.1f, 3f},   // MAIN MENU
-            {16f, 7f, 1.5f, 3f},  // MUTE
-            {16.0f, 10f, 1.5f, 3f},    // BACK
+    private static float[][] PLANETS = {
+            {0f, 0f, 1.1f, 3f},   // MAIN MENU
+            {15f, 8f, 1.5f, 3f},  // MUTE
+            {15f, 11.5f, 1.5f, 3f},    // BACK
     };
 
     private boolean jumpedOnce;
@@ -415,6 +415,8 @@ public class SettingsMode extends WorldController implements ContactListener {
         for(Obstacle o: objects){
             if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+                System.out.println(canvas.getWidth());
+                System.out.println(canvas.getHeight());
             }
         }
     }
@@ -442,7 +444,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
 
 
-        currentPlanet = planets.get(1); //The first planet is always the starting planet
+        currentPlanet = planets.get(0); //The first planet is always the starting planet
 
     }
 
@@ -489,7 +491,7 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     public void scrollScreen() {
         if(currentPlanet != null) {
-            vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
+            vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY()-5f);
             for (Obstacle o : objects) {
                 if (justLoaded) {
                     o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
@@ -507,7 +509,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             }
         }
         else {
-            vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
+            vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX()-3f, canvas.getHeight()/80f - complexAvatar.getY()-3f);
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar)) {
                     for(Obstacle p : complexAvatar.getBodies()) {
