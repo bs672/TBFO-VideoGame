@@ -94,17 +94,21 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers = new WorldController[13];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect(1);
+		controllers[2] = new LevelSelect(9);
 		controllers[3] = new PauseMenu();
 		controllers[4] = new PlayMode("Tutorial1Level1");
 		controllers[5] = new PlayMode("Tutorial1");
 		controllers[6] = new PlayMode("MainScene");
 		controllers[7] = new PlayMode("Tutorial1");
+		controllers[4] = new PlayMode("Intro Level");
+		controllers[5] = new PlayMode("Intro Level 1");
+		controllers[6] = new PlayMode("Intro Level 2");
+		controllers[7] = new PlayMode("Intro Level 3");
 		controllers[8] = new PlayMode("Tutorial1");
-		controllers[9] = new PlayMode("Tutorial1");
-		controllers[10] = new PlayMode("Tutorial1");
-		controllers[11] = new PlayMode("Tutorial1");
-		controllers[12] = new PlayMode("Tutorial1");
+		controllers[9] = new PlayMode("Tutorial2");
+		controllers[10] = new PlayMode("Level 2");
+		controllers[11] = new PlayMode("MainScene");
+		controllers[12] = new PlayMode("Combination");
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
@@ -153,7 +157,6 @@ public class GDXRoot extends Game implements ScreenListener {
 	}
 
 	public void toggleMute() {
-		System.out.println(mute);
 		if (music.isPlaying()) {
 			SoundController.getInstance().setMute(true);
 			music.stop();
@@ -172,6 +175,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
+		InputController.getInstance().setCenterCamera(true);
 		if (screen == loading) {
 			for(int ii = 0; ii < controllers.length; ii++) {
 				controllers[ii].loadContent(manager);
@@ -207,21 +211,29 @@ public class GDXRoot extends Game implements ScreenListener {
 			else if (exitCode == 1) {
 				toggleMute();
             }
+            else if(exitCode == 3) {
+				InputController.getInstance().toggleControls();
+			}
 		}
 		// LEVEL SELECT
 		else if (screen == controllers[2]) {
-			if (exitCode < 2) {
-				current = exitCode;
+			if(current!=12) {
+				if (exitCode < 2) {
+					current = exitCode;
+				} else if (exitCode == 2) {
+					current = lastScreen;
+				} else {
+					current = exitCode + 1;
+				}
+				lastScreen = 2;
+				controllers[current].reset();
+				setScreen(controllers[current]);
 			}
-			else if (exitCode == 2) {
-				current = lastScreen;
+			else{
+				lastScreen = 2;
+				controllers[current].reset();
+				setScreen(controllers[2]);
 			}
-			else {
-				current = exitCode + 1;
-			}
-			lastScreen = 2;
-			controllers[current].reset();
-			setScreen(controllers[current]);
 		}
 		// PAUSE MENU
 		else if (screen == controllers[3]) {
@@ -236,7 +248,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			lastScreen = 3;
 		}
 		else {
-			for (int i = 4; i < 11; i++) {
+			for (int i = 4; i < controllers.length - 1; i++) {
 				if (screen == controllers[i]) {
 					lastScreen = i;
 					lastPlayScreen = i;
@@ -250,7 +262,7 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(controllers[current]);
 				}
 			}
-			if (screen == controllers[12]) {
+			if (screen == controllers[controllers.length - 1]) {
 				lastScreen = 12;
 				lastPlayScreen = 12;
 				current = exitCode;

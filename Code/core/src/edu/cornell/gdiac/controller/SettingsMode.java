@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -73,7 +74,7 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
     private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
-    private static final String SETTINGS = "space/menus/settings.png";
+    private static final String SETTINGS = "space/menus/settings_text.png";
 
 
 
@@ -266,6 +267,8 @@ public class SettingsMode extends WorldController implements ContactListener {
         TEXTURES[1][1] = mute_Texture; //TODO: FIX THIS
         TEXTURES[2][0] = back_Texture;    // BACK
         TEXTURES[2][1] = back_hover_Texture;
+        TEXTURES[3][0] = main_Menu_Texture;    // BACK
+        TEXTURES[3][1] = main_Menu_Hover_Texture;
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -321,10 +324,11 @@ public class SettingsMode extends WorldController implements ContactListener {
     /** The volume for sound effects */
     private static final float EFFECT_VOLUME = 0.8f;
 
-    private static final float[][] PLANETS = {
-            {16.0f, 4f, 1.1f, 3f},   // MAIN MENU
-            {16f, 8f, 0.9f, 3f},  // MUTE
-            {16.0f, 11f, 1.5f, 3f},    // BACK
+    private static float[][] PLANETS = {
+            {0f, 0f, 1.1f, 3f},   // MAIN MENU
+            {15f, 8f, 1.5f, 3f},  // MUTE
+            {15f, 11.5f, 1.5f, 3f},    // BACK
+            {15f, 15f, 1.5f, 3f} // left/right handed
     };
 
     private boolean jumpedOnce;
@@ -415,6 +419,8 @@ public class SettingsMode extends WorldController implements ContactListener {
         for(Obstacle o: objects){
             if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
+                System.out.println(canvas.getWidth());
+                System.out.println(canvas.getHeight());
             }
         }
     }
@@ -442,7 +448,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
 
 
-        currentPlanet = planets.get(1); //The first planet is always the starting planet
+        currentPlanet = planets.get(0); //The first planet is always the starting planet
 
     }
 
@@ -489,7 +495,7 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     public void scrollScreen() {
         if(currentPlanet != null) {
-            vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
+            vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY()-5f);
             for (Obstacle o : objects) {
                 if (justLoaded) {
                     o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
@@ -507,7 +513,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             }
         }
         else {
-            vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
+            vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX()-3f, canvas.getHeight()/80f - complexAvatar.getY()-3f);
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar)) {
                     for(Obstacle p : complexAvatar.getBodies()) {
@@ -565,7 +571,6 @@ public class SettingsMode extends WorldController implements ContactListener {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
                 if (Math.sqrt(d) < planets.get(i).getRadius()) {
                     listener.exitScreen(this, i);
-                    System.out.println(i);
                     return;
                 }
             }
@@ -644,8 +649,22 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-        canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth() / 2 - (settingsTexture.getRegionWidth() / 2) - 50, 400, canvas.getWidth() / 2, canvas.getHeight() / 2);
+
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X, LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X, LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        canvas.draw(backgroundLG, Color.WHITE,LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+
+
+
+
+        canvas.draw(settingsTexture, Color.WHITE, 3*canvas.getWidth() /9 , 11*canvas.getHeight()/16, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
+
         canvas.begin();
         for (Obstacle obj : objects) {
             if (obj.getName() != "ComplexOob") {

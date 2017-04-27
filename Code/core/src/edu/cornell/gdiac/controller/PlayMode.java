@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -50,7 +51,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the character avatar (no animation) */
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
-    protected static final String OOB_COMMAND_FILE = "space/animations/explosionAnim.png";
+    protected static final String OOB_COMMAND_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
@@ -226,7 +227,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
-    protected static final float OOB_MAX_RADIUS = 2f;
+    protected static final float OOB_MAX_RADIUS = 2.0f;
 
     protected static final float EPSILON = 0.1f;
 
@@ -726,6 +727,79 @@ public class PlayMode extends WorldController implements ContactListener {
     Array<PlanetModel> planet_explosion;
     /** list of ships */
     protected Array<ShipModel> ships;
+
+
+    /** list of words */
+    protected Array<Vector2> text = new Array<Vector2>();
+    protected Array<Vector2> stars = new Array<Vector2>();
+    protected Array<Vector2> med_stars = new Array<Vector2>();
+
+
+    Vector2 titlecoord = new Vector2();
+    Vector2 titlesize = new Vector2();
+
+    float delta_x;
+    float delta_y;
+
+    float med_delta_x;
+    float med_delta_y;
+
+
+    int LG_S_X;
+    int LG_S_Y;
+
+    int LG_S_X_START;
+    int LG_S_Y_START;
+
+    int med_X;
+    int med_Y;
+
+    int med_X_START;
+    int med_Y_START;
+
+    Vector2 bg_coord_1 = new Vector2();
+    Vector2 bg_size_1 = new Vector2();
+    Vector2 bg_coord_2 = new Vector2();
+    Vector2 bg_size_2 = new Vector2();
+    Vector2 bg_coord_3 = new Vector2();
+    Vector2 bg_size_3 = new Vector2();
+    Vector2 bg_coord_4 = new Vector2();
+    Vector2 bg_size_4 = new Vector2();
+    Vector2 bg_coord_5 = new Vector2();
+    Vector2 bg_size_5 = new Vector2();
+    Vector2 bg_coord_6 = new Vector2();
+    Vector2 bg_size_6 = new Vector2();
+    Vector2 bg_coord_7 = new Vector2();
+    Vector2 bg_size_7 = new Vector2();
+    Vector2 bg_coord_8 = new Vector2();
+    Vector2 bg_size_8 = new Vector2();
+    Vector2 bg_coord_9 = new Vector2();
+    Vector2 bg_size_9 = new Vector2();
+
+
+    Vector2 med_coord_1 = new Vector2();
+    Vector2 med_size_1 = new Vector2();
+    Vector2 med_coord_2 = new Vector2();
+    Vector2 med_size_2 = new Vector2();
+    Vector2 med_coord_3 = new Vector2();
+    Vector2 med_size_3 = new Vector2();
+    Vector2 med_coord_4 = new Vector2();
+    Vector2 med_size_4 = new Vector2();
+    Vector2 med_coord_5 = new Vector2();
+    Vector2 med_size_5 = new Vector2();
+    Vector2 med_coord_6 = new Vector2();
+    Vector2 med_size_6 = new Vector2();
+    Vector2 med_coord_7 = new Vector2();
+    Vector2 med_size_7 = new Vector2();
+    Vector2 med_coord_8 = new Vector2();
+    Vector2 med_size_8 = new Vector2();
+    Vector2 med_coord_9 = new Vector2();
+    Vector2 med_size_9 = new Vector2();
+
+
+
+
+
     /** vector from Oob to center of the screen */
     protected Vector2 vecToCenter = new Vector2();
     /** Mark set to handle more sophisticated collision callbacks */
@@ -779,6 +853,7 @@ public class PlayMode extends WorldController implements ContactListener {
         playerControl = true;
         gameState = 0;
         messageCounter = 0;
+        InputController.getInstance().setCenterCamera(true);
     }
 
     /**
@@ -804,6 +879,9 @@ public class PlayMode extends WorldController implements ContactListener {
         commandPlanets.clear();
         planet_explosion.clear();
         ships.clear();
+        text.clear();
+        stars.clear();
+        med_stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -1076,7 +1154,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             //Poison Planets
             if (obj.getType() == 2f) {
-                obj.scalePicScale(new Vector2(.5f * obj.getRadius(), .5f * obj.getRadius()));
+                obj.scalePicScale(new Vector2(1.2f, 1.2f));
                 // Constant rows and columns of the sprite sheet
                 int FRAME_COLS = 8, FRAME_ROWS = 1;
 
@@ -1199,11 +1277,201 @@ public class PlayMode extends WorldController implements ContactListener {
         addObject(complexAvatar);
         loadAnim();
 
+        setBG();
+        set_med_BG();
+
 
 
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
+
+
+    public void setBG() {
+        if ((backgroundLG.getRegionWidth() - canvas.getWidth()) > 0) {
+            LG_S_X = 0;
+            LG_S_X_START=0;
+        } else {
+            LG_S_X = -(backgroundLG.getRegionWidth() - canvas.getWidth()) / 2;
+            LG_S_X_START = -(backgroundLG.getRegionWidth() - canvas.getWidth()) / 2;
+        }
+
+        if ((backgroundLG.getRegionHeight() - canvas.getHeight()) > 0) {
+            LG_S_Y = 0;
+            LG_S_Y_START = 0;
+        } else {
+            LG_S_Y = -(backgroundLG.getRegionHeight() - canvas.getHeight()) / 2;
+            LG_S_Y_START = -(backgroundLG.getRegionHeight() - canvas.getHeight()) / 2;
+        }
+
+
+
+
+
+
+        bg_coord_1.set(  LG_S_X, LG_S_Y );
+        bg_size_1.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_1);
+        stars.add (bg_size_1);
+
+
+
+        bg_coord_2.set(  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y );
+        bg_size_2.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_2);
+        stars.add (bg_size_2);
+
+
+
+        bg_coord_3.set(  LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y );
+        bg_size_3.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_3);
+        stars.add (bg_size_3);
+
+
+
+        bg_coord_4.set(  LG_S_X, LG_S_Y+backgroundLG.getRegionHeight());
+        bg_size_4.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_4);
+        stars.add (bg_size_4);
+
+
+
+        bg_coord_5.set(  LG_S_X, LG_S_Y-backgroundLG.getRegionHeight());
+        bg_size_5.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_5);
+        stars.add (bg_size_5);
+
+
+
+        bg_coord_6.set(  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight());
+        bg_size_6.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_6);
+        stars.add (bg_size_6);
+
+
+
+        bg_coord_7.set(  LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight());
+        bg_size_7.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_7);
+        stars.add (bg_size_7);
+
+
+
+        bg_coord_8.set(  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight());
+        bg_size_8.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_8);
+        stars.add (bg_size_8);
+
+
+
+        bg_coord_9.set(  LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight());
+        bg_size_9.set(  backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight()  );
+
+        stars.add (bg_coord_9);
+        stars.add (bg_size_9);
+    }
+
+
+    public void set_med_BG() {
+        if ((backgroundMED.getRegionWidth() - canvas.getWidth()) > 0) {
+            med_X = 0;
+            med_X_START=0;
+        } else {
+            med_X = -(backgroundMED.getRegionWidth() - canvas.getWidth()) / 2;
+            med_X_START = -(backgroundMED.getRegionWidth() - canvas.getWidth()) / 2;
+        }
+
+        if ((backgroundMED.getRegionHeight() - canvas.getHeight()) > 0) {
+            med_Y = 0;
+            med_Y_START = 0;
+        } else {
+            med_Y = -(backgroundMED.getRegionHeight() - canvas.getHeight()) / 2;
+            med_Y_START = -(backgroundMED.getRegionHeight() - canvas.getHeight()) / 2;
+        }
+
+
+        med_coord_1.set(  med_X, med_Y );
+        med_size_1.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_1);
+        med_stars.add (med_size_1);
+
+
+
+        med_coord_2.set(  med_X+backgroundMED.getRegionWidth(), med_Y );
+        med_size_2.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_2);
+        med_stars.add (med_size_2);
+
+
+
+        med_coord_3.set(  med_X-backgroundMED.getRegionWidth(), med_Y );
+        med_size_3.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_3);
+        med_stars.add (med_size_3);
+
+
+
+        med_coord_4.set(  med_X, med_Y+backgroundMED.getRegionHeight());
+        med_size_4.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_4);
+        med_stars.add (med_size_4);
+
+
+        med_coord_5.set(  med_X, med_Y-backgroundMED.getRegionHeight());
+        med_size_5.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_5);
+        med_stars.add (med_size_5);
+
+
+
+        med_coord_6.set(  med_X+backgroundMED.getRegionWidth(), med_Y+backgroundMED.getRegionHeight());
+        med_size_6.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_6);
+        med_stars.add (med_size_6);
+
+
+
+        med_coord_7.set(  med_X-backgroundLG.getRegionWidth(), med_Y-backgroundMED.getRegionHeight());
+        med_size_7.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_7);
+        med_stars.add (med_size_7);
+
+
+
+        med_coord_8.set(  med_X+backgroundMED.getRegionWidth(), med_Y-backgroundMED.getRegionHeight());
+        med_size_8.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_8);
+        med_stars.add (med_size_8);
+
+
+
+        med_coord_9.set(  med_X-backgroundMED.getRegionWidth(), med_Y+backgroundMED.getRegionHeight());
+        med_size_9.set(  backgroundMED.getRegionWidth(), backgroundMED.getRegionHeight()  );
+
+        med_stars.add (med_coord_9);
+        med_stars.add (med_size_9);
+    }
+
+
+
+
 
     public void loadAnim() {
         complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);
@@ -1229,6 +1497,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
         complexAvatar.set_Max_sheet(Oob_Max_Sheet);
         complexAvatar.createMaxtex();
+
+
     }
 
 
@@ -1266,13 +1536,12 @@ public class PlayMode extends WorldController implements ContactListener {
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
 //                    sh.setAggroRange(20f);
                 }
-                else if (Math.random() < 0.75){
+                else if (Math.random() < 1.0){
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
                     sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2);
-                    System.out.println("mother ship launched");
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1288,6 +1557,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setGravityScale(0.0f);
                 addObject(sh);
                 aiController.addShip(sh, c);
+                if(sh.getType() == 2)
+                    aiController.findBigPlanet(sh);
                 c.addShip(sh);
             }
         }
@@ -1324,7 +1595,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setTexture(bullet_texture);
                 bullet.setName("bullet");
                 addObject(bullet);
-                SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME);
+                SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME-0.6f);
 
             }
             aiController.bulletData.clear();
@@ -1400,6 +1671,26 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    public void delta_pos() {
+            text.get(0).x += (vecToCenter.x);
+            text.get(0).y += (vecToCenter.y);
+    }
+
+    public void delta_star_pos() {
+        for (int i = 0; i < stars.size; i+=2) {
+            stars.get(i).x += (vecToCenter.x)/2;
+            stars.get(i).y += (vecToCenter.y)/2;
+        }
+    }
+
+    public void delta_star_med_pos() {
+        for (int i = 0; i < med_stars.size; i+=2) {
+            med_stars.get(i).x += (vecToCenter.x)/10;
+            med_stars.get(i).y += (vecToCenter.y)/10;
+        }
+    }
+
+
     //Finds closest planet
     public void findPlanet(){
         returnToPlanetTimer++;
@@ -1454,9 +1745,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob jump
     public void jump(){
         if(!forceJump) {
-            System.out.println(SoundController.getInstance().getMute());
-            System.out.println("jump");
-            SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.5f);
+            SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.7f);
         }
         Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
         complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
@@ -1472,6 +1761,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if(InputController.getInstance().didPause()){
             if (play) listener.exitScreen(this, 3);
+            InputController.getInstance().setCenterCamera(true);
         }
         if (control==1){
             Vector2 mouse = InputController.getInstance().getCursor(canvas);
@@ -1503,6 +1793,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if(InputController.getInstance().didPause()){
             if (play) listener.exitScreen(this, 3);
+            InputController.getInstance().setCenterCamera(true);
         }
         if(playerControl) {
             if (control == 1) {
@@ -1582,13 +1873,47 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-//        System.out.println(complexAvatar.getCenter().getX());
-//        System.out.println(complexAvatar.getCenter().getY());
-//        System.out.println("CURRENTPLANET");
-//        if(currentPlanet != null) {
-//            System.out.println(currentPlanet.getX());
-//            System.out.println(currentPlanet.getY());
-//        }
+        if (text.size>0) {
+            delta_pos();
+        }
+        if (stars.size>0) {
+            delta_star_pos();
+            if (stars.get(0).x>backgroundLG.getRegionWidth()){
+               delta_y=stars.get(0).y-LG_S_Y_START;
+                stars.clear();
+                setBG();
+                for (int i = 0; i < stars.size; i+=2) {
+                    stars.get(i).y += delta_y;
+                }
+            }
+            else if (stars.get(0).y>backgroundLG.getRegionHeight()){
+                delta_x=stars.get(0).x-LG_S_X_START;
+                stars.clear();
+                setBG();
+                for (int i = 0; i < stars.size; i+=2) {
+                    stars.get(i).x += delta_x;
+                }
+            }
+        }
+        if (med_stars.size>0) {
+            delta_star_med_pos();
+            if (med_stars.get(0).x>backgroundMED.getRegionWidth()){
+                med_delta_y=med_stars.get(0).y-med_Y_START;
+                med_stars.clear();
+                set_med_BG();
+                for (int i = 0; i < med_stars.size; i+=2) {
+                    med_stars.get(i).y += med_delta_y;
+                }
+            }
+            else if (med_stars.get(0).y>backgroundMED.getRegionHeight()){
+                med_delta_x=med_stars.get(0).x-med_X_START;
+                med_stars.clear();
+                set_med_BG();
+                for (int i = 0; i < med_stars.size; i+=2) {
+                    med_stars.get(i).x += med_delta_x;
+                }
+            }
+        }
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1609,13 +1934,17 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (commandPlanets.size == 0 & play) {
                 // Won the level
+                InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 2;
+
             }
             if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
                 // Lost the level
+                InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 1;
+
             }
             if (currentPlanet != null) {
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
@@ -1676,7 +2005,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 } else {
                     rad = currentPlanet.getRadius();
                     float Oob_rad = complexAvatar.getRadius();
-                    if (rad > DEATH_RADIUS && Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f || currentPlanet.getType() == 1f)) {
+                    if ((rad > DEATH_RADIUS &&
+                            ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
+                            || (currentPlanet.getType() == 1f)))) {
                         siphonPlanet();
                     } else if (Oob_rad >= OOB_MAX_RADIUS) {
                         complexAvatar.setMax(true);
@@ -1719,7 +2050,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
                     adjustCooldown = 60;
-                    SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, EFFECT_VOLUME);
+                    SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
                 if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
@@ -1779,9 +2110,10 @@ public class PlayMode extends WorldController implements ContactListener {
             complexAvatar.resetForceVec();
             Vector2 vel = new Vector2(0, 0);
             complexAvatar.setLinearVelocity(vel);
-            if (messageCounter > 350) {
+            if (messageCounter > 240) {
                 if (gameState == 2) {
                     listener.exitScreen(this, 2);
+                    InputController.getInstance().setCenterCamera(true);
                 }
                 else {
                     reset();
@@ -1833,7 +2165,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
-                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME);
                 }
                 else if (bd2.getName().equals("ship")) {
                     bd2.markRemoved(true);
@@ -1867,7 +2198,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     complexAvatar.set_Shot_Cooldown(10);
                     changeMass(BULLET_DAMAGE);
-                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false,EFFECT_VOLUME);
                 }
                 else if (bd1.getName().equals("ship")) {
                     bd1.markRemoved(true);
@@ -1909,11 +2239,13 @@ public class PlayMode extends WorldController implements ContactListener {
             if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
                 //LOSE
                 listener.exitScreen(this, 0);
+                InputController.getInstance().setCenterCamera(true);
                 //reset();
             }
             else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
                 //LOSE
                 listener.exitScreen(this, 0);
+                InputController.getInstance().setCenterCamera(true);
                 //reset();
             }
         } catch (Exception e) {
@@ -1939,44 +2271,57 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Unused ContactListener method */
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
-    /**
-     * Draw the physics objects together with foreground and background
-     *
-     * This is completely overridden to support custom background and foreground art.
-     *
-     * @param dt Timing values from parent loop
-     */
-    public void draw(float dt) {
+
+    public void drawBackground () {
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-        canvas.begin();
-        int LG_S_X;
-        int LG_S_Y;
-        if ((backgroundLG.getRegionWidth()-canvas.getWidth())>0) {
-            LG_S_X = 0;
-        }
-        else {
-            LG_S_X = -(backgroundLG.getRegionWidth()-canvas.getWidth())/2;
-        }
+        // delta_pos();
+        //float camera = -carPosition;
 
-        if ((backgroundLG.getRegionHeight()-canvas.getHeight())>0) {
-            LG_S_Y = 0;
-        }
-        else {
-            LG_S_Y = -(backgroundLG.getRegionHeight()-canvas.getHeight())/2;
-        }
-        if (gameState == 0) {
-            canvas.draw(backgroundMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
-        }
-        else {
-            canvas.draw(backgroundMAIN, Color.GRAY, 0, 0, canvas.getWidth(), canvas.getHeight());
-        }
-        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
+        // Draw background unscaled.
+        canvas.begin();
+
+        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
+        // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
+        // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
+
+
+        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        canvas.draw(backgroundSM, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        //canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y, backgroundLG.getRegionWidth(), backgroundLG.getRegionHeight());
+
+
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(0).x, med_stars.get(0).y, med_stars.get(1).x, med_stars.get(1).y);
+
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(2).x, med_stars.get(2).y, med_stars.get(3).x, med_stars.get(3).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(4).x, med_stars.get(4).y, med_stars.get(5).x, med_stars.get(5).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(6).x, med_stars.get(6).y, med_stars.get(7).x, med_stars.get(7).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(8).x, med_stars.get(8).y, med_stars.get(9).x, med_stars.get(9).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(10).x, med_stars.get(10).y, med_stars.get(11).x, med_stars.get(11).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(12).x, med_stars.get(12).y, med_stars.get(13).x, med_stars.get(13).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(14).x, med_stars.get(14).y, med_stars.get(15).x, med_stars.get(15).y);
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(16).x, med_stars.get(16).y, med_stars.get(17).x, med_stars.get(17).y);
+
+
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(0).x, stars.get(0).y, stars.get(1).x, stars.get(1).y);
+
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(2).x, stars.get(2).y, stars.get(3).x, stars.get(3).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(4).x, stars.get(4).y, stars.get(5).x, stars.get(5).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(6).x, stars.get(6).y, stars.get(7).x, stars.get(7).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(8).x, stars.get(8).y, stars.get(9).x, stars.get(9).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(10).x, stars.get(10).y, stars.get(11).x, stars.get(11).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(12).x, stars.get(12).y, stars.get(13).x, stars.get(13).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y, stars.get(15).x, stars.get(15).y);
+        canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y, stars.get(17).x, stars.get(17).y);
         canvas.end();
 
+    }
+
+
+
+    public void drawObjects(){
         for (Obstacle obj : objects) {
             if (obj.getName().equals("ComplexOob")) {
                 TextureRegion currentFrame;
@@ -1984,40 +2329,43 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(8,7);
                 }
-                else if ( ((ComplexOobModel) obj).isGrowing() ) {
+                else if ( ((ComplexOobModel) obj).isGrowing()) {
                     currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
-                }
-                else if ( ((ComplexOobModel) obj).isCommand() ) {
-                    currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
-                    ((ComplexOobModel) obj).setAnimDimensions(5,1);
                 }
                 else if ( blackHoleWarp ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(3,2);
                 }
-                else if ( ((ComplexOobModel) obj).isFlying() ) {
+                else if ( ((ComplexOobModel) obj).isFlying() || gameState == 2) {
                     currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(40,1);
                 }
-                else  {
+                else if ( ((ComplexOobModel) obj).isHurting() || gameState == 1)  {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
                 }
-                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {
+                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0) {}
+                else {
+                    currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                }
+
+                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0 && gameState == 0 ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
                     complexAvatar.decCooldown();
                 }
-                if ( ((ComplexOobModel) obj).isDying() ) {
+                if ( ((ComplexOobModel) obj).isDying() && gameState == 0) {
                     currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
 
-                if ( ((ComplexOobModel) obj).isMax() ) {
+                if ( ((ComplexOobModel) obj).isMax() && gameState == 0) {
                     currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
+
                 ((ComplexOobModel) obj).setTexture(currentFrame);
                 ((ComplexOobModel) obj).draw();
                 canvas.begin();
@@ -2058,8 +2406,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-//                else if (obj.getName().equals("ComplexOob")) {
-//                }
+
 
             else {
                 canvas.begin();
@@ -2084,9 +2431,24 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
         if (gameState == 2) {
-            canvas.drawText("YOU WON!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
         }
         canvas.end();
+
+    }
+
+
+    /**
+     * Draw the physics objects together with foreground and background
+     *
+     * This is completely overridden to support custom background and foreground art.
+     *
+     * @param dt Timing values from parent loop
+     */
+    public void draw(float dt) {
+
+        drawBackground();
+        drawObjects();
     }
 
 }

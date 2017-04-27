@@ -3,18 +3,12 @@ package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import edu.cornell.gdiac.model.BulletModel;
 import edu.cornell.gdiac.model.PlanetModel;
 import edu.cornell.gdiac.model.ShipModel;
 import edu.cornell.gdiac.model.ComplexOobModel;
-import edu.cornell.gdiac.model.OobModel;
-import edu.cornell.gdiac.model.obstacle.Obstacle;
-import edu.cornell.gdiac.util.PooledList;
 
 /**
  * Created by Matt Loughney on 3/18/2017.
@@ -64,6 +58,9 @@ public class AIController {
         this.ships = ships;
         this.planets = planets;
         targetPlanets = new ObjectMap<ShipModel, PlanetModel>();
+        avatar = oob;
+        tempVec1 = new Vector2();
+        tempVec2 = new Vector2();
         for(int i = 0; i < ships.size; i++)
             if (ships.get(i).getType() == 2) {
                 PlanetModel bigPlanet = planets.get(0);
@@ -75,11 +72,18 @@ public class AIController {
                 targetPlanets.put(ships.get(i), bigPlanet);
             }
             else {
-                targetPlanets.put(ships.get(i), planets.get(i));
+                Vector2 tempVec3 = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+                int cloPl = -1;
+                for (int j = 0; j < planets.size; j++) {
+                    tempVec2.set(ships.get(j).getPosition().cpy().sub(planets.get(j).getPosition()));
+                    if (tempVec2.len() - planets.get(j).getRadius() < tempVec3.len()) {
+                        tempVec3 = tempVec2.cpy();
+                        tempVec3.scl((tempVec3.len() - planets.get(j).getRadius()) / tempVec3.len());
+                        cloPl = j;
+                    }
+                }
+                targetPlanets.put(ships.get(i), planets.get(cloPl));
             }
-        avatar = oob;
-        tempVec1 = new Vector2();
-        tempVec2 = new Vector2();
         wanderers = new ObjectSet<ShipModel>();
     }
 
@@ -105,7 +109,7 @@ public class AIController {
                 shootInRange(s);
             }
             else if(s.getType() ==2){
-                findBigPlanet(s);
+                moveToBigPlanet(s);
                 convertInRange(s);
             }
             // set the ship's orientation to the correct angle
@@ -174,12 +178,22 @@ public class AIController {
         }
     }
 
+    public void findBigPlanet(ShipModel s) {
+        PlanetModel bigPlanet = planets.get(0);
+        for (int j = 0; j < planets.size; j++) {
+            if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
+                bigPlanet = planets.get(j);
+            }
+        }
+        targetPlanets.put(s, bigPlanet);
+    }
+
     /**
      * try to get into orbit of biggest planet
      *
      * @param s
      */
-    public void findBigPlanet(ShipModel s) {
+    public void moveToBigPlanet(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
         if (!planets.contains(targetPlanets.get(s), false)) {
@@ -188,14 +202,15 @@ public class AIController {
         if(s.getInOrbit()) {
             if(wanderers.contains(s))
                 wanderers.remove(s);
+            peacefulPathfind(s);
             // tempVec1 is planet to ship
-            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
-            tempVec2.set(-tempVec1.y,tempVec1.x);
-            tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
-            tempVec1.set(s.getPosition().cpy().add(tempVec2));
-            tempVec1.sub(targetPlanets.get(s).getPosition());
-            tempVec1.scl((targetPlanets.get(s).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
-            s.setPosition(targetPlanets.get(s).getPosition().cpy().add(tempVec1));
+//            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
+//            tempVec2.set(-tempVec1.y,tempVec1.x);
+//            tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
+//            tempVec1.set(s.getPosition().cpy().add(tempVec2));
+//            tempVec1.sub(targetPlanets.get(s).getPosition());
+//            tempVec1.scl((targetPlanets.get(s).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+//            s.setPosition(targetPlanets.get(s).getPosition().cpy().add(tempVec1));
         }
         else {
             Vector2 tempVec3 = new Vector2(Float.MAX_VALUE,Float.MAX_VALUE);
@@ -214,20 +229,15 @@ public class AIController {
                 s.setPosition(s.getPosition().cpy().add(tempVec1));
             }
             else {
-                int bigPlanet = -1;
-                for (int j = 0; j < planets.size; j++) {
-                    if ((planets.get(j).getRadius() > planets.get(bigPlanet).getRadius()) && (planets.get(j).getType() != 1)) {
-                        bigPlanet = j;
-                    }
-                }
+                PlanetModel big = targetPlanets.get(s);
                 // tempVec1 is planet to ship
-                tempVec1.set(s.getPosition().cpy().sub(planets.get(bigPlanet).getPosition()));
-                tempVec3.set(-tempVec3.y, tempVec3.x);
-                tempVec3.scl(s.getMoveSpeed()/tempVec3.len());
-                tempVec1.set(s.getPosition().cpy().add(tempVec3));
-                tempVec1.sub(planets.get(bigPlanet).getPosition());
-                tempVec1.scl((planets.get(bigPlanet).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
-                s.setPosition(planets.get(bigPlanet).getPosition().cpy().add(tempVec1));
+                tempVec1.set(s.getPosition().cpy().sub(big.getPosition()));
+                tempVec2.set(-tempVec1.y,tempVec1.x);
+                tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
+                tempVec1.set(s.getPosition().cpy().add(tempVec2));
+                tempVec1.sub(big.getPosition());
+                tempVec1.scl((big.getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+                s.setPosition(big.getPosition().cpy().add(tempVec1));
             }
         }
     }

@@ -577,8 +577,8 @@ public class ComplexOobModel extends ComplexObstacle {
     public void createCommandtex() {
 
         // Constant rows and columns of the sprite sheet
-        FRAME_COLS = 5;
-        FRAME_ROWS = 1;
+        FRAME_COLS = 4;
+        FRAME_ROWS = 3;
 
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are

@@ -124,6 +124,8 @@ public class LevelSelect extends PlayMode {
         commandPlanets.clear();
         planet_explosion.clear();
         ships.clear();
+        text.clear();
+        stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -198,6 +200,16 @@ public class LevelSelect extends PlayMode {
         addObject(complexAvatar);
 
         loadAnim();
+        setBG();
+        set_med_BG();
+
+        titlecoord.set(   3*canvas.getWidth() /9 , 2*canvas.getHeight()/8  );
+        titlesize.set(  3*canvas.getWidth()/9, 2*canvas.getHeight()/8  );
+
+
+
+        text.add (titlecoord);
+        text.add (titlesize);
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
@@ -280,9 +292,11 @@ public class LevelSelect extends PlayMode {
     }
 
     public void draw(float dt) {
-        super.draw(dt);
+        super.drawBackground();
         canvas.begin();
-        canvas.draw(levelsTitleTexture, Color.WHITE, canvas.getWidth() / 2 - (levelsTitleTexture.getRegionWidth() / 2), 550, levelsTitleTexture.getRegionWidth(), levelsTitleTexture.getRegionHeight());
+        canvas.draw(levelsTitleTexture, Color.WHITE, text.get(0).x, text.get(0).y,   text.get(1).x, text.get(1).y);
+        //canvas.draw(levelsTitleTexture, Color.WHITE, 3*canvas.getWidth() /9 , 2*canvas.getHeight()/8, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
+        super.drawObjects();
     }
 }
