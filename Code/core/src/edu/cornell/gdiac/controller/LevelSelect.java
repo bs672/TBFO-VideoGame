@@ -126,6 +126,7 @@ public class LevelSelect extends PlayMode {
         ships.clear();
         text.clear();
         stars.clear();
+        white_stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -202,6 +203,7 @@ public class LevelSelect extends PlayMode {
         loadAnim();
         setBG();
         set_med_BG();
+        set_white_BG();
 
         titlecoord.set(   3*canvas.getWidth() /9 , 2*canvas.getHeight()/8  );
         titlesize.set(  3*canvas.getWidth()/9, 2*canvas.getHeight()/8  );

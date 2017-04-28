@@ -114,6 +114,7 @@ public class PauseMenu extends PlayMode {
         text.clear();
         stars.clear();
         med_stars.clear();
+        white_stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -163,6 +164,7 @@ public class PauseMenu extends PlayMode {
         loadAnim();
         setBG();
         set_med_BG();
+        set_white_BG();
 
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
 
