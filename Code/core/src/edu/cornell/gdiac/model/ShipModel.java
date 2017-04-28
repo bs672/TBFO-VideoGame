@@ -24,6 +24,8 @@ public class ShipModel extends CapsuleObstacle{
     private float range;
     private float mass;
 
+    private float orbitDistance;
+
     private static final float AGGRO_RANGE = 8.0f;
 
 
@@ -71,6 +73,10 @@ public class ShipModel extends CapsuleObstacle{
 
     public float getMoveSpeed() {return MOVE_SPEED; }
 
+    public float getOrbitDistance() {return orbitDistance; }
+
+    public void setOrbitDistance(float f) {orbitDistance = f; }
+
     /**
      * Creates a new ship at the given position.
      *
@@ -109,6 +115,7 @@ public class ShipModel extends CapsuleObstacle{
         firingCooldown = 0;
         delay=0;
         range = AGGRO_RANGE;
+        orbitDistance = 3;
     }
 
     public void drawDebug(GameCanvas canvas) {

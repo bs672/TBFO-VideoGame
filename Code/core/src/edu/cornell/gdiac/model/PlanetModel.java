@@ -211,7 +211,6 @@ public class PlanetModel extends WheelObstacle{
         dying=false;
         becomingCommand = 0;
         ships = new Array<ShipModel>();
-
         setName("Planet");
     }
 

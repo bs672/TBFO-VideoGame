@@ -1315,7 +1315,6 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.set_Max_sheet(Oob_Max_Sheet);                     complexAvatar.createMaxtex();
     }
 
-
     /**
      * Returns whether to process the update loop
      *
@@ -1374,6 +1373,17 @@ public class PlayMode extends WorldController implements ContactListener {
                 if(sh.getType() == 2)
                     aiController.findBigPlanet(sh);
                 c.addShip(sh);
+                for(int i = 0; i < c.getShips().size; i++) {
+                    if(i <= 8)
+                        sh.setOrbitDistance(2);
+                    else if(i <= 16)
+                        sh.setOrbitDistance(3f);
+                    else if(i <= 24)
+                        sh.setOrbitDistance(4f);
+                    else {
+                        aiController.setTarget(sh, planets.get((int)(Math.random()*planets.size)));
+                    }
+                }
             }
         }
     }
@@ -1485,26 +1495,27 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+
     public void scrollText() {
-        if (text.size>0) {
+        if (text.size > 0) {
             if (!InputController.getInstance().getCenterCamera()) {
                 if (InputController.getInstance().getScrollUp()) {
-                    text.get(0).y += -SCROLL_SPEED*10;
+                    text.get(0).y += -SCROLL_SPEED * 10;
                 } else if (InputController.getInstance().getScrollDown()) {
-                    text.get(0).y += SCROLL_SPEED*10;
+                    text.get(0).y += SCROLL_SPEED * 10;
                 }
                 if (InputController.getInstance().getScrollLeft()) {
-                    text.get(0).x += SCROLL_SPEED*10;
+                    text.get(0).x += SCROLL_SPEED * 10;
                 } else if (InputController.getInstance().getScrollRight()) {
-                    text.get(0).x += -SCROLL_SPEED*10;
+                    text.get(0).x += -SCROLL_SPEED * 10;
                 }
-            }
-            else {
+            } else {
                 text.get(0).x += (vecToCenter.x);
                 text.get(0).y += (vecToCenter.y);
             }
         }
     }
+
 
     public void scrollStars(Array<Vector2> starArray, float speed, float scrollspeed,TextureRegion background, int Xstart, int Ystart) {
         if (starArray.size>0) {
@@ -1681,7 +1692,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if(playerControl) {
             if (control == 1) {
-                launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas));
+                launchVec = complexAvatar.getPosition().cpy().sub(InputController.getInstance().getCursor(canvas)).scl(-1);
                 jump = InputController.getInstance().getMouseJump();
             } else {
                 jump = InputController.getInstance().getJump();
@@ -1757,7 +1768,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
@@ -1823,6 +1833,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setNormal(true);
                 }
 
+                //makes sure Oob's face is correctly oriented
+                complexAvatar.setAngle((float)Math.atan2(smallestRad.y, smallestRad.x));
+
                 if (screenSwitch()) {
                     return;
                 }
@@ -1855,7 +1868,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     float Oob_rad = complexAvatar.getRadius();
                     if ((rad > DEATH_RADIUS &&
                             ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                            || (currentPlanet.getType() == 1f)))) {
+                                    || (currentPlanet.getType() == 1f)))) {
                         siphonPlanet();
                     } else if (Oob_rad >= OOB_MAX_RADIUS) {
                         complexAvatar.setMax(true);
@@ -1897,11 +1910,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(-expulsion.getMass() / 2);
                     Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
-                    adjustCooldown = 60;
+                    adjustCooldown = 30;
                     SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
-                if (complexAvatar.getCenter().getLinearVelocity().len() < 4)
-                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(4));
+                if (complexAvatar.getCenter().getLinearVelocity().len() < 5)
+                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(5));
                 findPlanet();
             }
 
@@ -2115,27 +2128,18 @@ public class PlayMode extends WorldController implements ContactListener {
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void resize() {
+        try {
+            complexAvatar.getVertexBatch().getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+        catch(Exception e) {
+        }
+    }
 
     public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-       // delta_pos();
+        // delta_pos();
         //float camera = -carPosition;
 
         // Draw background unscaled.
@@ -2198,8 +2202,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
         canvas.end();
     }
-
-
 
     public void drawObjects(){
         for (Obstacle obj : objects) {
@@ -2317,10 +2319,10 @@ public class PlayMode extends WorldController implements ContactListener {
 //            }
 //            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
         if (gameState == 1) {
-            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
         }
         if (gameState == 2) {
-            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 50, canvas.getHeight()/2);
+            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
         }
         canvas.end();
 

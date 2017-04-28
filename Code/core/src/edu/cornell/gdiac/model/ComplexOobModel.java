@@ -45,6 +45,9 @@ public class ComplexOobModel extends ComplexObstacle {
     /** The transform to center the image on the screen */
     private Affine2 transform;
 
+    // orientation
+    private float angle;
+
     /** The number of edges to approximate a circle */
     private int size;
 
@@ -72,7 +75,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Animation<TextureRegion> get_Normal_anim(){return Normal_Animation;}
 
-
+    public VertexBatch getVertexBatch() {return batch; }
 
     private Texture Normal_Sheet;
 
@@ -291,6 +294,8 @@ public class ComplexOobModel extends ComplexObstacle {
         edgePosns.set(edgeIndex, new Vector2(newX, newY));
     }
 
+    public void setAngle(float f) { angle = f; }
+
     /**
      * Resets the polygon to match the current global state.
      *
@@ -360,8 +365,9 @@ public class ComplexOobModel extends ComplexObstacle {
         float baseY = ((float)value.getRegionY()) / img.getHeight();
         float step = (float)(Math.PI*2)/size;
         for(int i = 0; i < size; i++) {
-            float offsetX = (((float)Math.cos(i*step) + 1) / 2) * (1f / FRAME_COLS);
-            float offsetY = ((-(float)Math.sin(i*step) + 1) / 2) * (1f / FRAME_ROWS);
+            float baseAngle = (float)Math.atan2(bodies.get(i+1).getX() - bodies.get(0).getX(), bodies.get(i+1).getY() - bodies.get(0).getY());
+            float offsetX = (((float)Math.cos(/*i*step*/baseAngle + angle) + 1) / 2) * (1f / FRAME_COLS);
+            float offsetY = ((-(float)Math.sin(/*i*step*/baseAngle + angle) + 1) / 2) * (1f / FRAME_ROWS);
             vertices.setTexCoords(i, baseX + offsetX, baseY + offsetY);
         }
     }
