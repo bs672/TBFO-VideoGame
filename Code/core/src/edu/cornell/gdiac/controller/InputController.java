@@ -274,12 +274,12 @@ public class InputController {
 		}
 
 		//Changing modes, JUST FOR DEMO
-		if((Gdx.input.isKeyJustPressed(Input.Keys.M))){
-			change = true;
-		}
-		else{
-			change = false;
-		}
+//		if((Gdx.input.isKeyJustPressed(Input.Keys.M))){
+//			change = true;
+//		}
+//		else{
+//			change = false;
+//		}
 
 		jump = (secondary ? jump : false);
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
