@@ -181,7 +181,50 @@ public class PauseMenu extends PlayMode {
 
     }
 
-    public void unlockedScrollScreen(){}
+    public void unlockedScrollScreen(){
+        InputController.getInstance().setCenterCamera(true);
+    }
+    public void scrollStars(Array<Vector2> starArray, float speed, float scrollspeed,TextureRegion background, int Xstart, int Ystart) {
+        for (int i = 0; i < starArray.size; i += 2) {
+            starArray.get(i).x += (vecToCenter.x) * speed;
+            starArray.get(i).y += (vecToCenter.y) * speed;
+        }
+        if (starArray.get(0).x > background.getRegionWidth() || starArray.get(0).x < -background.getRegionWidth()) {
+            float Ydelt = starArray.get(0).y - Ystart;
+            starArray.clear();
+            if (starArray == stars) {
+                setBG();
+            } else if (starArray == med_stars) {
+                set_med_BG();
+            } else if (starArray == white_stars) {
+                set_white_BG();
+                System.out.println("Reset X");
+            }
+            for (int i = 0; i < starArray.size; i += 2) {
+                starArray.get(i).y += Ydelt;
+            }
+        }
+        if (starArray.get(0).y > background.getRegionHeight() || starArray.get(0).y < -background.getRegionHeight()) {
+            float Xdelt = starArray.get(0).x - Xstart;
+            starArray.clear();
+            if (starArray == stars) {
+                setBG();
+            } else if (starArray == med_stars) {
+                set_med_BG();
+            } else if (starArray == white_stars) {
+                set_white_BG();
+                System.out.println("Reset Y");
+            }
+            for (int i = 0; i < starArray.size; i += 2) {
+                starArray.get(i).x += Xdelt;
+            }
+        }
+    }
+    public void scrollText(){
+        text.get(0).x += (vecToCenter.x);
+        text.get(0).y += (vecToCenter.y);
+    }
+
 
     public boolean screenSwitch() {
         for (int i = 0; i <= 2; i++) {
