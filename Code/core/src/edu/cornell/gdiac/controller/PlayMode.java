@@ -719,7 +719,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
-        System.out.println("RESET");
         InputController.getInstance().setCenterCamera(true);
         playerControl = true;
         blackHoleWarp = false;
@@ -1374,11 +1373,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     aiController.findBigPlanet(sh);
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
-                    if(i <= 8)
+                    if(i <= 4)
                         sh.setOrbitDistance(2);
-                    else if(i <= 16)
+                    else if(i <= 20 && i % 2 == 0)
                         sh.setOrbitDistance(3f);
-                    else if(i <= 24)
+                    else if(i <= 36 && i % 2 == 0)
                         sh.setOrbitDistance(4f);
                     else {
                         aiController.setTarget(sh, planets.get((int)(Math.random()*planets.size)));

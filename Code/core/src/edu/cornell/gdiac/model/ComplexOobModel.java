@@ -209,7 +209,7 @@ public class ComplexOobModel extends ComplexObstacle {
         outerJoints = new Array<DistanceJoint>();
         float angle = 0;
         for(int i = 0; i < size; i++) { // create outer circles counter-clockwise from 0 degrees
-            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / size));
+            WheelObstacle wheel = new WheelObstacle(x + rad*(float)Math.cos(angle), y + rad*(float)Math.sin(angle), radius*(float)Math.sin(Math.PI / size)*0.7f);
             wheel.setBodyType(BodyDef.BodyType.DynamicBody);
             wheel.setName("Oob");
             bodies.add(wheel);
@@ -399,7 +399,7 @@ public class ComplexOobModel extends ComplexObstacle {
             j.setLength(2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2)*0.7f);
         }
         for(int i = 1; i < bodies.size; i++)
-            ((WheelObstacle)bodies.get(i)).setRadius(radius*(float)Math.sin(Math.PI / (bodies.size - 1)));
+            ((WheelObstacle)bodies.get(i)).setRadius(radius*(float)Math.sin(Math.PI / (bodies.size - 1))*0.7f);
     }
 
     public float getMass() {
