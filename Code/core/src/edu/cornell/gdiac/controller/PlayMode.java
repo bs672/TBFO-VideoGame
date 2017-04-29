@@ -863,7 +863,6 @@ public class PlayMode extends WorldController implements ContactListener {
     //Should we play the jump sound?
     protected boolean forceJump;
 
-
     /**
      * Creates and initialize a new instance of the platformer game
      *
@@ -936,6 +935,7 @@ public class PlayMode extends WorldController implements ContactListener {
         play = true;
         gameState = 0;
         messageCounter = 0;
+        jumpTime = 0;
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -2062,6 +2062,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 if ((jumpTime > 300) & !play) {
                     reset();
                 }
+                if ((jumpTime > 600) & play) {
+                    gameState = 1;
+                }
                 if (!play) {
                     gravity();
                 }
@@ -2300,24 +2303,6 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Unused ContactListener method */
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
@@ -2331,14 +2316,16 @@ public class PlayMode extends WorldController implements ContactListener {
         // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
         // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
 
-
-        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+        float x = 255 - ((float) jumpTime/2);
+        System.out.println(x);
+        Color Tint = new Color(20,20,20,1);
+        canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
+        canvas.draw(backgroundSM, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
         //canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 
 
-        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(0).x, med_stars.get(0).y,   med_stars.get(1).x, med_stars.get(1).y);
+        canvas.draw(backgroundMED, Tint, med_stars.get(0).x, med_stars.get(0).y,   med_stars.get(1).x, med_stars.get(1).y);
 
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(2).x, med_stars.get(2).y,   med_stars.get(3).x, med_stars.get(3).y);
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(4).x, med_stars.get(4).y,   med_stars.get(5).x, med_stars.get(5).y);
@@ -2361,15 +2348,11 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y,   stars.get(15).x, stars.get(15).y);
         canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y,   stars.get(17).x, stars.get(17).y);
 
-
-
-
         canvas.end();
     }
 
-
-
     public void drawObjects(){
+
         for (Obstacle obj : objects) {
 
 
@@ -2485,15 +2468,14 @@ public class PlayMode extends WorldController implements ContactListener {
 //            }
 //            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
         if (gameState == 1) {
-            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
+            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 100, canvas.getHeight()/2);
         }
         if (gameState == 2) {
-            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2, canvas.getHeight()/2);
+            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 100, canvas.getHeight()/2);
         }
         canvas.end();
 
     }
-
 
     /**
      * Draw the physics objects together with foreground and background
