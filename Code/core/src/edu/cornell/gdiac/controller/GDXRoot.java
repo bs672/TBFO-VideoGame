@@ -83,12 +83,6 @@ public class GDXRoot extends Game implements ScreenListener {
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
 		mute = false;
 		canvas  = new GameCanvas();
-		//canvas.setFullscreen(true,true);
-		//canvas.setSize(1140,740);
-		//canvas.setSize(1200,700);
-		//canvas.resize();
-		//canvas.setHeight(700);
-		//canvas.setWidth(1100);
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
 		controllers = new WorldController[13];
@@ -96,17 +90,13 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(9);
 		controllers[3] = new PauseMenu();
-		controllers[4] = new PlayMode("Tutorial1Level1");
-		controllers[5] = new PlayMode("Tutorial1");
-		controllers[6] = new PlayMode("MainScene");
-		controllers[7] = new PlayMode("Tutorial1");
-		controllers[4] = new PlayMode("Intro Level");
-		controllers[5] = new PlayMode("Intro Level 1");
-		controllers[6] = new PlayMode("Intro Level 2");
-		controllers[7] = new PlayMode("Intro Level 3");
-		controllers[8] = new PlayMode("Tutorial1");
-		controllers[9] = new PlayMode("Tutorial2");
-		controllers[10] = new PlayMode("Level 2");
+		controllers[4] = new PlayMode("T1");
+		controllers[5] = new PlayMode("T2");
+		controllers[6] = new PlayMode("T3 ");
+		controllers[7] = new PlayMode("T4");
+		controllers[8] = new PlayMode("1");
+		controllers[9] = new PlayMode("Sun");
+		controllers[10] = new PlayMode("BH");
 		controllers[11] = new PlayMode("MainScene");
 		controllers[12] = new PlayMode("Combination");
 
@@ -153,6 +143,10 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void resize(int width, int height) {
 		canvas.resize();
+		for(int i = 0; i < controllers.length; i++) {
+			if(controllers[i] instanceof PlayMode)
+				((PlayMode)controllers[i]).resize();
+		}
 		super.resize(width,height);
 	}
 

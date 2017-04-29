@@ -45,6 +45,9 @@ public class ComplexOobModel extends ComplexObstacle {
     /** The transform to center the image on the screen */
     private Affine2 transform;
 
+    // orientation
+    private float angle;
+
     /** The number of edges to approximate a circle */
     private int size;
 
@@ -72,7 +75,7 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Animation<TextureRegion> get_Normal_anim(){return Normal_Animation;}
 
-
+    public VertexBatch getVertexBatch() {return batch; }
 
     private Texture Normal_Sheet;
 
@@ -253,8 +256,8 @@ public class ComplexOobModel extends ComplexObstacle {
             }
             jointDef.localAnchorA.set(new Vector2(0, 0));
             jointDef.localAnchorB.set(new Vector2(0, 0));
-            jointDef.dampingRatio = 0.7f;
-            jointDef.frequencyHz = 10;
+//            jointDef.dampingRatio = 0.7f;
+//            jointDef.frequencyHz = 10;
             jointDef.length = 2*radius*(float)Math.sin(2*Math.PI / (bodies.size - 1) / 2)*0.7f;
             joint = world.createJoint(jointDef);
             joints.add(joint);
@@ -290,6 +293,8 @@ public class ComplexOobModel extends ComplexObstacle {
         vertices.nudge(edgeIndex,dx,dy);
         edgePosns.set(edgeIndex, new Vector2(newX, newY));
     }
+
+    public void setAngle(float f) { angle = f; }
 
     /**
      * Resets the polygon to match the current global state.
@@ -360,8 +365,11 @@ public class ComplexOobModel extends ComplexObstacle {
         float baseY = ((float)value.getRegionY()) / img.getHeight();
         float step = (float)(Math.PI*2)/size;
         for(int i = 0; i < size; i++) {
-            float offsetX = (((float)Math.cos(i*step) + 1) / 2) * (1f / FRAME_COLS);
-            float offsetY = ((-(float)Math.sin(i*step) + 1) / 2) * (1f / FRAME_ROWS);
+            Vector2 centToEdge = bodies.get(i+1).getPosition().cpy().sub(center.getPosition());
+//            float baseAngle = (float)Math.atan2(bodies.get(i+1).getX() - bodies.get(0).getX(), bodies.get(i+1).getY() - bodies.get(0).getY());
+            float relAngle = (float)Math.atan2(centToEdge.y, centToEdge.x) - (angle - (float)Math.PI/2);
+            float offsetX = (((float)Math.cos(relAngle) + 1) / 2) * (1f / FRAME_COLS);
+            float offsetY = ((-(float)Math.sin(relAngle) + 1) / 2) * (1f / FRAME_ROWS);
             vertices.setTexCoords(i, baseX + offsetX, baseY + offsetY);
         }
     }
