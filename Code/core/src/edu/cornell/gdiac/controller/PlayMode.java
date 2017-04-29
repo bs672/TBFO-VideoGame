@@ -1427,7 +1427,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
                     if(i <= 4)
-                        sh.setOrbitDistance(2);
+                        sh.setOrbitDistance(3);
                     else if(i <= 20 && i % 2 == 0)
                         sh.setOrbitDistance(3f);
                     else if(i <= 36 && i % 2 == 0)
@@ -1672,10 +1672,15 @@ public class PlayMode extends WorldController implements ContactListener {
         oldAvatarRad = complexAvatar.getRadius();
         float oldOobMass = complexAvatar.getMass();
         float oldPlanMass = currentPlanet.getMass();
-        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
+        float suckSpeed;
+        if(currentPlanet.getType() == 0)
+            suckSpeed = SIPHON*2;
+        else
+            suckSpeed = SIPHON;
+        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
         if(currentPlanet.getType() == 0) {
-            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + SIPHON / 3) / Math.PI));
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
     }
