@@ -1,7 +1,6 @@
 package edu.cornell.gdiac.controller;
 
 
-import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -41,12 +40,18 @@ public class AIController {
     private static final int BURSTCOUNT = 5;
     /** burst delay */
     private static final int DELAY = 5;
-    /** distance from orbiting planet */
-    private static final float ORBIT_DISTANCE = 3.0f;
+
+    public void setTarget(ShipModel ship, PlanetModel planet) {
+        targetPlanets.put(ship, planet);
+    }
 
     public void addShip(ShipModel ship, PlanetModel planet){
         ships.add(ship);
         targetPlanets.put(ship, planet);
+    }
+
+    public void removePlanet(PlanetModel planet){
+        planets.removeValue(planet, true);
     }
 
     public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, ComplexOobModel oob, Vector2 scale) {
@@ -71,7 +76,7 @@ public class AIController {
                 Vector2 tempVec3 = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
                 int cloPl = -1;
                 for (int j = 0; j < planets.size; j++) {
-                    tempVec2.set(ships.get(j).getPosition().cpy().sub(planets.get(j).getPosition()));
+                    tempVec2.set(ships.get(i).getPosition().cpy().sub(planets.get(j).getPosition()));
                     if (tempVec2.len() - planets.get(j).getRadius() < tempVec3.len()) {
                         tempVec3 = tempVec2.cpy();
                         tempVec3.scl((tempVec3.len() - planets.get(j).getRadius()) / tempVec3.len());
@@ -105,7 +110,7 @@ public class AIController {
                 shootInRange(s);
             }
             else if(s.getType() ==2){
-                moveToBigPlanet(s);
+                moveToPlanet(s);
                 convertInRange(s);
             }
             // set the ship's orientation to the correct angle
@@ -131,43 +136,50 @@ public class AIController {
      */
     public void peacefulPathfind(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
-        s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE) < EPSILON);
+        s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
+        if (!planets.contains(targetPlanets.get(s), false)) {
+            s.setInOrbit(false);
+        }
         if(s.getInOrbit()) {
-            if(wanderers.contains(s))
-                wanderers.remove(s);
             tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
             tempVec2.set(-tempVec1.y,tempVec1.x);
             tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
             tempVec1.set(s.getPosition().cpy().add(tempVec2));
             tempVec1.sub(targetPlanets.get(s).getPosition());
-            tempVec1.scl((targetPlanets.get(s).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+            tempVec1.scl((targetPlanets.get(s).getRadius() + s.getOrbitDistance())/tempVec1.len());
             s.setPosition(targetPlanets.get(s).getPosition().cpy().add(tempVec1));
         }
         else {
-            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
-            if(tempVec1.len() < targetPlanets.get(s).getRadius() + ORBIT_DISTANCE) {
-                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
-                s.setPosition(s.getPosition().cpy().add(tempVec1));
+            if(tempVec1.len() < s.getOrbitDistance() + targetPlanets.get(s).getRadius()) {
+                s.setPosition(s.getPosition().cpy().add(tempVec1.cpy().nor().scl(s.getMoveSpeed())));
             }
             else {
-                if(!wanderers.contains(s)) {
-                    tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-                    int closestPlanet = 0;
-                    for (int i = 0; i < planets.size; i++) {
-                        tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
-                        if (tempVec2.len() - planets.get(i).getRadius() < tempVec1.len()) {
-                            tempVec1 = tempVec2.cpy();
-                            tempVec1.scl((tempVec1.len() - planets.get(i).getRadius()) / tempVec1.len());
-                            closestPlanet = i;
-                        }
-                    }
-                    targetPlanets.put(s, planets.get(closestPlanet));
-                    wanderers.add(s);
-                }
-                tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
-                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
-                s.setPosition(s.getPosition().cpy().add(tempVec1));
+                moveToPlanet(s);
             }
+//            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
+//            if(tempVec1.len() < targetPlanets.get(s).getRadius() + s.getOrbitDistance()) {
+//                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+//                s.setPosition(s.getPosition().cpy().add(tempVec1));
+//            }
+//            else {
+//                if(!wanderers.contains(s)) {
+//                    tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+//                    int closestPlanet = 0;
+//                    for (int i = 0; i < planets.size; i++) {
+//                        tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
+//                        if (tempVec2.len() - planets.get(i).getRadius() < tempVec1.len()) {
+//                            tempVec1 = tempVec2.cpy();
+//                            tempVec1.scl((tempVec1.len() - planets.get(i).getRadius()) / tempVec1.len());
+//                            closestPlanet = i;
+//                        }
+//                    }
+//                    targetPlanets.put(s, planets.get(closestPlanet));
+//                    wanderers.add(s);
+//                }
+//                tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
+//                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+//                s.setPosition(s.getPosition().cpy().add(tempVec1));
+//            }
         }
     }
 
@@ -182,34 +194,24 @@ public class AIController {
     }
 
     /**
-     * try to get into orbit of biggest planet
+     * try to get into orbit of target planet
      *
      * @param s
      */
-    public void moveToBigPlanet(ShipModel s) {
+    public void moveToPlanet(ShipModel s) {
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-        s.setInOrbit(tempVec1.len() - targetPlanets.get(s).getRadius() - ORBIT_DISTANCE < EPSILON);
+        s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
+        if (!planets.contains(targetPlanets.get(s), false)) {
+            s.setInOrbit(false);
+        }
         if(s.getInOrbit()) {
-            if(wanderers.contains(s))
-                wanderers.remove(s);
             peacefulPathfind(s);
-            // tempVec1 is planet to ship
-//            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
-//            tempVec2.set(-tempVec1.y,tempVec1.x);
-//            tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
-//            tempVec1.set(s.getPosition().cpy().add(tempVec2));
-//            tempVec1.sub(targetPlanets.get(s).getPosition());
-//            tempVec1.scl((targetPlanets.get(s).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
-//            s.setPosition(targetPlanets.get(s).getPosition().cpy().add(tempVec1));
         }
         else {
-            Vector2 tempVec3 = new Vector2(Float.MAX_VALUE,Float.MAX_VALUE);
             int cloPl = -1;
             for (int i = 0; i < planets.size; i++) {
                 tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
-                if (tempVec2.len() - planets.get(i).getRadius() < tempVec3.len() && tempVec1.dot(tempVec1) < 0) {
-                    tempVec3 = tempVec2.cpy();
-                    tempVec3.scl((tempVec3.len() - planets.get(i).getRadius()) / tempVec3.len());
+                if (tempVec2.len() < planets.get(i).getRadius() + 1.5f + EPSILON ) {
                     cloPl = i;
                 }
             }
@@ -219,15 +221,26 @@ public class AIController {
                 s.setPosition(s.getPosition().cpy().add(tempVec1));
             }
             else {
-                PlanetModel big = targetPlanets.get(s);
+                PlanetModel target = planets.get(cloPl);
                 // tempVec1 is planet to ship
-                tempVec1.set(s.getPosition().cpy().sub(big.getPosition()));
-                tempVec2.set(-tempVec1.y,tempVec1.x);
-                tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
-                tempVec1.set(s.getPosition().cpy().add(tempVec2));
-                tempVec1.sub(big.getPosition());
-                tempVec1.scl((big.getRadius() + ORBIT_DISTANCE)/tempVec1.len());
-                s.setPosition(big.getPosition().cpy().add(tempVec1));
+                tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
+                tempVec2.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
+                if(tempVec1.len() - 1.5f - planets.get(cloPl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
+                    tempVec2.set(-tempVec1.y, tempVec1.x);
+                    tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
+                    tempVec1.set(s.getPosition().cpy().add(tempVec2));
+                    tempVec1.sub(target.getPosition());
+                    tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
+                    s.setPosition(target.getPosition().cpy().add(tempVec1));
+                }
+                else if(tempVec1.len() < 1.5f + planets.get(cloPl).getRadius()){
+                    s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
+                }
+                else {
+                    tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
+                    tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+                    s.setPosition(s.getPosition().cpy().add(tempVec1));
+                }
             }
         }
     }
@@ -290,14 +303,14 @@ public class AIController {
             // tempVec2 is ship to Oob, tempVec1 is ship to planet
             float vecAngle = (float)Math.acos(tempVec1.dot(tempVec2)/(tempVec1.len()*tempVec2.len()));
             // orbiting around a planet
-            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE && Math.abs(vecAngle) < Math.PI / 2) {
+            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + s.getOrbitDistance() && Math.abs(vecAngle) < Math.PI / 2) {
                 float crossProd = tempVec1.x*tempVec2.y - tempVec1.y*tempVec2.x;
                 if(crossProd > 0) {
                     tempVec2.set(-tempVec1.y,tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(planets.get(closestPlanet).getPosition());
-                    tempVec1.scl((planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+                    tempVec1.scl((planets.get(closestPlanet).getRadius() + s.getOrbitDistance())/tempVec1.len());
                     s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
                 }
                 else {
@@ -305,7 +318,7 @@ public class AIController {
                     tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(planets.get(closestPlanet).getPosition());
-                    tempVec1.scl((planets.get(closestPlanet).getRadius() + ORBIT_DISTANCE)/tempVec1.len());
+                    tempVec1.scl((planets.get(closestPlanet).getRadius() + s.getOrbitDistance())/tempVec1.len());
                     s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
                 }
             }

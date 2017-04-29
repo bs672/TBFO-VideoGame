@@ -96,6 +96,10 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(9);
 		controllers[3] = new PauseMenu();
+		controllers[4] = new PlayMode("Tutorial1Level1");
+		controllers[5] = new PlayMode("Tutorial1");
+		controllers[6] = new PlayMode("MainScene");
+		controllers[7] = new PlayMode("Tutorial1");
 		controllers[4] = new PlayMode("Intro Level");
 		controllers[5] = new PlayMode("Intro Level 1");
 		controllers[6] = new PlayMode("Intro Level 2");
@@ -149,6 +153,10 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void resize(int width, int height) {
 		canvas.resize();
+		for(int i = 0; i < controllers.length; i++) {
+			if(controllers[i] instanceof PlayMode)
+				((PlayMode)controllers[i]).resize();
+		}
 		super.resize(width,height);
 	}
 
