@@ -207,6 +207,8 @@ public class MainMenu extends PlayMode {
         else return false;
     }
 
+
+
     public void unlockedScrollScreen(){
         InputController.getInstance().setCenterCamera(true);
     }

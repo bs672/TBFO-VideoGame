@@ -112,6 +112,23 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for the planets */
     protected static final String NEUTRAL_P = "space/planets/neutral.png";
 
+    /** The texture file for the planets */
+    protected static final String MOUSE= "space/planets/mouse.png";
+
+    /** The texture file for the planets */
+    protected static final String WASD= "space/planets/wasd.png";
+
+    /** The texture file for the planets */
+    protected static final String SPACEBAR= "space/planets/spacebar.png";
+
+    /** The texture file for the planets */
+    protected static final String RESET= "space/background/reset.png";
+
+    /** The texture file for the planets */
+    protected static final String PAUSE= "space/background/pause.png";
+
+    protected String LEVEL;
+
 
     /** The texture file for the planets */
     protected static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
@@ -233,6 +250,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //control = 0 is keyboard, control = 1 is mouse
     protected int control = 1;
 
+
     protected TextureRegion blackHoleTexture;
 
     /** Planet texture */
@@ -259,6 +277,13 @@ public class PlayMode extends WorldController implements ContactListener {
 
     /** Planet texture */
     protected TextureRegion red_P_1_Texture;    protected TextureRegion red_P_2_Texture;    protected TextureRegion red_P_3_Texture;
+
+
+    /** Planet texture */
+    protected TextureRegion mouse_Texture;    protected TextureRegion wasd_Texture;    protected TextureRegion spacebar_Texture;
+
+    /** Planet texture */
+    protected TextureRegion reset_Texture;    protected TextureRegion pause_Texture;
 
 
     protected TextureRegion asteroid_Texture;
@@ -430,6 +455,13 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(RED_P_2, Texture.class);   assets.add(RED_P_2);
         manager.load(RED_P_3, Texture.class);   assets.add(RED_P_3);
 
+        manager.load(MOUSE, Texture.class);   assets.add(MOUSE);
+        manager.load(WASD, Texture.class);   assets.add(WASD);
+        manager.load(SPACEBAR, Texture.class);   assets.add(SPACEBAR);
+        manager.load(PAUSE, Texture.class);   assets.add(PAUSE);
+        manager.load(RESET, Texture.class);   assets.add(RESET);
+
+
         manager.load(SUN_P, Texture.class); assets.add(SUN_P);
 
         manager.load(BLACK_HOLE, Texture.class);    assets.add(BLACK_HOLE);
@@ -523,6 +555,14 @@ public class PlayMode extends WorldController implements ContactListener {
         red_P_3_Texture = createTexture(manager, RED_P_3,false);
 
         asteroid_Texture = createTexture(manager, ASTEROID, false);
+
+        mouse_Texture = createTexture(manager, MOUSE, false);
+        wasd_Texture = createTexture(manager, WASD, false);
+        spacebar_Texture = createTexture(manager, SPACEBAR, false);
+        pause_Texture = createTexture(manager, PAUSE, false);
+        reset_Texture = createTexture(manager, RESET, false);
+
+
 
         Sound explosionSound = Gdx.audio.newSound(Gdx.files.internal(EXPLOSION_SOUND));
         Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal(JUMP_SOUND));
@@ -693,6 +733,7 @@ public class PlayMode extends WorldController implements ContactListener {
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
+            LEVEL=level;
         sensorFixtures = new ObjectSet<Fixture>();
         planets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
@@ -905,7 +946,8 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname);
-            if (obj.getType() == 0f || obj.getType() == 3f) {
+            //System.out.println(obj.getType());
+            if (obj.getType() == 0f) {
 
                 //Blue Planets
                 if (ii % 7 == 0) {
@@ -1036,7 +1078,18 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             //Neutral Planets
             if (obj.getType() == 3f) {
-                obj.setTexture(neutral_P_Texture);
+                if (LEVEL=="T1" && ii==0) {
+                    obj.setTexture(mouse_Texture);
+                }
+                else if (LEVEL=="T2" && ii==0){
+                    obj.setTexture(wasd_Texture);
+                }
+                else if (LEVEL=="T2" && ii==2){
+                    obj.setTexture(spacebar_Texture);
+                }
+                else {
+                    obj.setTexture(neutral_P_Texture);
+                }
             }
 
             addObject(obj);
@@ -1930,6 +1983,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         planet_explosion.get(0).setExploding(true);
                         planet_explosion.get(0).set_sheet(EXP_Sheet);
                         planet_explosion.get(0).createEXPtex();
+                        SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                     }
                 }
                 if (planet_explosion.get(0).get_EXP_ST() > -1) {
@@ -2197,7 +2251,11 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y,   stars.get(15).x, stars.get(15).y);
         canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y,   stars.get(17).x, stars.get(17).y);
 
+        if (LEVEL.contains("T")){
+            canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight()-(reset_Texture.getRegionHeight()/4))-5,reset_Texture.getRegionWidth()/4,reset_Texture.getRegionHeight()/4);
+            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth()-pause_Texture.getRegionWidth()/4-5, (canvas.getHeight()-(reset_Texture.getRegionHeight()/4))-5,pause_Texture.getRegionWidth()/4,pause_Texture.getRegionHeight()/4);
 
+        }
 
 
         canvas.end();
