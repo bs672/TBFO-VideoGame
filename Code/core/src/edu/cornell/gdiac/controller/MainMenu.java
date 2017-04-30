@@ -38,9 +38,9 @@ public class MainMenu extends PlayMode {
 
 
     protected static float[][] PLANETS = {
-            {0.0f, 3.0f, 1.2f, 3f},   // NOTHING
-            {25, 10f, 1.2f, 3f},  //SETTINGS
-            {15.0f, 3f, 1.2f, 3f},    //LEVEL SELECT
+            {3.0f, 3.0f, 1.2f, 3f},   // NOTHING
+            {23, 4.5f, 1.2f, 3f},  //SETTINGS
+            {15.5f, 3f, 1.2f, 3f},    //LEVEL SELECT
             {7.0f, 4.5f, 1.2f, 3f},   //PLAY
 
     };
@@ -185,8 +185,11 @@ public class MainMenu extends PlayMode {
 
 
 
-        titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
-        titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
+        //titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
+        //titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
+
+        titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-2*(titleTexture.getRegionHeight()/6)  );
+        titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/3 );
 
 
         text.add (titlecoord);

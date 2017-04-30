@@ -40,11 +40,11 @@ import javax.swing.plaf.TextUI;
 public class LevelSelect extends PlayMode {
 
     protected static final float[][] PLANETS = {
-            {12.7f, 15f, 1.1f, 3f},    // BACK
-            {10f, 3.5f, 1.1f, 3f},  // MAIN MENU
-            {22.8f, 3.5f, 1.1f, 3f},   // SETTINGS
-            {13.5f, 3.5f, 1.1f, 3f},   // PREV LEVELS
-            {18f, 3.5f, 1.1f, 3f},   // NEXT LEVELS
+            {12.8f, 15f, 1.1f, 3f},    // BACK
+            {9f, 3.5f, 1.1f, 3f},  // MAIN MENU
+            {23f, 3.5f, 1.1f, 3f},   // SETTINGS
+            {13f, 3.5f, 1.1f, 3f},   // PREV LEVELS
+            {19.1f, 3.5f, 1.1f, 3f},   // NEXT LEVELS
 
             {7.8f, 7f, 1.1f, 3f},    // LEVEL 1
             {7.52f, 10.5f, 1.1f, 3f},    // LEVEL 2
@@ -264,8 +264,8 @@ public class LevelSelect extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        titlecoord.set(   3*canvas.getWidth() /9 , 2*canvas.getHeight()/8  );
-        titlesize.set(  3*canvas.getWidth()/9, 2*canvas.getHeight()/8  );
+        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-1.5f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
+        titlesize.set(  levelsTitleTexture.getRegionWidth()*.8f, levelsTitleTexture.getRegionHeight()*.8f );
 
         text.add (titlecoord);
         text.add (titlesize);

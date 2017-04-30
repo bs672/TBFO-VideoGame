@@ -765,7 +765,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode(String level) {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(true);
+        setDebug(false);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
