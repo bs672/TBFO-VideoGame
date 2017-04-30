@@ -1611,7 +1611,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if (starArray==white_stars) {
                     set_white_BG();
-                    System.out.println("Reset X");
                 }
                 for (int i = 0; i < starArray.size; i += 2) {
                     starArray.get(i).y += Ydelt;
@@ -1628,7 +1627,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if (starArray==white_stars) {
                     set_white_BG();
-                    System.out.println("Reset Y");
                 }
                 for (int i = 0; i < starArray.size; i += 2) {
                     starArray.get(i).x += Xdelt;
