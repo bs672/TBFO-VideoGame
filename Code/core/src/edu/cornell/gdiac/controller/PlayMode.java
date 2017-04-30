@@ -145,6 +145,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String RESUME_HOVER_TEXTURE = "space/menus/resume_planet_hover.png";
     protected static final String BACK_TEXTURE = "space/menus/back_planet.png";
     protected static final String BACK_HOVER_TEXTURE = "space/menus/back_hover_planet.png";
+    protected static final String BACK_TEXT_TEXTURE = "space/menus/back.png";
+    protected static final String BACK_TEXT_HOVER_TEXTURE = "space/menus/back_hover.png";
     protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
     protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
     protected static final String LEVEL1_TEXTURE = "space/menus/level1.png";
@@ -153,27 +155,27 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String LEVEL2_TEXTURE = "space/menus/level2.png";
     protected static final String LEVEL2_LOCK_TEXTURE = "space/menus/level2_locked.png";
     protected static final String LEVEL2_HOVER_TEXTURE = "space/menus/level2_hover.png";
-    protected static final String LEVEL3_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL3_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL3_HOVER_TEXTURE = "space/menus/level1_hover.png";
-    protected static final String LEVEL4_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL4_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL4_HOVER_TEXTURE = "space/menus/level1_hover.png";
-    protected static final String LEVEL5_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL5_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL5_HOVER_TEXTURE = "space/menus/level1_hover.png";
-    protected static final String LEVEL6_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL6_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL6_HOVER_TEXTURE = "space/menus/level1_hover.png";
-    protected static final String LEVEL7_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL7_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL7_HOVER_TEXTURE = "space/menus/level1_hover.png";
-    protected static final String LEVEL8_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL8_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL8_HOVER_TEXTURE = "space/menus/level1_hover.png";
-    protected static final String LEVEL9_TEXTURE = "space/menus/level1.png";
-    protected static final String LEVEL9_LOCK_TEXTURE = "space/menus/level1_locked.png";
-    protected static final String LEVEL9_HOVER_TEXTURE = "space/menus/level1_hover.png";
+    protected static final String LEVEL3_TEXTURE = "space/menus/level3.png";
+    protected static final String LEVEL3_LOCK_TEXTURE = "space/menus/level3_locked.png";
+    protected static final String LEVEL3_HOVER_TEXTURE = "space/menus/level3_hover.png";
+    protected static final String LEVEL4_TEXTURE = "space/menus/level4.png";
+    protected static final String LEVEL4_LOCK_TEXTURE = "space/menus/level4_locked.png";
+    protected static final String LEVEL4_HOVER_TEXTURE = "space/menus/level4_hover.png";
+    protected static final String LEVEL5_TEXTURE = "space/menus/level5.png";
+    protected static final String LEVEL5_LOCK_TEXTURE = "space/menus/level5_locked.png";
+    protected static final String LEVEL5_HOVER_TEXTURE = "space/menus/level5_hover.png";
+    protected static final String LEVEL6_TEXTURE = "space/menus/level6.png";
+    protected static final String LEVEL6_LOCK_TEXTURE = "space/menus/level6_locked.png";
+    protected static final String LEVEL6_HOVER_TEXTURE = "space/menus/level6_hover.png";
+    protected static final String LEVEL7_TEXTURE = "space/menus/level7.png";
+    protected static final String LEVEL7_LOCK_TEXTURE = "space/menus/level7_locked.png";
+    protected static final String LEVEL7_HOVER_TEXTURE = "space/menus/level7_hover.png";
+    protected static final String LEVEL8_TEXTURE = "space/menus/level8.png";
+    protected static final String LEVEL8_LOCK_TEXTURE = "space/menus/level8_locked.png";
+    protected static final String LEVEL8_HOVER_TEXTURE = "space/menus/level8_hover.png";
+    protected static final String LEVEL9_TEXTURE = "space/menus/level9.png";
+    protected static final String LEVEL9_LOCK_TEXTURE = "space/menus/level9_locked.png";
+    protected static final String LEVEL9_HOVER_TEXTURE = "space/menus/level9_hover.png";
     protected static final String[][] LEVELS_TEXTURES = {
             {LEVEL1_TEXTURE, LEVEL1_HOVER_TEXTURE, LEVEL1_LOCK_TEXTURE},
             {LEVEL2_TEXTURE, LEVEL2_HOVER_TEXTURE, LEVEL2_LOCK_TEXTURE},
@@ -334,6 +336,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion level9_Hover_Texture;   protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;           protected TextureRegion levelsTitleTexture;
     protected TextureRegion back_Texture;           protected TextureRegion back_Hover_Texture;
+    protected TextureRegion back_Text_Texture;      protected TextureRegion back_Text_Hover_Texture;
 
     /** Background texture */
     protected TextureRegion backgroundMAIN;
@@ -412,6 +415,8 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);   assets.add(MAIN_MENU_HOVER_TEXTURE);
         manager.load(BACK_TEXTURE, Texture.class);              assets.add(BACK_TEXTURE);
         manager.load(BACK_HOVER_TEXTURE, Texture.class);        assets.add(BACK_HOVER_TEXTURE);
+        manager.load(BACK_TEXT_TEXTURE, Texture.class);         assets.add(BACK_TEXT_TEXTURE);
+        manager.load(BACK_TEXT_HOVER_TEXTURE, Texture.class);   assets.add(BACK_TEXT_HOVER_TEXTURE);
 
         manager.load(TITLE, Texture.class);         assets.add(TITLE);
         manager.load(PAUSETITLE, Texture.class);    assets.add(PAUSETITLE);
@@ -424,6 +429,27 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(LEVEL2_TEXTURE, Texture.class);        assets.add(LEVEL2_TEXTURE);
         manager.load(LEVEL2_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL2_LOCK_TEXTURE);
         manager.load(LEVEL2_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL2_HOVER_TEXTURE);
+        manager.load(LEVEL3_TEXTURE, Texture.class);        assets.add(LEVEL3_TEXTURE);
+        manager.load(LEVEL3_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL3_LOCK_TEXTURE);
+        manager.load(LEVEL3_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL3_HOVER_TEXTURE);
+        manager.load(LEVEL4_TEXTURE, Texture.class);        assets.add(LEVEL4_TEXTURE);
+        manager.load(LEVEL4_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL4_LOCK_TEXTURE);
+        manager.load(LEVEL4_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL4_HOVER_TEXTURE);
+        manager.load(LEVEL5_TEXTURE, Texture.class);        assets.add(LEVEL5_TEXTURE);
+        manager.load(LEVEL5_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL5_LOCK_TEXTURE);
+        manager.load(LEVEL5_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL5_HOVER_TEXTURE);
+        manager.load(LEVEL6_TEXTURE, Texture.class);        assets.add(LEVEL6_TEXTURE);
+        manager.load(LEVEL6_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL6_LOCK_TEXTURE);
+        manager.load(LEVEL6_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL6_HOVER_TEXTURE);
+        manager.load(LEVEL7_TEXTURE, Texture.class);        assets.add(LEVEL7_TEXTURE);
+        manager.load(LEVEL7_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL7_LOCK_TEXTURE);
+        manager.load(LEVEL7_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL7_HOVER_TEXTURE);
+        manager.load(LEVEL8_TEXTURE, Texture.class);        assets.add(LEVEL8_TEXTURE);
+        manager.load(LEVEL8_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL8_LOCK_TEXTURE);
+        manager.load(LEVEL8_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL8_HOVER_TEXTURE);
+        manager.load(LEVEL9_TEXTURE, Texture.class);        assets.add(LEVEL9_TEXTURE);
+        manager.load(LEVEL9_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL9_LOCK_TEXTURE);
+        manager.load(LEVEL9_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL9_HOVER_TEXTURE);
 
         manager.load(EXPULSION_TEXTURE, Texture.class); assets.add(EXPULSION_TEXTURE);
 
@@ -654,18 +680,15 @@ public class PlayMode extends WorldController implements ContactListener {
     /** list of ships */
     protected Array<ShipModel> ships;
 
-
     /** arrays for parallx */
     protected Array<Vector2> text = new Array<Vector2>();
     protected Array<Vector2> stars = new Array<Vector2>();
     protected Array<Vector2> med_stars = new Array<Vector2>();
     protected Array<Vector2> white_stars = new Array<Vector2>();
 
-
     /** variables for parllax */
     Vector2 titlecoord = new Vector2();
     Vector2 titlesize = new Vector2();
-
 
     int LG_S_X; int LG_S_Y; int LG_S_X_START; int LG_S_Y_START; float LG_SPEED = .5f; float LG_SCROLL_SPEED = 6f;
     int med_X; int med_Y; int med_X_START; int med_Y_START; float MED_SPEED = .1f; float MED_SCROLL_SPEED = 2f;
@@ -677,7 +700,6 @@ public class PlayMode extends WorldController implements ContactListener {
     Vector2 bg_size_5 = new Vector2(); Vector2 bg_coord_6 = new Vector2(); Vector2 bg_size_6 = new Vector2();
     Vector2 bg_coord_7 = new Vector2(); Vector2 bg_size_7 = new Vector2(); Vector2 bg_coord_8 = new Vector2();
     Vector2 bg_size_8 = new Vector2(); Vector2 bg_coord_9 = new Vector2(); Vector2 bg_size_9 = new Vector2();
-
 
     Vector2 med_coord_1 = new Vector2(); Vector2 med_size_1 = new Vector2(); Vector2 med_coord_2 = new Vector2();
     Vector2 med_size_2 = new Vector2(); Vector2 med_coord_3 = new Vector2(); Vector2 med_size_3 = new Vector2();
@@ -693,9 +715,6 @@ public class PlayMode extends WorldController implements ContactListener {
     Vector2 white_size_5 = new Vector2(); Vector2 white_coord_6 = new Vector2(); Vector2 white_size_6 = new Vector2();
     Vector2 white_coord_7 = new Vector2(); Vector2 white_size_7 = new Vector2(); Vector2 white_coord_8 = new Vector2();
     Vector2 white_size_8 = new Vector2(); Vector2 white_coord_9 = new Vector2(); Vector2 white_size_9 = new Vector2();
-
-
-
 
     /** vector from Oob to center of the screen */
     protected Vector2 vecToCenter = new Vector2();
@@ -728,7 +747,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode(String level) {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(false);
+        setDebug(true);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -759,7 +778,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
-        System.out.println("RESET");
         InputController.getInstance().setCenterCamera(true);
         playerControl = true;
         blackHoleWarp = false;
@@ -1427,11 +1445,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     aiController.findBigPlanet(sh);
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
-                    if(i <= 8)
-                        sh.setOrbitDistance(2);
-                    else if(i <= 16)
+                    if(i <= 4)
+                        sh.setOrbitDistance(3);
+                    else if(i <= 20 && i % 2 == 0)
                         sh.setOrbitDistance(3f);
-                    else if(i <= 24)
+                    else if(i <= 36 && i % 2 == 0)
                         sh.setOrbitDistance(4f);
                     else {
                         aiController.setTarget(sh, planets.get((int)(Math.random()*planets.size)));
@@ -1673,10 +1691,15 @@ public class PlayMode extends WorldController implements ContactListener {
         oldAvatarRad = complexAvatar.getRadius();
         float oldOobMass = complexAvatar.getMass();
         float oldPlanMass = currentPlanet.getMass();
-        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - SIPHON)/Math.PI));
+        float suckSpeed;
+        if(currentPlanet.getType() == 0)
+            suckSpeed = SIPHON*2;
+        else
+            suckSpeed = SIPHON;
+        currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
         if(currentPlanet.getType() == 0) {
-            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + SIPHON / 3) / Math.PI));
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
     }
@@ -1942,9 +1965,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 if ((jumpTime > 300) & !play) {
                     reset();
                 }
-                if ((jumpTime > 600) & play) {
-                    gameState = 1;
-                }
+//                if ((jumpTime > 600) & play) {
+//                    gameState = 1;
+//                }
                 if (!play) {
                     gravity();
                 }
@@ -2207,7 +2230,7 @@ public class PlayMode extends WorldController implements ContactListener {
         // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
 
         float x = 255 - ((float) jumpTime/2);
-        System.out.println(x);
+//        System.out.println(x);
         Color Tint = new Color(20,20,20,1);
         canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundSM, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
