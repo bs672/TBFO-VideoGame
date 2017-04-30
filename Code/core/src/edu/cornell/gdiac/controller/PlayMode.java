@@ -110,26 +110,28 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String SHIP_EXPLOSION = "space/animations/Ship_exp.png";
 
+
     /** The texture file for the planets */
     protected static final String COMMAND_P = "space/planets/command.png";
 
     /** The texture file for the planets */
     protected static final String NEUTRAL_P = "space/planets/neutral.png";
 
+
     /** The texture file for the planets */
     protected static final String MOUSE= "space/planets/mouse.png";
 
-    /** The texture file for the planets */
     protected static final String WASD= "space/planets/wasd.png";
 
-    /** The texture file for the planets */
     protected static final String SPACEBAR= "space/planets/spacebar.png";
 
-    /** The texture file for the planets */
     protected static final String RESET= "space/background/reset.png";
 
-    /** The texture file for the planets */
     protected static final String PAUSE= "space/background/pause.png";
+
+    protected static final String GROW_P= "space/planets/growPlanet.png";
+
+    protected static final String SHRINK_P= "space/planets/shrinkPlanet.png";
 
     protected String LEVEL;
 
@@ -262,34 +264,23 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Planet texture */
     protected TextureRegion blue_P_1_Texture;   protected TextureRegion blue_P_2_Texture;   protected TextureRegion blue_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion purple_P_1_Texture; protected TextureRegion purple_P_2_Texture; protected TextureRegion purple_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion orange_P_1_Texture; protected TextureRegion orange_P_2_Texture; protected TextureRegion orange_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion sky_P_1_Texture;    protected TextureRegion sky_P_2_Texture;    protected TextureRegion sky_P_3_Texture;
 
-    /** Planet texture */
     protected TextureRegion green_P_1_Texture;  protected TextureRegion green_P_2_Texture;  protected TextureRegion green_P_3_Texture;
 
-    /** Planet texture */
     protected TextureRegion pink_P_1_Texture;   protected TextureRegion pink_P_2_Texture;   protected TextureRegion pink_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion red_P_1_Texture;    protected TextureRegion red_P_2_Texture;    protected TextureRegion red_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion mouse_Texture;    protected TextureRegion wasd_Texture;    protected TextureRegion spacebar_Texture;
 
-    /** Planet texture */
     protected TextureRegion reset_Texture;    protected TextureRegion pause_Texture;
+
+    protected TextureRegion grow_P_Texture;    protected TextureRegion shrink_P_Texture;
 
 
     protected TextureRegion asteroid_Texture;
@@ -493,6 +484,8 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(SPACEBAR, Texture.class);      assets.add(SPACEBAR);
         manager.load(PAUSE, Texture.class);         assets.add(PAUSE);
         manager.load(RESET, Texture.class);         assets.add(RESET);
+        manager.load(GROW_P, Texture.class);         assets.add(GROW_P);
+        manager.load(SHRINK_P, Texture.class);         assets.add(SHRINK_P);
 
 
         manager.load(SUN_P, Texture.class);             assets.add(SUN_P);
@@ -598,6 +591,8 @@ public class PlayMode extends WorldController implements ContactListener {
         spacebar_Texture = createTexture(manager, SPACEBAR, false);
         pause_Texture = createTexture(manager, PAUSE, false);
         reset_Texture = createTexture(manager, RESET, false);
+        grow_P_Texture = createTexture(manager, GROW_P, false);
+        shrink_P_Texture = createTexture(manager, SHRINK_P, false);
 
 
 
@@ -1083,6 +1078,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     if (rand > .66) {
                         obj.setTexture(red_P_3_Texture);
                     }
+                }
+
+                if (LEVEL.contains("T")) {
+                    obj.setTexture(grow_P_Texture);
                 }
             }
             //Command Planets
@@ -2318,27 +2317,13 @@ public class PlayMode extends WorldController implements ContactListener {
     public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-        // delta_pos();
-        //float camera = -carPosition;
 
-        // Draw background unscaled.
         canvas.begin();
 
-        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
-        // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
-        // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
-
         float x = 255 - ((float) jumpTime/2);
-//        System.out.println(x);
         Color Tint = new Color(20,20,20,1);
         canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundSM, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
-        //canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        //canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-
-       // System.out.println(white_stars);
-    //    System.out.println(med_stars);
-       // System.out.println(stars);
 
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(0).x, white_stars.get(0).y,   white_stars.get(1).x, white_stars.get(1).y);
 
@@ -2350,8 +2335,6 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(12).x, white_stars.get(12).y,   white_stars.get(13).x, white_stars.get(13).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(14).x, white_stars.get(14).y,   white_stars.get(15).x, white_stars.get(15).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(16).x, white_stars.get(16).y,   white_stars.get(17).x, white_stars.get(17).y);
-
-
 
 
 
@@ -2450,6 +2433,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
                 canvas.begin();
                 ((PlanetModel) obj).setTexture(currentFrame);
+                if (LEVEL=="Sun" ) {
+                    ((PlanetModel) obj).setTexture(shrink_P_Texture);
+                }
                 obj.draw(canvas);
                 canvas.end();
             }
