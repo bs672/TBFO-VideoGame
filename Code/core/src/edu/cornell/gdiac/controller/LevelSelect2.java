@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Json;
@@ -20,9 +19,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.*;
-import edu.cornell.gdiac.model.obstacle.CapsuleObstacle;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
-import edu.cornell.gdiac.model.obstacle.SimpleObstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
 import edu.cornell.gdiac.util.FilmStrip;
 import edu.cornell.gdiac.util.ScreenListener;
@@ -37,14 +34,12 @@ import javax.swing.plaf.TextUI;
  * Created by Jaiveer on 4/12/17.
  */
 
-public class LevelSelect extends PlayMode {
+public class LevelSelect2 extends PlayMode {
 
     protected static final float[][] PLANETS = {
-            {12.7f, 15f, 1.1f, 3f},    // BACK
+            {15f, 6.5f, 1.1f, 3f},    // BACK
             {10f, 3.5f, 1.1f, 3f},  // MAIN MENU
             {22.8f, 3.5f, 1.1f, 3f},   // SETTINGS
-            {13.5f, 3.5f, 1.1f, 2f},   // PREV LEVELS
-            {18f, 3.5f, 1.1f, 2f},   // NEXT LEVELS
 
             {7.8f, 7f, 1.1f, 3f},    // LEVEL 1
             {7.52f, 10.5f, 1.1f, 3f},    // LEVEL 2
@@ -58,22 +53,16 @@ public class LevelSelect extends PlayMode {
 
     };
 
-    protected CapsuleObstacle button1;
-    protected Rectangle button2;
-    protected TextureRegion back;
-
-    protected static final TextureRegion[][] TEXTURES = new TextureRegion[5][2];
-    protected static final TextureRegion[][] LEVELS_TEXTURE_REGIONS = new TextureRegion[27][3];
+    protected static final TextureRegion[][] TEXTURES = new TextureRegion[3][2];
+    protected static final TextureRegion[][] LEVELS_TEXTURE_REGIONS = new TextureRegion[9][3];
     protected static int unlocked;
-    protected int mode; // 0 = levels 1-9 , 1 = levels 10-18, 2 = levels 19 - 27
 
-    public LevelSelect(int unlocked, int mode) {
+    public LevelSelect2(int unlocked) {
         super("MainScene");
         play = false;
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
         this.unlocked = unlocked;
-        this.mode = mode;
     }
 
     public void loadContent(AssetManager manager) {
@@ -89,22 +78,9 @@ public class LevelSelect extends PlayMode {
         levelsTitleTexture = createTexture(manager,LEVELSTITLE, true);
         back_Texture = createTexture(manager, BACK_TEXTURE, false);
         back_Hover_Texture = createTexture(manager, BACK_HOVER_TEXTURE, false);
-        back_Text_Texture = createTexture(manager, BACK_TEXT_TEXTURE, false);
-        back_Text_Hover_Texture = createTexture(manager, BACK_TEXT_HOVER_TEXTURE, false);
-
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 3; j++) {
                 LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[i][j], false);
-            }
-        }
-        for (int i = 9; i < 18; i++) {
-            for (int j = 0; j < 3; j++) {
-                LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[0][2], false);
-            }
-        }
-        for (int i = 18; i < 27; i++) {
-            for (int j = 0; j < 3; j++) {
-                LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[1][2], false);
             }
         }
 
@@ -114,10 +90,6 @@ public class LevelSelect extends PlayMode {
         TEXTURES[1][1] = main_Menu_Hover_Texture;
         TEXTURES[2][0] = settings_Texture;
         TEXTURES[2][1] = settings_Hover_Texture;
-        TEXTURES[3][0] = neutral_P_Texture;
-        TEXTURES[3][1] = neutral_P_Texture;
-        TEXTURES[4][0] = neutral_P_Texture;
-        TEXTURES[4][1] = neutral_P_Texture;
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -154,7 +126,6 @@ public class LevelSelect extends PlayMode {
         ships.clear();
         text.clear();
         stars.clear();
-        white_stars.clear();
         world.dispose();
 
         world = new World(gravity,false);
@@ -170,14 +141,13 @@ public class LevelSelect extends PlayMode {
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
         play = false;
-        mode = 0;
-        switchMode(0);
     }
 
     protected void populateLevel() {
+
         // Create Planets
         String pname = "planet";
-        for (int ii = 0; ii < 5; ii++) {
+        for (int ii = 0; ii < 3; ii++) {
             PlanetModel obj;
             obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
             obj.setBodyType(BodyDef.BodyType.StaticBody);
@@ -191,65 +161,37 @@ public class LevelSelect extends PlayMode {
             addObject(obj);
             planets.add(obj);
         }
-
-        for (int ii = 5; ii < PLANETS.length; ii++) {
-            int temp = ii - 4 + (mode*9);
-            if (temp <= unlocked) {
-                PlanetModel obj;
-                obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
-                obj.setBodyType(BodyDef.BodyType.StaticBody);
-                obj.setDensity(BASIC_DENSITY);
-                obj.setFriction(BASIC_FRICTION);
-                obj.setRestitution(BASIC_RESTITUTION);
-                obj.setDrawScale(scale);
-                obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
-                obj.setName(pname + ii);
-                System.out.println(ii);
-                obj.setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
-                addObject(obj);
-                planets.add(obj);
-            }
-            else {
-                PlanetModel obj;
-                obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
-                obj.setBodyType(BodyDef.BodyType.StaticBody);
-                obj.setDensity(BASIC_DENSITY);
-                obj.setFriction(BASIC_FRICTION);
-                obj.setRestitution(BASIC_RESTITUTION);
-                obj.setDrawScale(scale);
-                obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
-                obj.setName(pname + ii);
-                obj.setTexture(LEVELS_TEXTURE_REGIONS[temp-1][2]);
-                addObject(obj);
-                planets.add(obj);
-            }
+        for (int ii = 3; ii < unlocked + 3; ii++) {
+            PlanetModel obj;
+            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
+            obj.setBodyType(BodyDef.BodyType.StaticBody);
+            obj.setDensity(BASIC_DENSITY);
+            obj.setFriction(BASIC_FRICTION);
+            obj.setRestitution(BASIC_RESTITUTION);
+            obj.setDrawScale(scale);
+            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            obj.setName(pname + ii);
+            obj.setTexture(LEVELS_TEXTURE_REGIONS[ii-3][0]);
+            addObject(obj);
+            planets.add(obj);
+        }
+        for (int ii = unlocked + 3; ii < PLANETS.length; ii++) {
+            PlanetModel obj;
+            obj = new PlanetModel(PLANETS[ii][0], PLANETS[ii][1], PLANETS[ii][2], PLANETS[ii][3]);
+            obj.setBodyType(BodyDef.BodyType.StaticBody);
+            obj.setDensity(BASIC_DENSITY);
+            obj.setFriction(BASIC_FRICTION);
+            obj.setRestitution(BASIC_RESTITUTION);
+            obj.setDrawScale(scale);
+            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            obj.setName(pname + ii);
+            obj.setTexture(LEVELS_TEXTURE_REGIONS[ii-3][2]);
+            addObject(obj);
+            planets.add(obj);
         }
 
-//        button1 = new CapsuleObstacle(20f,12f, 1f, 0.5f);
-//        button1.setFixedRotation(true);
-//        button1.setBodyType(BodyDef.BodyType.StaticBody);
-//        button1.setDensity(BASIC_DENSITY);
-//        button1.setFriction(BASIC_FRICTION);
-//        button1.setRestitution(BASIC_RESTITUTION);
-//        button1.setDrawScale(scale);
-//        button1.scalePicScale(new Vector2(0.3f, 0.3f));
-//        button1.setName("button");
-//        button1.setTexture(back);
-//        addObject(button1);
-
-//        button2 = new Rectangle(15f, 12f, 2f, 1f);
-//        button2.setFixedRotation(true);
-//        button2.setBodyType(BodyDef.BodyType.StaticBody);
-//        button1.setDensity(BASIC_DENSITY);
-//        button1.setFriction(BASIC_FRICTION);
-//        button1.setRestitution(BASIC_RESTITUTION);
-//        button1.setDrawScale(scale);
-//        button1.scalePicScale(new Vector2(0.3f, 0.3f));
-//        button1.setName("button");
-//        button1.setTexture(back);
-
         currentPlanet = planets.get(0); //The first planet is always the starting planet
-        complexAvatar = new ComplexOobModel(25f, 10f, OOB_RADIUS/2);
+        complexAvatar = new ComplexOobModel(OOB_POS.x, OOB_POS.y, OOB_RADIUS/2);
         complexAvatar.setDrawScale(scale);
         complexAvatar.setBodyType(BodyDef.BodyType.DynamicBody);
         complexAvatar.setSensor(true);
@@ -257,15 +199,14 @@ public class LevelSelect extends PlayMode {
         complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS/2, .4f*OOB_RADIUS/2));
         addObject(complexAvatar);
 
-        complexAvatar.setPosition(25f, 20f);
-
         loadAnim();
         setBG();
         set_med_BG();
-        set_white_BG();
 
         titlecoord.set(   3*canvas.getWidth() /9 , 2*canvas.getHeight()/8  );
         titlesize.set(  3*canvas.getWidth()/9, 2*canvas.getHeight()/8  );
+
+
 
         text.add (titlecoord);
         text.add (titlesize);
@@ -273,70 +214,13 @@ public class LevelSelect extends PlayMode {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
 
-    public void unlockedScrollScreen(){
-        InputController.getInstance().setCenterCamera(true);
-    }
-    public void scrollStars(Array<Vector2> starArray, float speed, float scrollspeed,TextureRegion background, int Xstart, int Ystart) {
-        for (int i = 0; i < starArray.size; i += 2) {
-            starArray.get(i).x += (vecToCenter.x) * speed;
-            starArray.get(i).y += (vecToCenter.y) * speed;
-        }
-        if (starArray.get(0).x > background.getRegionWidth() || starArray.get(0).x < -background.getRegionWidth()) {
-            float Ydelt = starArray.get(0).y - Ystart;
-            starArray.clear();
-            if (starArray == stars) {
-                setBG();
-            } else if (starArray == med_stars) {
-                set_med_BG();
-            } else if (starArray == white_stars) {
-                set_white_BG();
-                System.out.println("Reset X");
-            }
-            for (int i = 0; i < starArray.size; i += 2) {
-                starArray.get(i).y += Ydelt;
-            }
-        }
-        if (starArray.get(0).y > background.getRegionHeight() || starArray.get(0).y < -background.getRegionHeight()) {
-            float Xdelt = starArray.get(0).x - Xstart;
-            starArray.clear();
-            if (starArray == stars) {
-                setBG();
-            } else if (starArray == med_stars) {
-                set_med_BG();
-            } else if (starArray == white_stars) {
-                set_white_BG();
-                System.out.println("Reset Y");
-            }
-            for (int i = 0; i < starArray.size; i += 2) {
-                starArray.get(i).x += Xdelt;
-            }
-        }
-    }
-    public void scrollText(){
-        text.get(0).x += (vecToCenter.x);
-        text.get(0).y += (vecToCenter.y);
-    }
-
+    public void unlockedScrollScreen(){}
 
     public void setUnlocked(int newUnlock) {
         if (newUnlock > unlocked) {
             unlocked = newUnlock;
-            for (int i = 5; i < planets.size; i++) {
-                int temp = i - 4 + (mode*9);
-                planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
-            }
-        }
-    }
-
-    public void switchMode(int m) {
-        mode = m;
-        for (int i = 5; i < PLANETS.length; i++) {
-            int temp = i - 4 + (mode*9);
-            if (temp <= unlocked) {
-                planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
-            }
-            else {
-                planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][2]);
+            for (int i = 3; i < unlocked + 3; i++) {
+                planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[i-3][0]);
             }
         }
     }
@@ -348,18 +232,17 @@ public class LevelSelect extends PlayMode {
                 return true;
             }
         }
-        for (int i = 5; i < planets.size; i++) {
-            int temp = i - 4 + (mode * 9);
+        for (int i = 3; i < unlocked + 3; i++) {
             if (currentPlanet == planets.get(i)) {
-                if (temp <= unlocked) {
-                    listener.exitScreen(this, i + (mode * 9) - 1);
-                    return true;
-                } else {
-                    reset();
-                    return false;
-                }
+                listener.exitScreen(this, i);
+                return true;
             }
         }
+        for (int i = unlocked + 3; i < PLANETS.length; i++)
+            if (currentPlanet == planets.get(i)) {
+                reset();
+                return false;
+            }
         return false;
     }
 
@@ -372,30 +255,12 @@ public class LevelSelect extends PlayMode {
                 return true;
             }
         }
-        for (int i = 3; i <= 4; i++) {
-            float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
-            if (Math.sqrt(d) < planets.get(i).getRadius()) {
-                if (i == 3) {
-                    mode = Math.max(mode - 1, 0);
-                    switchMode(mode);
-                    return true;
-                }
-                if (i == 4) {
-                    mode = Math.min(mode + 1, 2);
-                    switchMode(mode);
-                    return true;
-                }
-                return true;
-            }
-        }
-
         return false;
     }
 
     public void hover() {
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
-        for (int i = 0; i < PLANETS.length; i++) {
-            int temp = i - 4 + (mode*9);
+        for (int i = 0; i < unlocked + 3; i++) {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
                 if (lastHoverPlanet[i] == false) {
@@ -404,8 +269,8 @@ public class LevelSelect extends PlayMode {
                         planets.get(i).setRadius(planets.get(i).getRadius() * 1.1f);
                         planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
                     }
-                    else if (temp <= unlocked) {
-                        planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][1]);
+                    else {
+                        planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[i-3][1]);
                         planets.get(i).setRadius(planets.get(i).getRadius() * 1.1f);
                         planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
                     }
@@ -418,8 +283,8 @@ public class LevelSelect extends PlayMode {
                     planets.get(i).scalePicScale(new Vector2(1 / 1.2f, 1 / 1.2f));
                     lastHoverPlanet[i] = false;
                 }
-                else if (temp <= unlocked) {
-                    planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
+                else {
+                    planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[i-3][0]);
                     planets.get(i).setRadius(planets.get(i).getRadius() * 1 / 1.1f);
                     planets.get(i).scalePicScale(new Vector2(1 / 1.2f, 1 / 1.2f));
                     lastHoverPlanet[i] = false;
@@ -431,22 +296,9 @@ public class LevelSelect extends PlayMode {
     public void draw(float dt) {
         super.drawBackground();
         canvas.begin();
-        canvas.draw(levelsTitleTexture, Color.WHITE, text.get(0).x, text.get(0).y, text.get(1).x, text.get(1).y);
+        canvas.draw(levelsTitleTexture, Color.WHITE, text.get(0).x, text.get(0).y,   text.get(1).x, text.get(1).y);
         //canvas.draw(levelsTitleTexture, Color.WHITE, 3*canvas.getWidth() /9 , 2*canvas.getHeight()/8, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
         super.drawObjects();
-        canvas.begin();
-        if (mode == 0) {
-            canvas.drawText("Levels 10+", massFont, planets.get(4).getX(), planets.get(4).getY());
-        }
-        if (mode == 1) {
-            canvas.drawText("Levels 19-27", massFont, planets.get(4).getX(), planets.get(4).getY());
-            canvas.drawText("Levels 1-9", massFont, planets.get(3).getX(), planets.get(3).getY());
-        }
-        if (mode == 2) {
-            canvas.drawText("Levels 10-18", massFont, planets.get(3).getX(), planets.get(3).getY());
-        }
-        canvas.end();
-
     }
 }
