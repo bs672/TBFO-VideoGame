@@ -125,6 +125,8 @@ public class PlanetModel extends WheelObstacle{
 
     public Texture get_sheet(){return EXP_Sheet;}
 
+
+
     public void addShip(ShipModel ship) {ships.add(ship);}
 
     public void removeShip(ShipModel ship) {ships.removeValue(ship, true);}
@@ -190,6 +192,8 @@ public class PlanetModel extends WheelObstacle{
        // this.scalePicScale(new Vector2(.5f * this.getRadius(), .5f * this.getRadius()));
 
     }
+
+
 
     /**
      * Creates a new planet at the given position.

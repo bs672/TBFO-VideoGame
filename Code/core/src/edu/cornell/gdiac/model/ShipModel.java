@@ -1,5 +1,8 @@
 package edu.cornell.gdiac.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.model.obstacle.CapsuleObstacle;
@@ -18,6 +21,7 @@ public class ShipModel extends CapsuleObstacle{
     private Vector2 oldPosition = new Vector2();
     private boolean inOrbit;
     private boolean aggroed;
+    private boolean exploding;
     private int firingCooldown;
     private int burstCount=10;
     private int delay;
@@ -37,21 +41,26 @@ public class ShipModel extends CapsuleObstacle{
 
     public void setOldPosition(Vector2 v) {oldPosition.set(v); }
 
+
     public void setType(float val){type = val;}
 
     public float getType(){return type;}
+
 
     public void setInOrbit(boolean b) {inOrbit = b;}
 
     public boolean getInOrbit() {return inOrbit; }
 
+
     public void setAggroed(boolean b) {aggroed = b; }
 
     public boolean getAggroed() {return aggroed; }
 
+
     public void setAggroRange(float f){range = f;}
 
     public float getAggroRange() {return range; }
+
 
     public void setCooldown(int c) {firingCooldown = c; }
 
@@ -59,11 +68,13 @@ public class ShipModel extends CapsuleObstacle{
 
     public void decCooldown() {firingCooldown--; }
 
+
     public void setBurstCount(int b) {burstCount = b; }
 
     public int getBurstCount() {return burstCount; }
 
     public void decBurstCount() {burstCount --; }
+
 
     public void setDelay(int d) {delay = d; }
 
@@ -71,11 +82,28 @@ public class ShipModel extends CapsuleObstacle{
 
     public void decDelay() {delay --; }
 
+
     public float getMoveSpeed() {return MOVE_SPEED; }
+
 
     public float getOrbitDistance() {return orbitDistance; }
 
     public void setOrbitDistance(float f) {orbitDistance = f; }
+
+
+    public boolean isExploding() {return exploding;}
+
+    public void setExploding(boolean bool) {exploding = bool;}
+
+    private float EXP_stateTime= -1;
+
+    public void set_EXP_ST(float val){EXP_stateTime = val;}
+
+    public float get_EXP_ST(){return EXP_stateTime;}
+
+    public void update_EXP_ST(){
+        EXP_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+    }
 
     /**
      * Creates a new ship at the given position.
@@ -121,4 +149,9 @@ public class ShipModel extends CapsuleObstacle{
     public void drawDebug(GameCanvas canvas) {
         super.drawDebug(canvas);
     }
+
+
+
+
+
 }
