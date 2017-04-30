@@ -281,7 +281,7 @@ public class MainMenu extends PlayMode {
 
 
         canvas.begin();
-        canvas.draw(titleTexture, Color.WHITE, text.get(0).x, text.get(0).y,   text.get(1).x, text.get(1).y);
+        canvas.draw(titleTexture, Color.WHITE, text.get(0).x, text.get(0).y, text.get(1).x, text.get(1).y);
         canvas.end();
         super.drawObjects();
     }

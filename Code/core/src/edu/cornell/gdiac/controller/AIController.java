@@ -139,6 +139,7 @@ public class AIController {
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
         if (!planets.contains(targetPlanets.get(s), false)) {
             s.setInOrbit(false);
+            targetPlanets.put(s, planets.get((int)(Math.random()*planets.size)));
         }
         if(s.getInOrbit()) {
             tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
@@ -156,30 +157,6 @@ public class AIController {
             else {
                 moveToPlanet(s);
             }
-//            tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()));
-//            if(tempVec1.len() < targetPlanets.get(s).getRadius() + s.getOrbitDistance()) {
-//                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
-//                s.setPosition(s.getPosition().cpy().add(tempVec1));
-//            }
-//            else {
-//                if(!wanderers.contains(s)) {
-//                    tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-//                    int closestPlanet = 0;
-//                    for (int i = 0; i < planets.size; i++) {
-//                        tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
-//                        if (tempVec2.len() - planets.get(i).getRadius() < tempVec1.len()) {
-//                            tempVec1 = tempVec2.cpy();
-//                            tempVec1.scl((tempVec1.len() - planets.get(i).getRadius()) / tempVec1.len());
-//                            closestPlanet = i;
-//                        }
-//                    }
-//                    targetPlanets.put(s, planets.get(closestPlanet));
-//                    wanderers.add(s);
-//                }
-//                tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
-//                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
-//                s.setPosition(s.getPosition().cpy().add(tempVec1));
-//            }
         }
     }
 
@@ -203,6 +180,7 @@ public class AIController {
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
         if (!planets.contains(targetPlanets.get(s), false)) {
             s.setInOrbit(false);
+            targetPlanets.put(s, planets.get((int)(Math.random()*planets.size)));
         }
         if(s.getInOrbit()) {
             peacefulPathfind(s);

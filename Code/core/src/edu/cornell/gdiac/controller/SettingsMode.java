@@ -326,9 +326,9 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private static float[][] PLANETS = {
             {0f, 0f, 1.1f, 3f},   // MAIN MENU
-            {15f, 8f, 1.5f, 3f},  // MUTE
+            {10f, 8f, 1.5f, 3f},  // MUTE
             {15f, 11.5f, 1.5f, 3f},    // BACK
-            {15f, 15f, 1.5f, 3f} // left/right handed
+            {20f, 8f, 1.5f, 3f} // left/right handed
     };
 
     private boolean jumpedOnce;
@@ -419,8 +419,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         for(Obstacle o: objects){
             if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
-                System.out.println(canvas.getWidth());
-                System.out.println(canvas.getHeight());
             }
         }
     }
@@ -658,9 +656,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
         canvas.draw(backgroundLG, Color.WHITE,  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
         canvas.draw(backgroundLG, Color.WHITE,LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
-
-
-
 
         canvas.draw(settingsTexture, Color.WHITE, 3*canvas.getWidth() /9 , 11*canvas.getHeight()/16, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
