@@ -1446,11 +1446,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
                     if(i <= 4)
-                        sh.setOrbitDistance(3);
+                        sh.setOrbitDistance(3.5f);
                     else if(i <= 20 && i % 2 == 0)
-                        sh.setOrbitDistance(3f);
+                        sh.setOrbitDistance(3.5f);
                     else if(i <= 36 && i % 2 == 0)
-                        sh.setOrbitDistance(4f);
+                        sh.setOrbitDistance(4.5f);
                     else {
                         aiController.setTarget(sh, planets.get((int)(Math.random()*planets.size)));
                     }
