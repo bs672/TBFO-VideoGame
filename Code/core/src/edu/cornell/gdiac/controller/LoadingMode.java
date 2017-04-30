@@ -349,7 +349,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
         canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getWidth(),backgroundLG.getHeight());
-		canvas.draw(backgroundTITLE, Color.WHITE, canvas.getWidth() /4 , 9*canvas.getHeight()/16, canvas.getWidth()/2, canvas.getHeight()/2);
+		canvas.draw(backgroundTITLE, Color.WHITE,canvas.getWidth()/4 , 8*canvas.getHeight()/16, canvas.getWidth()/2, canvas.getHeight()/2);
 
 		if (ready == false) {
 			drawProgress(canvas);
@@ -367,17 +367,17 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param canvas The drawing context
 	 */	
 	private void drawProgress(GameCanvas canvas) {	
-		canvas.draw(statusBkgLeft,   Color.WHITE, centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		canvas.draw(statusBkgRight,  Color.WHITE, centerX+width/2-scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		canvas.draw(statusBkgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, width-2*scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		canvas.draw(statusBkgLeft,   Color.WHITE, centerX-width/2, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		canvas.draw(statusBkgRight,  Color.WHITE, centerX+width/2-scale*PROGRESS_CAP, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		canvas.draw(statusBkgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY/2, width-2*scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 
-		canvas.draw(statusFrgLeft,   Color.WHITE, centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		canvas.draw(statusFrgLeft,   Color.WHITE, centerX-width/2, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 		if (progress > 0) {
 			float span = progress*(width-2*scale*PROGRESS_CAP)*6;
-			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP+span, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-			canvas.draw(statusFrgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, span, scale*PROGRESS_HEIGHT);
+			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP+span, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+			canvas.draw(statusFrgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY/2, span, scale*PROGRESS_HEIGHT);
 		} else {
-			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 		}
 	}
 
@@ -572,7 +572,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/**
 	 * Called when a key is typed (UNSUPPORTED)
 	 *
-	 * @param keycode the key typed
+	 * @param character the key typed
 	 * @return whether to hand the event to other listeners.
 	 */
 	public boolean keyTyped(char character) {
