@@ -348,11 +348,17 @@ public class LevelSelect extends PlayMode {
                 return true;
             }
         }
+        for (int i = 3; i < 5; i++) {
+            if (currentPlanet == planets.get(i)) {
+                reset();
+                return false;
+            }
+        }
         for (int i = 5; i < planets.size; i++) {
             int temp = i - 4 + (mode * 9);
             if (currentPlanet == planets.get(i)) {
                 if (temp <= unlocked) {
-                    listener.exitScreen(this, i + (mode * 9) - 1);
+                    listener.exitScreen(this, i + (mode * 9) - 2);
                     return true;
                 } else {
                     reset();
