@@ -92,19 +92,9 @@ public class LevelSelect extends PlayMode {
         back_Text_Texture = createTexture(manager, BACK_TEXT_TEXTURE, false);
         back_Text_Hover_Texture = createTexture(manager, BACK_TEXT_HOVER_TEXTURE, false);
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 27; i++) {
             for (int j = 0; j < 3; j++) {
                 LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[i][j], false);
-            }
-        }
-        for (int i = 9; i < 18; i++) {
-            for (int j = 0; j < 3; j++) {
-                LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[0][2], false);
-            }
-        }
-        for (int i = 18; i < 27; i++) {
-            for (int j = 0; j < 3; j++) {
-                LEVELS_TEXTURE_REGIONS[i][j] = createTexture(manager, LEVELS_TEXTURES[1][2], false);
             }
         }
 
@@ -170,8 +160,7 @@ public class LevelSelect extends PlayMode {
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
         play = false;
-        mode = 0;
-        switchMode(0);
+        switchMode(mode);
     }
 
     protected void populateLevel() {
@@ -204,7 +193,6 @@ public class LevelSelect extends PlayMode {
                 obj.setDrawScale(scale);
                 obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
                 obj.setName(pname + ii);
-                System.out.println(ii);
                 obj.setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
                 addObject(obj);
                 planets.add(obj);
@@ -321,10 +309,8 @@ public class LevelSelect extends PlayMode {
     public void setUnlocked(int newUnlock) {
         if (newUnlock > unlocked) {
             unlocked = newUnlock;
-            for (int i = 5; i < planets.size; i++) {
-                int temp = i - 4 + (mode*9);
-                planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
-            }
+            mode = (unlocked-1)/9;
+            switchMode(mode);
         }
     }
 

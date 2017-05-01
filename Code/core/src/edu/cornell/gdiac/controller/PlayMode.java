@@ -182,6 +182,60 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String LEVEL9_TEXTURE = "space/menus/level9.png";
     protected static final String LEVEL9_LOCK_TEXTURE = "space/menus/level9_locked.png";
     protected static final String LEVEL9_HOVER_TEXTURE = "space/menus/level9_hover.png";
+    protected static final String LEVEL10_TEXTURE = "space/menus/level10.png";
+    protected static final String LEVEL10_LOCK_TEXTURE = "space/menus/level10_locked.png";
+    protected static final String LEVEL10_HOVER_TEXTURE = "space/menus/level10_hover.png";
+    protected static final String LEVEL11_TEXTURE = "space/menus/level11.png";
+    protected static final String LEVEL11_LOCK_TEXTURE = "space/menus/level11_locked.png";
+    protected static final String LEVEL11_HOVER_TEXTURE = "space/menus/level11_hover.png";
+    protected static final String LEVEL12_TEXTURE = "space/menus/level12.png";
+    protected static final String LEVEL12_LOCK_TEXTURE = "space/menus/level12_locked.png";
+    protected static final String LEVEL12_HOVER_TEXTURE = "space/menus/level12_hover.png";
+    protected static final String LEVEL13_TEXTURE = "space/menus/level13.png";
+    protected static final String LEVEL13_LOCK_TEXTURE = "space/menus/level13_locked.png";
+    protected static final String LEVEL13_HOVER_TEXTURE = "space/menus/level13_hover.png";
+    protected static final String LEVEL14_TEXTURE = "space/menus/level14.png";
+    protected static final String LEVEL14_LOCK_TEXTURE = "space/menus/level14_locked.png";
+    protected static final String LEVEL14_HOVER_TEXTURE = "space/menus/level14_hover.png";
+    protected static final String LEVEL15_TEXTURE = "space/menus/level15.png";
+    protected static final String LEVEL15_LOCK_TEXTURE = "space/menus/level15_locked.png";
+    protected static final String LEVEL15_HOVER_TEXTURE = "space/menus/level15_hover.png";
+    protected static final String LEVEL16_TEXTURE = "space/menus/level16.png";
+    protected static final String LEVEL16_LOCK_TEXTURE = "space/menus/level16_locked.png";
+    protected static final String LEVEL16_HOVER_TEXTURE = "space/menus/level16_hover.png";
+    protected static final String LEVEL17_TEXTURE = "space/menus/level17.png";
+    protected static final String LEVEL17_LOCK_TEXTURE = "space/menus/level17_locked.png";
+    protected static final String LEVEL17_HOVER_TEXTURE = "space/menus/level17_hover.png";
+    protected static final String LEVEL18_TEXTURE = "space/menus/level18.png";
+    protected static final String LEVEL18_LOCK_TEXTURE = "space/menus/level18_locked.png";
+    protected static final String LEVEL18_HOVER_TEXTURE = "space/menus/level18_hover.png";
+    protected static final String LEVEL19_TEXTURE = "space/menus/level19.png";
+    protected static final String LEVEL19_LOCK_TEXTURE = "space/menus/level19_locked.png";
+    protected static final String LEVEL19_HOVER_TEXTURE = "space/menus/level19_hover.png";
+    protected static final String LEVEL20_TEXTURE = "space/menus/level20.png";
+    protected static final String LEVEL20_LOCK_TEXTURE = "space/menus/level20_locked.png";
+    protected static final String LEVEL20_HOVER_TEXTURE = "space/menus/level20_hover.png";
+    protected static final String LEVEL21_TEXTURE = "space/menus/level21.png";
+    protected static final String LEVEL21_LOCK_TEXTURE = "space/menus/level21_locked.png";
+    protected static final String LEVEL21_HOVER_TEXTURE = "space/menus/level21_hover.png";
+    protected static final String LEVEL22_TEXTURE = "space/menus/level22.png";
+    protected static final String LEVEL22_LOCK_TEXTURE = "space/menus/level22_locked.png";
+    protected static final String LEVEL22_HOVER_TEXTURE = "space/menus/level22_hover.png";
+    protected static final String LEVEL23_TEXTURE = "space/menus/level23.png";
+    protected static final String LEVEL23_LOCK_TEXTURE = "space/menus/level23_locked.png";
+    protected static final String LEVEL23_HOVER_TEXTURE = "space/menus/level23_hover.png";
+    protected static final String LEVEL24_TEXTURE = "space/menus/level24.png";
+    protected static final String LEVEL24_LOCK_TEXTURE = "space/menus/level24_locked.png";
+    protected static final String LEVEL24_HOVER_TEXTURE = "space/menus/level24_hover.png";
+    protected static final String LEVEL25_TEXTURE = "space/menus/level25.png";
+    protected static final String LEVEL25_LOCK_TEXTURE = "space/menus/level25_locked.png";
+    protected static final String LEVEL25_HOVER_TEXTURE = "space/menus/level25_hover.png";
+    protected static final String LEVEL26_TEXTURE = "space/menus/level26.png";
+    protected static final String LEVEL26_LOCK_TEXTURE = "space/menus/level26_locked.png";
+    protected static final String LEVEL26_HOVER_TEXTURE = "space/menus/level26_hover.png";
+    protected static final String LEVEL27_TEXTURE = "space/menus/level27.png";
+    protected static final String LEVEL27_LOCK_TEXTURE = "space/menus/level27_locked.png";
+    protected static final String LEVEL27_HOVER_TEXTURE = "space/menus/level27_hover.png";
     protected static final String[][] LEVELS_TEXTURES = {
             {LEVEL1_TEXTURE, LEVEL1_HOVER_TEXTURE, LEVEL1_LOCK_TEXTURE},
             {LEVEL2_TEXTURE, LEVEL2_HOVER_TEXTURE, LEVEL2_LOCK_TEXTURE},
@@ -192,6 +246,24 @@ public class PlayMode extends WorldController implements ContactListener {
             {LEVEL7_TEXTURE, LEVEL7_HOVER_TEXTURE, LEVEL7_LOCK_TEXTURE},
             {LEVEL8_TEXTURE, LEVEL8_HOVER_TEXTURE, LEVEL8_LOCK_TEXTURE},
             {LEVEL9_TEXTURE, LEVEL9_HOVER_TEXTURE, LEVEL9_LOCK_TEXTURE},
+            {LEVEL10_TEXTURE, LEVEL10_HOVER_TEXTURE, LEVEL10_LOCK_TEXTURE},
+            {LEVEL11_TEXTURE, LEVEL11_HOVER_TEXTURE, LEVEL11_LOCK_TEXTURE},
+            {LEVEL12_TEXTURE, LEVEL12_HOVER_TEXTURE, LEVEL12_LOCK_TEXTURE},
+            {LEVEL13_TEXTURE, LEVEL13_HOVER_TEXTURE, LEVEL13_LOCK_TEXTURE},
+            {LEVEL14_TEXTURE, LEVEL14_HOVER_TEXTURE, LEVEL14_LOCK_TEXTURE},
+            {LEVEL15_TEXTURE, LEVEL15_HOVER_TEXTURE, LEVEL15_LOCK_TEXTURE},
+            {LEVEL16_TEXTURE, LEVEL16_HOVER_TEXTURE, LEVEL16_LOCK_TEXTURE},
+            {LEVEL17_TEXTURE, LEVEL17_HOVER_TEXTURE, LEVEL17_LOCK_TEXTURE},
+            {LEVEL18_TEXTURE, LEVEL18_HOVER_TEXTURE, LEVEL18_LOCK_TEXTURE},
+            {LEVEL19_TEXTURE, LEVEL19_HOVER_TEXTURE, LEVEL19_LOCK_TEXTURE},
+            {LEVEL20_TEXTURE, LEVEL20_HOVER_TEXTURE, LEVEL20_LOCK_TEXTURE},
+            {LEVEL21_TEXTURE, LEVEL21_HOVER_TEXTURE, LEVEL21_LOCK_TEXTURE},
+            {LEVEL22_TEXTURE, LEVEL22_HOVER_TEXTURE, LEVEL22_LOCK_TEXTURE},
+            {LEVEL23_TEXTURE, LEVEL23_HOVER_TEXTURE, LEVEL23_LOCK_TEXTURE},
+            {LEVEL24_TEXTURE, LEVEL24_HOVER_TEXTURE, LEVEL24_LOCK_TEXTURE},
+            {LEVEL25_TEXTURE, LEVEL25_HOVER_TEXTURE, LEVEL25_LOCK_TEXTURE},
+            {LEVEL26_TEXTURE, LEVEL26_HOVER_TEXTURE, LEVEL26_LOCK_TEXTURE},
+            {LEVEL27_TEXTURE, LEVEL27_HOVER_TEXTURE, LEVEL27_LOCK_TEXTURE},
     };
 
     /** Texture file for background image */
@@ -320,21 +392,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion play_Texture;           protected TextureRegion settings_Hover_Texture;
     protected TextureRegion levels_Hover_Texture;   protected TextureRegion play_Hover_Texture;
     protected TextureRegion main_Menu_Texture;      protected TextureRegion main_Menu_Hover_Texture;
-    protected TextureRegion resume_Texture;      protected TextureRegion resume_Hover_Texture;
-    protected TextureRegion level1_Texture;         protected TextureRegion level1_Lock_Texture;
-    protected TextureRegion level1_Hover_Texture;   protected TextureRegion level2_Texture;
-    protected TextureRegion level2_Lock_Texture;    protected TextureRegion level2_Hover_Texture;
-    protected TextureRegion level3_Texture;         protected TextureRegion level3_Lock_Texture;
-    protected TextureRegion level3_Hover_Texture;   protected TextureRegion level4_Texture;
-    protected TextureRegion level4_Lock_Texture;    protected TextureRegion level4_Hover_Texture;
-    protected TextureRegion level5_Texture;         protected TextureRegion level5_Lock_Texture;
-    protected TextureRegion level5_Hover_Texture;   protected TextureRegion level6_Texture;
-    protected TextureRegion level6_Lock_Texture;    protected TextureRegion level6_Hover_Texture;
-    protected TextureRegion level7_Texture;         protected TextureRegion level7_Lock_Texture;
-    protected TextureRegion level7_Hover_Texture;   protected TextureRegion level8_Texture;
-    protected TextureRegion level8_Lock_Texture;    protected TextureRegion level8_Hover_Texture;
-    protected TextureRegion level9_Texture;         protected TextureRegion level9_Lock_Texture;
-    protected TextureRegion level9_Hover_Texture;   protected TextureRegion pauseTitleTexture;
+    protected TextureRegion resume_Texture;         protected TextureRegion resume_Hover_Texture;
+    protected TextureRegion pauseTitleTexture;
     protected TextureRegion titleTexture;           protected TextureRegion levelsTitleTexture;
     protected TextureRegion back_Texture;           protected TextureRegion back_Hover_Texture;
     protected TextureRegion back_Text_Texture;      protected TextureRegion back_Text_Hover_Texture;
@@ -421,33 +480,40 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(LEVELSTITLE, Texture.class);   assets.add(LEVELSTITLE);
         manager.load(SETTINGSTITLE, Texture.class); assets.add(SETTINGSTITLE);
 
-        manager.load(LEVEL1_TEXTURE, Texture.class);        assets.add(LEVEL1_TEXTURE);
-        manager.load(LEVEL1_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL1_LOCK_TEXTURE);
-        manager.load(LEVEL1_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL1_HOVER_TEXTURE);
-        manager.load(LEVEL2_TEXTURE, Texture.class);        assets.add(LEVEL2_TEXTURE);
-        manager.load(LEVEL2_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL2_LOCK_TEXTURE);
-        manager.load(LEVEL2_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL2_HOVER_TEXTURE);
-        manager.load(LEVEL3_TEXTURE, Texture.class);        assets.add(LEVEL3_TEXTURE);
-        manager.load(LEVEL3_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL3_LOCK_TEXTURE);
-        manager.load(LEVEL3_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL3_HOVER_TEXTURE);
-        manager.load(LEVEL4_TEXTURE, Texture.class);        assets.add(LEVEL4_TEXTURE);
-        manager.load(LEVEL4_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL4_LOCK_TEXTURE);
-        manager.load(LEVEL4_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL4_HOVER_TEXTURE);
-        manager.load(LEVEL5_TEXTURE, Texture.class);        assets.add(LEVEL5_TEXTURE);
-        manager.load(LEVEL5_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL5_LOCK_TEXTURE);
-        manager.load(LEVEL5_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL5_HOVER_TEXTURE);
-        manager.load(LEVEL6_TEXTURE, Texture.class);        assets.add(LEVEL6_TEXTURE);
-        manager.load(LEVEL6_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL6_LOCK_TEXTURE);
-        manager.load(LEVEL6_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL6_HOVER_TEXTURE);
-        manager.load(LEVEL7_TEXTURE, Texture.class);        assets.add(LEVEL7_TEXTURE);
-        manager.load(LEVEL7_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL7_LOCK_TEXTURE);
-        manager.load(LEVEL7_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL7_HOVER_TEXTURE);
-        manager.load(LEVEL8_TEXTURE, Texture.class);        assets.add(LEVEL8_TEXTURE);
-        manager.load(LEVEL8_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL8_LOCK_TEXTURE);
-        manager.load(LEVEL8_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL8_HOVER_TEXTURE);
-        manager.load(LEVEL9_TEXTURE, Texture.class);        assets.add(LEVEL9_TEXTURE);
-        manager.load(LEVEL9_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL9_LOCK_TEXTURE);
-        manager.load(LEVEL9_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL9_HOVER_TEXTURE);
+        for (int i = 0; i < LEVELS_TEXTURES.length; i++) {
+            for (int j = 0; j < LEVELS_TEXTURES[0].length; j++) {
+                manager.load(LEVELS_TEXTURES[i][j], Texture.class);
+                assets.add(LEVELS_TEXTURES[i][j]);
+            }
+        }
+
+//        manager.load(LEVEL1_TEXTURE, Texture.class);        assets.add(LEVEL1_TEXTURE);
+//        manager.load(LEVEL1_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL1_LOCK_TEXTURE);
+//        manager.load(LEVEL1_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL1_HOVER_TEXTURE);
+//        manager.load(LEVEL2_TEXTURE, Texture.class);        assets.add(LEVEL2_TEXTURE);
+//        manager.load(LEVEL2_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL2_LOCK_TEXTURE);
+//        manager.load(LEVEL2_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL2_HOVER_TEXTURE);
+//        manager.load(LEVEL3_TEXTURE, Texture.class);        assets.add(LEVEL3_TEXTURE);
+//        manager.load(LEVEL3_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL3_LOCK_TEXTURE);
+//        manager.load(LEVEL3_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL3_HOVER_TEXTURE);
+//        manager.load(LEVEL4_TEXTURE, Texture.class);        assets.add(LEVEL4_TEXTURE);
+//        manager.load(LEVEL4_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL4_LOCK_TEXTURE);
+//        manager.load(LEVEL4_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL4_HOVER_TEXTURE);
+//        manager.load(LEVEL5_TEXTURE, Texture.class);        assets.add(LEVEL5_TEXTURE);
+//        manager.load(LEVEL5_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL5_LOCK_TEXTURE);
+//        manager.load(LEVEL5_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL5_HOVER_TEXTURE);
+//        manager.load(LEVEL6_TEXTURE, Texture.class);        assets.add(LEVEL6_TEXTURE);
+//        manager.load(LEVEL6_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL6_LOCK_TEXTURE);
+//        manager.load(LEVEL6_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL6_HOVER_TEXTURE);
+//        manager.load(LEVEL7_TEXTURE, Texture.class);        assets.add(LEVEL7_TEXTURE);
+//        manager.load(LEVEL7_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL7_LOCK_TEXTURE);
+//        manager.load(LEVEL7_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL7_HOVER_TEXTURE);
+//        manager.load(LEVEL8_TEXTURE, Texture.class);        assets.add(LEVEL8_TEXTURE);
+//        manager.load(LEVEL8_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL8_LOCK_TEXTURE);
+//        manager.load(LEVEL8_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL8_HOVER_TEXTURE);
+//        manager.load(LEVEL9_TEXTURE, Texture.class);        assets.add(LEVEL9_TEXTURE);
+//        manager.load(LEVEL9_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL9_LOCK_TEXTURE);
+//        manager.load(LEVEL9_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL9_HOVER_TEXTURE);
 
         manager.load(EXPULSION_TEXTURE, Texture.class); assets.add(EXPULSION_TEXTURE);
 
