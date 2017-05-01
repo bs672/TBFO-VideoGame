@@ -97,7 +97,7 @@ public class LevelSelect2 extends PlayMode {
         backgroundMED = createTexture(manager,BACKG_FILE_MED_STAR,false);
         backgroundSM = createTexture(manager,BACKG_FILE_SM_STAR,false);
 
-        ship_texture = createTexture(manager, SHIP_TEXTURE, false);
+
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
@@ -123,6 +123,7 @@ public class LevelSelect2 extends PlayMode {
         planets.clear();
         commandPlanets.clear();
         planet_explosion.clear();
+        ship_explosion.clear();
         ships.clear();
         text.clear();
         stars.clear();

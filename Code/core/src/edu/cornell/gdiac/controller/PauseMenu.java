@@ -38,9 +38,9 @@ public class PauseMenu extends PlayMode {
 
     protected static float[][] PLANETS = {
             {5f, 4f, 1.3f, 3f},  // MAIN MENU
-            {25, 10f, 1.3f, 3f}, //SETTINGS
+            {25, 4.4f, 1.3f, 3f}, //SETTINGS
             {16f, 2.6f, 1.3f, 3f},    //LEVEL SELECT
-            {15f, 8.5f, 1.5f, 3f},   //PLAY
+            {16f, 8.5f, 1.5f, 3f},   //PLAY
     };
 
     protected static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
@@ -84,7 +84,6 @@ public class PauseMenu extends PlayMode {
         backgroundMED = createTexture(manager,BACKG_FILE_MED_STAR,false);
         backgroundSM = createTexture(manager,BACKG_FILE_SM_STAR,false);
 
-        ship_texture = createTexture(manager, SHIP_TEXTURE, false);
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
@@ -110,6 +109,7 @@ public class PauseMenu extends PlayMode {
         planets.clear();
         commandPlanets.clear();
         planet_explosion.clear();
+        ship_explosion.clear();
         ships.clear();
         text.clear();
         stars.clear();
@@ -169,10 +169,8 @@ public class PauseMenu extends PlayMode {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
 
 
-
-
-       titlecoord.set(   canvas.getWidth() /4 , 5*canvas.getHeight()/8  );
-       titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/3  );
+        titlecoord.set(   (canvas.getWidth() /2)-(pauseTitleTexture.getRegionWidth()*1.2f/2) , (canvas.getHeight())-3.5f*(pauseTitleTexture.getRegionHeight()*1.2f/2)  );
+        titlesize.set(  pauseTitleTexture.getRegionWidth()*1.2f, pauseTitleTexture.getRegionHeight()*1.2f );
 
 
         text.add (titlecoord);

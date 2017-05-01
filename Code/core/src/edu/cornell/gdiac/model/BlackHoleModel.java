@@ -1,5 +1,7 @@
 package edu.cornell.gdiac.model;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import edu.cornell.gdiac.view.GameCanvas;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
 import edu.cornell.gdiac.model.obstacle.WheelObstacle;
@@ -65,5 +67,10 @@ public class BlackHoleModel extends WheelObstacle{
     public boolean equals(Obstacle o) {
         return getX() == o.getX() && getY() == o.getY();
     }
+
+
+
+
+
 
 }

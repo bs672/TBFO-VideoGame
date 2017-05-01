@@ -327,29 +327,31 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 		canvas.begin();
 
-        int LG_S_X;
-        int LG_S_Y;
+		int LG_S_X;
+		int LG_S_Y;
 
-        if ((backgroundLG.getWidth()-canvas.getWidth())>0) {
-            LG_S_X = 0;
-        }
-        else {
-            LG_S_X = (backgroundLG.getWidth()-canvas.getWidth())/2;
-        }
+		if ((backgroundLG.getWidth()-canvas.getWidth())>0) {
+			LG_S_X = 0;
+		}
+		else {
+			LG_S_X = -(backgroundLG.getWidth()-canvas.getWidth())/2;
+		}
 
-        if ((backgroundLG.getHeight()-canvas.getHeight())>0) {
-            LG_S_Y = 0;
-        }
-        else {
-            LG_S_Y = (backgroundLG.getHeight()-canvas.getHeight())/2;
-        }
+		if ((backgroundLG.getHeight()-canvas.getHeight())>0) {
+			LG_S_Y = 0;
+		}
+		else {
+			LG_S_Y = -(backgroundLG.getHeight()-canvas.getHeight())/2;
+		}
 
-        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getWidth(),backgroundLG.getHeight());
-		canvas.draw(backgroundTITLE, Color.WHITE,canvas.getWidth()/4 , 8*canvas.getHeight()/16, canvas.getWidth()/2, canvas.getHeight()/2);
+
+		canvas.draw(backgroundMAIN, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+		canvas.draw(backgroundSM, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+		canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+		canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
+		canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getWidth(),backgroundLG.getHeight());
+		canvas.draw(backgroundTITLE, Color.WHITE,((canvas.getWidth() /2)-(backgroundTITLE.getWidth()/4)),  ((canvas.getHeight())-2*(backgroundTITLE.getHeight()/6)),backgroundTITLE.getWidth()/2, backgroundTITLE.getHeight()/3);
+
 
 		if (ready == false) {
 			drawProgress(canvas);

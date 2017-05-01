@@ -106,26 +106,32 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String EXPLOSION = "space/animations/explosionAnim.png";
 
+    protected static final String SHIP_TEXTURE = "space/animations/ship_animation.png";
+
+    protected static final String SHIP_EXPLOSION = "space/animations/Ship_exp.png";
+
+
     /** The texture file for the planets */
     protected static final String COMMAND_P = "space/planets/command.png";
 
     /** The texture file for the planets */
     protected static final String NEUTRAL_P = "space/planets/neutral.png";
 
+
     /** The texture file for the planets */
     protected static final String MOUSE= "space/planets/mouse.png";
 
-    /** The texture file for the planets */
     protected static final String WASD= "space/planets/wasd.png";
 
-    /** The texture file for the planets */
     protected static final String SPACEBAR= "space/planets/spacebar.png";
 
-    /** The texture file for the planets */
     protected static final String RESET= "space/background/reset.png";
 
-    /** The texture file for the planets */
     protected static final String PAUSE= "space/background/pause.png";
+
+    protected static final String GROW_P= "space/planets/growPlanet.png";
+
+    protected static final String SHRINK_P= "space/planets/shrinkPlanet.png";
 
     protected String LEVEL;
 
@@ -197,8 +203,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //protected static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
     protected static final String BACKG_FILE_SM_STAR = "space/background/white-stars.png";
 
-    /** Texture file for ship */
-    protected static final String SHIP_TEXTURE = "space/ships/ship.png";
+
     /** The texture file for the bullets */
     protected static final String BULLET_TEXTURE = "space/ships/bullet.png";
     /** The texture file for mass expulsion */
@@ -247,6 +252,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private float stateTime=0f;
 
+
     protected int inPause = 0;
 
     //control = 0 is keyboard, control = 1 is mouse
@@ -258,34 +264,23 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Planet texture */
     protected TextureRegion blue_P_1_Texture;   protected TextureRegion blue_P_2_Texture;   protected TextureRegion blue_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion purple_P_1_Texture; protected TextureRegion purple_P_2_Texture; protected TextureRegion purple_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion orange_P_1_Texture; protected TextureRegion orange_P_2_Texture; protected TextureRegion orange_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion sky_P_1_Texture;    protected TextureRegion sky_P_2_Texture;    protected TextureRegion sky_P_3_Texture;
 
-    /** Planet texture */
     protected TextureRegion green_P_1_Texture;  protected TextureRegion green_P_2_Texture;  protected TextureRegion green_P_3_Texture;
 
-    /** Planet texture */
     protected TextureRegion pink_P_1_Texture;   protected TextureRegion pink_P_2_Texture;   protected TextureRegion pink_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion red_P_1_Texture;    protected TextureRegion red_P_2_Texture;    protected TextureRegion red_P_3_Texture;
 
-
-    /** Planet texture */
     protected TextureRegion mouse_Texture;    protected TextureRegion wasd_Texture;    protected TextureRegion spacebar_Texture;
 
-    /** Planet texture */
     protected TextureRegion reset_Texture;    protected TextureRegion pause_Texture;
+
+    protected TextureRegion grow_P_Texture;    protected TextureRegion shrink_P_Texture;
 
 
     protected TextureRegion asteroid_Texture;
@@ -296,6 +291,12 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected Animation<TextureRegion> BH_Animation; // Must declare frame type (TextureRegion)
     protected Texture BH_Sheet;
+
+    protected Animation<TextureRegion> SHIP_Animation; // Must declare frame type (TextureRegion)
+    protected Texture SHIP_Sheet;
+
+    protected Animation<TextureRegion> SHIP_EXP_Animation; // Must declare frame type (TextureRegion)
+    protected Texture SHIP_EXP_Sheet;
 
     protected Texture Oob_Normal_Sheet;         protected Texture Oob_Growing_Sheet;
     protected Texture Oob_Command_Sheet;        protected Texture Oob_Flying_Sheet;
@@ -345,8 +346,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion backgroundMED;
     protected TextureRegion backgroundSM;
 
-    /** Texture asset for ship */
-    protected TextureRegion ship_texture;
+
     /** Texture asset for bullet */
     protected TextureRegion bullet_texture;
 
@@ -391,8 +391,6 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         platformAssetState = AssetState.LOADING;
-//        manager.load(OOB_FILE, Texture.class);
-//        assets.add(OOB_FILE);
 
         manager.load(OOB_NORMAL_FILE, Texture.class);   assets.add(OOB_NORMAL_FILE);
         manager.load(OOB_GROWING_FILE, Texture.class);  assets.add(OOB_GROWING_FILE);
@@ -481,26 +479,32 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(RED_P_2, Texture.class);   assets.add(RED_P_2);
         manager.load(RED_P_3, Texture.class);   assets.add(RED_P_3);
 
-        manager.load(MOUSE, Texture.class);   assets.add(MOUSE);
-        manager.load(WASD, Texture.class);   assets.add(WASD);
-        manager.load(SPACEBAR, Texture.class);   assets.add(SPACEBAR);
-        manager.load(PAUSE, Texture.class);   assets.add(PAUSE);
-        manager.load(RESET, Texture.class);   assets.add(RESET);
+        manager.load(MOUSE, Texture.class);         assets.add(MOUSE);
+        manager.load(WASD, Texture.class);          assets.add(WASD);
+        manager.load(SPACEBAR, Texture.class);      assets.add(SPACEBAR);
+        manager.load(PAUSE, Texture.class);         assets.add(PAUSE);
+        manager.load(RESET, Texture.class);         assets.add(RESET);
+        manager.load(GROW_P, Texture.class);         assets.add(GROW_P);
+        manager.load(SHRINK_P, Texture.class);         assets.add(SHRINK_P);
 
 
-        manager.load(SUN_P, Texture.class); assets.add(SUN_P);
+        manager.load(SUN_P, Texture.class);             assets.add(SUN_P);
 
-        manager.load(BLACK_HOLE, Texture.class);    assets.add(BLACK_HOLE);
+        manager.load(BLACK_HOLE, Texture.class);        assets.add(BLACK_HOLE);
 
-        manager.load(WARNING, Texture.class);   assets.add(WARNING);
+        manager.load(WARNING, Texture.class);           assets.add(WARNING);
 
-        manager.load(EXPLOSION, Texture.class); assets.add(EXPLOSION);
+        manager.load(EXPLOSION, Texture.class);         assets.add(EXPLOSION);
 
-        manager.load(COMMAND_P, Texture.class); assets.add(COMMAND_P);
+        manager.load(COMMAND_P, Texture.class);         assets.add(COMMAND_P);
 
-        manager.load(NEUTRAL_P, Texture.class); assets.add(NEUTRAL_P);
+        manager.load(SHIP_TEXTURE, Texture.class);      assets.add(SHIP_TEXTURE);
 
-        manager.load(ASTEROID, Texture.class);  assets.add(ASTEROID);
+        manager.load(SHIP_EXPLOSION, Texture.class);    assets.add(SHIP_EXPLOSION);
+
+        manager.load(NEUTRAL_P, Texture.class);         assets.add(NEUTRAL_P);
+
+        manager.load(ASTEROID, Texture.class);          assets.add(ASTEROID);
 
         manager.load(BACKG_FILE_MAIN, Texture.class);       assets.add(BACKG_FILE_MAIN);
         manager.load(BACKG_FILE_MAIN, Texture.class);       assets.add(BACKG_FILE_MAIN);
@@ -509,7 +513,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(BACKG_FILE_MED_STAR, Texture.class);   assets.add(BACKG_FILE_MED_STAR);
         manager.load(BACKG_FILE_SM_STAR, Texture.class);    assets.add(BACKG_FILE_SM_STAR);
 
-        manager.load(SHIP_TEXTURE, Texture.class);      assets.add(SHIP_TEXTURE);
+
         manager.load(BULLET_TEXTURE, Texture.class);    assets.add(BULLET_TEXTURE);
 
         manager.load(JUMP_SOUND, Sound.class);          assets.add(JUMP_SOUND);
@@ -587,6 +591,8 @@ public class PlayMode extends WorldController implements ContactListener {
         spacebar_Texture = createTexture(manager, SPACEBAR, false);
         pause_Texture = createTexture(manager, PAUSE, false);
         reset_Texture = createTexture(manager, RESET, false);
+        grow_P_Texture = createTexture(manager, GROW_P, false);
+        shrink_P_Texture = createTexture(manager, SHRINK_P, false);
 
 
 
@@ -604,6 +610,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
         EXP_Sheet = new Texture(Gdx.files.internal(EXPLOSION));
 
+        SHIP_Sheet = new Texture(Gdx.files.internal(SHIP_TEXTURE));
+
+        SHIP_EXP_Sheet = new Texture(Gdx.files.internal(SHIP_EXPLOSION));
+
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
 
         command_P_Texture = createTexture(manager,COMMAND_P,false);
@@ -614,7 +624,7 @@ public class PlayMode extends WorldController implements ContactListener {
         backgroundMED = createTexture(manager,BACKG_FILE_MED_STAR,false);
         backgroundSM = createTexture(manager,BACKG_FILE_SM_STAR,false);
 
-        ship_texture = createTexture(manager, SHIP_TEXTURE, false);
+
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
@@ -625,6 +635,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, EXPULSION_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
+
     }
 
     /**
@@ -654,7 +665,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The restitution for all physics objects */
     protected static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    protected static final float  BULLET_DAMAGE = -0.04f;
+    protected static final float  BULLET_DAMAGE = -0.00f;
     /** The volume for sound effects */
     protected static final float EFFECT_VOLUME = 0.8f;
 
@@ -677,6 +688,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Array<PlanetModel> commandPlanets;
     // List of dying planets
     Array<PlanetModel> planet_explosion;
+    // List of exploding ships
+    Array<ShipModel> ship_explosion;
     /** list of ships */
     protected Array<ShipModel> ships;
 
@@ -747,7 +760,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public PlayMode(String level) {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
-        setDebug(true);
+        setDebug(false);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
@@ -756,6 +769,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
         planet_explosion = new Array<PlanetModel>();
+        ship_explosion = new Array<ShipModel>();
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
@@ -770,6 +784,7 @@ public class PlayMode extends WorldController implements ContactListener {
         gameState = 0;
         messageCounter = 0;
         InputController.getInstance().setCenterCamera(true);
+
     }
 
     /**
@@ -952,6 +967,7 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     private void populateLevel() {
 
+
         // Create Planets
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.size; ii++) {
@@ -964,7 +980,6 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname);
-            //System.out.println(obj.getType());
             if (obj.getType() == 0f) {
 
                 //Blue Planets
@@ -1064,6 +1079,10 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(red_P_3_Texture);
                     }
                 }
+
+                if (LEVEL.contains("T")) {
+                    obj.setTexture(grow_P_Texture);
+                }
             }
             //Command Planets
             if (obj.getType() == 1f) {
@@ -1074,25 +1093,6 @@ public class PlayMode extends WorldController implements ContactListener {
             //Poison Planets
             if (obj.getType() == 2f) {
                 obj.scalePicScale(new Vector2(1.2f, 1.2f));
-                // Constant rows and columns of the sprite sheet
-                int FRAME_COLS = 8, FRAME_ROWS = 1;
-
-                //Split up the sheet
-                TextureRegion[][] tmp = TextureRegion.split(sunSheet,
-                        sunSheet.getWidth() / FRAME_COLS,
-                        sunSheet.getHeight() / FRAME_ROWS);
-
-                //Reorder array
-                TextureRegion[] sunFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-                int index = 0;
-                for (int i = 0; i < FRAME_ROWS; i++) {
-                    for (int j = 0; j < FRAME_COLS; j++) {
-                        sunFrames[index++] = tmp[i][j];
-                    }
-                }
-                // Initialize the Animation with the frame interval and array of frames
-                sunAnimation = new Animation<TextureRegion>(.15f, sunFrames);
-
             }
             //Neutral Planets
             if (obj.getType() == 3f) {
@@ -1132,27 +1132,6 @@ public class PlayMode extends WorldController implements ContactListener {
             b1.setDrawScale(scale);
             b2.setDrawScale(scale);
 
-
-            // Constant rows and columns of the sprite sheet
-            int FRAME_COLS = 12, FRAME_ROWS = 1;
-
-            //Split up the sheet
-            TextureRegion[][] tmp = TextureRegion.split(BH_Sheet,
-                    BH_Sheet.getWidth() / FRAME_COLS,
-                    BH_Sheet.getHeight() / FRAME_ROWS);
-
-            //Reorder array
-            TextureRegion[] BH_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-            int index = 0;
-            for (int i = 0; i < FRAME_ROWS; i++) {
-                for (int j = 0; j < FRAME_COLS; j++) {
-                    BH_Frames[index++] = tmp[i][j];
-                }
-            }
-
-            // Initialize the Animation with the frame interval and array of frames
-            BH_Animation = new Animation<TextureRegion>(.15f, BH_Frames);
-
             addObject(b1);
             addObject(b2);
         }
@@ -1181,7 +1160,6 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.setRestitution(BASIC_RESTITUTION);
             sh.setDrawScale(scale);
             sh.scalePicScale(new Vector2(.3f, .3f));
-            sh.setTexture(ship_texture);
             sh.setName("ship");
             sh.setGravityScale(0.0f);
             ships.add(sh);
@@ -1197,6 +1175,7 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.setName("ComplexOob");
         complexAvatar.scalePicScale(new Vector2(.4f*OOB_RADIUS, .4f*OOB_RADIUS));
         addObject(complexAvatar);
+
         loadAnim();
 
         setBG();
@@ -1384,6 +1363,94 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);             complexAvatar.createHurtingtex();
         complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);                 complexAvatar.createDyingtex();
         complexAvatar.set_Max_sheet(Oob_Max_Sheet);                     complexAvatar.createMaxtex();
+        sunTex();   BHTex(); SHIPTex(); SHIPEXPTex();
+    }
+
+    public void BHTex() {
+        //CREATE BLACK HOLE TEXTURE
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 12, FRAME_ROWS = 1;
+
+        //Split up the sheet
+        TextureRegion[][] tmp = TextureRegion.split(BH_Sheet,
+                BH_Sheet.getWidth() / FRAME_COLS,
+                BH_Sheet.getHeight() / FRAME_ROWS);
+
+        //Reorder array
+        TextureRegion[] BH_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                BH_Frames[index++] = tmp[i][j];
+            }
+        }
+        // Initialize the Animation with the frame interval and array of frames
+        BH_Animation = new Animation<TextureRegion>(.15f, BH_Frames);
+    }
+
+    public void sunTex() {
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+        //Split up the sheet
+        TextureRegion[][] tmp = TextureRegion.split(sunSheet,
+                sunSheet.getWidth() / FRAME_COLS,
+                sunSheet.getHeight() / FRAME_ROWS);
+
+        //Reorder array
+        TextureRegion[] sunFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                sunFrames[index++] = tmp[i][j];
+            }
+        }
+        // Initialize the Animation with the frame interval and array of frames
+        sunAnimation = new Animation<TextureRegion>(.15f, sunFrames);
+    }
+
+    public void SHIPTex() {
+        //CREATE BLACK HOLE TEXTURE
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+        //Split up the sheet
+        TextureRegion[][] tmp = TextureRegion.split(SHIP_Sheet,
+                SHIP_Sheet.getWidth() / FRAME_COLS,
+                SHIP_Sheet.getHeight() / FRAME_ROWS);
+
+        //Reorder array
+        TextureRegion[] SHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                SHIP_Frames[index++] = tmp[i][j];
+            }
+        }
+        // Initialize the Animation with the frame interval and array of frames
+        SHIP_Animation = new Animation<TextureRegion>(.1f, SHIP_Frames);
+    }
+
+    public void SHIPEXPTex() {
+        //CREATE BLACK HOLE TEXTURE
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 5, FRAME_ROWS = 1;
+
+        //Split up the sheet
+        TextureRegion[][] tmp = TextureRegion.split(SHIP_EXP_Sheet,
+                SHIP_EXP_Sheet.getWidth() / FRAME_COLS,
+                SHIP_EXP_Sheet.getHeight() / FRAME_ROWS);
+
+        //Reorder array
+        TextureRegion[] SHIP_EXP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                SHIP_EXP_Frames[index++] = tmp[i][j];
+            }
+        }
+        // Initialize the Animation with the frame interval and array of frames
+        SHIP_EXP_Animation = new Animation<TextureRegion>(.05f, SHIP_EXP_Frames);
     }
 
     /**
@@ -1433,7 +1500,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setRestitution(BASIC_RESTITUTION);
                 sh.setDrawScale(scale);
                 sh.scalePicScale(new Vector2(.2f, .2f));
-                sh.setTexture(ship_texture);
                 if (sh.getType() == 2) {
                     sh.scalePicScale(new Vector2(2f, 2f));
                 }
@@ -1630,7 +1696,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if (starArray==white_stars) {
                     set_white_BG();
-                    System.out.println("Reset X");
                 }
                 for (int i = 0; i < starArray.size; i += 2) {
                     starArray.get(i).y += Ydelt;
@@ -1647,7 +1712,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if (starArray==white_stars) {
                     set_white_BG();
-                    System.out.println("Reset Y");
                 }
                 for (int i = 0; i < starArray.size; i += 2) {
                     starArray.get(i).x += Xdelt;
@@ -1866,7 +1930,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     control = 1;
                 }
             }
-            if (commandPlanets.size == 0 & play) {
+            if (commandPlanets.size == 0 && play) {
                 // Won the level
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
@@ -2016,8 +2080,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
                         if (planet_explosion.get(0).getType() == 1f) {
                             for (ShipModel sh : planet_explosion.get(0).getShips()) {
-                                sh.markRemoved(true);
-                                aiController.removeShip(sh);
+                                sh.setExploding(true);
+                                ship_explosion.add(sh);
+                                sh.set_EXP_ST(0f);
                             }
                             commandPlanets.removeValue(planet_explosion.get(0), true);
                         }
@@ -2027,6 +2092,23 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                 }
             }
+
+            if (ships.size>0) {
+                for (ShipModel sh : ships) {
+                    if (sh.isExploding()) {
+                        if (sh.get_EXP_ST() >= SHIP_EXP_Animation.getAnimationDuration()) {
+                            sh.setExploding(false);
+                            sh.markRemoved(true);
+                            ship_explosion.removeValue(sh, true);
+                            ships.removeValue(sh, true);
+                            aiController.removeShip(sh);
+                        }
+                    }
+                }
+            }
+
+
+
             for (Joint j : complexAvatar.getOuterJoints()) {
                 Vector2 dist = j.getAnchorA().cpy().sub(j.getAnchorB());
                 if (dist.len() > 3 * ((DistanceJoint) j).getLength())
@@ -2045,6 +2127,22 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         else {
+
+            if (ships.size>0) {
+                for (ShipModel sh : ships) {
+                    if (sh.isExploding()) {
+                        if (sh.get_EXP_ST() >= SHIP_EXP_Animation.getAnimationDuration()) {
+                            sh.setExploding(false);
+                            sh.markRemoved(true);
+                            ship_explosion.removeValue(sh, true);
+                            ships.removeValue(sh, true);
+                            aiController.removeShip(sh);
+                        }
+                    }
+                }
+            }
+
+
             messageCounter++;
             if (messageCounter > 240) {
                 if (gameState == 2) {
@@ -2219,27 +2317,13 @@ public class PlayMode extends WorldController implements ContactListener {
     public void drawBackground(){
         canvas.clear();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
-        // delta_pos();
-        //float camera = -carPosition;
 
-        // Draw background unscaled.
         canvas.begin();
 
-        //canvas.drawWrapped(backgroundTextureMAIN,BG_MAIN_PARALLAX,0f);
-        // canvas.drawWrapped(backgroundTextureLARGESTAR,BG_RED_PARALLAX,0f);
-        // canvas.drawWrapped(backgroundTextureMEDIUMSTAR,BG_WHITE_PARALLAX,0f);
-
         float x = 255 - ((float) jumpTime/2);
-//        System.out.println(x);
         Color Tint = new Color(20,20,20,1);
         canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundSM, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
-        //canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-        //canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
-
-       // System.out.println(white_stars);
-    //    System.out.println(med_stars);
-       // System.out.println(stars);
 
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(0).x, white_stars.get(0).y,   white_stars.get(1).x, white_stars.get(1).y);
 
@@ -2251,8 +2335,6 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(12).x, white_stars.get(12).y,   white_stars.get(13).x, white_stars.get(13).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(14).x, white_stars.get(14).y,   white_stars.get(15).x, white_stars.get(15).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(16).x, white_stars.get(16).y,   white_stars.get(17).x, white_stars.get(17).y);
-
-
 
 
 
@@ -2351,6 +2433,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
                 canvas.begin();
                 ((PlanetModel) obj).setTexture(currentFrame);
+                if (LEVEL=="Sun" ) {
+                    ((PlanetModel) obj).setTexture(shrink_P_Texture);
+                }
                 obj.draw(canvas);
                 canvas.end();
             }
@@ -2359,6 +2444,25 @@ public class PlayMode extends WorldController implements ContactListener {
                 TextureRegion currentFrame = BH_Animation.getKeyFrame(stateTime, true);
                 canvas.begin();
                 ((BlackHoleModel) obj).setTexture(currentFrame);
+                obj.draw(canvas);
+                canvas.end();
+            }
+
+            if (obj.getName().equals("ship") && !((ShipModel) obj).isExploding()) {
+                // Get current frame of animation for the current stateTime
+                TextureRegion currentFrame = SHIP_Animation.getKeyFrame(stateTime, true);
+                canvas.begin();
+                ((ShipModel) obj).setTexture(currentFrame);
+                obj.draw(canvas);
+                canvas.end();
+            }
+
+            if (obj.getName().equals("ship") && ((ShipModel) obj).isExploding()) {
+                // Get current frame of animation for the current stateTime
+                ((ShipModel) obj).update_EXP_ST();
+                TextureRegion currentFrame = SHIP_EXP_Animation.getKeyFrame(((ShipModel) obj).get_EXP_ST(), false);
+                canvas.begin();
+                ((ShipModel) obj).setTexture(currentFrame);
                 obj.draw(canvas);
                 canvas.end();
             }

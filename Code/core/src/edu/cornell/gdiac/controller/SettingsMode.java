@@ -50,13 +50,8 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_planet_hover.png";
     private static final String BACK_TEXTURE  = "space/menus/back.png";
     private static final String BACK_HOVER_TEXTURE  = "space/menus/back_hover.png";
-    private static final String MUTE_TEXTURE  = "space/menus/mute.png";
+    private static final String MUTE_TEXTURE  = "space/menus/muted.png";
 
-    // Animator sun = new Animator(8,1,.33f,"space/planets/sunAnim.png");
-
-    //Animator sun = new Animator();
-
-    // Animation test2= new Animation(20,)
 
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
@@ -366,7 +361,7 @@ public class SettingsMode extends WorldController implements ContactListener {
     /** AIController */
     private AIController aiController;
 
-    //private String jsonString = "{\"sceneName\":\"MainScene\",\"composite\":{\"sImages\":[{\"uniqueId\":4,\"tags\":[],\"customVars\":\"Type:1\",\"x\":6.6625,\"y\":3.9375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":0.75,\"originY\":1.6875,\"layerName\":\"Default\",\"imageName\":\"ship\"},{\"uniqueId\":5,\"tags\":[],\"customVars\":\"Type:3\",\"x\":5.55,\"y\":1.7000003,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":1,\"layerName\":\"Default\",\"imageName\":\"command\"},{\"uniqueId\":6,\"tags\":[],\"x\":-3.375,\"y\":0.42499995,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":4.06875,\"originY\":4.06875,\"zIndex\":2,\"layerName\":\"Default\",\"imageName\":\"sun\"},{\"uniqueId\":7,\"tags\":[],\"x\":-3.1125002,\"y\":-2.9875,\"scaleX\":0.2,\"scaleY\":0.2,\"originX\":3,\"originY\":3,\"zIndex\":3,\"layerName\":\"Default\",\"imageName\":\"neutral\"},{\"uniqueId\":8,\"tags\":[],\"x\":2.1125,\"y\":-0.4375,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":3,\"originY\":3,\"zIndex\":4,\"layerName\":\"Default\",\"imageName\":\"purple\"},{\"uniqueId\":9,\"tags\":[],\"x\":0.7750001,\"y\":-0.76250005,\"scaleX\":0.3,\"scaleY\":0.3,\"originX\":4.375,\"originY\":4.375,\"zIndex\":5,\"layerName\":\"Default\",\"imageName\":\"oob2\"}],\"layers\":[{\"layerName\":\"Default\",\"isVisible\":true}]},\"physicsPropertiesVO\":{}}";
+
     /**
      * Creates and initialize a new instance of the platformer game
      *
@@ -419,8 +414,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         for(Obstacle o: objects){
             if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
-                System.out.println(canvas.getWidth());
-                System.out.println(canvas.getHeight());
             }
         }
     }
