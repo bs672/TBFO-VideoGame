@@ -312,7 +312,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
-    protected static final float OOB_MAX_RADIUS = 7.0f;
+    protected static final float OOB_MAX_RADIUS = 2.0f;
 
     protected static final float EPSILON = 0.1f;
 
@@ -1829,7 +1829,7 @@ public class PlayMode extends WorldController implements ContactListener {
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
         if(currentPlanet.getType() == 0) {
-            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed /*/ 3*/) / Math.PI));
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
     }
