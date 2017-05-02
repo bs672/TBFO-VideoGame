@@ -312,7 +312,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final float OOB_WARNING_RADIUS = .85f;
 
-    protected static final float OOB_MAX_RADIUS = 2.0f;
+    protected static final float OOB_MAX_RADIUS = 7.0f;
 
     protected static final float EPSILON = 0.1f;
 
@@ -1829,7 +1829,7 @@ public class PlayMode extends WorldController implements ContactListener {
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
         if(currentPlanet.getType() == 0) {
-            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
+            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed /*/ 3*/) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
     }
@@ -2011,6 +2011,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
             }
             if (currentPlanet != null) {
+                // smallestRad is the vector from current planet to Oob's center
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
                 if(smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius() + 1f)
                     complexAvatar.setPosition(currentPlanet.getPosition().x, currentPlanet.getPosition().cpy().y + currentPlanet.getRadius() + complexAvatar.getRadius() + 1f);
@@ -2061,7 +2062,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     jump = true;
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                 }
-
+                // checking to make sure he doesn't go inside out
+                complexAvatar.checkForInsideOut(currentPlanet.getRadius()*2, vecToCenter);
                 if (jump) {
                     if (!play) {
                         if (clickScreenSwitch()) {

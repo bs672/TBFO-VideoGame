@@ -267,6 +267,33 @@ public class ComplexOobModel extends ComplexObstacle {
         return true;
     }
 
+    public void checkForInsideOut(float f, Vector2 v) {
+        boolean broken = false;
+        for(int i = 0; i < size; i++) {
+            Vector2 dist = innerJoints.get(i).getBodyA().getPosition().cpy().sub(innerJoints.get(i).getBodyB().getPosition());
+            if(dist.len() > f*0.9) {
+                forceVec.scl(0.6f);
+                break;
+            }
+        }
+        for(int i = 0; i < size; i++) {
+            int index2 = i + size / 2;
+            if (index2 >= size)
+                index2 -= size;
+            Vector2 dist = innerJoints.get(i).getBodyB().getPosition().cpy().sub(innerJoints.get(index2).getBodyB().getPosition());
+            if (dist.len() < 0.5f * radius) {
+                center.setPosition(center.getPosition().add(v.cpy().nor().scl(radius * 0.5f)));
+                float angle = 0;
+                float x = center.getX();
+                float y = center.getY();
+                for (int j = 0; j < size; j++) { // create outer circles counter-clockwise from 0 degrees
+                    bodies.get(j + 1).setPosition(x + radius * (float) Math.cos(angle), y + radius * (float) Math.sin(angle));
+                    angle += 2 * Math.PI / size;
+                }
+            }
+        }
+    }
+
     /**
      * Renders the polygon to the screen
      *
