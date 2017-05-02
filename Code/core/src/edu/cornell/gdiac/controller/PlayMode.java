@@ -155,6 +155,12 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String BACK_TEXT_HOVER_TEXTURE = "space/menus/back_hover.png";
     protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
     protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
+    protected static final String NEXT_LEVEL_TEXTURE = "space/menus/next_page.png";
+    protected static final String NEXT_LEVEL_HOVER_TEXTURE = "space/menus/next_page_hover.png";
+    protected static final String NEXT_LEVEL_LOCK_TEXTURE = "space/menus/next_page_locked.png";
+    protected static final String PREV_LEVEL_TEXTURE = "space/menus/prev_page.png";
+    protected static final String PREV_LEVEL_HOVER_TEXTURE = "space/menus/prev_page_hover.png";
+    protected static final String PREV_LEVEL_LOCK_TEXTURE = "space/menus/prev_page_locked.png";
     protected static final String LEVEL1_TEXTURE = "space/menus/level1.png";
     protected static final String LEVEL1_LOCK_TEXTURE = "space/menus/level1_locked.png";
     protected static final String LEVEL1_HOVER_TEXTURE = "space/menus/level1_hover.png";
@@ -320,7 +326,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion play_Texture;           protected TextureRegion settings_Hover_Texture;
     protected TextureRegion levels_Hover_Texture;   protected TextureRegion play_Hover_Texture;
     protected TextureRegion main_Menu_Texture;      protected TextureRegion main_Menu_Hover_Texture;
-    protected TextureRegion resume_Texture;      protected TextureRegion resume_Hover_Texture;
+    protected TextureRegion resume_Texture;         protected TextureRegion resume_Hover_Texture;
     protected TextureRegion level1_Texture;         protected TextureRegion level1_Lock_Texture;
     protected TextureRegion level1_Hover_Texture;   protected TextureRegion level2_Texture;
     protected TextureRegion level2_Lock_Texture;    protected TextureRegion level2_Hover_Texture;
@@ -335,6 +341,9 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion level8_Lock_Texture;    protected TextureRegion level8_Hover_Texture;
     protected TextureRegion level9_Texture;         protected TextureRegion level9_Lock_Texture;
     protected TextureRegion level9_Hover_Texture;   protected TextureRegion pauseTitleTexture;
+    protected TextureRegion next_level_Texture;         protected TextureRegion next_level_Lock_Texture;
+    protected TextureRegion next_level_Hover_Texture;   protected TextureRegion prev_level_Texture;
+    protected TextureRegion prev_level_Lock_Texture;    protected TextureRegion prev_level_Hover_Texture;
     protected TextureRegion titleTexture;           protected TextureRegion levelsTitleTexture;
     protected TextureRegion back_Texture;           protected TextureRegion back_Hover_Texture;
     protected TextureRegion back_Text_Texture;      protected TextureRegion back_Text_Hover_Texture;
@@ -411,6 +420,18 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(RESUME_HOVER_TEXTURE, Texture.class);      assets.add(RESUME_HOVER_TEXTURE);
         manager.load(MAIN_MENU_TEXTURE, Texture.class);         assets.add(MAIN_MENU_TEXTURE);
         manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);   assets.add(MAIN_MENU_HOVER_TEXTURE);
+
+
+        manager.load(NEXT_LEVEL_TEXTURE, Texture.class);   assets.add(NEXT_LEVEL_TEXTURE);
+        manager.load(NEXT_LEVEL_HOVER_TEXTURE, Texture.class);   assets.add(NEXT_LEVEL_HOVER_TEXTURE);
+        manager.load(NEXT_LEVEL_LOCK_TEXTURE, Texture.class);   assets.add(NEXT_LEVEL_LOCK_TEXTURE);
+        manager.load(PREV_LEVEL_TEXTURE, Texture.class);   assets.add(PREV_LEVEL_TEXTURE);
+        manager.load(PREV_LEVEL_HOVER_TEXTURE, Texture.class);   assets.add(PREV_LEVEL_HOVER_TEXTURE);
+        manager.load(PREV_LEVEL_LOCK_TEXTURE, Texture.class);   assets.add(PREV_LEVEL_LOCK_TEXTURE);
+
+
+
+
         manager.load(BACK_TEXTURE, Texture.class);              assets.add(BACK_TEXTURE);
         manager.load(BACK_HOVER_TEXTURE, Texture.class);        assets.add(BACK_HOVER_TEXTURE);
         manager.load(BACK_TEXT_TEXTURE, Texture.class);         assets.add(BACK_TEXT_TEXTURE);

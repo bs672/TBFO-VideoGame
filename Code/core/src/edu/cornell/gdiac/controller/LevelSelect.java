@@ -87,6 +87,12 @@ public class LevelSelect extends PlayMode {
         settings_Texture = createTexture(manager,SETTINGS_TEXTURE, false);
         settings_Hover_Texture = createTexture(manager,SETTINGS_HOVER_TEXTURE, false);
         levelsTitleTexture = createTexture(manager,LEVELSTITLE, true);
+        next_level_Texture = createTexture(manager,NEXT_LEVEL_TEXTURE,false);
+        next_level_Hover_Texture = createTexture(manager,NEXT_LEVEL_HOVER_TEXTURE,false);
+        next_level_Lock_Texture = createTexture(manager,NEXT_LEVEL_LOCK_TEXTURE,false);
+        prev_level_Texture = createTexture(manager,PREV_LEVEL_TEXTURE,false);
+        prev_level_Hover_Texture = createTexture(manager,PREV_LEVEL_HOVER_TEXTURE,false);
+        prev_level_Lock_Texture = createTexture(manager,PREV_LEVEL_LOCK_TEXTURE,false);
         back_Texture = createTexture(manager, BACK_TEXTURE, false);
         back_Hover_Texture = createTexture(manager, BACK_HOVER_TEXTURE, false);
         back_Text_Texture = createTexture(manager, BACK_TEXT_TEXTURE, false);
@@ -114,10 +120,12 @@ public class LevelSelect extends PlayMode {
         TEXTURES[1][1] = main_Menu_Hover_Texture;
         TEXTURES[2][0] = settings_Texture;
         TEXTURES[2][1] = settings_Hover_Texture;
-        TEXTURES[3][0] = neutral_P_Texture;
-        TEXTURES[3][1] = neutral_P_Texture;
-        TEXTURES[4][0] = neutral_P_Texture;
-        TEXTURES[4][1] = neutral_P_Texture;
+        TEXTURES[3][0] = prev_level_Texture;
+        TEXTURES[3][1] = prev_level_Hover_Texture;
+        TEXTURES[4][0] = next_level_Texture;
+        TEXTURES[4][1] = next_level_Hover_Texture;
+
+
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -205,7 +213,7 @@ public class LevelSelect extends PlayMode {
                 obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
                 obj.setName(pname + ii);
                 System.out.println(ii);
-                obj.setTexture(LEVELS_TEXTURE_REGIONS[temp-1][0]);
+                obj.setTexture(LEVELS_TEXTURE_REGIONS[temp - 1][0]);
                 addObject(obj);
                 planets.add(obj);
             }
@@ -339,6 +347,14 @@ public class LevelSelect extends PlayMode {
                 planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][2]);
             }
         }
+        if (mode ==0){
+            System.out.println("TEST");
+            planets.get(3).setTexture(prev_level_Lock_Texture);
+        }
+        else if (mode ==2){
+            System.out.println("TEST TEST");
+            planets.get(4).setTexture(next_level_Lock_Texture);
+        }
     }
 
     public boolean screenSwitch() {
@@ -374,7 +390,7 @@ public class LevelSelect extends PlayMode {
         }
         for (int i = 3; i <= 4; i++) {
             float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
-            if (Math.sqrt(d) < planets.get(i).getRadius()) {
+            if (Math.sqrt(d) < planets.get(i).getRadius()*1.2f) {
                 if (i == 3) {
                     mode = Math.max(mode - 1, 0);
                     switchMode(mode);
@@ -397,7 +413,7 @@ public class LevelSelect extends PlayMode {
         for (int i = 0; i < PLANETS.length; i++) {
             int temp = i - 4 + (mode*9);
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
-            if ((Math.sqrt(d) < planets.get(i).getRadius())) {
+            if ((Math.sqrt(d) < planets.get(i).getRadius()*1.5f)) {
                 if (lastHoverPlanet[i] == false) {
                     if (i < TEXTURES.length) {
                         planets.get(i).setTexture(TEXTURES[i][1]);
@@ -432,7 +448,6 @@ public class LevelSelect extends PlayMode {
         super.drawBackground();
         canvas.begin();
         canvas.draw(levelsTitleTexture, Color.WHITE, text.get(0).x, text.get(0).y, text.get(1).x, text.get(1).y);
-        //canvas.draw(levelsTitleTexture, Color.WHITE, 3*canvas.getWidth() /9 , 2*canvas.getHeight()/8, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
         canvas.end();
         super.drawObjects();
         canvas.begin();

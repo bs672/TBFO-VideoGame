@@ -350,9 +350,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		canvas.draw(backgroundMED, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 		canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 		canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getWidth(),backgroundLG.getHeight());
-		canvas.draw(backgroundTITLE, Color.WHITE,((canvas.getWidth() /2)-(backgroundTITLE.getWidth()/4)),  ((canvas.getHeight())-2*(backgroundTITLE.getHeight()/6)),backgroundTITLE.getWidth()/2, backgroundTITLE.getHeight()/3);
+		canvas.draw(backgroundTITLE, Color.WHITE,((canvas.getWidth() /2)-(backgroundTITLE.getWidth()/4)),  ((canvas.getHeight())-(backgroundTITLE.getHeight()/1.5f)),backgroundTITLE.getWidth()/2, backgroundTITLE.getHeight()/2);
 
-
+//
+//		titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2.3f)  );
+//		titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/2.3f );
+//
+//
 		if (ready == false) {
 			drawProgress(canvas);
 		}
