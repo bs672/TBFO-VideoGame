@@ -174,7 +174,6 @@ public class MainMenu extends PlayMode {
 
         //Play background music!
         if(!SoundController.getInstance().getMute()) {
-            System.out.println("in mainmenu");
             GDXRoot.music.setVolume(0.3f);
             GDXRoot.music.setLooping(true);
             GDXRoot.music.play();
