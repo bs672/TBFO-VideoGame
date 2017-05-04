@@ -333,12 +333,12 @@ public class LevelSelect extends PlayMode {
                 planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][2]);
             }
         }
-        if (mode ==0){
-            System.out.println("TEST");
+        planets.get(3).setTexture(prev_level_Texture);
+        planets.get(4).setTexture(next_level_Texture);
+        if (mode == 0){
             planets.get(3).setTexture(prev_level_Lock_Texture);
         }
-        else if (mode ==2){
-            System.out.println("TEST TEST");
+        else if (mode == 2){
             planets.get(4).setTexture(next_level_Lock_Texture);
         }
     }
@@ -396,7 +396,6 @@ public class LevelSelect extends PlayMode {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -432,6 +431,12 @@ public class LevelSelect extends PlayMode {
                     planets.get(i).scalePicScale(new Vector2(1 / 1.2f, 1 / 1.2f));
                     lastHoverPlanet[i] = false;
                 }
+            }
+            if (mode == 0) {
+                planets.get(3).setTexture(prev_level_Lock_Texture);
+            }
+            if (mode == 2) {
+                planets.get(4).setTexture(next_level_Lock_Texture);
             }
         }
     }

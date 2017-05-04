@@ -80,6 +80,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * the asynchronous loader for all other assets.
 	 */
 	public void create() {
+		System.out.println("here");
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
 		mute = false;
 		canvas  = new GameCanvas();
@@ -189,6 +190,10 @@ public class GDXRoot extends Game implements ScreenListener {
 		// MAIN MENU
 		else if (screen == controllers[0]) {
 			lastScreen = 0;
+			if (exitCode == WorldController.EXIT_QUIT) {
+			    Gdx.app.exit();
+			    return;
+            }
 			current = exitCode;
 			controllers[current].reset();
 			setScreen(controllers[current]);
@@ -253,19 +258,22 @@ public class GDXRoot extends Game implements ScreenListener {
 					lastScreen = i;
 					lastPlayScreen = i;
 					current = exitCode;
-					if (exitCode == 2) {
+					if (exitCode == WorldController.EXIT_NEXT) {
 						unlocked = Math.max(unlocked, i-2);
-						controllers[2].reset();
 						controllers[2].setUnlocked(unlocked);
+						current = i+1;
 					}
 					controllers[current].reset();
 					setScreen(controllers[current]);
 				}
 			}
 			if (screen == controllers[controllers.length - 1]) {
-				lastScreen = 12;
-				lastPlayScreen = 12;
+				lastScreen = controllers.length - 1;
+				lastPlayScreen = controllers.length - 1;
 				current = exitCode;
+				if (exitCode == WorldController.EXIT_NEXT) {
+				    current = 2;
+                }
 				controllers[current].reset();
 				setScreen(controllers[current]);
 			}
