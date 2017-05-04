@@ -2170,7 +2170,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 airPlayerControls();
                 if (jump && complexAvatar.getRadius() > OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
                     float expRad = complexAvatar.getRadius() / 2;
-                    Vector2 massLoc = complexAvatar.getPosition().cpy().add(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
+                    Vector2 massLoc = complexAvatar.getPosition().cpy().sub(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
                     WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, expRad);
                     expulsion.setGravityScale(0);
                     expulsion.setName("expulsion");
@@ -2178,9 +2178,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     expulsion.setTexture(expulsion_Texture);
                     expulsion.scalePicScale(new Vector2(expRad * 1.3f, expRad * 1.3f));
                     addObject(expulsion);
-                    expulsion.setLinearVelocity(launchVec.cpy().nor().scl(30));
+                    expulsion.setLinearVelocity(launchVec.cpy().nor().scl(-30));
                     changeMass(-expulsion.getMass() / 2);
-                    Vector2 velocityChange = launchVec.cpy().nor().scl(-1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
+                    Vector2 velocityChange = launchVec.cpy().nor().scl(1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
                     adjustCooldown = 30;
                     SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
