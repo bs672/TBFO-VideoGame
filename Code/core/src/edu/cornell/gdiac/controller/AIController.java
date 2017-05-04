@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import edu.cornell.gdiac.model.BlackHoleModel;
 import edu.cornell.gdiac.model.PlanetModel;
 import edu.cornell.gdiac.model.ShipModel;
 import edu.cornell.gdiac.model.ComplexOobModel;
@@ -19,6 +20,8 @@ public class AIController {
     private ObjectMap<ShipModel,PlanetModel> targetPlanets;
     /** list of planets in the map */
     private Array<PlanetModel> planets;
+    /** list of black holes on the map */
+    private Array<BlackHoleModel> blackHoles;
     /** the ships that aren't in orbit */
     private ObjectSet<ShipModel> wanderers;
     /** All the objects in the world. */
@@ -54,10 +57,14 @@ public class AIController {
         planets.removeValue(planet, true);
     }
 
-    public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<PlanetModel> commandPlanets, ComplexOobModel oob, Vector2 scale) {
+    public AIController(Array<ShipModel> ships, Array<PlanetModel> planets, Array<BlackHoleModel> blackHoles, Array<PlanetModel> commandPlanets, ComplexOobModel oob, Vector2 scale) {
         this.scale = scale;
         this.ships = ships;
         this.planets = planets;
+        if(blackHoles == null)
+            this.blackHoles = new Array<BlackHoleModel>();
+        else
+            this.blackHoles = blackHoles;
         targetPlanets = new ObjectMap<ShipModel, PlanetModel>();
         avatar = oob;
         tempVec1 = new Vector2();
@@ -187,18 +194,25 @@ public class AIController {
         }
         else {
             int cloPl = -1;
+            int cloBl = -1;
             for (int i = 0; i < planets.size; i++) {
                 tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
                 if (tempVec2.len() < planets.get(i).getRadius() + 1.5f + EPSILON ) {
                     cloPl = i;
                 }
             }
+            for (int i = 0; i < blackHoles.size; i++) {
+                tempVec2.set(s.getPosition().cpy().sub(blackHoles.get(i).getPosition()));
+                if (tempVec2.len() < blackHoles.get(i).getRadius() + 1.5f + EPSILON ) {
+                    cloBl = i;
+                }
+            }
             // at this point cloPl is the nearest planet we might hit
-            if(cloPl == -1) {
+            if(cloPl == -1 && cloBl == -1) {
                 tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
                 s.setPosition(s.getPosition().cpy().add(tempVec1));
             }
-            else {
+            else if(cloPl != -1) {
                 PlanetModel target = planets.get(cloPl);
                 // tempVec1 is planet to ship
                 tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
@@ -212,6 +226,28 @@ public class AIController {
                     s.setPosition(target.getPosition().cpy().add(tempVec1));
                 }
                 else if(tempVec1.len() < 1.5f + planets.get(cloPl).getRadius()){
+                    s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
+                }
+                else {
+                    tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
+                    tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+                    s.setPosition(s.getPosition().cpy().add(tempVec1));
+                }
+            }
+            else if(cloBl != -1) {
+                BlackHoleModel target = blackHoles.get(cloBl);
+                // tempVec1 is planet to ship
+                tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
+                tempVec2.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
+                if(tempVec1.len() - 1.5f - blackHoles.get(cloBl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
+                    tempVec2.set(-tempVec1.y, tempVec1.x);
+                    tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
+                    tempVec1.set(s.getPosition().cpy().add(tempVec2));
+                    tempVec1.sub(target.getPosition());
+                    tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
+                    s.setPosition(target.getPosition().cpy().add(tempVec1));
+                }
+                else if(tempVec1.len() < 1.5f + blackHoles.get(cloBl).getRadius()){
                     s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
                 }
                 else {

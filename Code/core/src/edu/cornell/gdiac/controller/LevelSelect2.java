@@ -212,7 +212,7 @@ public class LevelSelect2 extends PlayMode {
         text.add (titlecoord);
         text.add (titlesize);
 
-        aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
+        aiController = new AIController(ships, planets, blackHoles, commandPlanets, complexAvatar, scale);
     }
 
     public void unlockedScrollScreen(){}
