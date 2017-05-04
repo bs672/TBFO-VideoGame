@@ -151,6 +151,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SETTINGS_HOVER_TEXTURE = "space/menus/settings_planet_hover.png";
     protected static final String PLAY_HOVER_TEXTURE = "space/menus/play_planet_hover.png";
     protected static final String LEVELS_HOVER_TEXTURE = "space/menus/levels_planet_hover.png";
+    protected static final String CRED = "space/background/soob_studios.png";
     protected static final String TITLE = "space/menus/title.png";
     protected static final String PAUSETITLE = "space/menus/pause.png";
     protected static final String LEVELSTITLE = "space/menus/levels.png";
@@ -410,6 +411,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion levels_Hover_Texture;   protected TextureRegion play_Hover_Texture;
     protected TextureRegion main_Menu_Texture;      protected TextureRegion main_Menu_Hover_Texture;
     protected TextureRegion resume_Texture;         protected TextureRegion resume_Hover_Texture;
+    protected TextureRegion cred_Texture;
 
     protected TextureRegion next_level_Texture;         protected TextureRegion next_level_Lock_Texture;
     protected TextureRegion next_level_Hover_Texture;   protected TextureRegion prev_level_Texture;
@@ -516,6 +518,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(WIN_TEXT, Texture.class);                  assets.add(WIN_TEXT);
 
         manager.load(TITLE, Texture.class);         assets.add(TITLE);
+        manager.load(CRED, Texture.class);         assets.add(CRED);
         manager.load(PAUSETITLE, Texture.class);    assets.add(PAUSETITLE);
         manager.load(LEVELSTITLE, Texture.class);   assets.add(LEVELSTITLE);
         manager.load(SETTINGSTITLE, Texture.class); assets.add(SETTINGSTITLE);
@@ -784,6 +787,9 @@ public class PlayMode extends WorldController implements ContactListener {
     /** variables for parllax */
     Vector2 titlecoord = new Vector2();
     Vector2 titlesize = new Vector2();
+
+    Vector2 credcoord = new Vector2();
+    Vector2 credsize = new Vector2();
 
     int LG_S_X; int LG_S_Y; int LG_S_X_START; int LG_S_Y_START; float LG_SPEED = .5f; float LG_SCROLL_SPEED = 6f;
     int med_X; int med_Y; int med_X_START; int med_Y_START; float MED_SPEED = .1f; float MED_SCROLL_SPEED = 2f;
@@ -1250,14 +1256,29 @@ public class PlayMode extends WorldController implements ContactListener {
         // Create Ships
 
         for (int ii = 0; ii <SHIPS.size; ii++) {
-            ShipModel sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1),SHIPS.get(ii).get(2), "g");
-
+            ShipModel sh;
+            if (SHIPS.get(ii).get(2)==1) {
+                sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2), "g");
+            }
+            else if (SHIPS.get(ii).get(2)==2) {
+                sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2), "m", "m");
+            }
+            else {
+                sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2));
+            }
             sh.setBodyType(BodyDef.BodyType.DynamicBody);
             sh.setDensity(BASIC_DENSITY);
             sh.setFriction(BASIC_FRICTION);
             sh.setRestitution(BASIC_RESTITUTION);
             sh.setDrawScale(scale);
-            sh.scalePicScale(new Vector2(.3f, .3f));
+            sh.scalePicScale(new Vector2(.2f, .2f));
+            if (sh.getType() == 2) {
+                sh.scalePicScale(new Vector2(2f, 2f));
+            }
+            else if (sh.getType() ==1) {
+                sh.scalePicScale(new Vector2(1.5f, 1.5f));
+            }
+
             sh.setName("ship");
             sh.setGravityScale(0.0f);
             ships.add(sh);
@@ -1618,12 +1639,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.setRestitution(BASIC_RESTITUTION);
                 sh.setDrawScale(scale);
                 sh.scalePicScale(new Vector2(.2f, .2f));
-                if (sh.getType() == 2) {
-                    sh.scalePicScale(new Vector2(2f, 2f));
-                }
-                else if (sh.getType() ==1) {
-                    sh.scalePicScale(new Vector2(1.5f, 1.5f));
-                }
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
                 addObject(sh);
@@ -2029,6 +2044,10 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        for (int i = 0; i < ships.size; i +=1){
+            System.out.println(ships.get(i).getType());
+        }
+
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }

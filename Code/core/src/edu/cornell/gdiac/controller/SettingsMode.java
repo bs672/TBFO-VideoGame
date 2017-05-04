@@ -698,7 +698,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         canvas.draw(backgroundLG, Color.WHITE,  LG_S_X+backgroundLG.getRegionWidth(), LG_S_Y-backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
         canvas.draw(backgroundLG, Color.WHITE,LG_S_X-backgroundLG.getRegionWidth(), LG_S_Y+backgroundLG.getRegionHeight(),backgroundLG.getRegionWidth(),backgroundLG.getRegionHeight());
 
-        canvas.draw(settingsTexture, Color.WHITE, 3*canvas.getWidth() /9 , 11*canvas.getHeight()/16, 3*canvas.getWidth()/9, 2*canvas.getHeight()/8);
+        canvas.draw(settingsTexture, Color.WHITE, canvas.getWidth()/2-(settingsTexture.getRegionWidth()/1.5f)/2 , canvas.getHeight()-settingsTexture.getRegionHeight(), settingsTexture.getRegionWidth()/1.5f, settingsTexture.getRegionHeight()/1.5f);
         canvas.end();
 
         canvas.begin();
