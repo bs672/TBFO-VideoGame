@@ -12,8 +12,15 @@ import edu.cornell.gdiac.model.obstacle.CapsuleObstacle;
  */
 public class ShipModel extends CapsuleObstacle{
 
-    private static final float WIDTH = 0.3f;
-    private static final float HEIGHT = 0.6f;
+    private static final float WIDTH = 0.9f;
+    private static final float HEIGHT = 1.3f;
+
+    private static final float G_WIDTH = .9f;
+    private static final float G_HEIGHT = 2.1f;
+
+    private static final float M_WIDTH = 2.3f;
+    private static final float M_HEIGHT = 3.7f;
+
     private static final float MOTHER_MASS = 1f;
 
     private static final float DAMPING = 5.0f;
@@ -129,6 +136,8 @@ public class ShipModel extends CapsuleObstacle{
         setName("ship");
         firingCooldown = 0;
         delay=0;
+        range = AGGRO_RANGE;
+        orbitDistance = 3;
     }
 
     //Creates a Ship with predetermined width and height at given position.
@@ -145,6 +154,37 @@ public class ShipModel extends CapsuleObstacle{
         range = AGGRO_RANGE;
         orbitDistance = 3;
     }
+
+    //Creates a Ship with predetermined width and height at given position.
+    public ShipModel(float x, float y, float t, String s){
+        super(x, y, G_WIDTH, G_HEIGHT);
+        setFixedRotation(true);
+        type = t;
+        if (t == 2) {
+            mass = MOTHER_MASS;
+        }
+        setName("ship");
+        firingCooldown = 0;
+        delay=0;
+        range = AGGRO_RANGE;
+        orbitDistance = 3;
+    }
+
+    //Creates a Ship with predetermined width and height at given position.
+    public ShipModel(float x, float y, float t, String s, String d){
+        super(x, y, M_WIDTH, M_HEIGHT);
+        setFixedRotation(true);
+        type = t;
+        if (t == 2) {
+            mass = MOTHER_MASS;
+        }
+        setName("ship");
+        firingCooldown = 0;
+        delay=0;
+        range = AGGRO_RANGE;
+        orbitDistance = 3;
+    }
+
 
     public void drawDebug(GameCanvas canvas) {
         super.drawDebug(canvas);

@@ -108,6 +108,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String SHIP_TEXTURE = "space/animations/ship_animation.png";
 
+    protected static final String MOTHERSHIP_TEXTURE = "space/animations/big_ship_animation.png";
+
     protected static final String SHIP_EXPLOSION = "space/animations/Ship_exp.png";
 
 
@@ -373,6 +375,9 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Animation<TextureRegion> SHIP_Animation; // Must declare frame type (TextureRegion)
     protected Texture SHIP_Sheet;
 
+    protected Animation<TextureRegion> MOTHERSHIP_Animation; // Must declare frame type (TextureRegion)
+    protected Texture MOTHERSHIP_Sheet;
+
     protected Animation<TextureRegion> SHIP_EXP_Animation; // Must declare frame type (TextureRegion)
     protected Texture SHIP_EXP_Sheet;
 
@@ -588,6 +593,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
         manager.load(SHIP_TEXTURE, Texture.class);      assets.add(SHIP_TEXTURE);
 
+        manager.load(MOTHERSHIP_TEXTURE, Texture.class);      assets.add(MOTHERSHIP_TEXTURE);
+
         manager.load(SHIP_EXPLOSION, Texture.class);    assets.add(SHIP_EXPLOSION);
 
         manager.load(NEUTRAL_P, Texture.class);         assets.add(NEUTRAL_P);
@@ -699,6 +706,8 @@ public class PlayMode extends WorldController implements ContactListener {
         EXP_Sheet = new Texture(Gdx.files.internal(EXPLOSION));
 
         SHIP_Sheet = new Texture(Gdx.files.internal(SHIP_TEXTURE));
+
+        MOTHERSHIP_Sheet = new Texture(Gdx.files.internal(MOTHERSHIP_TEXTURE));
 
         SHIP_EXP_Sheet = new Texture(Gdx.files.internal(SHIP_EXPLOSION));
 
@@ -1241,7 +1250,8 @@ public class PlayMode extends WorldController implements ContactListener {
         // Create Ships
 
         for (int ii = 0; ii <SHIPS.size; ii++) {
-            ShipModel sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2));
+            ShipModel sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1),SHIPS.get(ii).get(2), "g");
+
             sh.setBodyType(BodyDef.BodyType.DynamicBody);
             sh.setDensity(BASIC_DENSITY);
             sh.setFriction(BASIC_FRICTION);
@@ -1451,7 +1461,7 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);             complexAvatar.createHurtingtex();
         complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);                 complexAvatar.createDyingtex();
         complexAvatar.set_Max_sheet(Oob_Max_Sheet);                     complexAvatar.createMaxtex();
-        sunTex();   BHTex(); SHIPTex(); SHIPEXPTex();
+        sunTex();   BHTex(); SHIPTex(); MOTHERSHIPTex(); SHIPEXPTex();
     }
 
     public void BHTex() {
@@ -1519,6 +1529,28 @@ public class PlayMode extends WorldController implements ContactListener {
         SHIP_Animation = new Animation<TextureRegion>(.1f, SHIP_Frames);
     }
 
+    public void MOTHERSHIPTex() {
+        //CREATE BLACK HOLE TEXTURE
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+        //Split up the sheet
+        TextureRegion[][] tmp = TextureRegion.split(MOTHERSHIP_Sheet,
+                MOTHERSHIP_Sheet.getWidth() / FRAME_COLS,
+                MOTHERSHIP_Sheet.getHeight() / FRAME_ROWS);
+
+        //Reorder array
+        TextureRegion[] MOTHERSHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                MOTHERSHIP_Frames[index++] = tmp[i][j];
+            }
+        }
+        // Initialize the Animation with the frame interval and array of frames
+        MOTHERSHIP_Animation = new Animation<TextureRegion>(.1f, MOTHERSHIP_Frames);
+    }
+
     public void SHIPEXPTex() {
         //CREATE BLACK HOLE TEXTURE
         // Constant rows and columns of the sprite sheet
@@ -1571,16 +1603,16 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
-                if (Math.random()<0.5){
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1);
+                if (Math.random()<1f){
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
 //                    sh.setAggroRange(20f);
                 }
-                else if (Math.random() < 1.0){
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
+                else if (Math.random() < .5){
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1, "g");
                 }
                 else {
                     // TODO: CHANGE THIS TO TYPE 2 after sorting it out
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2);
+                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2, "m", "m");
                 }
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
@@ -1590,6 +1622,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh.scalePicScale(new Vector2(.2f, .2f));
                 if (sh.getType() == 2) {
                     sh.scalePicScale(new Vector2(2f, 2f));
+                }
+                else if (sh.getType() ==1) {
+                    sh.scalePicScale(new Vector2(1.5f, 1.5f));
                 }
                 sh.setName("ship");
                 sh.setGravityScale(0.0f);
@@ -2540,7 +2575,13 @@ public class PlayMode extends WorldController implements ContactListener {
 
             if (obj.getName().equals("ship") && !((ShipModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
-                TextureRegion currentFrame = SHIP_Animation.getKeyFrame(stateTime, true);
+                TextureRegion currentFrame;
+                if (((ShipModel) obj).getType()==2) {
+                    currentFrame=MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
+                }
+                else {
+                    currentFrame=SHIP_Animation.getKeyFrame(stateTime, true);
+                }
                 canvas.begin();
                 ((ShipModel) obj).setTexture(currentFrame);
                 obj.draw(canvas);
