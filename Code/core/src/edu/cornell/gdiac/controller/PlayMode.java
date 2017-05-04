@@ -161,8 +161,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String BACK_HOVER_TEXTURE = "space/menus/back_hover_planet.png";
     protected static final String BACK_TEXT_TEXTURE = "space/menus/back.png";
     protected static final String BACK_TEXT_HOVER_TEXTURE = "space/menus/back_hover.png";
-    protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
-    protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
+    protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu.png";
+    protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_hover.png";
     protected static final String NEXT_LEVEL_TEXTURE = "space/menus/next_page.png";
     protected static final String NEXT_LEVEL_HOVER_TEXTURE = "space/menus/next_page_hover.png";
     protected static final String NEXT_LEVEL_LOCK_TEXTURE = "space/menus/next_page_locked.png";
