@@ -1545,7 +1545,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         // Initialize the Animation with the frame interval and array of frames
-        SHIP_Animation = new Animation<TextureRegion>(.1f, SHIP_Frames);
+        SHIP_Animation = new Animation<TextureRegion>(.05f, SHIP_Frames);
     }
 
     public void MOTHERSHIPTex() {
@@ -1567,7 +1567,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         // Initialize the Animation with the frame interval and array of frames
-        MOTHERSHIP_Animation = new Animation<TextureRegion>(.1f, MOTHERSHIP_Frames);
+        MOTHERSHIP_Animation = new Animation<TextureRegion>(.05f, MOTHERSHIP_Frames);
     }
 
     public void SHIPEXPTex() {
@@ -1622,17 +1622,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 Vector2 spawnDir = c.getPosition().cpy().sub(complexAvatar.getPosition()).nor();
                 //SPAWN SHIP
                 ShipModel sh;
-                if (Math.random()<1f){
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
-//                    sh.setAggroRange(20f);
-                }
-                else if (Math.random() < 1f){
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 1, "g");
-                }
-                else {
-                    // TODO: CHANGE THIS TO TYPE 2 after sorting it out
-                    sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 2, "m", "m");
-                }
+                sh = new ShipModel(c.getX()+c.getRadius()*spawnDir.x, c.getY()+c.getRadius()*spawnDir.y, 0);
                 sh.setBodyType(BodyDef.BodyType.DynamicBody);
                 sh.setDensity(BASIC_DENSITY);
                 sh.setFriction(BASIC_FRICTION);
@@ -1664,7 +1654,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopConvertPlanet() {
         for (int i = 0; i < planets.size; i++) {
             if (planets.get(i).getType() != 1) {
-                if (planets.get(i).getConvert() > 60) {
+                if (planets.get(i).getConvert() > 500) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     commandPlanets.add(planets.get(i));
@@ -2044,10 +2034,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-        for (int i = 0; i < ships.size; i +=1){
-            System.out.println(ships.get(i).getType());
-        }
-
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
