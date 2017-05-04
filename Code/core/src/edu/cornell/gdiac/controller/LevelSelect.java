@@ -171,6 +171,10 @@ public class LevelSelect extends PlayMode {
         switchMode(mode);
     }
 
+    public void changeMass(float massChange){
+        //don't lose mass please
+    }
+
     protected void populateLevel() {
         // Create Planets
         String pname = "planet";
