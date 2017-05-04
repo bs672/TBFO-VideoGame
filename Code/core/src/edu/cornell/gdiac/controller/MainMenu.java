@@ -177,7 +177,8 @@ public class MainMenu extends PlayMode {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
 
         //Play background music!
-        if(!GDXRoot.getMute()) {
+        if(!SoundController.getInstance().getMute()) {
+            System.out.println("in mainmenu");
             GDXRoot.music.setVolume(0.3f);
             GDXRoot.music.setLooping(true);
             GDXRoot.music.play();
