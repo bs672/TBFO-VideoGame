@@ -104,8 +104,11 @@ public class AIController {
         if(ships.size == 0)
             return;
         for(ShipModel s : ships) {
-            if (s.getType()==0) {
-                s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
+            if (s.getType() == 0) {
+                if(!s.getAggroed())
+                    s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
+                else
+                    s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange() + 1);
                 if (s.getAggroed()) {
                     aggroPathfind(s);
                 } else
@@ -315,19 +318,23 @@ public class AIController {
 
     public void aggroPathfind(ShipModel s) {
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
-        shootInRange(s);
+        tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+        int closestPlanet = 0;
+        for (int i = 0; i < planets.size; i++) {
+            tempVec2.set(planets.get(i).getPosition().cpy().sub(s.getPosition()));
+            if (tempVec2.len() - planets.get(i).getRadius() < tempVec1.len()) {
+                tempVec1 = tempVec2.cpy();
+                tempVec1.scl((tempVec1.len() - planets.get(i).getRadius()) / tempVec1.len());
+                closestPlanet = i;
+            }
+        }
+        if(tempVec1.len() < planets.get(closestPlanet).getRadius() + s.getOrbitDistance()) {
+            peacefulPathfind(s);
+            return;
+        }
         // moving towards Oob
         if(tempVec1.len() > 4) {
-            tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-            int closestPlanet = 0;
-            for (int i = 0; i < planets.size; i++) {
-                tempVec2.set(planets.get(i).getPosition().cpy().sub(s.getPosition()));
-                if (tempVec2.len() - planets.get(i).getRadius() < tempVec1.len()) {
-                    tempVec1 = tempVec2.cpy();
-                    tempVec1.scl((tempVec1.len() - planets.get(i).getRadius()) / tempVec1.len());
-                    closestPlanet = i;
-                }
-            }
+            shootInRange(s);
             tempVec2.set(avatar.getPosition().cpy().sub(s.getPosition()));
             tempVec1.set(planets.get(closestPlanet).getPosition().cpy().sub(s.getPosition()));
             // tempVec2 is ship to Oob, tempVec1 is ship to planet

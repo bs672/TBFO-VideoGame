@@ -1991,6 +1991,7 @@ public class PlayMode extends WorldController implements ContactListener {
             comingOut = true;
         }
         else if(comingOut) { // leaving the other black hole
+            InputController.getInstance().setCenterCamera(true);
             oobToHole = new Vector2(outHole.getX() - complexAvatar.getX(), outHole.getY() - complexAvatar.getY());
             complexAvatar.setLinearVelocity(outHole.getOutVelocity().cpy().scl(6f));
             complexAvatar.setDirection(outHole.getOutVelocity().cpy().scl(6f));
