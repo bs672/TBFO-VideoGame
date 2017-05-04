@@ -178,12 +178,11 @@ public class MainMenu extends PlayMode {
             GDXRoot.music.setLooping(true);
             GDXRoot.music.play();
         }
-
         //titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
         //titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
-
-        titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-2*(titleTexture.getRegionHeight()/6)  );
-        titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/3 );
+        
+        titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2.3f)  );
+        titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/2.3f );
 
         text.add (titlecoord);
         text.add (titlesize);
