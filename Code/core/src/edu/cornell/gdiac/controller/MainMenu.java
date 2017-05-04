@@ -190,6 +190,10 @@ public class MainMenu extends PlayMode {
         text.add (titlesize);
     }
 
+    public void changeMass(float massChange){
+        //don't lose mass please
+    }
+
     public boolean screenSwitch() {
         for (int i = 1; i <= 2; i++) {
             if (currentPlanet == planets.get(i)) {
