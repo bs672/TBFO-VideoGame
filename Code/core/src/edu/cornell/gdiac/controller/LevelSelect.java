@@ -264,7 +264,7 @@ public class LevelSelect extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-1.5f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
+        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-2.7f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
         titlesize.set(  levelsTitleTexture.getRegionWidth()*.8f, levelsTitleTexture.getRegionHeight()*.8f );
 
         text.add (titlecoord);
