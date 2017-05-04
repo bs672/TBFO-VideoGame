@@ -37,7 +37,7 @@ import javax.swing.plaf.TextUI;
 public class PauseMenu extends PlayMode {
 
     protected static float[][] PLANETS = {
-            {5f, 4f, 1.3f, 3f},  // MAIN MENU
+            {7f, 4f, 1.3f, 3f},  // MAIN MENU
             {25, 4.4f, 1.3f, 3f}, //SETTINGS
             {16f, 2.6f, 1.3f, 3f},    //LEVEL SELECT
             {16f, 8.5f, 1.5f, 3f},   //PLAY
@@ -123,7 +123,7 @@ public class PauseMenu extends PlayMode {
         setFailure(false);
         populateLevel();
         for(Obstacle o: objects){
-            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
+            if(!o.equals(complexAvatar)){
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
             }
         }
@@ -131,6 +131,10 @@ public class PauseMenu extends PlayMode {
         lastHoverPlanet = new boolean[PLANETS.length];
         play = false;
         jumpTime = 0;
+    }
+
+    public void changeMass(float massChange){
+        //don't lose mass please
     }
 
     protected void populateLevel() {
