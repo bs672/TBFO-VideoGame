@@ -139,6 +139,12 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     /** The texture file for the planets */
+    protected static final String QUIT = "space/menus/quit.png";
+    protected static final String QUIT_HOVER = "space/menus/quit_hover.png";
+    protected static final String RETRY = "space/menus/retry.png";
+    protected static final String RETRY_HOVER = "space/menus/retry_hover.png";
+    protected static final String LOST_TEXT = "space/menus/lost_text.png";
+    protected static final String WIN_TEXT = "space/menus/win_text.png";
     protected static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
     protected static final String PLAY_TEXTURE = "space/menus/play_planet.png";
     protected static final String LEVELS_TEXTURE = "space/menus/levels_planet.png";
@@ -155,8 +161,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String BACK_HOVER_TEXTURE = "space/menus/back_hover_planet.png";
     protected static final String BACK_TEXT_TEXTURE = "space/menus/back.png";
     protected static final String BACK_TEXT_HOVER_TEXTURE = "space/menus/back_hover.png";
-    protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu_planet.png";
-    protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_planet_hover.png";
+    protected static final String MAIN_MENU_TEXTURE = "space/menus/exit_to_menu.png";
+    protected static final String MAIN_MENU_HOVER_TEXTURE = "space/menus/exit_to_menu_hover.png";
     protected static final String NEXT_LEVEL_TEXTURE = "space/menus/next_page.png";
     protected static final String NEXT_LEVEL_HOVER_TEXTURE = "space/menus/next_page_hover.png";
     protected static final String NEXT_LEVEL_LOCK_TEXTURE = "space/menus/next_page_locked.png";
@@ -413,6 +419,10 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion back_Texture;           protected TextureRegion back_Hover_Texture;
     protected TextureRegion back_Text_Texture;      protected TextureRegion back_Text_Hover_Texture;
 
+    protected TextureRegion quit;                   protected TextureRegion quit_hover;
+    protected TextureRegion retry;                  protected TextureRegion retry_hover;
+    protected TextureRegion lost_text;              protected TextureRegion win_text;
+
     /** Background texture */
     protected TextureRegion backgroundMAIN;
     protected TextureRegion backgroundWHITESTAR;
@@ -486,21 +496,24 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MAIN_MENU_TEXTURE, Texture.class);         assets.add(MAIN_MENU_TEXTURE);
         manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);   assets.add(MAIN_MENU_HOVER_TEXTURE);
 
-
         manager.load(NEXT_LEVEL_TEXTURE, Texture.class);   assets.add(NEXT_LEVEL_TEXTURE);
         manager.load(NEXT_LEVEL_HOVER_TEXTURE, Texture.class);   assets.add(NEXT_LEVEL_HOVER_TEXTURE);
         manager.load(NEXT_LEVEL_LOCK_TEXTURE, Texture.class);   assets.add(NEXT_LEVEL_LOCK_TEXTURE);
-        manager.load(PREV_LEVEL_TEXTURE, Texture.class);   assets.add(PREV_LEVEL_TEXTURE);
+        manager.load(PREV_LEVEL_TEXTURE, Texture.class);    assets.add(PREV_LEVEL_TEXTURE);
         manager.load(PREV_LEVEL_HOVER_TEXTURE, Texture.class);   assets.add(PREV_LEVEL_HOVER_TEXTURE);
         manager.load(PREV_LEVEL_LOCK_TEXTURE, Texture.class);   assets.add(PREV_LEVEL_LOCK_TEXTURE);
-
-
-
 
         manager.load(BACK_TEXTURE, Texture.class);              assets.add(BACK_TEXTURE);
         manager.load(BACK_HOVER_TEXTURE, Texture.class);        assets.add(BACK_HOVER_TEXTURE);
         manager.load(BACK_TEXT_TEXTURE, Texture.class);         assets.add(BACK_TEXT_TEXTURE);
         manager.load(BACK_TEXT_HOVER_TEXTURE, Texture.class);   assets.add(BACK_TEXT_HOVER_TEXTURE);
+
+        manager.load(QUIT, Texture.class);                      assets.add(QUIT);
+        manager.load(QUIT_HOVER, Texture.class);                assets.add(QUIT_HOVER);
+        manager.load(RETRY, Texture.class);                     assets.add(RETRY);
+        manager.load(RETRY_HOVER, Texture.class);               assets.add(RETRY_HOVER);
+        manager.load(LOST_TEXT, Texture.class);                 assets.add(LOST_TEXT);
+        manager.load(WIN_TEXT, Texture.class);                  assets.add(WIN_TEXT);
 
         manager.load(TITLE, Texture.class);         assets.add(TITLE);
         manager.load(PAUSETITLE, Texture.class);    assets.add(PAUSETITLE);
@@ -513,35 +526,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 assets.add(LEVELS_TEXTURES[i][j]);
             }
         }
-
-//        manager.load(LEVEL1_TEXTURE, Texture.class);        assets.add(LEVEL1_TEXTURE);
-//        manager.load(LEVEL1_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL1_LOCK_TEXTURE);
-//        manager.load(LEVEL1_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL1_HOVER_TEXTURE);
-//        manager.load(LEVEL2_TEXTURE, Texture.class);        assets.add(LEVEL2_TEXTURE);
-//        manager.load(LEVEL2_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL2_LOCK_TEXTURE);
-//        manager.load(LEVEL2_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL2_HOVER_TEXTURE);
-//        manager.load(LEVEL3_TEXTURE, Texture.class);        assets.add(LEVEL3_TEXTURE);
-//        manager.load(LEVEL3_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL3_LOCK_TEXTURE);
-//        manager.load(LEVEL3_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL3_HOVER_TEXTURE);
-//        manager.load(LEVEL4_TEXTURE, Texture.class);        assets.add(LEVEL4_TEXTURE);
-//        manager.load(LEVEL4_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL4_LOCK_TEXTURE);
-//        manager.load(LEVEL4_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL4_HOVER_TEXTURE);
-//        manager.load(LEVEL5_TEXTURE, Texture.class);        assets.add(LEVEL5_TEXTURE);
-//        manager.load(LEVEL5_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL5_LOCK_TEXTURE);
-//        manager.load(LEVEL5_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL5_HOVER_TEXTURE);
-//        manager.load(LEVEL6_TEXTURE, Texture.class);        assets.add(LEVEL6_TEXTURE);
-//        manager.load(LEVEL6_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL6_LOCK_TEXTURE);
-//        manager.load(LEVEL6_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL6_HOVER_TEXTURE);
-//        manager.load(LEVEL7_TEXTURE, Texture.class);        assets.add(LEVEL7_TEXTURE);
-//        manager.load(LEVEL7_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL7_LOCK_TEXTURE);
-//        manager.load(LEVEL7_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL7_HOVER_TEXTURE);
-//        manager.load(LEVEL8_TEXTURE, Texture.class);        assets.add(LEVEL8_TEXTURE);
-//        manager.load(LEVEL8_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL8_LOCK_TEXTURE);
-//        manager.load(LEVEL8_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL8_HOVER_TEXTURE);
-//        manager.load(LEVEL9_TEXTURE, Texture.class);        assets.add(LEVEL9_TEXTURE);
-//        manager.load(LEVEL9_LOCK_TEXTURE, Texture.class);   assets.add(LEVEL9_LOCK_TEXTURE);
-//        manager.load(LEVEL9_HOVER_TEXTURE, Texture.class);  assets.add(LEVEL9_HOVER_TEXTURE);
-
         manager.load(EXPULSION_TEXTURE, Texture.class); assets.add(EXPULSION_TEXTURE);
 
         manager.load(BLUE_P_1, Texture.class);  assets.add(BLUE_P_1);
@@ -635,9 +619,8 @@ public class PlayMode extends WorldController implements ContactListener {
         if (platformAssetState != AssetState.LOADING) {
             return;
         }
-
-
-
+        win_text = createTexture(manager, WIN_TEXT, false);
+        lost_text = createTexture(manager, LOST_TEXT, false);
         //oobSheet = new Texture(Gdx.files.internal(OOB_FILE));
         Oob_Normal_Sheet = new Texture(Gdx.files.internal(OOB_NORMAL_FILE));
         Oob_Growing_Sheet = new Texture(Gdx.files.internal(OOB_GROWING_FILE));
@@ -2634,15 +2617,11 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.endDebug();
         }
         canvas.begin();
-//            for (int i = 0; i < planets.size; i++) {
-//                canvas.drawText(Integer.toString((int) (Math.pow(planets.get(i).getRadius(), 2) * Math.PI)), massFont, planets.get(i).getX()*40f, planets.get(i).getY() * 40f);
-//            }
-//            canvas.drawText(Integer.toString((int) (Math.pow(complexAvatar.getRadius(), 2) * Math.PI)), massFont, complexAvatar.getX() * 40f, complexAvatar.getY() * 40f);
         if (gameState == 1) {
-            canvas.drawText("YOU LOST...", massFont, canvas.getWidth()/2 - 100, canvas.getHeight()/2);
+            canvas.draw(lost_text, Color.WHITE, canvas.getWidth()/2 - (lost_text.getRegionWidth()/2),canvas.getHeight()/2, lost_text.getRegionWidth(), lost_text.getRegionHeight());
         }
         if (gameState == 2) {
-            canvas.drawText("LEVEL COMPLETE!!!", massFont, canvas.getWidth()/2 - 100, canvas.getHeight()/2);
+            canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
 

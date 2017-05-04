@@ -46,8 +46,8 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private static final String OOB_FILE  = "space/Oob/oob2.png";
 
-    private static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu_planet.png";
-    private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_planet_hover.png";
+    private static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu.png";
+    private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_hover.png";
     private static final String BACK_TEXTURE  = "space/menus/back.png";
     private static final String BACK_HOVER_TEXTURE  = "space/menus/back_hover.png";
     private static final String MUTE_TEXTURE  = "space/menus/muted.png";
