@@ -171,6 +171,10 @@ public class LevelSelect extends PlayMode {
         switchMode(mode);
     }
 
+    public void changeMass(float massChange){
+        //don't lose mass please
+    }
+
     protected void populateLevel() {
         // Create Planets
         String pname = "planet";
@@ -260,7 +264,7 @@ public class LevelSelect extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-1.5f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
+        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-2.7f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
         titlesize.set(  levelsTitleTexture.getRegionWidth()*.8f, levelsTitleTexture.getRegionHeight()*.8f );
 
         text.add (titlecoord);
@@ -333,12 +337,12 @@ public class LevelSelect extends PlayMode {
                 planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][2]);
             }
         }
-        if (mode ==0){
-            System.out.println("TEST");
+        planets.get(3).setTexture(prev_level_Texture);
+        planets.get(4).setTexture(next_level_Texture);
+        if (mode == 0){
             planets.get(3).setTexture(prev_level_Lock_Texture);
         }
-        else if (mode ==2){
-            System.out.println("TEST TEST");
+        else if (mode == 2){
             planets.get(4).setTexture(next_level_Lock_Texture);
         }
     }
@@ -396,7 +400,6 @@ public class LevelSelect extends PlayMode {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -432,6 +435,12 @@ public class LevelSelect extends PlayMode {
                     planets.get(i).scalePicScale(new Vector2(1 / 1.2f, 1 / 1.2f));
                     lastHoverPlanet[i] = false;
                 }
+            }
+            if (mode == 0) {
+                planets.get(3).setTexture(prev_level_Lock_Texture);
+            }
+            if (mode == 2) {
+                planets.get(4).setTexture(next_level_Lock_Texture);
             }
         }
     }

@@ -46,11 +46,14 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private static final String OOB_FILE  = "space/Oob/oob2.png";
 
-    private static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu_planet.png";
-    private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_planet_hover.png";
+    private static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu.png";
+    private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_hover.png";
     private static final String BACK_TEXTURE  = "space/menus/back.png";
     private static final String BACK_HOVER_TEXTURE  = "space/menus/back_hover.png";
     private static final String MUTE_TEXTURE  = "space/menus/muted.png";
+    private static final String UNMUTE_TEXTURE = "space/menus/unmute.png";
+    private static final String WASD_TEXTURE = "space/menus/wasd.png";
+    private static final String OKL_TEXTURE = "space/menus/okl.png";
 
 
     /** The texture file for the planets */
@@ -70,8 +73,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
     private static final String SETTINGS = "space/menus/settings_text.png";
-
-
 
     /** Texture file for ship */
     private static final String SHIP_TEXTURE = "space/ships/ship.png";
@@ -126,6 +127,12 @@ public class SettingsMode extends WorldController implements ContactListener {
     private TextureRegion back_hover_Texture;
 
     private TextureRegion mute_Texture;
+
+    private TextureRegion unmute_Texture;
+
+    private TextureRegion wasd_Texture;
+
+    private TextureRegion okl_Texture;
 
     /** Expulsion texture */
     private TextureRegion expulsion_Texture;
@@ -195,6 +202,15 @@ public class SettingsMode extends WorldController implements ContactListener {
         manager.load(MUTE_TEXTURE, Texture.class);
         assets.add(MUTE_TEXTURE);
 
+        manager.load(UNMUTE_TEXTURE, Texture.class);
+        assets.add(UNMUTE_TEXTURE);
+
+        manager.load(WASD_TEXTURE, Texture.class);
+        assets.add(WASD_TEXTURE);
+
+        manager.load(OKL_TEXTURE, Texture.class);
+        assets.add(OKL_TEXTURE);
+
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
 
@@ -252,17 +268,20 @@ public class SettingsMode extends WorldController implements ContactListener {
         main_Menu_Texture = createTexture(manager,MAIN_MENU_TEXTURE,false);
         main_Menu_Hover_Texture = createTexture(manager,MAIN_MENU_HOVER_TEXTURE,false);
         mute_Texture = createTexture(manager,MUTE_TEXTURE,false);
+        unmute_Texture = createTexture(manager, UNMUTE_TEXTURE, false);
         back_Texture = createTexture(manager,BACK_TEXTURE,false);
         back_hover_Texture = createTexture(manager,BACK_HOVER_TEXTURE,false);
+        wasd_Texture = createTexture(manager, WASD_TEXTURE, false);
+        okl_Texture = createTexture(manager, OKL_TEXTURE, false);
 
         TEXTURES[0][0] = main_Menu_Texture;    // MAIN MENU
         TEXTURES[0][1] = main_Menu_Hover_Texture;
         TEXTURES[1][0] = mute_Texture;    // MUTE
-        TEXTURES[1][1] = mute_Texture; //TODO: FIX THIS
+        TEXTURES[1][1] = unmute_Texture; // UNMUTE
         TEXTURES[2][0] = back_Texture;    // BACK
         TEXTURES[2][1] = back_hover_Texture;
-        TEXTURES[3][0] = main_Menu_Texture;    // BACK
-        TEXTURES[3][1] = main_Menu_Hover_Texture;
+        TEXTURES[3][0] = wasd_Texture;    // BACK
+        TEXTURES[3][1] = okl_Texture;
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -434,7 +453,21 @@ public class SettingsMode extends WorldController implements ContactListener {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname + ii);
-            obj.setTexture(TEXTURES[ii][0]);
+            if(ii==1 && SoundController.getInstance().getMute()){
+                obj.setTexture(TEXTURES[ii][0]);
+            }
+            else if(ii==1){
+                obj.setTexture(TEXTURES[ii][1]);
+            }
+            else if(ii==3 && InputController.getInstance().getWASD()){
+                obj.setTexture(TEXTURES[ii][0]);
+            }
+            else if(ii==3) {
+                obj.setTexture(TEXTURES[ii][1]);
+            }
+            else{
+                obj.setTexture(TEXTURES[ii][0]);
+            }
             addObject(obj);
             planets.add(obj);
         }
@@ -545,14 +578,16 @@ public class SettingsMode extends WorldController implements ContactListener {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
                 if (lastInPlanet[i] == false) {
-                    planets.get(i).setTexture(TEXTURES[i][1]);
+                    if(i!=1 && i!=3)
+                        planets.get(i).setTexture(TEXTURES[i][1]);
                     planets.get(i).setRadius(planets.get(i).getRadius()*1.1f);
                     planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
                 }
                 lastInPlanet[i] = true;
             }
             else if (lastInPlanet[i] == true) {
-                planets.get(i).setTexture(TEXTURES[i][0]);
+                if (i!=1 && i!=3)
+                    planets.get(i).setTexture(TEXTURES[i][0]);
                 planets.get(i).setRadius(planets.get(i).getRadius()*1/1.1f);
                 planets.get(i).scalePicScale(new Vector2(1/1.2f, 1/1.2f));
                 lastInPlanet[i] = false;
@@ -562,8 +597,20 @@ public class SettingsMode extends WorldController implements ContactListener {
             for (int i = 0; i < planets.size; i++) {
                 float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
                 if (Math.sqrt(d) < planets.get(i).getRadius()) {
-                    listener.exitScreen(this, i);
-                    return;
+                if(i==1 && SoundController.getInstance().getMute()){
+                    planets.get(i).setTexture(unmute_Texture);
+                }
+                else if(i==1){
+                    planets.get(i).setTexture(mute_Texture);
+                }
+                if(i==3 && InputController.getInstance().getWASD()){
+                    planets.get(i).setTexture(okl_Texture);
+                }
+                else if(i==3){
+                    planets.get(i).setTexture(wasd_Texture);
+                }
+                listener.exitScreen(this, i);
+                return;
                 }
             }
         }
