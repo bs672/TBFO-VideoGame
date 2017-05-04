@@ -12,14 +12,14 @@ import edu.cornell.gdiac.model.obstacle.CapsuleObstacle;
  */
 public class ShipModel extends CapsuleObstacle{
 
-    private static final float WIDTH = 0.9f;
-    private static final float HEIGHT = 1.3f;
+    private static final float WIDTH = 0.6f;
+    private static final float HEIGHT = 1.1f;
 
     private static final float G_WIDTH = .9f;
     private static final float G_HEIGHT = 2.1f;
 
-    private static final float M_WIDTH = 2.3f;
-    private static final float M_HEIGHT = 3.7f;
+    private static final float M_WIDTH = 2.1f;
+    private static final float M_HEIGHT = 3.4f;
 
     private static final float MOTHER_MASS = 1f;
 
@@ -42,7 +42,7 @@ public class ShipModel extends CapsuleObstacle{
 
     //TODO type of the ship
     //Type 0 is default, Type 1 is Guard Ship, Type 2 is Mothership
-    private static float type;
+    private float type;
 
     public Vector2 getOldPosition() {return oldPosition; }
 

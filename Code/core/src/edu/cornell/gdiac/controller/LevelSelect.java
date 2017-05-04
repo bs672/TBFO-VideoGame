@@ -150,6 +150,10 @@ public class LevelSelect extends PlayMode {
         switchMode(mode);
     }
 
+    public void changeMass(float massChange){
+        //don't lose mass please
+    }
+
     protected void populateLevel() {
         // Create Planets
         String pname = "planet";
@@ -239,13 +243,13 @@ public class LevelSelect extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-1.5f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
+        titlecoord.set(   (canvas.getWidth() /2)-(levelsTitleTexture.getRegionWidth()*.8f/2) , (canvas.getHeight() /2)-2.7f*(levelsTitleTexture.getRegionHeight()*.8f/2)  );
         titlesize.set(  levelsTitleTexture.getRegionWidth()*.8f, levelsTitleTexture.getRegionHeight()*.8f );
 
         text.add (titlecoord);
         text.add (titlesize);
 
-        aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
+        aiController = new AIController(ships, planets, blackHoles, commandPlanets, complexAvatar, scale);
     }
 
     public void unlockedScrollScreen(){
@@ -427,16 +431,6 @@ public class LevelSelect extends PlayMode {
         canvas.end();
         super.drawObjects();
         canvas.begin();
-        if (mode == 0) {
-            canvas.drawText("Levels 10+", massFont, planets.get(4).getX(), planets.get(4).getY());
-        }
-        if (mode == 1) {
-            canvas.drawText("Levels 19-27", massFont, planets.get(4).getX(), planets.get(4).getY());
-            canvas.drawText("Levels 1-9", massFont, planets.get(3).getX(), planets.get(3).getY());
-        }
-        if (mode == 2) {
-            canvas.drawText("Levels 10-18", massFont, planets.get(3).getX(), planets.get(3).getY());
-        }
         canvas.end();
 
     }

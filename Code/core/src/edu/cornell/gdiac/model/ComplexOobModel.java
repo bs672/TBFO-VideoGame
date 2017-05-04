@@ -69,6 +69,9 @@ public class ComplexOobModel extends ComplexObstacle {
     private boolean dying;
     private boolean max;
 
+    /** the direction he should be going */
+    private Vector2 direction;
+
     /** Variables for Oob animation */
 
     private Animation<TextureRegion> Normal_Animation; // Must declare frame type (TextureRegion)
@@ -179,7 +182,9 @@ public class ComplexOobModel extends ComplexObstacle {
 
     public Texture get_Max_sheet(){return Max_Sheet;}
 
+    public Vector2 getDirection() {return direction; }
 
+    public void setDirection(Vector2 v) {direction = v.nor(); }
 
     public void set_Shot_Cooldown(int c) {SHOT_COOLDOWN = c; }
 
