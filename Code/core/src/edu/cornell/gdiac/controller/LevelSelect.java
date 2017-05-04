@@ -452,16 +452,6 @@ public class LevelSelect extends PlayMode {
         canvas.end();
         super.drawObjects();
         canvas.begin();
-        if (mode == 0) {
-            canvas.drawText("Levels 10+", massFont, planets.get(4).getX(), planets.get(4).getY());
-        }
-        if (mode == 1) {
-            canvas.drawText("Levels 19-27", massFont, planets.get(4).getX(), planets.get(4).getY());
-            canvas.drawText("Levels 1-9", massFont, planets.get(3).getX(), planets.get(3).getY());
-        }
-        if (mode == 2) {
-            canvas.drawText("Levels 10-18", massFont, planets.get(3).getX(), planets.get(3).getY());
-        }
         canvas.end();
 
     }
