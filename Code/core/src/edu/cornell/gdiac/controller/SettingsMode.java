@@ -55,7 +55,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String WASD_TEXTURE = "space/menus/wasd.png";
     private static final String OKL_TEXTURE = "space/menus/okl.png";
 
-
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
 

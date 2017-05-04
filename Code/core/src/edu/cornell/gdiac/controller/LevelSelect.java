@@ -1,37 +1,16 @@
 package edu.cornell.gdiac.controller;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.ObjectSet;
 import edu.cornell.gdiac.model.*;
 import edu.cornell.gdiac.model.obstacle.CapsuleObstacle;
 import edu.cornell.gdiac.model.obstacle.Obstacle;
-import edu.cornell.gdiac.model.obstacle.SimpleObstacle;
-import edu.cornell.gdiac.model.obstacle.WheelObstacle;
-import edu.cornell.gdiac.util.FilmStrip;
-import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.utils.ObjectMap;
-
-import javax.swing.plaf.TextUI;
 
 /**
  * Created by Jaiveer on 4/12/17.
@@ -87,12 +66,12 @@ public class LevelSelect extends PlayMode {
         settings_Texture = createTexture(manager,SETTINGS_TEXTURE, false);
         settings_Hover_Texture = createTexture(manager,SETTINGS_HOVER_TEXTURE, false);
         levelsTitleTexture = createTexture(manager,LEVELSTITLE, true);
-        next_level_Texture = createTexture(manager,NEXT_LEVEL_TEXTURE,false);
-        next_level_Hover_Texture = createTexture(manager,NEXT_LEVEL_HOVER_TEXTURE,false);
-        next_level_Lock_Texture = createTexture(manager,NEXT_LEVEL_LOCK_TEXTURE,false);
-        prev_level_Texture = createTexture(manager,PREV_LEVEL_TEXTURE,false);
-        prev_level_Hover_Texture = createTexture(manager,PREV_LEVEL_HOVER_TEXTURE,false);
-        prev_level_Lock_Texture = createTexture(manager,PREV_LEVEL_LOCK_TEXTURE,false);
+        next_page_Texture = createTexture(manager, NEXT_PAGE_TEXTURE,false);
+        next_page_Hover_Texture = createTexture(manager, NEXT_PAGE_HOVER_TEXTURE,false);
+        next_page_Lock_Texture = createTexture(manager, NEXT_PAGE_LOCK_TEXTURE,false);
+        prev_page_Texture = createTexture(manager, PREV_PAGE_TEXTURE,false);
+        prev_page_Hover_Texture = createTexture(manager, PREV_PAGE_HOVER_TEXTURE,false);
+        prev_page_Lock_Texture = createTexture(manager, PREV_PAGE_LOCK_TEXTURE,false);
         back_Texture = createTexture(manager, BACK_TEXTURE, false);
         back_Hover_Texture = createTexture(manager, BACK_HOVER_TEXTURE, false);
         back_Text_Texture = createTexture(manager, BACK_TEXT_TEXTURE, false);
@@ -110,10 +89,10 @@ public class LevelSelect extends PlayMode {
         TEXTURES[1][1] = main_Menu_Hover_Texture;
         TEXTURES[2][0] = settings_Texture;
         TEXTURES[2][1] = settings_Hover_Texture;
-        TEXTURES[3][0] = prev_level_Texture;
-        TEXTURES[3][1] = prev_level_Hover_Texture;
-        TEXTURES[4][0] = next_level_Texture;
-        TEXTURES[4][1] = next_level_Hover_Texture;
+        TEXTURES[3][0] = prev_page_Texture;
+        TEXTURES[3][1] = prev_page_Hover_Texture;
+        TEXTURES[4][0] = next_page_Texture;
+        TEXTURES[4][1] = next_page_Hover_Texture;
 
 
 
@@ -335,13 +314,13 @@ public class LevelSelect extends PlayMode {
                 planets.get(i).setTexture(LEVELS_TEXTURE_REGIONS[temp-1][2]);
             }
         }
-        planets.get(3).setTexture(prev_level_Texture);
-        planets.get(4).setTexture(next_level_Texture);
+        planets.get(3).setTexture(prev_page_Texture);
+        planets.get(4).setTexture(next_page_Texture);
         if (mode == 0){
-            planets.get(3).setTexture(prev_level_Lock_Texture);
+            planets.get(3).setTexture(prev_page_Lock_Texture);
         }
         else if (mode == 2){
-            planets.get(4).setTexture(next_level_Lock_Texture);
+            planets.get(4).setTexture(next_page_Lock_Texture);
         }
     }
 
@@ -435,10 +414,10 @@ public class LevelSelect extends PlayMode {
                 }
             }
             if (mode == 0) {
-                planets.get(3).setTexture(prev_level_Lock_Texture);
+                planets.get(3).setTexture(prev_page_Lock_Texture);
             }
             if (mode == 2) {
-                planets.get(4).setTexture(next_level_Lock_Texture);
+                planets.get(4).setTexture(next_page_Lock_Texture);
             }
         }
     }
