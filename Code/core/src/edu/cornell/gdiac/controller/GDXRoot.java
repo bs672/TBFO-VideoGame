@@ -80,6 +80,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * the asynchronous loader for all other assets.
 	 */
 	public void create() {
+		System.out.println("here");
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
 		mute = false;
 		canvas  = new GameCanvas();

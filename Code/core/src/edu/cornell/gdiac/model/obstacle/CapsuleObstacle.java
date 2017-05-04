@@ -232,6 +232,7 @@ public class CapsuleObstacle extends SimpleObstacle {
 	public CapsuleObstacle(float width, float height) {
 	    this(0,0,width,height,
 		    (width > height ? Orientation.HORIZONTAL : Orientation.VERTICAL));
+	    fixture.filter.groupIndex = -1;
 	}
 
 	/**
@@ -253,6 +254,7 @@ public class CapsuleObstacle extends SimpleObstacle {
 	public CapsuleObstacle(float x, float y, float width, float height) {
 	    this(x,y,width,height,
 	    	(width > height ? Orientation.HORIZONTAL : Orientation.VERTICAL));
+		fixture.filter.groupIndex = -1;
 	}
 	
 	/**
@@ -276,6 +278,8 @@ public class CapsuleObstacle extends SimpleObstacle {
 		end2 = new CircleShape();
 		center = new Rectangle();
 		vertices = new float[8];
+
+		fixture.filter.groupIndex = -1;
 
 		core = null;
 	    cap1 = null;
