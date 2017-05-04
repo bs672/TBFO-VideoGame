@@ -308,7 +308,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
 
-    private static final float SCROLL_SPEED = 0.5f;
+    public static final float SCROLL_SPEED = 0.5f;
 
     /** The initial position of Oob */
     protected static Vector2 OOB_POS = new Vector2(16f, 12f);
