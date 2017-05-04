@@ -154,7 +154,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     //variables for player controls
     boolean jump = false;
     private float moveDirection = 0f;
-    private boolean mute = true;
     private Vector2 launchVec;
 
     private boolean jumping = false;
