@@ -53,7 +53,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String MUTE_TEXTURE  = "space/menus/muted.png";
     private static final String UNMUTE_TEXTURE = "space/menus/unmute.png";
 
-
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
 

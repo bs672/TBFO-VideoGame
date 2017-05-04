@@ -221,13 +221,17 @@ public class GDXRoot extends Game implements ScreenListener {
 			if(current!=12) {
 				if (exitCode < 2) {
 					current = exitCode;
+                    controllers[current].reset();
 				} else if (exitCode == 2) {
 					current = lastScreen;
+					if (lastScreen < 4) {
+                        controllers[current].reset();
+                    }
 				} else {
 					current = exitCode + 1;
+                    controllers[current].reset();
 				}
 				lastScreen = 2;
-				controllers[current].reset();
 				setScreen(controllers[current]);
 			}
 			else{
@@ -254,11 +258,14 @@ public class GDXRoot extends Game implements ScreenListener {
 				if (screen == controllers[i]) {
 					lastScreen = i;
 					lastPlayScreen = i;
-					current = exitCode;
-					if (exitCode == WorldController.EXIT_NEXT) {
-						unlocked = Math.max(unlocked, i-2);
-						controllers[2].setUnlocked(unlocked);
-						current = i+1;
+					current = exitCode%10;
+					if (exitCode >= 2000) {
+                        unlocked = Math.max(unlocked, i-2);
+                        controllers[2].setUnlocked(unlocked);
+                    }
+					if (exitCode == 2003) {
+					    current = i+1;
+
 					}
 					controllers[current].reset();
 					setScreen(controllers[current]);
