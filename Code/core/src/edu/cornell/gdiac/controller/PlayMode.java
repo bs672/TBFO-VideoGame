@@ -1254,7 +1254,6 @@ public class PlayMode extends WorldController implements ContactListener {
         aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
     }
 
-
     public void setBG() {
         if ((backgroundLG.getRegionWidth() - canvas.getWidth()) > 0) {
             LG_S_X = 0;
@@ -1418,7 +1417,6 @@ public class PlayMode extends WorldController implements ContactListener {
         white_size_9.set(  backgroundWHITESTAR.getRegionWidth(), backgroundWHITESTAR.getRegionHeight()  );
         white_stars.add (white_coord_9);        white_stars.add (white_size_9);
     }
-
 
     public void loadAnim() {
         complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);               complexAvatar.createNormaltex();
@@ -1786,7 +1784,6 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
-
     //Finds closest planet
     public void findPlanet(){
         returnToPlanetTimer++;
@@ -1962,7 +1959,6 @@ public class PlayMode extends WorldController implements ContactListener {
         return false;
     }
 
-
     /**
      * The core gameplay loop of this world.
      *
@@ -2001,16 +1997,24 @@ public class PlayMode extends WorldController implements ContactListener {
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 2;
-
+                for (ShipModel sh : ships) {
+                    if (sh.getName().equals("ship")) {
+                        sh.setExploding(true);
+                        if (!ship_explosion.contains(sh, false)) {
+                            ship_explosion.add(sh);
+                        }
+                        sh.set_EXP_ST(0f);
+                    }
+                }
             }
             if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
                 // Lost the level
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
                 gameState = 1;
-
             }
             if (currentPlanet != null) {
+                jumpTime = 0;
                 smallestRad = new Vector2(complexAvatar.getX() - currentPlanet.getX(), complexAvatar.getY() - currentPlanet.getY());
                 if(smallestRad.len() > complexAvatar.getRadius() + currentPlanet.getRadius() + 1f)
                     complexAvatar.setPosition(currentPlanet.getPosition().x, currentPlanet.getPosition().cpy().y + currentPlanet.getRadius() + complexAvatar.getRadius() + 1f);
@@ -2131,7 +2135,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 complexAvatar.setDying(true);
             }
 
-
             if (planet_explosion.size > 0) {
                 if (planet_explosion.get(0).isDying()) {
                     if ((planet_explosion.get(0).get_WARN_ST()) >= (planet_explosion.get(0).get_WARN_anim().getAnimationDuration())) {
@@ -2158,7 +2161,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                 }
             }
-
             if (ships.size>0) {
                 for (ShipModel sh : ships) {
                     if (sh.isExploding()) {
@@ -2172,9 +2174,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                 }
             }
-
-
-
             for (Joint j : complexAvatar.getOuterJoints()) {
                 Vector2 dist = j.getAnchorA().cpy().sub(j.getAnchorB());
                 if (dist.len() > 3 * ((DistanceJoint) j).getLength())
@@ -2193,7 +2192,6 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         else {
-
             if (ships.size>0) {
                 for (ShipModel sh : ships) {
                     if (sh.isExploding()) {
@@ -2207,12 +2205,12 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                 }
             }
-
-
             messageCounter++;
-            if (messageCounter > 240) {
+            Vector2 temp = new Vector2(complexAvatar.getLinearVelocity().x/1.01f, complexAvatar.getLinearVelocity().y/1.01f);
+            complexAvatar.setLinearVelocity(temp);
+            if (messageCounter > 200) {
                 if (gameState == 2) {
-                    listener.exitScreen(this, 2);
+                    listener.exitScreen(this, WorldController.EXIT_NEXT);
                     InputController.getInstance().setCenterCamera(true);
                 }
                 else {
@@ -2371,7 +2369,6 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Unused ContactListener method */
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
-
     public void resize() {
         try {
             complexAvatar.getVertexBatch().getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -2385,14 +2382,14 @@ public class PlayMode extends WorldController implements ContactListener {
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
         canvas.begin();
-
-        float x = 255 - ((float) jumpTime/2);
-        Color Tint = new Color(20,20,20,1);
+//        float x = 255 - ((float) jumpTime/2);
+        Color Tint;
+        if (gameState == 0) {Tint = Color.WHITE;}
+        else {Tint = Color.GRAY;}
         canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
         canvas.draw(backgroundSM, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
 
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(0).x, white_stars.get(0).y,   white_stars.get(1).x, white_stars.get(1).y);
-
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(2).x, white_stars.get(2).y,   white_stars.get(3).x, white_stars.get(3).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(4).x, white_stars.get(4).y,   white_stars.get(5).x, white_stars.get(5).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(6).x, white_stars.get(6).y,   white_stars.get(7).x, white_stars.get(7).y);
@@ -2401,11 +2398,7 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(12).x, white_stars.get(12).y,   white_stars.get(13).x, white_stars.get(13).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(14).x, white_stars.get(14).y,   white_stars.get(15).x, white_stars.get(15).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(16).x, white_stars.get(16).y,   white_stars.get(17).x, white_stars.get(17).y);
-
-
-
-        canvas.draw(backgroundMED, Tint, med_stars.get(0).x, med_stars.get(0).y,   med_stars.get(1).x, med_stars.get(1).y);
-
+        canvas.draw(backgroundMED, Color.WHITE, med_stars.get(0).x, med_stars.get(0).y,   med_stars.get(1).x, med_stars.get(1).y);
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(2).x, med_stars.get(2).y,   med_stars.get(3).x, med_stars.get(3).y);
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(4).x, med_stars.get(4).y,   med_stars.get(5).x, med_stars.get(5).y);
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(6).x, med_stars.get(6).y,   med_stars.get(7).x, med_stars.get(7).y);
@@ -2415,9 +2408,7 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(14).x, med_stars.get(14).y,   med_stars.get(15).x, med_stars.get(15).y);
         canvas.draw(backgroundMED, Color.WHITE, med_stars.get(16).x, med_stars.get(16).y,   med_stars.get(17).x, med_stars.get(17).y);
 
-
         canvas.draw(backgroundLG, Color.WHITE, stars.get(0).x, stars.get(0).y,   stars.get(1).x, stars.get(1).y);
-
         canvas.draw(backgroundLG, Color.WHITE, stars.get(2).x, stars.get(2).y,   stars.get(3).x, stars.get(3).y);
         canvas.draw(backgroundLG, Color.WHITE, stars.get(4).x, stars.get(4).y,   stars.get(5).x, stars.get(5).y);
         canvas.draw(backgroundLG, Color.WHITE, stars.get(6).x, stars.get(6).y,   stars.get(7).x, stars.get(7).y);
@@ -2438,8 +2429,6 @@ public class PlayMode extends WorldController implements ContactListener {
     public void drawObjects(){
 
         for (Obstacle obj : objects) {
-
-
 
             if (obj.getName().equals("ComplexOob")) {
 
@@ -2552,7 +2541,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
 
             else {
                 canvas.begin();
