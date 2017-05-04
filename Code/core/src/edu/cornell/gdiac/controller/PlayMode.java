@@ -1904,6 +1904,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
         complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
+        complexAvatar.setDirection(mouseVec.cpy().nor().scl(12));
         lastPlanet = currentPlanet;
         currentPlanet = null;
         forceJump = false;
@@ -2152,6 +2153,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         currentPlanet = null;
                     }
                 }
+                complexAvatar.checkForInsideOut(0, Vector2.Zero);
             } else if (currentPlanet == null) { // we’re floating in space
                 complexAvatar.setFlying(true);
                 jumpTime++;
@@ -2181,10 +2183,19 @@ public class PlayMode extends WorldController implements ContactListener {
                     expulsion.setLinearVelocity(launchVec.cpy().nor().scl(-30));
                     changeMass(-expulsion.getMass() / 2);
                     Vector2 velocityChange = launchVec.cpy().nor().scl(1.5f * (complexAvatar.getLinearVelocity().len() + expulsion.getLinearVelocity().len()) / complexAvatar.getMass());
-                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().set(velocityChange.scl(complexAvatar.getRadius() / 2f)));
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().set(velocityChange.cpy().scl(complexAvatar.getRadius() / 2f)));
+                    complexAvatar.setDirection(complexAvatar.getLinearVelocity().cpy().set(velocityChange.cpy().scl(complexAvatar.getRadius() / 2f)));
                     adjustCooldown = 30;
                     SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
+
+                // this part is to account for the weird drifting we're getting
+                // basically just scales the direction it should be going to the length of the vector it wants it to go
+                if(complexAvatar.getDirection() != null) {
+                    Vector2 projBOnA = complexAvatar.getDirection().cpy().scl(complexAvatar.getLinearVelocity().len());
+                    complexAvatar.setLinearVelocity(projBOnA);
+                }
+
                 if (complexAvatar.getCenter().getLinearVelocity().len() < 5)
                     complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(5));
                 findPlanet();
