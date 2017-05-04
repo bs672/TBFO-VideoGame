@@ -1004,10 +1004,22 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             else if(objectName.equals("ship")){
                 //ship is 1.5 overlap2d units
+                String custom = "";
+                if (temp.has("customVars")) {
+                    custom = temp.getString("customVars");
+                }
                 tempArray = new Array<Float>();
                 tempArray.add((xPos+0.75f)*3);
                 tempArray.add((yPos+0.75f)*3);
-                tempArray.add(0.0f); //cannot search for type of ship yet
+
+                //It will start with type:
+                if (custom.length()>3) {
+                    tempArray.add(Float.parseFloat(custom.substring(5)));
+                }
+                else{
+                    tempArray.add(0.0f);
+                }
+
                 shipArray.add(tempArray);
             }
             else if(objectName.equals("oob2")){
