@@ -112,6 +112,7 @@ public class InputController {
 	public boolean getScrollDown() { return scrollDown; }
 	public boolean getScrollLeft() { return scrollLeft; }
 	public boolean getScrollRight() { return scrollRight; }
+	public boolean getWASD(){return wasd; }
 
 	//Returns whether Oob is jumping
 

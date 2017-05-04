@@ -166,7 +166,7 @@ public class PauseMenu extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
+        aiController = new AIController(ships, planets, blackHoles, commandPlanets, complexAvatar, scale);
 
 
         titlecoord.set(   (canvas.getWidth() /2)-(pauseTitleTexture.getRegionWidth()*1.2f/2) , (canvas.getHeight())-3.5f*(pauseTitleTexture.getRegionHeight()*1.2f/2)  );

@@ -172,7 +172,7 @@ public class MainMenu extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
+        aiController = new AIController(ships, planets, blackHoles, commandPlanets, complexAvatar, scale);
 
         //Play background music!
         if(!SoundController.getInstance().getMute()) {
