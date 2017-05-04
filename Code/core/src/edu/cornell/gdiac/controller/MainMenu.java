@@ -62,6 +62,8 @@ public class MainMenu extends PlayMode {
         settings_Hover_Texture = createTexture(manager, SETTINGS_HOVER_TEXTURE, false);
         levels_Hover_Texture = createTexture(manager, LEVELS_HOVER_TEXTURE, false);
         play_Hover_Texture = createTexture(manager, PLAY_HOVER_TEXTURE, false);
+        quit = createTexture(manager, QUIT, false);
+        quit_hover = createTexture(manager, QUIT_HOVER, false);
 
         TEXTURES[0][0] = green_P_1_Texture;
         TEXTURES[0][1] = green_P_1_Texture;
@@ -71,8 +73,8 @@ public class MainMenu extends PlayMode {
         TEXTURES[3][0] = play_Texture;
         TEXTURES[2][1] = levels_Hover_Texture;
         TEXTURES[3][1] = play_Hover_Texture;
-        TEXTURES[4][0] = neutral_P_Texture;
-        TEXTURES[4][1] = neutral_P_Texture;
+        TEXTURES[4][0] = quit;
+        TEXTURES[4][1] = quit_hover;
 
         backgroundMAIN = createTexture(manager, BACKG_FILE_MAIN, false);
         backgroundWHITESTAR = createTexture(manager, BACKG_FILE_WHITE_STAR, false);
@@ -180,7 +182,7 @@ public class MainMenu extends PlayMode {
         }
         //titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
         //titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
-        
+
         titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2.3f)  );
         titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/2.3f );
 
