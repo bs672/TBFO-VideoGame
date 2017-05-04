@@ -121,7 +121,23 @@ public class AIController {
                 convertInRange(s);
             }
             // set the ship's orientation to the correct angle
-            float desiredAngle = (float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2);
+//            float desiredAngle = (float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2);
+            Vector2 desiredVector = new Vector2(s.getX() - s.getOldPosition().x, s.getY() - s.getOldPosition().y);
+
+            if(InputController.getInstance().getScrollUp()) {
+                desiredVector.y += PlayMode.SCROLL_SPEED;
+            }
+            else if(InputController.getInstance().getScrollDown()) {
+                desiredVector.y -= PlayMode.SCROLL_SPEED;
+            }
+            if(InputController.getInstance().getScrollLeft()) {
+                desiredVector.x -= PlayMode.SCROLL_SPEED;
+            }
+            else if(InputController.getInstance().getScrollRight()) {
+                desiredVector.x += PlayMode.SCROLL_SPEED;
+            }
+            float desiredAngle = (float)(Math.atan2(desiredVector.y, desiredVector.x) - Math.PI / 2);
+
             if(desiredAngle < 0)
                 desiredAngle += (float)(Math.PI * 2);
             float difference = desiredAngle - s.getAngle();
