@@ -319,6 +319,7 @@ public class AIController {
     public void aggroPathfind(ShipModel s) {
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
         tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+        shootInRange(s);
         int closestPlanet = 0;
         for (int i = 0; i < planets.size; i++) {
             tempVec2.set(planets.get(i).getPosition().cpy().sub(s.getPosition()));
@@ -334,7 +335,6 @@ public class AIController {
         }
         // moving towards Oob
         if(tempVec1.len() > 4) {
-            shootInRange(s);
             tempVec2.set(avatar.getPosition().cpy().sub(s.getPosition()));
             tempVec1.set(planets.get(closestPlanet).getPosition().cpy().sub(s.getPosition()));
             // tempVec2 is ship to Oob, tempVec1 is ship to planet
