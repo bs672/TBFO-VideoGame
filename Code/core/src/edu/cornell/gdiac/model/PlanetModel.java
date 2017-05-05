@@ -246,7 +246,7 @@ public class PlanetModel extends WheelObstacle{
     public void convert(float c) {
         if (type != 1) {
             becomingCommand++;
-            spawnCooldown = (int)c; 
+            spawnCooldown = (int)c;
             SPAWN_COOLDOWN = (int)c;
         }
 //        System.out.println(becomingCommand);
