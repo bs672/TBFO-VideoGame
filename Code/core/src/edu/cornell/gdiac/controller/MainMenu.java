@@ -38,11 +38,18 @@ public class MainMenu extends PlayMode {
 
 
     protected static float[][] PLANETS = {
+//            {3.0f, 3.0f, 1.2f, 3f},   // NOTHING
+//            {24, 9f, 1.2f, 3f},  // SETTINGS
+//            {15.5f, 3f, 1.2f, 3f},    // LEVEL SELECT
+//            {7.0f, 4.5f, 1.2f, 3f},   // PLAY
+//            {21.8f, 4.4f, 1.2f, 3f},  // QUIT
+
+
             {3.0f, 3.0f, 1.2f, 3f},   // NOTHING
-            {24, 9f, 1.2f, 3f},  // SETTINGS
-            {15.5f, 3f, 1.2f, 3f},    // LEVEL SELECT
-            {7.0f, 4.5f, 1.2f, 3f},   // PLAY
-            {21.8f, 4.4f, 1.2f, 3f},  // QUIT
+            {11.5f, 3.8f, 1.2f, 3f},  // SETTINGS
+            {19.5f, 3.8f, 1.2f, 3f},    // LEVEL SELECT
+            {22f, 7.0f, 1.2f, 3f},   // PLAY
+            {9f, 7.0f, 1.2f, 3f},  // QUIT
     };
 
     protected static final TextureRegion[][] TEXTURES = new TextureRegion[PLANETS.length][2];
@@ -54,7 +61,7 @@ public class MainMenu extends PlayMode {
         expulsion_Texture = createTexture(manager, EXPULSION_TEXTURE, false);
 
         neutral_P_Texture = createTexture(manager, NEUTRAL_P, false);
-        green_P_1_Texture = createTexture(manager, GREEN_P_1, false);
+        pink_P_1_Texture = createTexture(manager, PINK_P_1, false);
         settings_Texture = createTexture(manager, SETTINGS_TEXTURE, false);
         levels_Texture = createTexture(manager, LEVELS_TEXTURE, false);
         play_Texture = createTexture(manager, PLAY_TEXTURE, false);
@@ -62,17 +69,19 @@ public class MainMenu extends PlayMode {
         settings_Hover_Texture = createTexture(manager, SETTINGS_HOVER_TEXTURE, false);
         levels_Hover_Texture = createTexture(manager, LEVELS_HOVER_TEXTURE, false);
         play_Hover_Texture = createTexture(manager, PLAY_HOVER_TEXTURE, false);
+        quit = createTexture(manager, QUIT, false);
+        quit_hover = createTexture(manager, QUIT_HOVER, false);
 
-        TEXTURES[0][0] = green_P_1_Texture;
-        TEXTURES[0][1] = green_P_1_Texture;
+        TEXTURES[0][0] = pink_P_1_Texture;
+        TEXTURES[0][1] = pink_P_1_Texture;
         TEXTURES[1][0] = settings_Texture;
         TEXTURES[1][1] = settings_Hover_Texture;
         TEXTURES[2][0] = levels_Texture;
         TEXTURES[3][0] = play_Texture;
         TEXTURES[2][1] = levels_Hover_Texture;
         TEXTURES[3][1] = play_Hover_Texture;
-        TEXTURES[4][0] = neutral_P_Texture;
-        TEXTURES[4][1] = neutral_P_Texture;
+        TEXTURES[4][0] = quit;
+        TEXTURES[4][1] = quit_hover;
 
         backgroundMAIN = createTexture(manager, BACKG_FILE_MAIN, false);
         backgroundWHITESTAR = createTexture(manager, BACKG_FILE_WHITE_STAR, false);
@@ -80,6 +89,7 @@ public class MainMenu extends PlayMode {
         backgroundMED = createTexture(manager, BACKG_FILE_MED_STAR, false);
         backgroundSM = createTexture(manager, BACKG_FILE_SM_STAR, false);
         titleTexture = createTexture(manager, TITLE, true);
+        cred_Texture = createTexture(manager, CRED, true);
 
         bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
@@ -170,23 +180,32 @@ public class MainMenu extends PlayMode {
         set_med_BG();
         set_white_BG();
 
-        aiController = new AIController(ships, planets, commandPlanets, complexAvatar, scale);
+        aiController = new AIController(ships, planets, blackHoles, commandPlanets, complexAvatar, scale);
 
         //Play background music!
         if(!SoundController.getInstance().getMute()) {
-            System.out.println("in mainmenu");
             GDXRoot.music.setVolume(0.3f);
             GDXRoot.music.setLooping(true);
             GDXRoot.music.play();
         }
         //titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
         //titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
-        
+
         titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2.3f)  );
         titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/2.3f );
 
+        credcoord.set(30,30);
+        credsize.set( (cred_Texture.getRegionWidth()/2), (cred_Texture.getRegionHeight()/2) );
+
         text.add (titlecoord);
         text.add (titlesize);
+
+        text.add(credcoord);
+        text.add(credsize);
+    }
+
+    public void changeMass(float massChange){
+        //don't lose mass please
     }
 
     public boolean screenSwitch() {
@@ -251,6 +270,11 @@ public class MainMenu extends PlayMode {
     public void scrollText(){
         text.get(0).x += (vecToCenter.x);
         text.get(0).y += (vecToCenter.y);
+
+        text.get(2).x += (vecToCenter.x);
+        text.get(2).y += (vecToCenter.y);
+
+
     }
 
     public void hover() {
@@ -280,6 +304,7 @@ public class MainMenu extends PlayMode {
 
         canvas.begin();
         canvas.draw(titleTexture, Color.WHITE, text.get(0).x, text.get(0).y, text.get(1).x, text.get(1).y);
+        canvas.draw(cred_Texture, Color.WHITE, text.get(2).x, text.get(2).y, text.get(3).x, text.get(3).y);
         canvas.end();
         super.drawObjects();
     }

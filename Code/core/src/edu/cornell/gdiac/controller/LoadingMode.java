@@ -54,11 +54,14 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     private static final String BACKG_FILE_MED_STAR = "space/background/medium-stars.png";
     private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
     private static final String BACKG_FILE_TITLE = "space/menus/title.png";
+    private static final String CRED_FILE = "space/background/soob_studios.png";
 	private static final String PROGRESS_FILE = "space/background/progressbar.png";
 	private static final String PLAY_BTN_FILE = "space/Oob/oob_2.png";
 	
 	/** Background texture for start-up */
 	private Texture backgroundMAIN;
+    /** Background texture for start-up */
+    private Texture backgroundCRED;
     /** Texture asset for background image */
     private Texture backgroundWHITESTAR;
     /** Background texture for start-up */
@@ -95,7 +98,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** Standard window height (for scaling) */
 	private static int STANDARD_HEIGHT = 700;
 	/** Ratio of the bar width to the screen */
-	private static float BAR_WIDTH_RATIO  = 0.66f;
+	private static float BAR_WIDTH_RATIO  = 0.60f;
 	/** Ration of the bar height to the screen */
 	private static float BAR_HEIGHT_RATIO = 0.5f;
 	/** Height of the progress bar */
@@ -217,6 +220,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		// Load the next two images immediately.
 		playButton = null;
 		backgroundMAIN = new Texture(BACKG_FILE_MAIN);
+        backgroundCRED = new Texture(CRED_FILE);
         backgroundTITLE = new Texture(BACKG_FILE_TITLE);
         backgroundWHITESTAR = new Texture(BACKG_FILE_WHITE_STAR);
         backgroundLG = new Texture(BACKG_FILE_LG_STAR);
@@ -281,12 +285,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
          backgroundLG.dispose();
          backgroundMED.dispose();
          backgroundSM.dispose();
+         backgroundCRED.dispose();
+         backgroundTITLE.dispose();
 		 statusBar.dispose();
 		 backgroundMAIN = null;
          backgroundWHITESTAR = null;
          backgroundLG = null;
          backgroundMED = null;
          backgroundSM = null ;
+         backgroundTITLE = null;
+         backgroundCRED = null;
 		 statusBar  = null;
 		 if (playButton != null) {
 			 playButton.dispose();
@@ -351,11 +359,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		canvas.draw(backgroundWHITESTAR, Color.WHITE, 0, 0,canvas.getWidth(),canvas.getHeight());
 		canvas.draw(backgroundLG, Color.WHITE, LG_S_X, LG_S_Y,backgroundLG.getWidth(),backgroundLG.getHeight());
 		canvas.draw(backgroundTITLE, Color.WHITE,((canvas.getWidth() /2)-(backgroundTITLE.getWidth()/4)),  ((canvas.getHeight())-(backgroundTITLE.getHeight()/1.5f)),backgroundTITLE.getWidth()/2, backgroundTITLE.getHeight()/2);
+        canvas.draw(backgroundCRED, Color.WHITE,30,  30,backgroundCRED.getWidth()/2, backgroundCRED.getHeight()/2);
 
 //
-//		titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2.3f)  );
-//		titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/2.3f );
-//
+
 //
 		if (ready == false) {
 			drawProgress(canvas);

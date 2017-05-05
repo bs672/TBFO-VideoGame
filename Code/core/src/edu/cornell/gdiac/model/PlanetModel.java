@@ -20,7 +20,8 @@ public class PlanetModel extends WheelObstacle{
     /** The density of the character */
     private static final float PLANET_DENSITY = 1.0f;
 
-    private static final int SPAWN_COOLDOWN = 100;
+    private int SPAWN_COOLDOWN = 100;
+
 
     private int totalSpawned;
 
@@ -55,7 +56,7 @@ public class PlanetModel extends WheelObstacle{
         }
     }
 
-    public void setCooldown(int s){spawnCooldown = s;}
+    public void setCooldown(int s){SPAWN_COOLDOWN = s; spawnCooldown = s;}
 
     public boolean isDying() {return dying;}
 
@@ -230,14 +231,14 @@ public class PlanetModel extends WheelObstacle{
      * @param radius		The object radius in physics units
      * @param t         The type of the planet
      */
-    public PlanetModel(float x, float y, float radius, float t, Array<ShipModel>ships) {
+    public PlanetModel(float x, float y, float radius, float t, int spawnCooldown) {
         super(x,y,radius);
         setDensity(PLANET_DENSITY);
         setFixedRotation(true);
         this.type = t;
         dying=false;
         becomingCommand = 0;
-        this.ships = ships;
+        this.spawnCooldown = spawnCooldown;
 
         setName("Planet");
     }

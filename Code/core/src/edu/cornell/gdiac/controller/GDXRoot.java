@@ -80,7 +80,6 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * the asynchronous loader for all other assets.
 	 */
 	public void create() {
-		System.out.println("here");
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/spaceMusic.wav"));
 		mute = false;
 		canvas  = new GameCanvas();
@@ -89,19 +88,27 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers = new WorldController[15];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect(9, 0);
+		controllers[2] = new LevelSelect(11, 0);
 		controllers[3] = new PauseMenu();
-		controllers[4] = new PlayMode("T1");
-		controllers[5] = new PlayMode("T2");
-		controllers[6] = new PlayMode("T3 ");
-		controllers[7] = new PlayMode("T4");
-		controllers[8] = new PlayMode("1");
-		controllers[9] = new PlayMode("Sun");
-		controllers[10] = new PlayMode("BH");
-		controllers[11] = new PlayMode("MainScene");
-		controllers[12] = new PlayMode("Combination");
-		controllers[13] = new PlayMode("T1");
-		controllers[14] = new PlayMode("T1");
+		controllers[4] = new PlayMode("T1"); //1
+		controllers[5] = new PlayMode("T2"); //2
+		controllers[6] = new PlayMode("T3 "); //3
+		controllers[7] = new PlayMode("T4"); //4
+		controllers[8] = new PlayMode("1"); //5
+        controllers[9] = new PlayMode("2"); //6
+        controllers[10] = new PlayMode("3"); //7
+        controllers[11] = new PlayMode("4"); //8
+		controllers[12] = new PlayMode("5"); //9
+        controllers[13] = new PlayMode("Sun"); //10
+        controllers[14] = new PlayMode("6"); //11
+
+
+//		controllers[9] = new PlayMode("Sun");
+//		controllers[10] = new PlayMode("BH");
+//		controllers[11] = new PlayMode("MainScene");
+//		controllers[12] = new PlayMode("Combination");
+//		controllers[13] = new PlayMode("T1");
+
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
@@ -221,13 +228,17 @@ public class GDXRoot extends Game implements ScreenListener {
 			if(current!=12) {
 				if (exitCode < 2) {
 					current = exitCode;
+                    controllers[current].reset();
 				} else if (exitCode == 2) {
 					current = lastScreen;
+					if (lastScreen < 4) {
+                        controllers[current].reset();
+                    }
 				} else {
 					current = exitCode + 1;
+                    controllers[current].reset();
 				}
 				lastScreen = 2;
-				controllers[current].reset();
 				setScreen(controllers[current]);
 			}
 			else{
@@ -254,11 +265,14 @@ public class GDXRoot extends Game implements ScreenListener {
 				if (screen == controllers[i]) {
 					lastScreen = i;
 					lastPlayScreen = i;
-					current = exitCode;
-					if (exitCode == WorldController.EXIT_NEXT) {
-						unlocked = Math.max(unlocked, i-2);
-						controllers[2].setUnlocked(unlocked);
-						current = i+1;
+					current = exitCode%10;
+					if (exitCode >= 2000) {
+                        unlocked = Math.max(unlocked, i-2);
+                        controllers[2].setUnlocked(unlocked);
+                    }
+					if (exitCode == 2003) {
+					    current = i+1;
+
 					}
 					controllers[current].reset();
 					setScreen(controllers[current]);
