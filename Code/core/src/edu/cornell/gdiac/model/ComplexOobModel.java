@@ -638,7 +638,7 @@ public class ComplexOobModel extends ComplexObstacle {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        Command_Animation = new Animation<TextureRegion>(.3f, frames);
+        Command_Animation = new Animation<TextureRegion>(.1f, frames);
 
     }
 
