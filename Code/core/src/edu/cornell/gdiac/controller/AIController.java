@@ -311,7 +311,7 @@ public class AIController {
     public void convertInRange(ShipModel s){
         if (s.getInOrbit()) {
             if (targetPlanets.get(s).getType() != 1) {
-                targetPlanets.get(s).convert();
+                targetPlanets.get(s).convert(s.getCommandSpawn());
             }
         }
     }

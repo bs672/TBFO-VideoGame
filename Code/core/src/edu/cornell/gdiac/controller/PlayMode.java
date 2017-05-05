@@ -993,7 +993,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 //It will start with type:
                 if (custom.length()>3) {
-                    tempArray.add(Float.parseFloat(custom.substring(5)));
+                    float shipType = Float.parseFloat((custom.substring(5, 6)));
+                    tempArray.add(shipType);
+                    if(shipType == 2){
+                        tempArray.add(Float.parseFloat(custom.substring(6)));
+                    }
                 }
                 else{
                     tempArray.add(0.0f);
@@ -1248,7 +1252,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2), "g");
             }
             else if (SHIPS.get(ii).get(2)==2) {
-                sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2), "m", "m");
+                sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2), "m", "m", SHIPS.get(ii).get(3));
             }
             else {
                 sh = new ShipModel(SHIPS.get(ii).get(0), SHIPS.get(ii).get(1), SHIPS.get(ii).get(2));

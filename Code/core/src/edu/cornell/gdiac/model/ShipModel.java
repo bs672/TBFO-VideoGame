@@ -44,6 +44,8 @@ public class ShipModel extends CapsuleObstacle{
     //Type 0 is default, Type 1 is Guard Ship, Type 2 is Mothership
     private float type;
 
+    private float commandSpawn = -1;
+
     public Vector2 getOldPosition() {return oldPosition; }
 
     public void setOldPosition(Vector2 v) {oldPosition.set(v); }
@@ -96,6 +98,10 @@ public class ShipModel extends CapsuleObstacle{
     public float getOrbitDistance() {return orbitDistance; }
 
     public void setOrbitDistance(float f) {orbitDistance = f; }
+
+    public float getCommandSpawn(){return commandSpawn;}
+
+    public void setCommandSpawn(float c){commandSpawn = c;}
 
 
     public boolean isExploding() {return exploding;}
@@ -171,7 +177,7 @@ public class ShipModel extends CapsuleObstacle{
     }
 
     //Creates a Ship with predetermined width and height at given position.
-    public ShipModel(float x, float y, float t, String s, String d){
+    public ShipModel(float x, float y, float t, String s, String d, float cPlanetSpawn){
         super(x, y, M_WIDTH, M_HEIGHT);
         setFixedRotation(true);
         type = t;
@@ -183,6 +189,7 @@ public class ShipModel extends CapsuleObstacle{
         delay=0;
         range = AGGRO_RANGE;
         orbitDistance = 3;
+        setCommandSpawn(cPlanetSpawn);
     }
 
 
