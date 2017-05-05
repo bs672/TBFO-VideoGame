@@ -732,7 +732,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The restitution for all physics objects */
     protected static final float  BASIC_RESTITUTION = 0.1f;
     /** The damage of the bullet */
-    protected static final float  BULLET_DAMAGE = -0.00f;
+    protected static final float  BULLET_DAMAGE = -0.04f;
     /** The volume for sound effects */
     protected static final float EFFECT_VOLUME = 0.8f;
 
