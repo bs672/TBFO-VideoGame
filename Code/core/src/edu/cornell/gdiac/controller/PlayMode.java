@@ -45,7 +45,6 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     /** The texture file for the character avatar (no animation) */
-
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/OobGrowing.png";
@@ -54,7 +53,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/OobFull.png";
-
 
     /** The texture file for the planets */
     protected static final String BLUE_P_1 = "space/planets/blue.png";
@@ -858,7 +856,6 @@ public class PlayMode extends WorldController implements ContactListener {
         messageCounter = 0;
         lastHoverPlanet = new boolean[3];
         InputController.getInstance().setCenterCamera(true);
-
     }
 
     /**
