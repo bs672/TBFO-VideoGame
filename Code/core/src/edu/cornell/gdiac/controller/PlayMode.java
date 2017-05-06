@@ -312,6 +312,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final float EPSILON = 0.1f;
     protected static final int THRESHOLD = 4;
     protected static final int ADJUST_COOLDOWN = 60;
+    protected static final float CONVERT_TIME = 500;
 
     // A variable for tracking elapsed time for the animation
 
@@ -413,8 +414,10 @@ public class PlayMode extends WorldController implements ContactListener {
     protected boolean playerControl;
     // a counter for displaying win/lose message
     protected int messageCounter;
-    // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won
+    // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won, 3 = stuck
     protected int gameState;
+    // number of ships converted
+    protected int converted;
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
@@ -855,6 +858,7 @@ public class PlayMode extends WorldController implements ContactListener {
         gameState = 0;
         messageCounter = 0;
         lastHoverPlanet = new boolean[3];
+        converted = 0;
         InputController.getInstance().setCenterCamera(true);
     }
 
@@ -902,6 +906,7 @@ public class PlayMode extends WorldController implements ContactListener {
         gameState = 0;
         messageCounter = 0;
         jumpTime = 0;
+        converted = 0;
         lastHoverPlanet = new boolean[3];
     }
 
@@ -1637,11 +1642,12 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopConvertPlanet() {
         for (int i = 0; i < planets.size; i++) {
             if (planets.get(i).getType() != 1) {
-                if (planets.get(i).getConvert() > 500) {
+                if (planets.get(i).getConvert() > CONVERT_TIME) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
+                    converted++;
                 }
             }
         }
@@ -2103,6 +2109,9 @@ public class PlayMode extends WorldController implements ContactListener {
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
+        if (LEVEL.equals("Mother") && converted == 0) {
+            gameState = 3;
+        }
         if (gameState == 0) {
             scrollText();
             scrollStars(stars,LG_SPEED, LG_SCROLL_SPEED,backgroundLG,LG_S_X_START,LG_S_Y_START);
@@ -2180,9 +2189,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (screenSwitch()) {
                     return;
                 }
-
                 groundPlayerControls();
-
                 if (!play) {
                     hover();
                 }
@@ -2331,6 +2338,13 @@ public class PlayMode extends WorldController implements ContactListener {
             shootBullet();
             if (adjustCooldown > 0) {
                 adjustCooldown--;
+            }
+        }
+        else if (gameState == 3) {
+            scrollScreen();
+            loopConvertPlanet();
+            if (converted >= 1) {
+                gameState = 0;
             }
         }
         else {
