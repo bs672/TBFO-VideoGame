@@ -310,7 +310,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final float DEATH_RADIUS = MIN_RADIUS*2/3;
     protected static final float OOB_DEATH_RADIUS = 0.56f;
     protected static final float OOB_WARNING_RADIUS = .85f;
-    protected static final float OOB_MAX_RADIUS = 2.0f;
+    protected static final float OOB_MAX_RADIUS = 2.5f;
     protected static final float EPSILON = 0.1f;
     protected static final int THRESHOLD = 4;
     protected static final int ADJUST_COOLDOWN = 60;
@@ -2555,11 +2555,11 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y,   stars.get(15).x, stars.get(15).y);
         canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y,   stars.get(17).x, stars.get(17).y);
 
-        if (LEVEL.contains("T")){
-            canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight()-(reset_Texture.getRegionHeight()/4))-5,reset_Texture.getRegionWidth()/4,reset_Texture.getRegionHeight()/4);
-            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth()-pause_Texture.getRegionWidth()/4-5, (canvas.getHeight()-(reset_Texture.getRegionHeight()/4))-5,pause_Texture.getRegionWidth()/4,pause_Texture.getRegionHeight()/4);
+    if (play) {
+        canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+        canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+    }
 
-        }
         canvas.end();
     }
 
