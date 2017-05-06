@@ -185,7 +185,6 @@ public class AIController {
             }
         }
     }
-
     public void findBigPlanet(ShipModel s) {
         PlanetModel bigPlanet = planets.get(0);
         for (int j = 0; j < planets.size; j++) {
@@ -195,7 +194,6 @@ public class AIController {
         }
         targetPlanets.put(s, bigPlanet);
     }
-
     /**
      * try to get into orbit of target planet
      *
@@ -277,7 +275,6 @@ public class AIController {
             }
         }
     }
-
     //Shoots if the ship is in range of oob
     public void shootInRange(ShipModel s){
         if (s.getType() != 2) {
@@ -306,16 +303,19 @@ public class AIController {
             }
         }
     }
-
     // Convert if ship is in range
     public void convertInRange(ShipModel s){
         if (s.getInOrbit()) {
             if (targetPlanets.get(s).getType() != 1) {
                 targetPlanets.get(s).convert(s.getCommandSpawn());
+
+            }
+            else {
+                targetPlanets.remove(s);
+                findBigPlanet(s);
             }
         }
     }
-
     public void aggroPathfind(ShipModel s) {
         tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
         tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);

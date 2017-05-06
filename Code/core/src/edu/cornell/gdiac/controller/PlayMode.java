@@ -1159,7 +1159,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(pink_P_3_Texture);
                     }
                 }
-
                 //Red Planets
                 if (ii % 7 == 6) {
                     double rand=Math.random();
@@ -1173,7 +1172,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(red_P_3_Texture);
                     }
                 }
-
                 if (LEVEL.contains("T")) {
                     obj.setTexture(grow_P_Texture);
                 }
@@ -1203,10 +1201,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.setTexture(neutral_P_Texture);
                 }
             }
-
             addObject(obj);
             planets.add(obj);
-
         }
 
         // Create black holes
@@ -2339,26 +2335,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 adjustCooldown--;
             }
         }
-        else if (gameState == 3) {
-            if(InputController.getInstance().getCenterCamera())
-                scrollScreen();
-            else {
-                unlockedScrollScreen();
-            }
-            width = canvas.getWidth() / 32;
-            height = canvas.getHeight() / 18;
-            if (InputController.getInstance().getChange()) {
-                if (control == 1) {
-                    control = 0;
-                } else {
-                    control = 1;
-                }
-            }
-            loopConvertPlanet();
-            if (converted >= 1) {
-                gameState = 0;
-            }
-        }
         else {
             if (ships.size>0) {
                 for (ShipModel sh : ships) {
@@ -2591,7 +2567,10 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void drawObjects(){
-
+        Color Tint = Color.WHITE;
+        if (gameState != 0) {
+            Tint = Color.GRAY;
+        }
         for (Obstacle obj : objects) {
 
             if (obj.getName().equals("ComplexOob")) {
@@ -2709,7 +2688,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             else {
                 canvas.begin();
                 obj.draw(canvas);

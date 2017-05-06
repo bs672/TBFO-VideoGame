@@ -22,8 +22,8 @@ public class LevelSelect extends PlayMode {
             {12.8f, 15f, 1.1f, 3f},    // BACK
             {9f, 3.5f, 1.1f, 3f},  // MAIN MENU
             {23f, 3.5f, 1.1f, 3f},   // SETTINGS
-            {13f, 3.5f, 1.1f, 3f},   // PREV LEVELS
-            {19.1f, 3.5f, 1.1f, 3f},   // NEXT LEVELS
+            {13.3f, 3.3f, 1.1f, 3f},   // PREV LEVELS
+            {18.3f, 3.3f, 1.1f, 3f},   // NEXT LEVELS
 
             {7.8f, 7f, 1.1f, 3f},    // LEVEL 1
             {7.52f, 10.5f, 1.1f, 3f},    // LEVEL 2
