@@ -1621,14 +1621,29 @@ public class PlayMode extends WorldController implements ContactListener {
                     aiController.findBigPlanet(sh);
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
-                    if(i <= 4)
-                        sh.setOrbitDistance(3.5f);
-                    else if(i <= 20 && i % 2 == 0)
-                        sh.setOrbitDistance(3.5f);
-                    else if(i <= 36 && i % 2 == 0)
-                        sh.setOrbitDistance(4.5f);
+                    if(i <= 2) {
+                        c.getShips().get(i).setOrbitDistance(3.5f);
+                        aiController.setTarget(c.getShips().get(i), c);
+                    }
+                    else if(i <= 6 && i % 2 == 0) {
+                        c.getShips().get(i).setOrbitDistance(3.5f);
+                        aiController.setTarget(c.getShips().get(i), c);
+                    }
+                    else if(i <= 14 && i % 2 == 0) {
+                        c.getShips().get(i).setOrbitDistance(4.5f);
+                        aiController.setTarget(c.getShips().get(i), c);
+                    }
                     else {
-                        aiController.setTarget(sh, planets.get((int)(Math.random()*planets.size)));
+                        int start = c.getLastPlanetSentTo() + 1;
+                        Vector2 dist;
+                        for(int j = 0; j < planets.size; j++) {
+                            dist = c.getPosition().cpy().sub(planets.get((j+start) % planets.size).getPosition());
+                            if(dist.len() < 60 && planets.get((j+start) % planets.size).getType() != 1) {
+                                c.setLastPlanetSentTo((j + start) % planets.size);
+                                aiController.setTarget(c.getShips().get(i), planets.get((j + start) % planets.size));
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -1868,7 +1883,7 @@ public class PlayMode extends WorldController implements ContactListener {
         if(currentPlanet.getType() == 0)
             suckSpeed = SIPHON*2;
         else
-            suckSpeed = SIPHON;
+            suckSpeed = SIPHON*2;
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
         if(currentPlanet.getType() == 0) {
@@ -2197,7 +2212,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                 }
                 // checking to make sure he doesn't go inside out
-                complexAvatar.checkForInsideOut(currentPlanet.getRadius()*2, vecToCenter);
+                            complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
                 if (converted > 0 || !LEVEL.equals("Mother")) {
                     if (jump) {
                         if (!play) {
@@ -2227,7 +2242,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         }
                     }
                 }
-                complexAvatar.checkForInsideOut(0, Vector2.Zero);
             } else if (currentPlanet == null) { // we’re floating in space
                 complexAvatar.setFlying(true);
                 jumpTime++;
@@ -2270,9 +2284,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setLinearVelocity(projBOnA);
                 }
 
-                if (complexAvatar.getCenter().getLinearVelocity().len() < 5)
-                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(5));
+                if (complexAvatar.getCenter().getLinearVelocity().len() < 6)
+                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(6));
                 findPlanet();
+                complexAvatar.checkForInsideOut(0, Vector2.Zero);
             }
 
             if (complexAvatar.getRadius() <= OOB_WARNING_RADIUS) {

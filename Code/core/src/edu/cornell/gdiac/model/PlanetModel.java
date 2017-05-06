@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import edu.cornell.gdiac.view.GameCanvas;
@@ -40,6 +41,9 @@ public class PlanetModel extends WheelObstacle{
 
     private int spawnCooldown = SPAWN_COOLDOWN;
 
+    // the last planet we sent a ship to patrol
+    private int lastPlanetSentTo;
+
     public boolean canSpawn(){
         if (type==1f) {
             if(spawnCooldown>0) {
@@ -55,6 +59,10 @@ public class PlanetModel extends WheelObstacle{
             return false;
         }
     }
+
+    public void setLastPlanetSentTo(int f) {lastPlanetSentTo = f; }
+
+    public int getLastPlanetSentTo() {return lastPlanetSentTo; }
 
     public void setCooldown(int s){SPAWN_COOLDOWN = s; spawnCooldown = s;}
 
@@ -217,6 +225,7 @@ public class PlanetModel extends WheelObstacle{
         becomingCommand = 0;
         ships = new Array<ShipModel>();
         setName("Planet");
+        lastPlanetSentTo = 0;
     }
 
     /**
