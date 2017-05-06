@@ -45,7 +45,6 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     /** The texture file for the character avatar (no animation) */
-
     protected static final String OOB_NORMAL_FILE =   "space/animations/OobNeutral.png";
     protected static final String OOB_GROWING_FILE = "space/animations/OobGrowing.png";
     protected static final String OOB_COMMAND_FILE = "space/animations/OobGrowing.png";
@@ -54,7 +53,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
     protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/OobFull.png";
-
 
     /** The texture file for the planets */
     protected static final String BLUE_P_1 = "space/planets/blue.png";
@@ -310,10 +308,11 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final float DEATH_RADIUS = MIN_RADIUS*2/3;
     protected static final float OOB_DEATH_RADIUS = 0.56f;
     protected static final float OOB_WARNING_RADIUS = .85f;
-    protected static final float OOB_MAX_RADIUS = 2.0f;
+    protected static final float OOB_MAX_RADIUS = 2.5f;
     protected static final float EPSILON = 0.1f;
     protected static final int THRESHOLD = 4;
     protected static final int ADJUST_COOLDOWN = 60;
+    protected static final float CONVERT_TIME = 500;
 
     // A variable for tracking elapsed time for the animation
 
@@ -415,8 +414,10 @@ public class PlayMode extends WorldController implements ContactListener {
     protected boolean playerControl;
     // a counter for displaying win/lose message
     protected int messageCounter;
-    // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won
+    // the win/lose state of the game. 0 = regular, 1 = lost, 2 = won, 3 = stuck
     protected int gameState;
+    // number of ships converted
+    protected int converted;
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
@@ -857,8 +858,8 @@ public class PlayMode extends WorldController implements ContactListener {
         gameState = 0;
         messageCounter = 0;
         lastHoverPlanet = new boolean[3];
+        converted = 0;
         InputController.getInstance().setCenterCamera(true);
-
     }
 
     /**
@@ -905,6 +906,7 @@ public class PlayMode extends WorldController implements ContactListener {
         gameState = 0;
         messageCounter = 0;
         jumpTime = 0;
+        converted = 0;
         lastHoverPlanet = new boolean[3];
     }
 
@@ -1655,11 +1657,12 @@ public class PlayMode extends WorldController implements ContactListener {
     public void loopConvertPlanet() {
         for (int i = 0; i < planets.size; i++) {
             if (planets.get(i).getType() != 1) {
-                if (planets.get(i).getConvert() > 500) {
+                if (planets.get(i).getConvert() > CONVERT_TIME) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
+                    converted++;
                 }
             }
         }
@@ -2198,9 +2201,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (screenSwitch()) {
                     return;
                 }
-
                 groundPlayerControls();
-
                 if (!play) {
                     hover();
                 }
@@ -2215,32 +2216,34 @@ public class PlayMode extends WorldController implements ContactListener {
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                 }
                 // checking to make sure he doesn't go inside out
-                complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
-                if (jump) {
-                    if (!play) {
-                        if (clickScreenSwitch()) {
-                            return;
+                            complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
+                if (converted > 0 || !LEVEL.equals("Mother")) {
+                    if (jump) {
+                        if (!play) {
+                            if (clickScreenSwitch()) {
+                                return;
+                            }
                         }
-                    }
-                    jump();
-                } else {
-                    rad = currentPlanet.getRadius();
-                    float Oob_rad = complexAvatar.getRadius();
-                    if ((rad > DEATH_RADIUS &&
-                            ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                                    || (currentPlanet.getType() == 1f)))) {
-                        siphonPlanet();
-                    } else if (Oob_rad >= OOB_MAX_RADIUS) {
-                        complexAvatar.setMax(true);
-                    } else if (currentPlanet.getType() == 2f) {
-                        changeMass(POISON);
-                    }
-                    if (complexAvatar.getLinearVelocity().len() < 7) {
-                        moveAroundPlanet();
-                    }
-                    if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
-                        lastPlanet = currentPlanet;
-                        currentPlanet = null;
+                        jump();
+                    } else {
+                        rad = currentPlanet.getRadius();
+                        float Oob_rad = complexAvatar.getRadius();
+                        if ((rad > DEATH_RADIUS &&
+                                ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
+                                        || (currentPlanet.getType() == 1f)))) {
+                            siphonPlanet();
+                        } else if (Oob_rad >= OOB_MAX_RADIUS) {
+                            complexAvatar.setMax(true);
+                        } else if (currentPlanet.getType() == 2f) {
+                            changeMass(POISON);
+                        }
+                        if (complexAvatar.getLinearVelocity().len() < 7) {
+                            moveAroundPlanet();
+                        }
+                        if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
+                            lastPlanet = currentPlanet;
+                            currentPlanet = null;
+                        }
                     }
                 }
             } else if (currentPlanet == null) { // we’re floating in space
@@ -2349,6 +2352,26 @@ public class PlayMode extends WorldController implements ContactListener {
             shootBullet();
             if (adjustCooldown > 0) {
                 adjustCooldown--;
+            }
+        }
+        else if (gameState == 3) {
+            if(InputController.getInstance().getCenterCamera())
+                scrollScreen();
+            else {
+                unlockedScrollScreen();
+            }
+            width = canvas.getWidth() / 32;
+            height = canvas.getHeight() / 18;
+            if (InputController.getInstance().getChange()) {
+                if (control == 1) {
+                    control = 0;
+                } else {
+                    control = 1;
+                }
+            }
+            loopConvertPlanet();
+            if (converted >= 1) {
+                gameState = 0;
             }
         }
         else {
@@ -2574,11 +2597,11 @@ public class PlayMode extends WorldController implements ContactListener {
         canvas.draw(backgroundLG, Color.WHITE, stars.get(14).x, stars.get(14).y,   stars.get(15).x, stars.get(15).y);
         canvas.draw(backgroundLG, Color.WHITE, stars.get(16).x, stars.get(16).y,   stars.get(17).x, stars.get(17).y);
 
-        if (LEVEL.contains("T")){
-            canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight()-(reset_Texture.getRegionHeight()/4))-5,reset_Texture.getRegionWidth()/4,reset_Texture.getRegionHeight()/4);
-            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth()-pause_Texture.getRegionWidth()/4-5, (canvas.getHeight()-(reset_Texture.getRegionHeight()/4))-5,pause_Texture.getRegionWidth()/4,pause_Texture.getRegionHeight()/4);
+    if (play) {
+        canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+        canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+    }
 
-        }
         canvas.end();
     }
 

@@ -386,7 +386,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 		canvas.draw(statusFrgLeft,   Color.WHITE, centerX-width/2, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 		if (progress > 0) {
-			float span = progress*(width-2*scale*PROGRESS_CAP)*6;
+			float span = progress*(width-2*scale*PROGRESS_CAP)*10;
 			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP+span, centerY/2, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 			canvas.draw(statusFrgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY/2, span, scale*PROGRESS_HEIGHT);
 		} else {
