@@ -56,7 +56,7 @@ public class PlanetModel extends WheelObstacle{
         }
     }
 
-    public void setCooldown(int s){SPAWN_COOLDOWN = s;}
+    public void setCooldown(int s){SPAWN_COOLDOWN = s; spawnCooldown = s;}
 
     public boolean isDying() {return dying;}
 
@@ -243,9 +243,11 @@ public class PlanetModel extends WheelObstacle{
         setName("Planet");
     }
 
-    public void convert() {
+    public void convert(float c) {
         if (type != 1) {
             becomingCommand++;
+            spawnCooldown = (int)c;
+            SPAWN_COOLDOWN = (int)c;
         }
 //        System.out.println(becomingCommand);
     }
