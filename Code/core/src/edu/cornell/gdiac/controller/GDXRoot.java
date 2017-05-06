@@ -85,30 +85,33 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
-		controllers = new WorldController[20];
+		controllers = new WorldController[22];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect(16, 0);
+		controllers[2] = new LevelSelect(18, 0);
 		controllers[3] = new PauseMenu();
 		controllers[4] = new PlayMode("T1"); //1
 		controllers[5] = new PlayMode("T2"); //2
 		controllers[6] = new PlayMode("T3 "); //3
 		controllers[7] = new PlayMode("T4"); //4
-		controllers[8] = new PlayMode("1"); //5
-        controllers[9] = new PlayMode("1.5"); //6
+		controllers[8] = new PlayMode("Ship Square"); //5
+        controllers[9] = new PlayMode("Plus"); //6
         controllers[10] = new PlayMode("Sun"); //7
-        controllers[11] = new PlayMode("6"); //8
+        controllers[11] = new PlayMode("Sun Triangle"); //8
         controllers[12] = new PlayMode("BH"); //9
-        controllers[13] = new PlayMode("2"); //10
-        controllers[14] = new PlayMode("3"); //11
-        controllers[15] = new PlayMode("4"); //12
-		controllers[16] = new PlayMode("5"); //13
-        controllers[17] = new PlayMode("7"); //14
-        controllers[18] = new PlayMode("Mother"); //15
-		controllers[19] = new PlayMode("MainScene"); //16
+        controllers[13] = new PlayMode("Mind The Gap"); //10
+        controllers[14] = new PlayMode("X"); //11
+        controllers[15] = new PlayMode("Grid"); //12
+        controllers[16] = new PlayMode("Circles"); //13
+		controllers[17] = new PlayMode("Clam Shell"); //14
+        controllers[18] = new PlayMode("Sun T"); //15
+        controllers[19] = new PlayMode("Dipper"); //16
+        controllers[20] = new PlayMode("Pinball"); //17
+        controllers[21] = new PlayMode("Mother"); //18
 
 
-//		controllers[12] = new PlayMode("Combination");
+
+
 
 
 
