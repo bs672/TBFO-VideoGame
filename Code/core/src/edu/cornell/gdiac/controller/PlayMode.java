@@ -308,7 +308,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final float DEATH_RADIUS = MIN_RADIUS*2/3;
     protected static final float OOB_DEATH_RADIUS = 0.56f;
     protected static final float OOB_WARNING_RADIUS = .85f;
-    protected static final float OOB_MAX_RADIUS = 2.5f;
+    protected static final float OOB_MAX_RADIUS = 2.2f;
     protected static final float EPSILON = 0.1f;
     protected static final int THRESHOLD = 4;
     protected static final int ADJUST_COOLDOWN = 60;
@@ -1159,7 +1159,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(pink_P_3_Texture);
                     }
                 }
-
                 //Red Planets
                 if (ii % 7 == 6) {
                     double rand=Math.random();
@@ -1173,8 +1172,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(red_P_3_Texture);
                     }
                 }
-
-                if (LEVEL.contains("T")) {
+                if (LEVEL== "T1" || LEVEL== "T2" || LEVEL== "T3" || LEVEL== "T4") {
                     obj.setTexture(grow_P_Texture);
                 }
             }
@@ -1203,10 +1201,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     obj.setTexture(neutral_P_Texture);
                 }
             }
-
             addObject(obj);
             planets.add(obj);
-
         }
 
         // Create black holes
@@ -1625,14 +1621,29 @@ public class PlayMode extends WorldController implements ContactListener {
                     aiController.findBigPlanet(sh);
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
-                    if(i <= 4)
-                        sh.setOrbitDistance(3.5f);
-                    else if(i <= 20 && i % 2 == 0)
-                        sh.setOrbitDistance(3.5f);
-                    else if(i <= 36 && i % 2 == 0)
-                        sh.setOrbitDistance(4.5f);
+                    if(i <= 2) {
+                        c.getShips().get(i).setOrbitDistance(3.5f);
+                        aiController.setTarget(c.getShips().get(i), c);
+                    }
+                    else if(i <= 6 && i % 2 == 0) {
+                        c.getShips().get(i).setOrbitDistance(3.5f);
+                        aiController.setTarget(c.getShips().get(i), c);
+                    }
+                    else if(i <= 14 && i % 2 == 0) {
+                        c.getShips().get(i).setOrbitDistance(4.5f);
+                        aiController.setTarget(c.getShips().get(i), c);
+                    }
                     else {
-                        aiController.setTarget(sh, planets.get((int)(Math.random()*planets.size)));
+                        int start = c.getLastPlanetSentTo() + 1;
+                        Vector2 dist;
+                        for(int j = 0; j < planets.size; j++) {
+                            dist = c.getPosition().cpy().sub(planets.get((j+start) % planets.size).getPosition());
+                            if(dist.len() < 60 && planets.get((j+start) % planets.size).getType() != 1) {
+                                c.setLastPlanetSentTo((j + start) % planets.size);
+                                aiController.setTarget(c.getShips().get(i), planets.get((j + start) % planets.size));
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -1872,7 +1883,7 @@ public class PlayMode extends WorldController implements ContactListener {
         if(currentPlanet.getType() == 0)
             suckSpeed = SIPHON*2;
         else
-            suckSpeed = SIPHON;
+            suckSpeed = SIPHON*2;
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
         if(currentPlanet.getType() == 0) {
@@ -2201,7 +2212,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                 }
                 // checking to make sure he doesn't go inside out
-                complexAvatar.checkForInsideOut(currentPlanet.getRadius()*2, vecToCenter);
+                            complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
                 if (converted > 0 || !LEVEL.equals("Mother")) {
                     if (jump) {
                         if (!play) {
@@ -2231,7 +2242,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         }
                     }
                 }
-                complexAvatar.checkForInsideOut(0, Vector2.Zero);
             } else if (currentPlanet == null) { // we’re floating in space
                 complexAvatar.setFlying(true);
                 jumpTime++;
@@ -2274,9 +2284,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setLinearVelocity(projBOnA);
                 }
 
-                if (complexAvatar.getCenter().getLinearVelocity().len() < 5)
-                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(5));
+                if (complexAvatar.getCenter().getLinearVelocity().len() < 6)
+                    complexAvatar.setLinearVelocity(complexAvatar.getCenter().getLinearVelocity().cpy().nor().scl(6));
                 findPlanet();
+                complexAvatar.checkForInsideOut(0, Vector2.Zero);
             }
 
             if (complexAvatar.getRadius() <= OOB_WARNING_RADIUS) {
@@ -2337,26 +2348,6 @@ public class PlayMode extends WorldController implements ContactListener {
             shootBullet();
             if (adjustCooldown > 0) {
                 adjustCooldown--;
-            }
-        }
-        else if (gameState == 3) {
-            if(InputController.getInstance().getCenterCamera())
-                scrollScreen();
-            else {
-                unlockedScrollScreen();
-            }
-            width = canvas.getWidth() / 32;
-            height = canvas.getHeight() / 18;
-            if (InputController.getInstance().getChange()) {
-                if (control == 1) {
-                    control = 0;
-                } else {
-                    control = 1;
-                }
-            }
-            loopConvertPlanet();
-            if (converted >= 1) {
-                gameState = 0;
             }
         }
         else {
@@ -2591,7 +2582,10 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void drawObjects(){
-
+        Color Tint = Color.WHITE;
+        if (gameState != 0) {
+            Tint = Color.GRAY;
+        }
         for (Obstacle obj : objects) {
 
             if (obj.getName().equals("ComplexOob")) {
@@ -2709,7 +2703,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             else {
                 canvas.begin();
                 obj.draw(canvas);

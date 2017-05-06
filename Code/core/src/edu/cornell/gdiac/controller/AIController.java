@@ -108,7 +108,7 @@ public class AIController {
                 if(!s.getAggroed())
                     s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
                 else
-                    s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange() + 1);
+                    s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
                 if (s.getAggroed()) {
                     aggroPathfind(s);
                 } else
@@ -139,6 +139,10 @@ public class AIController {
             else if(InputController.getInstance().getScrollRight()) {
                 desiredVector.x += PlayMode.SCROLL_SPEED;
             }
+
+            if(desiredVector.len() < 0.01)
+                desiredVector = avatar.getPosition().cpy().sub(s.getPosition());
+
             float desiredAngle = (float)(Math.atan2(desiredVector.y, desiredVector.x) - Math.PI / 2);
 
             if(desiredAngle < 0)
@@ -185,7 +189,6 @@ public class AIController {
             }
         }
     }
-
     public void findBigPlanet(ShipModel s) {
         PlanetModel bigPlanet = planets.get(0);
         for (int j = 0; j < planets.size; j++) {
@@ -195,7 +198,6 @@ public class AIController {
         }
         targetPlanets.put(s, bigPlanet);
     }
-
     /**
      * try to get into orbit of target planet
      *
@@ -277,7 +279,6 @@ public class AIController {
             }
         }
     }
-
     //Shoots if the ship is in range of oob
     public void shootInRange(ShipModel s){
         if (s.getType() != 2) {
@@ -306,20 +307,22 @@ public class AIController {
             }
         }
     }
-
     // Convert if ship is in range
     public void convertInRange(ShipModel s){
         if (s.getInOrbit()) {
             if (targetPlanets.get(s).getType() != 1) {
                 targetPlanets.get(s).convert(s.getCommandSpawn());
+
+            }
+            else {
+                targetPlanets.remove(s);
+                findBigPlanet(s);
             }
         }
     }
-
     public void aggroPathfind(ShipModel s) {
-        tempVec1.set(avatar.getPosition().cpy().sub(s.getPosition()));
-        tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
         shootInRange(s);
+        tempVec1.set(Float.MAX_VALUE, Float.MAX_VALUE);
         int closestPlanet = 0;
         for (int i = 0; i < planets.size; i++) {
             tempVec2.set(planets.get(i).getPosition().cpy().sub(s.getPosition()));
@@ -329,7 +332,8 @@ public class AIController {
                 closestPlanet = i;
             }
         }
-        if(tempVec1.len() < planets.get(closestPlanet).getRadius() + s.getOrbitDistance()) {
+        // this if statement is so that the currently spawning ships don't stop immediately and start shooting Oob
+        if(tempVec1.len() < planets.get(closestPlanet).getRadius() + s.getOrbitDistance() && planets.get(closestPlanet).getType() == 1) {
             peacefulPathfind(s);
             return;
         }
@@ -368,8 +372,8 @@ public class AIController {
         }
         // slowing down to not ram into Oob
         else {
-            s.setVX(s.getVX()*0.75f);
-            s.setVY(s.getVY()*0.75f);
+            s.setVX(s.getVX()*0.7f);
+            s.setVY(s.getVY()*0.7f);
         }
     }
 
