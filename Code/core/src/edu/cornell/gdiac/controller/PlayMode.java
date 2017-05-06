@@ -2109,9 +2109,6 @@ public class PlayMode extends WorldController implements ContactListener {
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
-        if (LEVEL.equals("Mother") && converted == 0) {
-            gameState = 3;
-        }
         if (gameState == 0) {
             scrollText();
             scrollStars(stars,LG_SPEED, LG_SCROLL_SPEED,backgroundLG,LG_S_X_START,LG_S_Y_START);
@@ -2205,31 +2202,33 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 // checking to make sure he doesn't go inside out
                 complexAvatar.checkForInsideOut(currentPlanet.getRadius()*2, vecToCenter);
-                if (jump) {
-                    if (!play) {
-                        if (clickScreenSwitch()) {
-                            return;
+                if (converted > 0 || !LEVEL.equals("Mother")) {
+                    if (jump) {
+                        if (!play) {
+                            if (clickScreenSwitch()) {
+                                return;
+                            }
                         }
-                    }
-                    jump();
-                } else {
-                    rad = currentPlanet.getRadius();
-                    float Oob_rad = complexAvatar.getRadius();
-                    if ((rad > DEATH_RADIUS &&
-                            ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                                    || (currentPlanet.getType() == 1f)))) {
-                        siphonPlanet();
-                    } else if (Oob_rad >= OOB_MAX_RADIUS) {
-                        complexAvatar.setMax(true);
-                    } else if (currentPlanet.getType() == 2f) {
-                        changeMass(POISON);
-                    }
-                    if (complexAvatar.getLinearVelocity().len() < 7) {
-                        moveAroundPlanet();
-                    }
-                    if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
-                        lastPlanet = currentPlanet;
-                        currentPlanet = null;
+                        jump();
+                    } else {
+                        rad = currentPlanet.getRadius();
+                        float Oob_rad = complexAvatar.getRadius();
+                        if ((rad > DEATH_RADIUS &&
+                                ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
+                                        || (currentPlanet.getType() == 1f)))) {
+                            siphonPlanet();
+                        } else if (Oob_rad >= OOB_MAX_RADIUS) {
+                            complexAvatar.setMax(true);
+                        } else if (currentPlanet.getType() == 2f) {
+                            changeMass(POISON);
+                        }
+                        if (complexAvatar.getLinearVelocity().len() < 7) {
+                            moveAroundPlanet();
+                        }
+                        if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
+                            lastPlanet = currentPlanet;
+                            currentPlanet = null;
+                        }
                     }
                 }
                 complexAvatar.checkForInsideOut(0, Vector2.Zero);
@@ -2341,7 +2340,20 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         else if (gameState == 3) {
-            scrollScreen();
+            if(InputController.getInstance().getCenterCamera())
+                scrollScreen();
+            else {
+                unlockedScrollScreen();
+            }
+            width = canvas.getWidth() / 32;
+            height = canvas.getHeight() / 18;
+            if (InputController.getInstance().getChange()) {
+                if (control == 1) {
+                    control = 0;
+                } else {
+                    control = 1;
+                }
+            }
             loopConvertPlanet();
             if (converted >= 1) {
                 gameState = 0;
