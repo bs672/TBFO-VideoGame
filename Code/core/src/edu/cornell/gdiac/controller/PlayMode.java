@@ -2708,8 +2708,10 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         if (play) {
+            canvas.begin();
             canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
             canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.end();
         }
 
         if (isDebug()) {
