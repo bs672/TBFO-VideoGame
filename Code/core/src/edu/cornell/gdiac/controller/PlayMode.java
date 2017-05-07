@@ -115,6 +115,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String RESET= "space/background/reset.png";
 
+    protected static final String ARROW= "space/background/arrow.png";
+
     protected static final String PAUSE= "space/background/pause.png";
 
     protected static final String GROW_P= "space/planets/growPlanet.png";
@@ -337,6 +339,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion red_P_1_Texture;    protected TextureRegion red_P_2_Texture;    protected TextureRegion red_P_3_Texture;
     protected TextureRegion mouse_Texture;    protected TextureRegion wasd_Texture;    protected TextureRegion spacebar_Texture;
     protected TextureRegion reset_Texture;    protected TextureRegion pause_Texture;
+    protected TextureRegion arrow_Texture;
     protected TextureRegion grow_P_Texture;    protected TextureRegion shrink_P_Texture;
     protected TextureRegion asteroid_Texture;
 
@@ -527,6 +530,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(SPACEBAR, Texture.class);      assets.add(SPACEBAR);
         manager.load(PAUSE, Texture.class);         assets.add(PAUSE);
         manager.load(RESET, Texture.class);         assets.add(RESET);
+        manager.load(ARROW, Texture.class);         assets.add(ARROW);
         manager.load(GROW_P, Texture.class);         assets.add(GROW_P);
         manager.load(SHRINK_P, Texture.class);         assets.add(SHRINK_P);
 
@@ -635,6 +639,7 @@ public class PlayMode extends WorldController implements ContactListener {
         spacebar_Texture = createTexture(manager, SPACEBAR, false);
         pause_Texture = createTexture(manager, PAUSE, false);
         reset_Texture = createTexture(manager, RESET, false);
+        arrow_Texture = createTexture(manager, ARROW, false);
         grow_P_Texture = createTexture(manager, GROW_P, false);
         shrink_P_Texture = createTexture(manager, SHRINK_P, false);
 
@@ -1621,16 +1626,25 @@ public class PlayMode extends WorldController implements ContactListener {
                     aiController.findBigPlanet(sh);
                 c.addShip(sh);
                 for(int i = 0; i < c.getShips().size; i++) {
+                    ShipModel s = c.getShips().get(i);
+                    if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
+                        continue;
+                    }
+                    else if(aiController.getShipTarget(s).getType() != 1) {
+                        aiController.setTarget(s, c);
+                        continue;
+                    }
+                    
                     if(i <= 2) {
-                        c.getShips().get(i).setOrbitDistance(3.5f);
+                        s.setOrbitDistance(3.5f);
                         aiController.setTarget(c.getShips().get(i), c);
                     }
                     else if(i <= 6 && i % 2 == 0) {
-                        c.getShips().get(i).setOrbitDistance(3.5f);
+                        s.setOrbitDistance(3.5f);
                         aiController.setTarget(c.getShips().get(i), c);
                     }
                     else if(i <= 14 && i % 2 == 0) {
-                        c.getShips().get(i).setOrbitDistance(4.5f);
+                        s.setOrbitDistance(4.5f);
                         aiController.setTarget(c.getShips().get(i), c);
                     }
                     else {
@@ -1640,7 +1654,7 @@ public class PlayMode extends WorldController implements ContactListener {
                             dist = c.getPosition().cpy().sub(planets.get((j+start) % planets.size).getPosition());
                             if(dist.len() < 60 && planets.get((j+start) % planets.size).getType() != 1) {
                                 c.setLastPlanetSentTo((j + start) % planets.size);
-                                aiController.setTarget(c.getShips().get(i), planets.get((j + start) % planets.size));
+                                aiController.setTarget(s, planets.get((j + start) % planets.size));
                                 break;
                             }
                         }
@@ -2708,8 +2722,25 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         if (play) {
+            canvas.begin();
             canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
             canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+            Vector2 toCommand = new Vector2();
+            for(PlanetModel c : commandPlanets) {
+                toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
+                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + c.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + c.getRadius()) {
+                    toCommand.nor();
+                    if(((float)canvas.getWidth()/80-0.5f)/Math.abs(toCommand.x) < ((float)canvas.getHeight()/80-0.5f)/Math.abs(toCommand.y))
+                        toCommand.scl(((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x));
+                    else
+                        toCommand.scl(((float)canvas.getHeight()/80-0.5f)/Math.abs(toCommand.y));
+                    toCommand.scl(40);
+                    float angle = (float)Math.atan2(toCommand.y, toCommand.x);
+                    toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
+                    canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1, 1);
+                }
+            }
+            canvas.end();
         }
 
         if (isDebug()) {

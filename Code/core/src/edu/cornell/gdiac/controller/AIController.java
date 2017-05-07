@@ -48,6 +48,8 @@ public class AIController {
         targetPlanets.put(ship, planet);
     }
 
+    public PlanetModel getShipTarget(ShipModel s) {return targetPlanets.get(s); }
+
     public void addShip(ShipModel ship, PlanetModel planet){
         ships.add(ship);
         targetPlanets.put(ship, planet);
