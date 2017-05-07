@@ -1265,17 +1265,18 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.setRestitution(BASIC_RESTITUTION);
             sh.setDrawScale(scale);
             sh.scalePicScale(new Vector2(.2f, .2f));
+            int tag = -1;
             if (sh.getType() == 2) {
                 sh.scalePicScale(new Vector2(2f, 2f));
             }
             else if (sh.getType() ==1) {
                 sh.scalePicScale(new Vector2(1.5f, 1.5f));
+                tag = (int) ((float) SHIPS.get(ii).get(3));
             }
             sh.setName("ship");
             sh.setGravityScale(0.0f);
             ships.add(sh);
             addObject(sh);
-            int tag = (int) ((float) SHIPS.get(ii).get(3));
             if (tag != -1) {commandPlanets.get(tag).addShip(sh);}
         }
         // Create Oob
@@ -1895,6 +1896,18 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    // Siphon mothership
+    public void siphonShip(ShipModel sh){
+        float oldMass = sh.getMass();
+        float suckSpeed = SIPHON*2/3;
+        float oldWidth = sh.getWidth();
+        float oldHeight = sh.getHeight();
+        sh.setMass(oldMass - suckSpeed);
+        sh.setWidth(oldWidth*(sh.getMass()/oldMass));
+        sh.setHeight(oldHeight*(sh.getMass()/oldMass));
+        sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
+    }
+
     //Make Oob move around the planet
     public void moveAroundPlanet(){
         if (moveDirection == 1) {
@@ -2216,7 +2229,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 // checking to make sure he doesn't go inside out
                             complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
-                if (converted > 0 || !LEVEL.equals("Mother")) {
+                if (converted >= 0 || !LEVEL.equals("Mother")) {
                     if (jump) {
                         if (!play) {
                             if (clickScreenSwitch()) {
@@ -2423,8 +2436,17 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(BULLET_DAMAGE);
                 }
                 else if (bd2.getName().equals("ship")) {
-                    bd2.markRemoved(true);
-                    aiController.removeShip((ShipModel)bd2);
+                    if (((ShipModel)bd2).getType() == 2) {
+                        siphonShip((ShipModel)bd2);
+                        if (bd2.getMass() < 2.5f) {
+                            bd2.markRemoved(true);
+                            aiController.removeShip((ShipModel)bd2);
+                        }
+                    }
+                    else {
+                        bd2.markRemoved(true);
+                        aiController.removeShip((ShipModel)bd2);
+                    }
                 }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
@@ -2456,8 +2478,17 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(BULLET_DAMAGE);
                 }
                 else if (bd1.getName().equals("ship")) {
-                    bd1.markRemoved(true);
-                    aiController.removeShip((ShipModel)bd1);
+                    if (((ShipModel)bd1).getType() == 2) {
+                        siphonShip((ShipModel)bd1);
+                        if (bd1.getMass() < 2.5f) {
+                            bd1.markRemoved(true);
+                            aiController.removeShip((ShipModel)bd1);
+                        }
+                    }
+                    else {
+                        bd1.markRemoved(true);
+                        aiController.removeShip((ShipModel)bd1);
+                    }
                 }
                 else if(bd1.getName().equals("expulsion")) {
                     bd1.markRemoved(true);
@@ -2704,15 +2735,12 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.end();
             }
         }
-<<<<<<< HEAD
-=======
-
         if (play) {
+            canvas.begin();
             canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
             canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.end();
         }
-
->>>>>>> b503e8854631f5846967653f08909b1db56b2353
         if (isDebug()) {
             canvas.beginDebug();
             for (Obstacle obj : objects) {

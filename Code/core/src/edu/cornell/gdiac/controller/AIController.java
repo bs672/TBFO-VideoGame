@@ -152,9 +152,11 @@ public class AIController {
                 difference += 2*Math.PI;
             else if(difference > Math.PI)
                 difference -= 2*Math.PI;
-            s.setAngle(s.getAngle() + difference / 10);
-            if(s.getAngle() >= Math.PI * 2)
-                s.setAngle(s.getAngle() - (float)Math.PI * 2);
+            if (s.getType() != 2 || !s.getInOrbit()) {
+                s.setAngle(s.getAngle() + difference / 10);
+                if (s.getAngle() >= Math.PI * 2)
+                    s.setAngle(s.getAngle() - (float) Math.PI * 2);
+            }
             s.setOldPosition(s.getPosition());
         }
     }
@@ -211,7 +213,11 @@ public class AIController {
             targetPlanets.put(s, planets.get((int)(Math.random()*planets.size)));
         }
         if(s.getInOrbit()) {
-            peacefulPathfind(s);
+            if (s.getType() != 2) {peacefulPathfind(s);}
+            else {
+                s.setLinearVelocity(new Vector2(0f,0f));
+                s.setAngularVelocity(0f);
+            }
         }
         else {
             int cloPl = -1;
@@ -310,9 +316,16 @@ public class AIController {
     // Convert if ship is in range
     public void convertInRange(ShipModel s){
         if (s.getInOrbit()) {
+            s.setAngularVelocity(0f);
+            s.setLinearVelocity(new Vector2(0f,0f));
             if (targetPlanets.get(s).getType() != 1) {
                 targetPlanets.get(s).convert(s.getCommandSpawn());
-
+                tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
+                tempVec1.scl(1f / tempVec1.len());
+                bulletData.add(s.getX() + tempVec1.x);
+                bulletData.add(s.getY() + tempVec1.y);
+                bulletData.add(tempVec1.x * 10);
+                bulletData.add(tempVec1.y * 10);
             }
             else {
                 targetPlanets.remove(s);

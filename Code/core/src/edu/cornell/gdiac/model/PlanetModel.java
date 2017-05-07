@@ -257,6 +257,13 @@ public class PlanetModel extends WheelObstacle{
             becomingCommand++;
             spawnCooldown = (int)c;
             SPAWN_COOLDOWN = (int)c;
+            float oldPlanMass = getMass();
+            float oldRad = getRadius();
+            float suckSpeed = 0.03f;
+            if (getRadius() > 1.2f) {
+                setRadius((float) Math.sqrt((oldPlanMass - suckSpeed) / Math.PI));
+                scalePicScale(new Vector2(getRadius() / oldRad, getRadius() / oldRad));
+            }
         }
 //        System.out.println(becomingCommand);
     }
