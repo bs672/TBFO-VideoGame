@@ -85,10 +85,10 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
-		controllers = new WorldController[22];
+		controllers = new WorldController[23];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect(18, 0);
+		controllers[2] = new LevelSelect(19, 0);
 		controllers[3] = new PauseMenu();
 		controllers[4] = new PlayMode("T1"); //1
 		controllers[5] = new PlayMode("T2"); //2
@@ -99,15 +99,19 @@ public class GDXRoot extends Game implements ScreenListener {
         controllers[10] = new PlayMode("Sun"); //7
         controllers[11] = new PlayMode("Sun Triangle"); //8
         controllers[12] = new PlayMode("BH"); //9
-        controllers[13] = new PlayMode("Mind The Gap"); //10
-        controllers[14] = new PlayMode("X"); //11
-        controllers[15] = new PlayMode("Grid"); //12
-        controllers[16] = new PlayMode("Circles"); //13
-		controllers[17] = new PlayMode("Clam Shell"); //14
-        controllers[18] = new PlayMode("Sun T"); //15
-        controllers[19] = new PlayMode("Dipper"); //16
+        controllers[13] = new PlayMode("Dipper"); //10
+        controllers[14] = new PlayMode("Mind The Gap"); //11
+        controllers[15] = new PlayMode("X"); //12
+        controllers[16] = new PlayMode("Grid"); //13
+        controllers[17] = new PlayMode("Circles"); //14
+		controllers[18] = new PlayMode("Clam Shell"); //15
+        controllers[19] = new PlayMode("Sun T"); //16
         controllers[20] = new PlayMode("Pinball"); //17
         controllers[21] = new PlayMode("Mother"); //18
+
+
+
+        controllers[22] = new PlayMode("FvS"); //19
 
 
 

@@ -1005,11 +1005,18 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(shipType == 2){
                         tempArray.add(Float.parseFloat(custom.substring(6)));
                     }
+                    if(shipType == 1){
+                        if (custom.length() > 7) {
+                            tempArray.add(Float.parseFloat((custom.substring(6,7))));
+                        }
+                        else {
+                            tempArray.add(-1f);
+                        }
+                    }
                 }
                 else{
                     tempArray.add(0.0f);
                 }
-
                 shipArray.add(tempArray);
             }
             else if(objectName.equals("oob2")){
@@ -1065,8 +1072,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * Lays out the game geography.
      */
     private void populateLevel() {
-
-
         // Create Planets
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.size; ii++) {
@@ -1150,7 +1155,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(green_P_3_Texture);
                     }
                 }
-
                 //Pink Planets
                 if (ii % 7 == 5) {
                     double rand=Math.random();
@@ -1266,19 +1270,20 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.setRestitution(BASIC_RESTITUTION);
             sh.setDrawScale(scale);
             sh.scalePicScale(new Vector2(.2f, .2f));
+            int tag = -1;
             if (sh.getType() == 2) {
                 sh.scalePicScale(new Vector2(2f, 2f));
             }
             else if (sh.getType() ==1) {
                 sh.scalePicScale(new Vector2(1.5f, 1.5f));
+                tag = (int) ((float) SHIPS.get(ii).get(3));
             }
-
             sh.setName("ship");
             sh.setGravityScale(0.0f);
             ships.add(sh);
             addObject(sh);
+            if (tag != -1) {commandPlanets.get(tag).addShip(sh);}
         }
-
         // Create Oob
         currentPlanet = planets.get(0); //The first planet is always the starting planet
         complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS);
@@ -1792,7 +1797,6 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
-
     public void scrollStars(Array<Vector2> starArray, float speed, float scrollspeed,TextureRegion background, int Xstart, int Ystart) {
         if (starArray.size>0) {
             if (!InputController.getInstance().getCenterCamera()) {
@@ -1904,6 +1908,18 @@ public class PlayMode extends WorldController implements ContactListener {
             complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
         }
+    }
+
+    // Siphon mothership
+    public void siphonShip(ShipModel sh){
+        float oldMass = sh.getMass();
+        float suckSpeed = SIPHON*2/3;
+        float oldWidth = sh.getWidth();
+        float oldHeight = sh.getHeight();
+        sh.setMass(oldMass - suckSpeed);
+        sh.setWidth(oldWidth*(sh.getMass()/oldMass));
+        sh.setHeight(oldHeight*(sh.getMass()/oldMass));
+        sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
     }
 
     //Make Oob move around the planet
@@ -2227,7 +2243,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 // checking to make sure he doesn't go inside out
                             complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
-                if (converted > 0 || !LEVEL.equals("Mother")) {
+                if (converted >= 0 || !LEVEL.equals("Mother")) {
                     if (jump) {
                         if (!play) {
                             if (clickScreenSwitch()) {
@@ -2434,8 +2450,17 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(BULLET_DAMAGE);
                 }
                 else if (bd2.getName().equals("ship")) {
-                    bd2.markRemoved(true);
-                    aiController.removeShip((ShipModel)bd2);
+                    if (((ShipModel)bd2).getType() == 2) {
+                        siphonShip((ShipModel)bd2);
+                        if (bd2.getMass() < 2.5f) {
+                            bd2.markRemoved(true);
+                            aiController.removeShip((ShipModel)bd2);
+                        }
+                    }
+                    else {
+                        bd2.markRemoved(true);
+                        aiController.removeShip((ShipModel)bd2);
+                    }
                 }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
@@ -2467,8 +2492,17 @@ public class PlayMode extends WorldController implements ContactListener {
                     changeMass(BULLET_DAMAGE);
                 }
                 else if (bd1.getName().equals("ship")) {
-                    bd1.markRemoved(true);
-                    aiController.removeShip((ShipModel)bd1);
+                    if (((ShipModel)bd1).getType() == 2) {
+                        siphonShip((ShipModel)bd1);
+                        if (bd1.getMass() < 2.5f) {
+                            bd1.markRemoved(true);
+                            aiController.removeShip((ShipModel)bd1);
+                        }
+                    }
+                    else {
+                        bd1.markRemoved(true);
+                        aiController.removeShip((ShipModel)bd1);
+                    }
                 }
                 else if(bd1.getName().equals("expulsion")) {
                     bd1.markRemoved(true);
@@ -2627,7 +2661,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
-
                 if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0 && gameState == 0 ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
@@ -2669,7 +2702,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("ship") && !((ShipModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame;
@@ -2684,7 +2716,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("ship") && ((ShipModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((ShipModel) obj).update_EXP_ST();
@@ -2694,7 +2725,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_WARN_ST();
@@ -2704,7 +2734,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_EXP_ST();
@@ -2720,7 +2749,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.end();
             }
         }
-
         if (play) {
             canvas.begin();
             canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
@@ -2742,7 +2770,6 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             canvas.end();
         }
-
         if (isDebug()) {
             canvas.beginDebug();
             for (Obstacle obj : objects) {
@@ -2768,7 +2795,6 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 40, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
-
     }
 
     /**

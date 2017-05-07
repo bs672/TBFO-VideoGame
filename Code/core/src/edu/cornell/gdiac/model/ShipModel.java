@@ -21,7 +21,7 @@ public class ShipModel extends CapsuleObstacle{
     private static final float M_WIDTH = 2.1f;
     private static final float M_HEIGHT = 3.4f;
 
-    private static final float MOTHER_MASS = 1f;
+    private static final float MOTHER_MASS = 5f;
 
     private static final float DAMPING = 5.0f;
     private static final float MOVE_SPEED = 0.1f;
@@ -46,66 +46,33 @@ public class ShipModel extends CapsuleObstacle{
 
     private float commandSpawn = -1;
 
+    public float getMass() {return  mass;}
+    public void setMass(float m) {mass = m;}
     public Vector2 getOldPosition() {return oldPosition; }
-
     public void setOldPosition(Vector2 v) {oldPosition.set(v); }
-
-
     public void setType(float val){type = val;}
-
     public float getType(){return type;}
-
-
     public void setInOrbit(boolean b) {inOrbit = b;}
-
     public boolean getInOrbit() {return inOrbit; }
-
-
     public void setAggroed(boolean b) {aggroed = b; }
-
     public boolean getAggroed() {return aggroed; }
-
-
     public void setAggroRange(float f){range = f;}
-
     public float getAggroRange() {return range; }
-
-
     public void setCooldown(int c) {firingCooldown = c; }
-
     public int getCooldown() {return firingCooldown; }
-
     public void decCooldown() {firingCooldown--; }
-
-
     public void setBurstCount(int b) {burstCount = b; }
-
     public int getBurstCount() {return burstCount; }
-
     public void decBurstCount() {burstCount --; }
-
-
     public void setDelay(int d) {delay = d; }
-
     public int getDelay() {return delay; }
-
     public void decDelay() {delay --; }
-
-
     public float getMoveSpeed() {return MOVE_SPEED; }
-
-
     public float getOrbitDistance() {return orbitDistance; }
-
     public void setOrbitDistance(float f) {orbitDistance = f; }
-
     public float getCommandSpawn(){return commandSpawn;}
-
     public void setCommandSpawn(float c){commandSpawn = c;}
-
-
     public boolean isExploding() {return exploding;}
-
     public void setExploding(boolean bool) {exploding = bool;}
 
     private float EXP_stateTime= -1;
