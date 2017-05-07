@@ -38,12 +38,6 @@ public class MainMenu extends PlayMode {
 
 
     protected static float[][] PLANETS = {
-//            {3.0f, 3.0f, 1.2f, 3f},   // NOTHING
-//            {24, 9f, 1.2f, 3f},  // SETTINGS
-//            {15.5f, 3f, 1.2f, 3f},    // LEVEL SELECT
-//            {7.0f, 4.5f, 1.2f, 3f},   // PLAY
-//            {21.8f, 4.4f, 1.2f, 3f},  // QUIT
-
 
             {3.0f, 3.0f, 1.2f, 3f},   // NOTHING
             {11.5f, 3.8f, 1.2f, 3f},  // SETTINGS

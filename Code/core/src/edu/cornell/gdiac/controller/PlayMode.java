@@ -1000,11 +1000,18 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(shipType == 2){
                         tempArray.add(Float.parseFloat(custom.substring(6)));
                     }
+                    if(shipType == 1){
+                        if (custom.length() > 7) {
+                            tempArray.add(Float.parseFloat((custom.substring(6,7))));
+                        }
+                        else {
+                            tempArray.add(-1f);
+                        }
+                    }
                 }
                 else{
                     tempArray.add(0.0f);
                 }
-
                 shipArray.add(tempArray);
             }
             else if(objectName.equals("oob2")){
@@ -1060,8 +1067,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * Lays out the game geography.
      */
     private void populateLevel() {
-
-
         // Create Planets
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.size; ii++) {
@@ -1145,7 +1150,6 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(green_P_3_Texture);
                     }
                 }
-
                 //Pink Planets
                 if (ii % 7 == 5) {
                     double rand=Math.random();
@@ -1267,13 +1271,13 @@ public class PlayMode extends WorldController implements ContactListener {
             else if (sh.getType() ==1) {
                 sh.scalePicScale(new Vector2(1.5f, 1.5f));
             }
-
             sh.setName("ship");
             sh.setGravityScale(0.0f);
             ships.add(sh);
             addObject(sh);
+            int tag = (int) ((float) SHIPS.get(ii).get(3));
+            if (tag != -1) {commandPlanets.get(tag).addShip(sh);}
         }
-
         // Create Oob
         currentPlanet = planets.get(0); //The first planet is always the starting planet
         complexAvatar = new ComplexOobModel(currentPlanet.getX()+canvas.getWidth()/80f - 0.8f, currentPlanet.getY() + currentPlanet.getRadius()*2+canvas.getHeight()/80f, OOB_RADIUS);
@@ -1777,7 +1781,6 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
     }
-
 
     public void scrollStars(Array<Vector2> starArray, float speed, float scrollspeed,TextureRegion background, int Xstart, int Ystart) {
         if (starArray.size>0) {
@@ -2616,7 +2619,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(4,3);
                 }
-
                 if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0 && gameState == 0 ) {
                     currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
                     ((ComplexOobModel) obj).setAnimDimensions(25,1);
@@ -2658,7 +2660,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("ship") && !((ShipModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame;
@@ -2673,7 +2674,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("ship") && ((ShipModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((ShipModel) obj).update_EXP_ST();
@@ -2683,7 +2683,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isDying() && !((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_WARN_ST();
@@ -2693,7 +2692,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
-
             if (obj.getName().equals("planet") && ((PlanetModel) obj).isExploding()) {
                 // Get current frame of animation for the current stateTime
                 ((PlanetModel) obj).update_EXP_ST();
@@ -2709,7 +2707,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.end();
             }
         }
-
         if (isDebug()) {
             canvas.beginDebug();
             for (Obstacle obj : objects) {
@@ -2735,7 +2732,6 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 40, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
-
     }
 
     /**
