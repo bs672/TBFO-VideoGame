@@ -1777,6 +1777,23 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
+    public void screenLockShip(ShipModel sh) {
+        vecToCenter.set(canvas.getWidth()/80f - sh.getX(), canvas.getHeight()/80f - sh.getY());
+        for (Obstacle o : objects) {
+            if (justLoaded) {
+                o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
+                justLoaded = false;
+            }
+            else {
+                if(o.equals(sh)) {
+                    sh.setPosition(sh.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                }
+                else
+                    o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+            }
+        }
+    }
+
     public void scrollText() {
         if (text.size > 0) {
             if (!InputController.getInstance().getCenterCamera()) {
@@ -2282,6 +2299,14 @@ public class PlayMode extends WorldController implements ContactListener {
                         if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
                             lastPlanet = currentPlanet;
                             currentPlanet = null;
+                        }
+                    }
+                }
+                else {
+                    for (ShipModel sh: ships) {
+                        if (sh.getType() == 2) {
+                            screenLockShip(sh);
+                            return;
                         }
                     }
                 }
