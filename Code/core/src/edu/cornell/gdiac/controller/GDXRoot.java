@@ -109,19 +109,10 @@ public class GDXRoot extends Game implements ScreenListener {
         controllers[20] = new PlayMode("Pinball"); //17
         controllers[21] = new PlayMode("Mother"); //18
 
-
-
         controllers[22] = new PlayMode("FvS"); //19
         controllers[23] = new PlayMode("Portal"); //20
         controllers[24] = new PlayMode("Diamond"); //21
         controllers[25] = new PlayMode("Jump Start"); //22
-
-
-
-
-
-
-
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
@@ -294,8 +285,8 @@ public class GDXRoot extends Game implements ScreenListener {
 			if (screen == controllers[controllers.length - 1]) {
 				lastScreen = controllers.length - 1;
 				lastPlayScreen = controllers.length - 1;
-				current = exitCode;
-				if (exitCode == WorldController.EXIT_NEXT) {
+				current = exitCode%10;
+				if (exitCode == WorldController.EXIT_NEXT || exitCode == 2003) {
 				    current = 2;
                 }
 				controllers[current].reset();
