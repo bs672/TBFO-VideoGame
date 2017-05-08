@@ -1181,7 +1181,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         obj.setTexture(red_P_3_Texture);
                     }
                 }
-                if (LEVEL== "T1" || LEVEL== "T2" || LEVEL== "T3" || LEVEL== "T4") {
+                if (LEVEL== "T1" || LEVEL== "T2" || LEVEL== "T3 ") {
                     obj.setTexture(grow_P_Texture);
                 }
             }
