@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class PlayMode extends WorldController implements ContactListener {
 
-    protected static final TextureRegion[][] WIN_TEXTURES = new TextureRegion[3][2];
+    protected static final TextureRegion[][] WIN_TEXTURES = new TextureRegion[4][2];
     protected static final TextureRegion[][] LOSE_TEXTURES = new TextureRegion[3][2];
     protected Array<PlanetModel> winPlanets;
 
@@ -685,15 +685,15 @@ public class PlayMode extends WorldController implements ContactListener {
         WIN_TEXTURES[0][1] = main_Menu_Hover_Texture;
         WIN_TEXTURES[1][0] = levels_Texture;
         WIN_TEXTURES[1][1] = levels_Hover_Texture;
-        WIN_TEXTURES[2][0] = next_Level;
-        WIN_TEXTURES[2][1] = next_Level_Hover;
-        for (int i = 0; i < 2; i++) {
+        WIN_TEXTURES[2][0] = retry;
+        WIN_TEXTURES[2][1] = retry_hover;
+        WIN_TEXTURES[3][0] = next_Level;
+        WIN_TEXTURES[3][1] = next_Level_Hover;
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
                 LOSE_TEXTURES[i][j] = WIN_TEXTURES[i][j];
             }
         }
-        LOSE_TEXTURES[2][0] = retry;
-        LOSE_TEXTURES[2][1] = retry_hover;
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_SOUND);
@@ -857,7 +857,7 @@ public class PlayMode extends WorldController implements ContactListener {
         playerControl = true;
         gameState = 0;
         messageCounter = 0;
-        lastHoverPlanet = new boolean[3];
+        lastHoverPlanet = new boolean[4];
         converted = 0;
         InputController.getInstance().setCenterCamera(true);
     }
@@ -907,7 +907,7 @@ public class PlayMode extends WorldController implements ContactListener {
         messageCounter = 0;
         jumpTime = 0;
         converted = 0;
-        lastHoverPlanet = new boolean[3];
+        lastHoverPlanet = new boolean[4];
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -2061,7 +2061,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     public boolean clickScreenSwitch() {
         if (gameState != 0) {
-            System.out.println("clickscreenswitch called");
             Vector2 mouse = InputController.getInstance().getCursor(canvas);
             for (int i = 0; i < winPlanets.size; i++) {
                 float d = (mouse.x-winPlanets.get(i).getX())*(mouse.x-winPlanets.get(i).getX())+(mouse.y-winPlanets.get(i).getY())*(mouse.y-winPlanets.get(i).getY());
@@ -2070,16 +2069,14 @@ public class PlayMode extends WorldController implements ContactListener {
                     if (gameState == 2) {
                         if (i == 0) {code = 2000;}
                         if (i == 1) {code = 2002;}
-                        if (i == 2) {code = 2003;}
+                        if (i == 2) {reset(); return false;}
+                        if (i == 3) {code = 2003;}
                     }
                     if (gameState == 1) {
                         if (i == 0) {code = 1000;}
                         if (i == 1) {code = 1002;}
-                        if (i == 2) {reset();
-                            return false;
-                        }
+                        if (i == 2) {reset(); return false;}
                     }
-                    System.out.println("exiting with code " + code);
                     listener.exitScreen(this, code);
                     return true;
                 }
@@ -2094,31 +2091,47 @@ public class PlayMode extends WorldController implements ContactListener {
         float centerY = canvas.getHeight()/80;
         float[][] WIN_PLANETS = {
                 {centerX - 7f, centerY - 3.5f},  // EXIT
-                {centerX, centerY - 5.5f},   // LEVELS
-                {centerX + 7f, centerY - 3.5f},    // NEXT LEVEL
+                {centerX, centerY - 5.9f},   // LEVELS
+                {centerX + 7f, centerY - 3.5f},    // RETRY
+                {centerX, centerY - 0.5f},    // NEXT LEVEL
         };
-
+        float[][] LOSE_PLANETS = {
+                {centerX - 7f, centerY - 3.3f},  // EXIT
+                {centerX, centerY - 5.4f},   // LEVELS
+                {centerX + 7f, centerY - 3.3f},    // RETRY
+        };
         gameState = state;
-        for (int i = 0; i < 3; i++) {
-            PlanetModel obj;
-            obj = new PlanetModel(WIN_PLANETS[i][0], WIN_PLANETS[i][1], 1.2f, 3f);
-            obj.setBodyType(BodyDef.BodyType.StaticBody);
-            obj.setDensity(BASIC_DENSITY);
-            obj.setFriction(BASIC_FRICTION);
-            obj.setRestitution(BASIC_RESTITUTION);
-            obj.setDrawScale(scale);
-            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
-            if (state == 1) {
+        if (state == 2) {
+            for (int i = 0; i < WIN_PLANETS.length; i++) {
+                PlanetModel obj;
+                obj = new PlanetModel(WIN_PLANETS[i][0], WIN_PLANETS[i][1], 1.2f, 3f);
+                obj.setName("win");
+                obj.setTexture(WIN_TEXTURES[i][0]);
+                obj.setBodyType(BodyDef.BodyType.StaticBody);
+                obj.setDensity(BASIC_DENSITY);
+                obj.setFriction(BASIC_FRICTION);
+                obj.setRestitution(BASIC_RESTITUTION);
+                obj.setDrawScale(scale);
+                obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+                addObject(obj);
+                winPlanets.add(obj);
+            }
+        }
+        else if (state == 1) {
+            for (int i = 0; i < LOSE_PLANETS.length; i++) {
+                PlanetModel obj;
+                obj = new PlanetModel(LOSE_PLANETS[i][0], LOSE_PLANETS[i][1], 1.2f, 3f);
                 obj.setName("lose");
                 obj.setTexture(LOSE_TEXTURES[i][0]);
+                obj.setBodyType(BodyDef.BodyType.StaticBody);
+                obj.setDensity(BASIC_DENSITY);
+                obj.setFriction(BASIC_FRICTION);
+                obj.setRestitution(BASIC_RESTITUTION);
+                obj.setDrawScale(scale);
+                obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+                addObject(obj);
+                winPlanets.add(obj);
             }
-            else {
-                obj.setName("win");
-                System.out.println(i);
-                obj.setTexture(WIN_TEXTURES[i][0]);
-            }
-            addObject(obj);
-            winPlanets.add(obj);
         }
     }
 
@@ -2755,7 +2768,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.draw(canvas);
                 }
             }
-            canvas.draw(lost_text, Color.WHITE, canvas.getWidth()/2 - (lost_text.getRegionWidth()/2),canvas.getHeight()/2 + 40, lost_text.getRegionWidth(), lost_text.getRegionHeight());
+            canvas.draw(lost_text, Color.WHITE, canvas.getWidth()/2 - (lost_text.getRegionWidth()/2) + 10,canvas.getHeight()/2 + 60, lost_text.getRegionWidth(), lost_text.getRegionHeight());
         }
         if (gameState == 2) {
             for (Obstacle o: objects) {
@@ -2763,7 +2776,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.draw(canvas);
                 }
             }
-            canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 40, win_text.getRegionWidth(), win_text.getRegionHeight());
+            canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 100, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
     }

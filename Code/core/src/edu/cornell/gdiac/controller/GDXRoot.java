@@ -290,8 +290,8 @@ public class GDXRoot extends Game implements ScreenListener {
 			if (screen == controllers[controllers.length - 1]) {
 				lastScreen = controllers.length - 1;
 				lastPlayScreen = controllers.length - 1;
-				current = exitCode;
-				if (exitCode == WorldController.EXIT_NEXT) {
+				current = exitCode%10;
+				if (exitCode == WorldController.EXIT_NEXT || exitCode == 2003) {
 				    current = 2;
                 }
 				controllers[current].reset();
