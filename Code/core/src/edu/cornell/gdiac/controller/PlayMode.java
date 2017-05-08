@@ -305,7 +305,7 @@ public class PlayMode extends WorldController implements ContactListener {
     /** Oob's initial radius */
     protected  float OOB_RADIUS = 1f; //0.2 scale in overlap2d is standard
     protected static final float SIPHON = 0.03f;
-    protected static final float POISON = -0.02f;
+    protected static final float POISON = -0.03f;
     protected static final float MIN_RADIUS = 1f;
     protected static final float DEATH_RADIUS = MIN_RADIUS*2/3;
     protected static final float OOB_DEATH_RADIUS = 0.56f;
@@ -1197,7 +1197,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             //Neutral Planets
             if (obj.getType() == 3f) {
-                if (LEVEL=="T1" && ii==0) {
+                if (LEVEL=="T1" && ii==2) {
                     obj.setTexture(mouse_Texture);
                 }
                 else if (LEVEL=="T2" && ii==0){
@@ -2762,7 +2762,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.end();
             }
         }
-        if (play) {
+        if (play && gameState==0) {
             canvas.begin();
             canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
             canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
