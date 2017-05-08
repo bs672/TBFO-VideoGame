@@ -2256,7 +2256,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 // checking to make sure he doesn't go inside out
                             complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
-                if (converted >= 0 || !LEVEL.equals("Mother")) {
+                if (converted > 0 || !LEVEL.equals("Mother")) {
                     if (jump) {
                         if (!play) {
                             if (clickScreenSwitch()) {
