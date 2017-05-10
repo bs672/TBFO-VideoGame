@@ -926,10 +926,6 @@ public class PlayMode extends WorldController implements ContactListener {
         jumpTime = 0;
         converted = 0;
         lastHoverPlanet = new boolean[4];
-
-        while (true){
-
-        }
     }
 
     //Reads the data from a JSON file and turns it into game data
