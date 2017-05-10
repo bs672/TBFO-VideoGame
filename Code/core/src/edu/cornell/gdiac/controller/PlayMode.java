@@ -2195,6 +2195,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 addObject(obj);
                 winPlanets.add(obj);
             }
+            Vector2 temp = new Vector2(centerX, centerY);
+            complexAvatar.setPosition(temp.x, temp.y);
+            complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
+            complexAvatar.setAngle((float) Math.PI/2);
 //            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
 //            complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
 
@@ -2215,9 +2219,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 winPlanets.add(obj);
             }
         }
-        Vector2 temp = new Vector2(centerX, centerY);
-        complexAvatar.setPosition(temp.x, temp.y);
-        complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
     }
 
     /**
@@ -2492,6 +2493,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     return;
                 }
             }
+            if (gameState == 2) {complexAvatar.setLinearVelocity(new Vector2(0f, 0f));}
         }
     }
 
@@ -2724,7 +2726,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         for (Obstacle obj : objects) {
 
-            if (obj.getName().equals("ComplexOob")) {
+            if (obj.getName().equals("ComplexOob") && gameState != 2) {
 
                 TextureRegion currentFrame;
 
@@ -2774,6 +2776,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.draw(canvas);
                 canvas.end();
             }
+
             if (obj.getName().equals("planet") && ((PlanetModel) obj).getType() == 2 ) {
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame = sunAnimation.getKeyFrame(stateTime, true);
@@ -2893,6 +2896,58 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 100, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
+        for (Obstacle obj: objects) {
+            if (obj.getName().equals("ComplexOob") && gameState == 2) {
+
+                TextureRegion currentFrame;
+
+                if ( ((ComplexOobModel) obj).isNormal()) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Normal_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(8,7);
+                }
+                else if ( ((ComplexOobModel) obj).isGrowing()) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Growing_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                }
+                else if ( blackHoleWarp ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Teleporting_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(3,2);
+                }
+                else if ( ((ComplexOobModel) obj).isFlying() || gameState == 2) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Flying_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(40,1);
+                }
+                else if ( ((ComplexOobModel) obj).isHurting() || gameState == 1)  {
+                    currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(25,1);
+                }
+                else {
+                    currentFrame =  ((ComplexOobModel) obj).get_Command_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                }
+                if (((ComplexOobModel) obj).get_Shot_Cooldown() > 0 && gameState == 0 ) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Hurting_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(25,1);
+                    complexAvatar.decCooldown();
+                }
+                if ( ((ComplexOobModel) obj).isDying() && gameState == 0) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Dying_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                }
+
+                if ( ((ComplexOobModel) obj).isMax() && gameState == 0) {
+                    currentFrame =  ((ComplexOobModel) obj).get_Max_anim().getKeyFrame(stateTime, true);
+                    ((ComplexOobModel) obj).setAnimDimensions(4,3);
+                }
+
+                ((ComplexOobModel) obj).setTexture(currentFrame);
+                ((ComplexOobModel) obj).draw();
+
+                canvas.begin();
+                obj.draw(canvas);
+                canvas.end();
+            }
+        }
     }
 
     /**
