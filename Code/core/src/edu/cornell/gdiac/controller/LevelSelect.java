@@ -20,10 +20,10 @@ public class LevelSelect extends PlayMode {
 
     protected static final float[][] PLANETS = {
             {12.8f, 15f, 1.1f, 3f},    // BACK
-            {9f, 3.5f, 1.1f, 3f},  // MAIN MENU
-            {23f, 3.5f, 1.1f, 3f},   // SETTINGS
-            {12.7f, 2.2f, 1.1f, 3f},   // PREV LEVELS
-            {19.3f, 2.2f, 1.1f, 3f},   // NEXT LEVELS
+            {9.2f, 3.5f, 1.1f, 3f},  // MAIN MENU
+            {22.7f, 3.5f, 1.1f, 3f},   // SETTINGS
+            {13.7f, 2.2f, 1.1f, 3f},   // PREV LEVELS
+            {18.2f, 2.2f, 1.1f, 3f},   // NEXT LEVELS
 
             {7.8f, 7f, 1.1f, 3f},    // LEVEL 1
             {7.52f, 10.5f, 1.1f, 3f},    // LEVEL 2
@@ -34,7 +34,6 @@ public class LevelSelect extends PlayMode {
             {22.35f, 13.25f, 1.1f, 3f},    // LEVEL 7
             {24.48f, 10.5f, 1.1f, 3f},    // LEVEL 8
             {24.2f, 7f, 1.1f, 3f},    // LEVEL 9
-
     };
 
     protected CapsuleObstacle button1;
@@ -256,9 +255,16 @@ public class LevelSelect extends PlayMode {
         aiController = new AIController(ships, planets, blackHoles, commandPlanets, complexAvatar, scale);
     }
 
-    public void unlockedScrollScreen(){
-        InputController.getInstance().setCenterCamera(true);
+    public void screenScroll(){
+        if (currentPlanet!=null){
+
+        }
     }
+
+    public void unlockedScrollScreen(){
+        //let's not move
+    }
+
     public void scrollStars(Array<Vector2> starArray, float speed, float scrollspeed,TextureRegion background, int Xstart, int Ystart) {
         for (int i = 0; i < starArray.size; i += 2) {
             starArray.get(i).x += (vecToCenter.x) * speed;
@@ -322,15 +328,9 @@ public class LevelSelect extends PlayMode {
         planets.get(4).setTexture(next_page_Texture);
         if (mode == 0){
             planets.get(3).setTexture(prev_page_Lock_Texture);
-            planets.get(4).setPosition(new Vector2(canvas.getWidth()/80, planets.get(4).getY()));
         }
         else if (mode == 2){
             planets.get(4).setTexture(next_page_Lock_Texture);
-            planets.get(3).setPosition(new Vector2(canvas.getWidth()/80, planets.get(3).getY()));
-        }
-        else {
-            planets.get(3).setPosition(PLANETS[3][0], PLANETS[3][1]);
-            planets.get(4).setPosition(PLANETS[4][0], PLANETS[4][1]);
         }
     }
 
@@ -341,12 +341,18 @@ public class LevelSelect extends PlayMode {
                 return true;
             }
         }
-        for (int i = 3; i < 5; i++) {
-            if (currentPlanet == planets.get(i)) {
+            if (currentPlanet == planets.get(3)) {
+                mode = Math.max(mode - 1, 0);
+                switchMode(mode);
                 reset();
-                return false;
+                return true;
             }
-        }
+            if (currentPlanet == planets.get(4)) {
+                mode = Math.min(mode + 1, 2);
+                switchMode(mode);
+                reset();
+                return true;
+            }
         for (int i = 5; i < planets.size; i++) {
             int temp = i - 4 + (mode * 9);
             if (currentPlanet == planets.get(i)) {
@@ -363,30 +369,31 @@ public class LevelSelect extends PlayMode {
     }
 
     public boolean clickScreenSwitch() {
-        Vector2 mouse = InputController.getInstance().getCursor(canvas);
-        for (int i = 0; i <= 0; i++) {
-            float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
-            if (Math.sqrt(d) < planets.get(i).getRadius()) {
-                listener.exitScreen(this, 2);
-                return true;
-            }
-        }
-        for (int i = 3; i <= 4; i++) {
-            float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
-            if (Math.sqrt(d) < planets.get(i).getRadius()*1.2f) {
-                if (i == 3) {
-                    mode = Math.max(mode - 1, 0);
-                    switchMode(mode);
-                    return true;
-                }
-                if (i == 4) {
-                    mode = Math.min(mode + 1, 2);
-                    switchMode(mode);
-                    return true;
-                }
-                return true;
-            }
-        }
+//        Vector2 mouse = InputController.getInstance().getCursor(canvas);
+//        for (int i = 0; i <= 0; i++) {
+//            float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
+//            if (Math.sqrt(d) < planets.get(i).getRadius()) {
+//                listener.exitScreen(this, 2);
+//                return true;
+//            }
+//        }
+//        for (int i = 3; i <= 4; i++) {
+//            float d = (mouse.x-planets.get(i).getX())*(mouse.x-planets.get(i).getX())+(mouse.y-planets.get(i).getY())*(mouse.y-planets.get(i).getY());
+//            if (Math.sqrt(d) < planets.get(i).getRadius()*1.2f) {
+//                if (i == 3) {
+//                    mode = Math.max(mode - 1, 0);
+//                    switchMode(mode);
+//                    return true;
+//                }
+//                if (i == 4) {
+//                    mode = Math.min(mode + 1, 2);
+//                    switchMode(mode);
+//                    return true;
+//                }
+//                return true;
+//            }
+//        }
+//        return false;
         return false;
     }
 
