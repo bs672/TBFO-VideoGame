@@ -824,10 +824,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected int returnToPlanetTimer;
 
-    protected float bb_X_min=-200;
-    protected float bb_X_max=200;
-    protected float bb_Y_min=-200;
-    protected float bb_Y_max=200;
 
     protected Vector2 screen_vec = new Vector2();
 
@@ -901,8 +897,6 @@ public class PlayMode extends WorldController implements ContactListener {
             obj.deactivatePhysics(world);
         }
 
-        screen_vec.set(0,0);
-
         objects.clear();
         addQueue.clear();
         planets.clear();
@@ -932,6 +926,10 @@ public class PlayMode extends WorldController implements ContactListener {
         jumpTime = 0;
         converted = 0;
         lastHoverPlanet = new boolean[4];
+
+        while (true){
+
+        }
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -1314,7 +1312,6 @@ public class PlayMode extends WorldController implements ContactListener {
         addObject(complexAvatar);
 
         loadAnim();
-        boundingBox();
 
         setBG();
         set_med_BG();
@@ -1629,25 +1626,8 @@ public class PlayMode extends WorldController implements ContactListener {
         SHIP_EXP_Animation = new Animation<TextureRegion>(.05f, SHIP_EXP_Frames);
     }
 
-    public void boundingBox() {
-        for (int i = 0; i < planets.size; i++) {
-            if (planets.get(i).getX()<bb_X_min){
-                bb_X_min=planets.get(i).getX();
-            }
-            if (planets.get(i).getX()>bb_X_max){
-                bb_X_max=planets.get(i).getX();
-            }
-            if (planets.get(i).getY()<bb_Y_min){
-                bb_Y_min=planets.get(i).getY();
-            }
-            if (planets.get(i).getY()>bb_Y_max){
-                bb_Y_max=planets.get(i).getY();
-            }
-            //System.out.println("Index: "+i+"  X: "+planets.get(i).getX()+ "  Y: "+planets.get(i).getY());
-        }
 
 
-    }
 
     /**
      * Returns whether to process the update loop
@@ -1804,6 +1784,7 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void scrollScreen() {
+        screen_vec.add(vecToCenter.cpy().scl(-1f / 35));
         if(currentPlanet != null) {
             vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
             for (Obstacle o : objects) {
@@ -1821,7 +1802,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
                 }
             }
-            //screen_vec.add(vecToCenter.cpy().scl(1f / 25));
+
         }
         else {
             vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
@@ -2242,13 +2223,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     control = 1;
                 }
             }
-//            System.out.println("X min: "+bb_X_min+ "  X max: "+bb_X_max + "  Y min: "+bb_Y_min+ "  Y max: "+bb_Y_max);
-//            System.out.println("Screen X: "+screen_vec.x+ "  Screen Y: "+screen_vec.y);
-//            if (play && (screen_vec.x<bb_X_min || screen_vec.x>bb_X_max
-//                    || screen_vec.y<bb_Y_min || screen_vec.y>bb_Y_max)){
-//                reset();
-//               // vecToCenter
-//            }
             if (commandPlanets.size == 0 && play) {
                 // Won the level
                 InputController.getInstance().setCenterCamera(true);
@@ -2848,7 +2822,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float)Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1f/12, 1f/12);
+                    canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1f/10, 1f/10);
                 }
             }
             canvas.end();
