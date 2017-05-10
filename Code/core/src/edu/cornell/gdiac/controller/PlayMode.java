@@ -1696,10 +1696,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
                         continue;
                     }
-                    else if(aiController.getShipTarget(s).getType() != 1) {
-                        aiController.setTarget(s, c);
-                        continue;
-                    }
+//                    else if(aiController.getShipTarget(s).getType() != 1) {
+//                        aiController.setTarget(s, c);
+//                        continue;
+//                    }
                     
                     if(i <= 2) {
                         s.setOrbitDistance(3.5f);
