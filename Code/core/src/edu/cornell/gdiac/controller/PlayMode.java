@@ -95,7 +95,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String BLACK_HOLE = "space/animations/blackHoleAnim.png";
     protected static final String WARNING = "space/animations/planetWarning.png";
     protected static final String EXPLOSION = "space/animations/explosionAnim.png";
-    protected static final String SHIP_TEXTURE = "space/animations/ship_animation.png";
+    protected static final String SHIP_TEXTURE = "space/animations/standardShip.png";
+    protected static final String G_SHIP_TEXTURE = "space/animations/guardShip.png";
     protected static final String MOTHERSHIP_TEXTURE = "space/animations/big_ship_animation.png";
     protected static final String SHIP_EXPLOSION = "space/animations/Ship_exp.png";
 
@@ -350,6 +351,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture BH_Sheet;
     protected Animation<TextureRegion> SHIP_Animation; // Must declare frame type (TextureRegion)
     protected Texture SHIP_Sheet;
+    protected Animation<TextureRegion> G_SHIP_Animation; // Must declare frame type (TextureRegion)
+    protected Texture G_SHIP_Sheet;
     protected Animation<TextureRegion> MOTHERSHIP_Animation; // Must declare frame type (TextureRegion)
     protected Texture MOTHERSHIP_Sheet;
     protected Animation<TextureRegion> SHIP_EXP_Animation; // Must declare frame type (TextureRegion)
@@ -547,6 +550,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
         manager.load(SHIP_TEXTURE, Texture.class);      assets.add(SHIP_TEXTURE);
 
+        manager.load(G_SHIP_TEXTURE, Texture.class);      assets.add(G_SHIP_TEXTURE);
+
         manager.load(MOTHERSHIP_TEXTURE, Texture.class);      assets.add(MOTHERSHIP_TEXTURE);
 
         manager.load(SHIP_EXPLOSION, Texture.class);    assets.add(SHIP_EXPLOSION);
@@ -660,6 +665,8 @@ public class PlayMode extends WorldController implements ContactListener {
         EXP_Sheet = new Texture(Gdx.files.internal(EXPLOSION));
 
         SHIP_Sheet = new Texture(Gdx.files.internal(SHIP_TEXTURE));
+
+        G_SHIP_Sheet = new Texture(Gdx.files.internal(G_SHIP_TEXTURE));
 
         MOTHERSHIP_Sheet = new Texture(Gdx.files.internal(MOTHERSHIP_TEXTURE));
 
@@ -816,6 +823,13 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected int returnToPlanetTimer;
 
+    protected float bb_X_min=-200;
+    protected float bb_X_max=200;
+    protected float bb_Y_min=-200;
+    protected float bb_Y_max=200;
+
+    protected Vector2 screen_vec = new Vector2();
+
     protected float width;
     protected float height;
     /** if we've just loaded */
@@ -884,6 +898,9 @@ public class PlayMode extends WorldController implements ContactListener {
         for(Obstacle obj : objects) {
             obj.deactivatePhysics(world);
         }
+
+        screen_vec.set(0,0);
+
         objects.clear();
         addQueue.clear();
         planets.clear();
@@ -1295,6 +1312,7 @@ public class PlayMode extends WorldController implements ContactListener {
         addObject(complexAvatar);
 
         loadAnim();
+        boundingBox();
 
         setBG();
         set_med_BG();
@@ -1474,7 +1492,7 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);             complexAvatar.createHurtingtex();
         complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);                 complexAvatar.createDyingtex();
         complexAvatar.set_Max_sheet(Oob_Max_Sheet);                     complexAvatar.createMaxtex();
-        sunTex();   BHTex(); SHIPTex(); MOTHERSHIPTex(); SHIPEXPTex();
+        sunTex();   BHTex(); SHIPTex(); G_SHIPTex(); MOTHERSHIPTex(); SHIPEXPTex();
     }
 
     public void BHTex() {
@@ -1542,6 +1560,29 @@ public class PlayMode extends WorldController implements ContactListener {
         SHIP_Animation = new Animation<TextureRegion>(.05f, SHIP_Frames);
     }
 
+
+    public void G_SHIPTex() {
+        //CREATE BLACK HOLE TEXTURE
+        // Constant rows and columns of the sprite sheet
+        int FRAME_COLS = 8, FRAME_ROWS = 1;
+
+        //Split up the sheet
+        TextureRegion[][] tmp = TextureRegion.split(G_SHIP_Sheet,
+                G_SHIP_Sheet.getWidth() / FRAME_COLS,
+                G_SHIP_Sheet.getHeight() / FRAME_ROWS);
+
+        //Reorder array
+        TextureRegion[] SHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                SHIP_Frames[index++] = tmp[i][j];
+            }
+        }
+        // Initialize the Animation with the frame interval and array of frames
+        G_SHIP_Animation = new Animation<TextureRegion>(.05f, SHIP_Frames);
+    }
+
     public void MOTHERSHIPTex() {
         //CREATE BLACK HOLE TEXTURE
         // Constant rows and columns of the sprite sheet
@@ -1584,6 +1625,26 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         // Initialize the Animation with the frame interval and array of frames
         SHIP_EXP_Animation = new Animation<TextureRegion>(.05f, SHIP_EXP_Frames);
+    }
+
+    public void boundingBox() {
+        for (int i = 0; i < planets.size; i++) {
+            if (planets.get(i).getX()<bb_X_min){
+                bb_X_min=planets.get(i).getX();
+            }
+            if (planets.get(i).getX()>bb_X_max){
+                bb_X_max=planets.get(i).getX();
+            }
+            if (planets.get(i).getY()<bb_Y_min){
+                bb_Y_min=planets.get(i).getY();
+            }
+            if (planets.get(i).getY()>bb_Y_max){
+                bb_Y_max=planets.get(i).getY();
+            }
+            //System.out.println("Index: "+i+"  X: "+planets.get(i).getX()+ "  Y: "+planets.get(i).getY());
+        }
+
+
     }
 
     /**
@@ -1635,10 +1696,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
                         continue;
                     }
-                    else if(aiController.getShipTarget(s).getType() != 1) {
-                        aiController.setTarget(s, c);
-                        continue;
-                    }
+//                    else if(aiController.getShipTarget(s).getType() != 1) {
+//                        aiController.setTarget(s, c);
+//                        continue;
+//                    }
                     
                     if(i <= 2) {
                         s.setOrbitDistance(3.5f);
@@ -1762,6 +1823,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
                 }
             }
+            //screen_vec.add(vecToCenter.cpy().scl(1f / 25));
         }
         else {
             vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
@@ -2199,6 +2261,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     control = 1;
                 }
             }
+//            System.out.println("X min: "+bb_X_min+ "  X max: "+bb_X_max + "  Y min: "+bb_Y_min+ "  Y max: "+bb_Y_max);
+//            System.out.println("Screen X: "+screen_vec.x+ "  Screen Y: "+screen_vec.y);
+//            if (play && (screen_vec.x<bb_X_min || screen_vec.x>bb_X_max
+//                    || screen_vec.y<bb_Y_min || screen_vec.y>bb_Y_max)){
+//                reset();
+//               // vecToCenter
+//            }
             if (commandPlanets.size == 0 && play) {
                 // Won the level
                 InputController.getInstance().setCenterCamera(true);
@@ -2746,6 +2815,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (((ShipModel) obj).getType()==2) {
                     currentFrame=MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
                 }
+                else if (((ShipModel) obj).getType()==1) {
+                    currentFrame=G_SHIP_Animation.getKeyFrame(stateTime, true);
+                }
                 else {
                     currentFrame=SHIP_Animation.getKeyFrame(stateTime, true);
                 }
@@ -2789,8 +2861,8 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (play && gameState==0) {
             canvas.begin();
-            canvas.draw(reset_Texture, Color.WHITE, 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
-            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 5, (canvas.getHeight() - (reset_Texture.getRegionHeight() / 4)) - 5, canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.draw(reset_Texture, Color.WHITE, 10, (canvas.getHeight() - .7f*(reset_Texture.getRegionHeight())) , canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 10, (canvas.getHeight() - .7f*(reset_Texture.getRegionHeight())), canvas.getWidth() / 10, canvas.getHeight() / 12);
             Vector2 toCommand = new Vector2();
             for(PlanetModel c : commandPlanets) {
                 toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
@@ -2803,7 +2875,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float)Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1, 1);
+                    canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1f/10, 1f/10);
                 }
             }
             canvas.end();

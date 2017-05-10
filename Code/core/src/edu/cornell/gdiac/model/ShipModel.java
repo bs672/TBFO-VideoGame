@@ -27,7 +27,7 @@ public class ShipModel extends CapsuleObstacle{
     private static final float MOVE_SPEED = 0.1f;
     private Vector2 oldPosition = new Vector2();
     private boolean inOrbit;
-    private boolean aggroed;
+    private boolean  aggroed;
     private boolean exploding;
     private int firingCooldown;
     private int burstCount=10;
