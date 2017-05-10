@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -833,10 +834,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected int returnToPlanetTimer;
 
-    protected float bb_X_min=-200;
-    protected float bb_X_max=200;
-    protected float bb_Y_min=-200;
-    protected float bb_Y_max=200;
 
     protected Vector2 screen_vec = new Vector2();
 
@@ -889,6 +886,7 @@ public class PlayMode extends WorldController implements ContactListener {
         lastHoverPlanet = new boolean[4];
         converted = 0;
         InputController.getInstance().setCenterCamera(true);
+//        Gdx.input.setCursorCatched(true);
     }
 
     /**
@@ -908,8 +906,6 @@ public class PlayMode extends WorldController implements ContactListener {
         for(Obstacle obj : objects) {
             obj.deactivatePhysics(world);
         }
-
-        screen_vec.set(0,0);
 
         objects.clear();
         addQueue.clear();
@@ -940,6 +936,7 @@ public class PlayMode extends WorldController implements ContactListener {
         jumpTime = 0;
         converted = 0;
         lastHoverPlanet = new boolean[4];
+
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -1322,7 +1319,6 @@ public class PlayMode extends WorldController implements ContactListener {
         addObject(complexAvatar);
 
         loadAnim();
-        boundingBox();
 
         setBG();
         set_med_BG();
@@ -1637,25 +1633,8 @@ public class PlayMode extends WorldController implements ContactListener {
         SHIP_EXP_Animation = new Animation<TextureRegion>(.05f, SHIP_EXP_Frames);
     }
 
-    public void boundingBox() {
-        for (int i = 0; i < planets.size; i++) {
-            if (planets.get(i).getX()<bb_X_min){
-                bb_X_min=planets.get(i).getX();
-            }
-            if (planets.get(i).getX()>bb_X_max){
-                bb_X_max=planets.get(i).getX();
-            }
-            if (planets.get(i).getY()<bb_Y_min){
-                bb_Y_min=planets.get(i).getY();
-            }
-            if (planets.get(i).getY()>bb_Y_max){
-                bb_Y_max=planets.get(i).getY();
-            }
-            //System.out.println("Index: "+i+"  X: "+planets.get(i).getX()+ "  Y: "+planets.get(i).getY());
-        }
 
 
-    }
 
     /**
      * Returns whether to process the update loop
@@ -1706,10 +1685,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
                         continue;
                     }
-//                    else if(aiController.getShipTarget(s).getType() != 1) {
-//                        aiController.setTarget(s, c);
-//                        continue;
-//                    }
                     
                     if(i <= 2) {
                         s.setOrbitDistance(3.5f);
@@ -1781,7 +1756,7 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void unlockedScrollScreen() {
-        if(InputController.getInstance().getScrollUp()) {
+        if(InputController.getInstance().getScrollUp() || InputController.getInstance().getScrollUp(150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(0, -SCROLL_SPEED);
@@ -1789,7 +1764,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
             }
         }
-        else if(InputController.getInstance().getScrollDown()) {
+        else if(InputController.getInstance().getScrollDown() || InputController.getInstance().getScrollDown(canvas.getHeight() - 150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(0, SCROLL_SPEED);
@@ -1797,7 +1772,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
             }
         }
-        if(InputController.getInstance().getScrollLeft()) {
+        if(InputController.getInstance().getScrollLeft() || InputController.getInstance().getScrollLeft(150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(SCROLL_SPEED, 0);
@@ -1805,7 +1780,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
             }
         }
-        else if(InputController.getInstance().getScrollRight()) {
+        else if(InputController.getInstance().getScrollRight() || InputController.getInstance().getScrollRight(canvas.getWidth() - 150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(-SCROLL_SPEED, 0);
@@ -1816,6 +1791,7 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void scrollScreen() {
+        screen_vec.add(vecToCenter.cpy().scl(-1f / 35));
         if(currentPlanet != null) {
             vecToCenter.set(canvas.getWidth()/80f - currentPlanet.getX(), canvas.getHeight()/80f - currentPlanet.getY());
             for (Obstacle o : objects) {
@@ -1833,7 +1809,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
                 }
             }
-            //screen_vec.add(vecToCenter.cpy().scl(1f / 25));
+
         }
         else {
             vecToCenter.set(canvas.getWidth()/80f - complexAvatar.getX(), canvas.getHeight()/80f - complexAvatar.getY());
@@ -2277,13 +2253,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     control = 1;
                 }
             }
-//            System.out.println("X min: "+bb_X_min+ "  X max: "+bb_X_max + "  Y min: "+bb_Y_min+ "  Y max: "+bb_Y_max);
-//            System.out.println("Screen X: "+screen_vec.x+ "  Screen Y: "+screen_vec.y);
-//            if (play && (screen_vec.x<bb_X_min || screen_vec.x>bb_X_max
-//                    || screen_vec.y<bb_Y_min || screen_vec.y>bb_Y_max)){
-//                reset();
-//               // vecToCenter
-//            }
             if (commandPlanets.size == 0 && play) {
                 // Won the level
                 InputController.getInstance().setCenterCamera(true);
