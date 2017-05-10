@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -875,6 +876,7 @@ public class PlayMode extends WorldController implements ContactListener {
         lastHoverPlanet = new boolean[4];
         converted = 0;
         InputController.getInstance().setCenterCamera(true);
+//        Gdx.input.setCursorCatched(true);
     }
 
     /**
@@ -924,7 +926,6 @@ public class PlayMode extends WorldController implements ContactListener {
         jumpTime = 0;
         converted = 0;
         lastHoverPlanet = new boolean[4];
-
 
     }
 
@@ -1674,10 +1675,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
                         continue;
                     }
-//                    else if(aiController.getShipTarget(s).getType() != 1) {
-//                        aiController.setTarget(s, c);
-//                        continue;
-//                    }
                     
                     if(i <= 2) {
                         s.setOrbitDistance(3.5f);
@@ -1749,7 +1746,7 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void unlockedScrollScreen() {
-        if(InputController.getInstance().getScrollUp()) {
+        if(InputController.getInstance().getScrollUp() || InputController.getInstance().getScrollUp(150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(0, -SCROLL_SPEED);
@@ -1757,7 +1754,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
             }
         }
-        else if(InputController.getInstance().getScrollDown()) {
+        else if(InputController.getInstance().getScrollDown() || InputController.getInstance().getScrollDown(canvas.getHeight() - 150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(0, SCROLL_SPEED);
@@ -1765,7 +1762,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
             }
         }
-        if(InputController.getInstance().getScrollLeft()) {
+        if(InputController.getInstance().getScrollLeft() || InputController.getInstance().getScrollLeft(150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(SCROLL_SPEED, 0);
@@ -1773,7 +1770,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
             }
         }
-        else if(InputController.getInstance().getScrollRight()) {
+        else if(InputController.getInstance().getScrollRight() || InputController.getInstance().getScrollRight(canvas.getWidth() - 150)) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(-SCROLL_SPEED, 0);
