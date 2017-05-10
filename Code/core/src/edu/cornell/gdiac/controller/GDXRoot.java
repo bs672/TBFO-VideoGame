@@ -90,10 +90,12 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(25, 0);
 		controllers[3] = new PauseMenu();
+		//Tutorials
 		controllers[4] = new PlayMode("T1"); //1
 		controllers[5] = new PlayMode("T2"); //2
 		controllers[6] = new PlayMode("T3 "); //3
 		controllers[7] = new PlayMode("T4"); //4
+		//Beginner
 		controllers[8] = new PlayMode("Ship Square"); //5
         controllers[9] = new PlayMode("Plus"); //6
         controllers[10] = new PlayMode("Sun"); //7
@@ -101,25 +103,24 @@ public class GDXRoot extends Game implements ScreenListener {
         controllers[12] = new PlayMode("BH"); //9
         controllers[13] = new PlayMode("Dipper"); //10
         controllers[14] = new PlayMode("Mind The Gap"); //11
+		//Intermediate
         controllers[15] = new PlayMode("X"); //12
-        controllers[16] = new PlayMode("Grid"); //13
-        controllers[17] = new PlayMode("Circles"); //14
-		controllers[18] = new PlayMode("Clam Shell"); //15
-        controllers[19] = new PlayMode("Sun T"); //16
-        controllers[20] = new PlayMode("Pinball"); //17
-        controllers[21] = new PlayMode("Mother"); //18
-
+		controllers[16] = new PlayMode("Circles"); //13
+		controllers[17] = new PlayMode("Sun T"); //14
+        controllers[18] = new PlayMode("Grid"); //15
+		controllers[19] = new PlayMode("Looper"); //16
+		controllers[20] = new PlayMode("Clam Shell"); //17
+        controllers[21] = new PlayMode("Pinball"); //18
+		//Advanced
         controllers[22] = new PlayMode("FvS"); //19
-        controllers[23] = new PlayMode("Portal"); //20
-        controllers[24] = new PlayMode("Diamond"); //21
+        controllers[23] = new PlayMode("Diamond"); //20
+        controllers[24] = new PlayMode("Portal"); //21
         controllers[25] = new PlayMode("Jump Start"); //22
-
-
-		//controllers[26] = new PlayMode("Jump Start"); //23
-
-		controllers[26] = new PlayMode("Looper"); //23
-		controllers[27] = new PlayMode("Race"); //24
-		controllers[28] = new PlayMode("Layers"); //25
+		//Expert
+		controllers[26] = new PlayMode("Mother"); //23
+		controllers[27] = new PlayMode("Layers"); //24
+		controllers[28] = new PlayMode("Race"); //25
+		
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
