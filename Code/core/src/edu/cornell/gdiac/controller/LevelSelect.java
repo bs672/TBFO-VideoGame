@@ -94,8 +94,6 @@ public class LevelSelect extends PlayMode {
         TEXTURES[4][0] = next_page_Texture;
         TEXTURES[4][1] = next_page_Hover_Texture;
 
-
-
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
         backgroundLG = createTexture(manager,BACKG_FILE_LG_STAR,false);
@@ -167,6 +165,12 @@ public class LevelSelect extends PlayMode {
             obj.setDrawScale(scale);
             obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
             obj.setName(pname + ii);
+            if (ii == 3) {
+                obj.setName("prev");
+            }
+            if (ii == 4) {
+                obj.setName("next");
+            }
             obj.setTexture(TEXTURES[ii][0]);
             addObject(obj);
             planets.add(obj);
@@ -318,9 +322,15 @@ public class LevelSelect extends PlayMode {
         planets.get(4).setTexture(next_page_Texture);
         if (mode == 0){
             planets.get(3).setTexture(prev_page_Lock_Texture);
+            planets.get(4).setPosition(new Vector2(canvas.getWidth()/80, planets.get(4).getY()));
         }
         else if (mode == 2){
             planets.get(4).setTexture(next_page_Lock_Texture);
+            planets.get(3).setPosition(new Vector2(canvas.getWidth()/80, planets.get(3).getY()));
+        }
+        else {
+            planets.get(3).setPosition(PLANETS[3][0], PLANETS[3][1]);
+            planets.get(4).setPosition(PLANETS[4][0], PLANETS[4][1]);
         }
     }
 
@@ -429,7 +439,14 @@ public class LevelSelect extends PlayMode {
         canvas.end();
         super.drawObjects();
         canvas.begin();
+        for (Obstacle obj: objects) {
+            if (obj.getName().equals("prev") && mode != 0) {
+                obj.draw(canvas);
+            }
+            if (obj.getName().equals("next") && mode != 2) {
+                obj.draw(canvas);
+            }
+        }
         canvas.end();
-
     }
 }

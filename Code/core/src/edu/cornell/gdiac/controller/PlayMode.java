@@ -2841,9 +2841,12 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.end();
             }
             else {
-                canvas.begin();
-                obj.draw(canvas);
-                canvas.end();
+                // This is for level select. ignore it
+                if (!obj.getName().equals("prev") && !obj.getName().equals("next")) {
+                    canvas.begin();
+                    obj.draw(canvas);
+                    canvas.end();
+                }
             }
         }
         if (play && gameState==0) {
