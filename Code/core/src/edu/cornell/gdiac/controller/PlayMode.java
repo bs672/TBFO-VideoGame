@@ -7,6 +7,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
@@ -126,12 +127,13 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected String LEVEL;
 
-
     /** The texture file for the planets */
     protected static final String QUIT = "space/menus/quit.png";
     protected static final String QUIT_HOVER = "space/menus/quit_hover.png";
     protected static final String RETRY = "space/menus/retry.png";
     protected static final String RETRY_HOVER = "space/menus/retry_hover.png";
+    protected static final String REPLAY = "space/menus/replay.png";
+    protected static final String REPLAY_HOVER = "space/menus/replay_hover.png";
     protected static final String LOST_TEXT = "space/menus/lost_text.png";
     protected static final String WIN_TEXT = "space/menus/win_text.png";
     protected static final String SETTINGS_TEXTURE = "space/menus/settings_planet.png";
@@ -390,7 +392,9 @@ public class PlayMode extends WorldController implements ContactListener {
     protected TextureRegion back_Text_Texture;      protected TextureRegion back_Text_Hover_Texture;
     protected TextureRegion quit;                   protected TextureRegion quit_hover;
     protected TextureRegion retry;                  protected TextureRegion retry_hover;
+    protected TextureRegion replay;                 protected TextureRegion replay_hover;
     protected TextureRegion lost_text;              protected TextureRegion win_text;
+
     /** Background texture */
     protected TextureRegion backgroundMAIN;
     protected TextureRegion backgroundWHITESTAR;
@@ -481,6 +485,8 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(QUIT_HOVER, Texture.class);                assets.add(QUIT_HOVER);
         manager.load(RETRY, Texture.class);                     assets.add(RETRY);
         manager.load(RETRY_HOVER, Texture.class);               assets.add(RETRY_HOVER);
+        manager.load(REPLAY, Texture.class);                    assets.add(REPLAY);
+        manager.load(REPLAY_HOVER, Texture.class);              assets.add(REPLAY_HOVER);
         manager.load(LOST_TEXT, Texture.class);                 assets.add(LOST_TEXT);
         manager.load(WIN_TEXT, Texture.class);                  assets.add(WIN_TEXT);
         manager.load(NEXT_LEVEL, Texture.class);                assets.add(NEXT_LEVEL);
@@ -692,20 +698,24 @@ public class PlayMode extends WorldController implements ContactListener {
         next_Level_Hover = createTexture(manager, NEXT_LEVEL_HOVER, false);
         retry = createTexture(manager, RETRY, false);
         retry_hover = createTexture(manager, RETRY_HOVER, false);
+        replay = createTexture(manager, REPLAY, false);
+        replay_hover = createTexture(manager, REPLAY_HOVER, false);
 
         WIN_TEXTURES[0][0] = main_Menu_Texture;
         WIN_TEXTURES[0][1] = main_Menu_Hover_Texture;
         WIN_TEXTURES[1][0] = levels_Texture;
         WIN_TEXTURES[1][1] = levels_Hover_Texture;
-        WIN_TEXTURES[2][0] = retry;
-        WIN_TEXTURES[2][1] = retry_hover;
+        WIN_TEXTURES[2][0] = replay;
+        WIN_TEXTURES[2][1] = replay_hover;
         WIN_TEXTURES[3][0] = next_Level;
         WIN_TEXTURES[3][1] = next_Level_Hover;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 LOSE_TEXTURES[i][j] = WIN_TEXTURES[i][j];
             }
         }
+        LOSE_TEXTURES[2][0] = retry;
+        LOSE_TEXTURES[2][1] = retry_hover;
 
         SoundController sounds = SoundController.getInstance();
         sounds.allocate(manager, JUMP_SOUND);
@@ -2183,10 +2193,10 @@ public class PlayMode extends WorldController implements ContactListener {
         float centerX = canvas.getWidth()/80;
         float centerY = canvas.getHeight()/80;
         float[][] WIN_PLANETS = {
-                {centerX - 7f, centerY - 3.5f},  // EXIT
-                {centerX, centerY - 5.9f},   // LEVELS
-                {centerX + 7f, centerY - 3.5f},    // RETRY
-                {centerX, centerY - 0.5f},    // NEXT LEVEL
+                {centerX - 7f, centerY - 2f},  // EXIT
+                {centerX - 3.5f, centerY - 4.5f},   // LEVELS
+                {centerX + 3.5f, centerY - 4.5f},    // REPLAY LEVEL
+                {centerX + 7f, centerY - 2f},    // NEXT LEVEL
         };
         float[][] LOSE_PLANETS = {
                 {centerX - 7f, centerY - 3.3f},  // EXIT
@@ -2209,6 +2219,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 addObject(obj);
                 winPlanets.add(obj);
             }
+//            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
+//            complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
+
         }
         else if (state == 1) {
             for (int i = 0; i < LOSE_PLANETS.length; i++) {
@@ -2226,6 +2239,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 winPlanets.add(obj);
             }
         }
+        Vector2 temp = new Vector2(centerX, centerY);
+        complexAvatar.setPosition(temp.x, temp.y);
+        complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
     }
 
     /**
@@ -2501,8 +2517,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                 }
             }
-            Vector2 temp = new Vector2(complexAvatar.getLinearVelocity().x/1.01f, complexAvatar.getLinearVelocity().y/1.01f);
-            complexAvatar.setLinearVelocity(temp);
             hover();
             if (InputController.getInstance().getMouseJump()) {
                 if (clickScreenSwitch()) {
@@ -2693,11 +2707,12 @@ public class PlayMode extends WorldController implements ContactListener {
 
         canvas.begin();
 //        float x = 255 - ((float) jumpTime/2);
-        Color Tint;
-        if (gameState == 0) {Tint = Color.WHITE;}
-        else {Tint = Color.GRAY;}
-        canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
-        canvas.draw(backgroundSM, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
+//        Color Tint;
+//        if (gameState == 0) {Tint = Color.WHITE;}
+//        else {Tint = Color.GRAY;}
+
+        canvas.draw(backgroundMAIN, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
+        canvas.draw(backgroundSM, Color.WHITE, 0, 0, canvas.getWidth(), canvas.getHeight());
 
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(0).x, white_stars.get(0).y,   white_stars.get(1).x, white_stars.get(1).y);
         canvas.draw(backgroundWHITESTAR, Color.WHITE, white_stars.get(2).x, white_stars.get(2).y,   white_stars.get(3).x, white_stars.get(3).y);
@@ -2736,7 +2751,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void drawObjects(){
         Color Tint = Color.WHITE;
         if (gameState != 0) {
-            Tint = Color.GRAY;
+            Tint = new Color(0, 0, 0, 0.6f);
         }
         for (Obstacle obj : objects) {
 
@@ -2889,6 +2904,8 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         canvas.begin();
         if (gameState == 1) {
+            canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
+            canvas.draw(backgroundSM, Tint, 0, 0, canvas.getWidth(), canvas.getHeight());
             for (Obstacle o: objects) {
                 if (o.getName() == "lose") {
                     o.draw(canvas);
@@ -2897,6 +2914,8 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.draw(lost_text, Color.WHITE, canvas.getWidth()/2 - (lost_text.getRegionWidth()/2) + 10,canvas.getHeight()/2 + 60, lost_text.getRegionWidth(), lost_text.getRegionHeight());
         }
         if (gameState == 2) {
+            canvas.draw(backgroundMAIN, Tint, 0, 0,canvas.getWidth(),canvas.getHeight());
+            canvas.draw(backgroundSM, Tint, 0, 0, canvas.getWidth(), canvas.getHeight());
             for (Obstacle o: objects) {
                 if (o.getName() == "win") {
                     o.draw(canvas);
