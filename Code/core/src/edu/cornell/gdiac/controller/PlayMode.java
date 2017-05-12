@@ -302,6 +302,8 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
 
+    protected static final String CONVERT_SOUND = "audio/convert.wav";
+
     public static final float SCROLL_SPEED = 0.5f;
 
     /** The initial position of Oob */
@@ -318,7 +320,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final float EPSILON = 0.1f;
     protected static final int THRESHOLD = 4;
     protected static final int ADJUST_COOLDOWN = 60;
-    protected static final float CONVERT_TIME = 500;
+    protected static final float CONVERT_TIME = 480;
 
     // A variable for tracking elapsed time for the animation
 
@@ -582,6 +584,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MOTHERSHIP_SOUND, Sound.class);    assets.add(MOTHERSHIP_SOUND);
         manager.load(SHOOTING_SOUND, Sound.class);      assets.add(SHOOTING_SOUND);
         manager.load(EXPULSION_SOUND, Sound.class);     assets.add(EXPULSION_SOUND);
+        manager.load(CONVERT_SOUND, Sound.class);       assets.add(CONVERT_SOUND);
 
         super.preLoadContent(manager);
 
@@ -662,6 +665,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Sound mothershipSound = Gdx.audio.newSound(Gdx.files.internal(MOTHERSHIP_SOUND));
         Sound shootingSound = Gdx.audio.newSound(Gdx.files.internal(SHOOTING_SOUND));
         Sound expulsionSound = Gdx.audio.newSound(Gdx.files.internal(EXPULSION_SOUND));
+        Sound convertSound = Gdx.audio.newSound(Gdx.files.internal(CONVERT_SOUND));
 
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
@@ -724,6 +728,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
         sounds.allocate(manager, EXPULSION_SOUND);
+        sounds.allocate(manager, CONVERT_SOUND);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
 
@@ -1732,8 +1737,9 @@ public class PlayMode extends WorldController implements ContactListener {
     //Shoot bullet from ship
     public void shootBullet(){
         if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size; i += 4) {
-                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i+1));
+            for (int i = 0; i < aiController.bulletData.size; i += 5) {
+                //0 is normal, 1 is tractor beam
+                BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i + 1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
                 bullet.setDensity(0.0f);
                 bullet.setFriction(0.0f);
@@ -1743,12 +1749,18 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setGravityScale(0);
                 bullet.setVX(aiController.bulletData.get(i + 2));
                 bullet.setVY(aiController.bulletData.get(i + 3));
-                bullet.setAngle((float)(Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI/2));
-                bullet.setTexture(bullet_texture);
+                bullet.setAngle((float) (Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI / 2));
                 bullet.setName("bullet");
+                if(aiController.bulletData.get(i+4)==0) {
+                    bullet.setTexture(bullet_texture);
+                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
+                }
+                //tractor beam bullets
+                else{
+                    bullet.setTexture(bullet_texture);
+                    SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
+                }
                 addObject(bullet);
-                SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME-0.6f);
-
             }
             aiController.bulletData.clear();
         }
@@ -1826,17 +1838,18 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void screenLockShip(ShipModel sh) {
-        vecToCenter.set(canvas.getWidth()/80f - sh.getX(), canvas.getHeight()/80f - sh.getY());
+        InputController.getInstance().setCenterCamera(false);
+        vecToCenter.set(canvas.getWidth() / 80f - sh.getX(), canvas.getHeight() / 80f - sh.getY());
         for (Obstacle o : objects) {
             if (justLoaded) {
                 o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy()));
                 justLoaded = false;
-            }
-            else {
-                if(o.equals(sh)) {
-                    sh.setPosition(sh.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
-                }
-                else
+            } else {
+                if (o.equals(complexAvatar)) {
+                    for (Obstacle p : complexAvatar.getBodies()) {
+                        p.setPosition(p.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
+                    }
+                } else
                     o.setPosition(o.getPosition().cpy().add(vecToCenter.cpy().scl(1f / 25)));
             }
         }
@@ -2180,6 +2193,12 @@ public class PlayMode extends WorldController implements ContactListener {
                 {centerX + 7f, centerY - 3.3f},    // RETRY
         };
         gameState = state;
+        complexAvatar.setPosition(centerX, centerY);
+        complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
+        complexAvatar.setAngle((float) Math.PI/2);
+        complexAvatar.setDirection(new Vector2(0,1));
+        complexAvatar.setRadius(1.5f);
+        System.out.println(complexAvatar.getDirection());
         if (state == 2) {
             for (int i = 0; i < WIN_PLANETS.length; i++) {
                 PlanetModel obj;
@@ -2195,10 +2214,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 addObject(obj);
                 winPlanets.add(obj);
             }
-            Vector2 temp = new Vector2(centerX, centerY);
-            complexAvatar.setPosition(temp.x, temp.y);
-            complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
-            complexAvatar.setAngle((float) Math.PI/2);
+            complexAvatar.setFlying(true);
 //            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
 //            complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
 
@@ -2218,7 +2234,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 addObject(obj);
                 winPlanets.add(obj);
             }
+            complexAvatar.setHurting(true);
         }
+        complexAvatar.setBodyType(BodyDef.BodyType.StaticBody);
+        for(Obstacle b : complexAvatar.bodies)
+            b.setBodyType(BodyDef.BodyType.StaticBody);
+
+
     }
 
     /**
@@ -2232,18 +2254,28 @@ public class PlayMode extends WorldController implements ContactListener {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        InputController.getInstance().isPlay(play);
         if (InputController.getInstance().debugJustPressed()) {
             setDebug(!isDebug());
         }
         if (gameState == 0) {
             scrollText();
-            scrollStars(stars,LG_SPEED, LG_SCROLL_SPEED,backgroundLG,LG_S_X_START,LG_S_Y_START);
-            scrollStars(med_stars,MED_SPEED, MED_SCROLL_SPEED, backgroundMED,med_X_START,med_Y_START);
-            scrollStars(white_stars,WHITE_SPEED, WHITE_SCROLL_SPEED,backgroundWHITESTAR,white_X_START,white_Y_START);
-            if(InputController.getInstance().getCenterCamera())
-                scrollScreen();
+            if(converted == 0 && LEVEL.equals("Mother")){
+                for (ShipModel sh: ships) {
+                    if (sh.getType() == 2) {
+                        screenLockShip(sh);
+                    }
+                }
+            }
             else {
-                unlockedScrollScreen();
+                scrollStars(stars,LG_SPEED, LG_SCROLL_SPEED,backgroundLG,LG_S_X_START,LG_S_Y_START);
+                scrollStars(med_stars,MED_SPEED, MED_SCROLL_SPEED, backgroundMED,med_X_START,med_Y_START);
+                scrollStars(white_stars,WHITE_SPEED, WHITE_SCROLL_SPEED,backgroundWHITESTAR,white_X_START,white_Y_START);
+                if(InputController.getInstance().getCenterCamera())
+                    scrollScreen();
+                else {
+                    unlockedScrollScreen();
+                }
             }
             width = canvas.getWidth() / 32;
             height = canvas.getHeight() / 18;
@@ -2327,15 +2359,17 @@ public class PlayMode extends WorldController implements ContactListener {
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
                 }
                 // checking to make sure he doesn't go inside out
-                            complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
-                if (converted > 0 || !LEVEL.equals("Mother")) {
+                complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
+
                     if (jump) {
                         if (!play) {
                             if (clickScreenSwitch()) {
                                 return;
                             }
                         }
-                        jump();
+                        if (converted > 0 || !LEVEL.equals("Mother")) {
+                            jump();
+                        }
                     } else {
                         rad = currentPlanet.getRadius();
                         float Oob_rad = complexAvatar.getRadius();
@@ -2357,14 +2391,6 @@ public class PlayMode extends WorldController implements ContactListener {
                             currentPlanet = null;
                         }
                     }
-                }
-                else {
-                    for (ShipModel sh: ships) {
-                        if (sh.getType() == 2) {
-                            screenLockShip(sh);
-                        }
-                    }
-                }
             } else if (currentPlanet == null) { // we’re floating in space
                 complexAvatar.setFlying(true);
                 jumpTime++;
@@ -2900,7 +2926,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         canvas.end();
         for (Obstacle obj: objects) {
-            if (obj.getName().equals("ComplexOob") && gameState == 2) {
+            if (obj.getName().equals("ComplexOob") && (gameState == 2||gameState==1)) {
 
                 TextureRegion currentFrame;
 

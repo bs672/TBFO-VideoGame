@@ -365,6 +365,13 @@ public class SoundController {
 	public boolean isActive(String key) {
 		return actives.containsKey(key);
 	}
+
+	public String whichActive(){
+		for(String key:actives.keys()){
+			return key;
+		}
+		return "NONE";
+	}
 	
 	/**
 	 * Updates the current frame of the sound controller.

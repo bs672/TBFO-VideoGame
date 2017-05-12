@@ -300,6 +300,7 @@ public class AIController {
                             bulletData.add(s.getY() + tempVec1.y);
                             bulletData.add(tempVec1.x * 10);
                             bulletData.add(tempVec1.y * 10);
+                            bulletData.add(0f);
                         }
                         s.decBurstCount();
                         s.setDelay(DELAY);
@@ -324,10 +325,13 @@ public class AIController {
                 targetPlanets.get(s).convert(s.getCommandSpawn());
                 tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
                 tempVec1.scl(1f / tempVec1.len());
+                //tractor bullets
                 bulletData.add(s.getX() + tempVec1.x);
                 bulletData.add(s.getY() + tempVec1.y);
                 bulletData.add(tempVec1.x * 10);
                 bulletData.add(tempVec1.y * 10);
+                bulletData.add(1f);
+
             }
             else {
                 targetPlanets.remove(s);
