@@ -46,10 +46,8 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private static final String OOB_FILE  = "space/Oob/oob2.png";
 
-    private static final String MAIN_MENU_TEXTURE  = "space/menus/exit_to_menu.png";
-    private static final String MAIN_MENU_HOVER_TEXTURE  = "space/menus/exit_to_menu_hover.png";
-    private static final String BACK_TEXTURE  = "space/menus/back.png";
-    private static final String BACK_HOVER_TEXTURE  = "space/menus/back_hover.png";
+    private static final String BACK_TEXTURE  = "space/menus/back_planet.png";
+    private static final String BACK_HOVER_TEXTURE  = "space/menus/back_hover_planet.png";
     private static final String MUTE_TEXTURE  = "space/menus/muted.png";
     private static final String UNMUTE_TEXTURE = "space/menus/unmute.png";
     private static final String WASD_TEXTURE = "space/menus/wasd.png";
@@ -81,12 +79,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
 
-    /** Parallax values */
-    private static final float BG_MAIN_PARALLAX    = 0;  	// Parallax = 0 means we're infinitely far away
-    private static final float BG_WHITE_PARALLAX = 0.4f;
-    private static final float BG_RED_PARALLAX   = 0.9f;
-    private static final float PLANET_PARALLAX      = 1.0f;	// Put focus of scene at parallax 1
-    private static final float FOREGROUND_PARALLAX   = 2.0f;	// Parallax > 1 is a foreground object
 
     /** The initial position of Oob */
     private static Vector2 OOB_POS = new Vector2(0f, 0f);
@@ -112,14 +104,6 @@ public class SettingsMode extends WorldController implements ContactListener {
     /** Texture asset for character avatar */
     private TextureRegion avatarTexture;
 
-    /** Planet texture */
-    private TextureRegion neutral_P_Texture;
-
-    /** Main Menu Texture */
-    private TextureRegion main_Menu_Texture;
-
-    /** Main Menu Hover Texture */
-    private TextureRegion main_Menu_Hover_Texture;
 
     private TextureRegion back_Texture;
 
@@ -185,12 +169,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         platformAssetState = AssetState.LOADING;
         manager.load(OOB_FILE, Texture.class);
         assets.add(OOB_FILE);
-
-        manager.load(MAIN_MENU_TEXTURE, Texture.class);
-        assets.add(MAIN_MENU_TEXTURE);
-
-        manager.load(MAIN_MENU_HOVER_TEXTURE, Texture.class);
-        assets.add(MAIN_MENU_HOVER_TEXTURE);
 
         manager.load(BACK_HOVER_TEXTURE, Texture.class);
         assets.add(BACK_HOVER_TEXTURE);
@@ -264,8 +242,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         avatarTexture = createTexture(manager,OOB_FILE,false);
         expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
-        main_Menu_Texture = createTexture(manager,MAIN_MENU_TEXTURE,false);
-        main_Menu_Hover_Texture = createTexture(manager,MAIN_MENU_HOVER_TEXTURE,false);
         mute_Texture = createTexture(manager,MUTE_TEXTURE,false);
         unmute_Texture = createTexture(manager, UNMUTE_TEXTURE, false);
         back_Texture = createTexture(manager,BACK_TEXTURE,false);
@@ -273,14 +249,12 @@ public class SettingsMode extends WorldController implements ContactListener {
         wasd_Texture = createTexture(manager, WASD_TEXTURE, false);
         okl_Texture = createTexture(manager, OKL_TEXTURE, false);
 
-        TEXTURES[0][0] = main_Menu_Texture;    // MAIN MENU
-        TEXTURES[0][1] = main_Menu_Hover_Texture;
+        TEXTURES[0][0] = back_Texture;    // BACK
+        TEXTURES[0][1] = back_hover_Texture;
         TEXTURES[1][0] = mute_Texture;    // MUTE
         TEXTURES[1][1] = unmute_Texture; // UNMUTE
-        TEXTURES[2][0] = back_Texture;    // BACK
-        TEXTURES[2][1] = back_hover_Texture;
-        TEXTURES[3][0] = wasd_Texture;    // BACK
-        TEXTURES[3][1] = okl_Texture;
+        TEXTURES[2][0] = wasd_Texture;    // BACK
+        TEXTURES[2][1] = okl_Texture;
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -337,9 +311,8 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final float EFFECT_VOLUME = 0.8f;
 
     private static float[][] PLANETS = {
-            {0f, 0f, 1.1f, 3f},   // MAIN MENU
+            {0f, 0f, 1.1f, 3f},   // BACK
             {10f, 8f, 1.5f, 3f},  // MUTE
-            {15f, 11.5f, 1.5f, 3f},    // BACK
             {20f, 8f, 1.5f, 3f} // left/right handed
     };
 
@@ -458,10 +431,10 @@ public class SettingsMode extends WorldController implements ContactListener {
             else if(ii==1){
                 obj.setTexture(TEXTURES[ii][1]);
             }
-            else if(ii==3 && InputController.getInstance().getWASD()){
+            else if(ii==2 && InputController.getInstance().getWASD()){
                 obj.setTexture(TEXTURES[ii][0]);
             }
-            else if(ii==3) {
+            else if(ii==2) {
                 obj.setTexture(TEXTURES[ii][1]);
             }
             else{
@@ -577,7 +550,7 @@ public class SettingsMode extends WorldController implements ContactListener {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
                 if (lastInPlanet[i] == false) {
-                    if(i!=1 && i!=3)
+                    if(i!=1 && i!=2)
                         planets.get(i).setTexture(TEXTURES[i][1]);
                     planets.get(i).setRadius(planets.get(i).getRadius()*1.1f);
                     planets.get(i).scalePicScale(new Vector2(1.2f, 1.2f));
@@ -585,7 +558,7 @@ public class SettingsMode extends WorldController implements ContactListener {
                 lastInPlanet[i] = true;
             }
             else if (lastInPlanet[i] == true) {
-                if (i!=1 && i!=3)
+                if (i!=1 && i!=2)
                     planets.get(i).setTexture(TEXTURES[i][0]);
                 planets.get(i).setRadius(planets.get(i).getRadius()*1/1.1f);
                 planets.get(i).scalePicScale(new Vector2(1/1.2f, 1/1.2f));
@@ -602,10 +575,10 @@ public class SettingsMode extends WorldController implements ContactListener {
                 else if(i==1){
                     planets.get(i).setTexture(mute_Texture);
                 }
-                if(i==3 && InputController.getInstance().getWASD()){
+                if(i==2 && InputController.getInstance().getWASD()){
                     planets.get(i).setTexture(okl_Texture);
                 }
-                else if(i==3){
+                else if(i==2){
                     planets.get(i).setTexture(wasd_Texture);
                 }
                 listener.exitScreen(this, i);

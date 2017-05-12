@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 public class LevelSelect extends PlayMode {
 
     protected static final float[][] PLANETS = {
-            {12.8f, 15f, 1.1f, 3f},    // BACK
+            {12.8f, 15f, 1.1f, 3f},    // NOTHING
             {9.3f, 3.5f, 1.1f, 3f},  // MAIN MENU
             {22.7f, 3.5f, 1.1f, 3f},   // SETTINGS
             {13.7f, 2.2f, 1.1f, 3f},   // PREV LEVELS
@@ -71,10 +71,8 @@ public class LevelSelect extends PlayMode {
         prev_page_Texture = createTexture(manager, PREV_PAGE_TEXTURE,false);
         prev_page_Hover_Texture = createTexture(manager, PREV_PAGE_HOVER_TEXTURE,false);
         prev_page_Lock_Texture = createTexture(manager, PREV_PAGE_LOCK_TEXTURE,false);
-        back_Texture = createTexture(manager, BACK_TEXTURE, false);
-        back_Hover_Texture = createTexture(manager, BACK_HOVER_TEXTURE, false);
-        back_Text_Texture = createTexture(manager, BACK_TEXT_TEXTURE, false);
-        back_Text_Hover_Texture = createTexture(manager, BACK_TEXT_HOVER_TEXTURE, false);
+        purple_P_2_Texture =  createTexture(manager, PURPLE_P_2,false);
+
 
         for (int i = 0; i < 27; i++) {
             for (int j = 0; j < 3; j++) {
@@ -82,8 +80,8 @@ public class LevelSelect extends PlayMode {
             }
         }
 
-        TEXTURES[0][0] = back_Texture;
-        TEXTURES[0][1] = back_Hover_Texture;
+        TEXTURES[0][0] = purple_P_2_Texture;
+        TEXTURES[0][1] = purple_P_2_Texture;
         TEXTURES[1][0] = main_Menu_Texture;
         TEXTURES[1][1] = main_Menu_Hover_Texture;
         TEXTURES[2][0] = settings_Texture;

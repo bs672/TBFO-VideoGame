@@ -216,14 +216,8 @@ public class GDXRoot extends Game implements ScreenListener {
 		}
 		// SETTINGS
 		else if (screen == controllers[1]) {
-			if (exitCode == 2) {
+			if (exitCode == 0) {
 				current = lastScreen;
-				controllers[current].reset();
-				setScreen(controllers[current]);
-				lastScreen = 1;
-			}
-			else if (exitCode == 0) {
-				current = exitCode;
 				controllers[current].reset();
 				setScreen(controllers[current]);
 				lastScreen = 1;
@@ -231,7 +225,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			else if (exitCode == 1) {
 				toggleMute();
             }
-            else if(exitCode == 3) {
+            else if(exitCode == 2) {
 				InputController.getInstance().toggleControls();
 			}
 		}

@@ -185,7 +185,7 @@ public class MainMenu extends PlayMode {
         //titlecoord.set( canvas.getWidth() /4,9*canvas.getHeight()/16 );
         //titlesize.set(  canvas.getWidth()/2, canvas.getHeight()/2  );
 
-        titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2.3f)  );
+        titlecoord.set(   (canvas.getWidth() /2)-(titleTexture.getRegionWidth()/4) , (canvas.getHeight())-(titleTexture.getRegionHeight()/2f)  );
         titlesize.set(  titleTexture.getRegionWidth()/2, titleTexture.getRegionHeight()/2.3f );
 
         credcoord.set(30,30);

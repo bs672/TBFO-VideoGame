@@ -2851,8 +2851,8 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (play && gameState==0) {
             canvas.begin();
-            canvas.draw(reset_Texture, Color.WHITE, 10, (canvas.getHeight() - .7f*(reset_Texture.getRegionHeight())) , canvas.getWidth() / 10, canvas.getHeight() / 12);
-            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 10, (canvas.getHeight() - .7f*(reset_Texture.getRegionHeight())), canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.draw(reset_Texture, Color.WHITE, 10, .9f*canvas.getHeight() , canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 10, .9f*canvas.getHeight(), canvas.getWidth() / 10, canvas.getHeight() / 12);
             Vector2 toCommand = new Vector2();
             for(PlanetModel c : commandPlanets) {
                 toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
