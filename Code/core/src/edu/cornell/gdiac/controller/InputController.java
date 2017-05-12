@@ -254,6 +254,14 @@ public class InputController {
 		}
 		clampPosition(bounds);
 	}
+	public void isPlay(boolean playMode){
+		if (!playMode){
+			scrollDown=false;
+			scrollLeft=false;
+			scrollRight=false;
+			scrollUp=false;
+		}
+	}
 
 	/**
 	 * Reads input from the keyboard.
