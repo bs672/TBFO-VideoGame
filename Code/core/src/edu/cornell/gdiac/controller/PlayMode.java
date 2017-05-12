@@ -2345,7 +2345,8 @@ public class PlayMode extends WorldController implements ContactListener {
                             siphonPlanet();
                         } else if (Oob_rad >= OOB_MAX_RADIUS) {
                             complexAvatar.setMax(true);
-                        } else if (currentPlanet.getType() == 2f) {
+                        }
+                        if (currentPlanet.getType() == 2f) {
                             changeMass(POISON);
                         }
                         if (complexAvatar.getLinearVelocity().len() < 7) {
@@ -2361,7 +2362,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     for (ShipModel sh: ships) {
                         if (sh.getType() == 2) {
                             screenLockShip(sh);
-                            return;
                         }
                     }
                 }
