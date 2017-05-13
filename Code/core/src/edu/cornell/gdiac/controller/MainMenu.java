@@ -98,7 +98,7 @@ public class MainMenu extends PlayMode {
     }
 
     public MainMenu() {
-        super("MainScene");
+        super("MainScene",0);
         play = false;
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];

@@ -46,7 +46,7 @@ public class LevelSelect extends PlayMode {
     protected int mode; // 0 = levels 1-9 , 1 = levels 10-18, 2 = levels 19 - 27
 
     public LevelSelect(int unlocked, int mode) {
-        super("MainScene");
+        super("MainScene",0);
         play = false;
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
