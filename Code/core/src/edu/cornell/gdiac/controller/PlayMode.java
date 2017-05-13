@@ -431,6 +431,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int gameState;
     // number of ships converted
     protected int converted;
+    // number of clicks
+    protected int clicks;
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
@@ -880,6 +882,7 @@ public class PlayMode extends WorldController implements ContactListener {
         massFont.getData().setScale(2);
         launchVec = new Vector2();
         returnToPlanetTimer = 0;
+        clicks = 0;
         adjustCooldown = ADJUST_COOLDOWN;
         FileHandle json = Gdx.files.internal("overlap2d/Testing/scenes/" + level + ".dt");
         String jsonString = json.readString();
@@ -924,6 +927,7 @@ public class PlayMode extends WorldController implements ContactListener {
         med_stars.clear();
         white_stars.clear();
         world.dispose();
+        clicks = 0;
 
         world = new World(gravity,false);
         world.setContactListener(this);
@@ -1970,10 +1974,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
     }
 
-    //Siphon closest planet
-    public void siphonPlanet(){
-        oldAvatarRad = complexAvatar.getRadius();
-        float oldOobMass = complexAvatar.getMass();
+    public void decreasePlanetMass() {
         float oldPlanMass = currentPlanet.getMass();
         float suckSpeed;
         if(currentPlanet.getType() == 0)
@@ -1982,6 +1983,18 @@ public class PlayMode extends WorldController implements ContactListener {
             suckSpeed = SIPHON*2;
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
+    }
+
+    //Siphon closest planet
+    public void siphonPlanet(){
+        oldAvatarRad = complexAvatar.getRadius();
+        float oldOobMass = complexAvatar.getMass();
+        decreasePlanetMass();
+        float suckSpeed;
+        if(currentPlanet.getType() == 0)
+            suckSpeed = SIPHON*2;
+        else
+            suckSpeed = SIPHON*2;
         if(currentPlanet.getType() == 0) {
             complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
             complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
@@ -2012,6 +2025,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Make Oob jump
     public void jump(){
         if(!forceJump) {
+            clicks++;
             SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.7f);
         }
         Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
@@ -2198,7 +2212,6 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.setAngle((float) Math.PI/2);
         complexAvatar.setDirection(new Vector2(0,1));
         complexAvatar.setRadius(1.5f);
-        System.out.println(complexAvatar.getDirection());
         if (state == 2) {
             for (int i = 0; i < WIN_PLANETS.length; i++) {
                 PlanetModel obj;
@@ -2359,6 +2372,8 @@ public class PlayMode extends WorldController implements ContactListener {
                             siphonPlanet();
                         } else if (Oob_rad >= OOB_MAX_RADIUS) {
                             complexAvatar.setMax(true);
+                            if(currentPlanet.isDying())
+                                decreasePlanetMass();
                         }
                         if (currentPlanet.getType() == 2f) {
                             changeMass(POISON);
@@ -2403,6 +2418,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().set(velocityChange.cpy().scl(complexAvatar.getRadius() / 2f)));
                     complexAvatar.setDirection(complexAvatar.getLinearVelocity().cpy().set(velocityChange.cpy().scl(complexAvatar.getRadius() / 2f)));
                     adjustCooldown = 30;
+                    clicks++;
                     SoundController.getInstance().play(EXPULSION_SOUND, EXPULSION_SOUND, false, 1.0f);
                 }
 
@@ -2924,6 +2940,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.draw(canvas);
                 }
             }
+            System.out.println(clicks);
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 100, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();

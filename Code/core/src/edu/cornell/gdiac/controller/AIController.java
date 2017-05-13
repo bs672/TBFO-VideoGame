@@ -73,6 +73,7 @@ public class AIController {
         tempVec2 = new Vector2();
         for(int i = 0; i < ships.size; i++)
             if (ships.get(i).getType() == 2) {
+                ships.get(i).setOrbitDistance(4.5f);
                 PlanetModel bigPlanet = planets.get(0);
                 for (int j = 0; j < planets.size; j++) {
                     if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
@@ -226,13 +227,13 @@ public class AIController {
             int cloBl = -1;
             for (int i = 0; i < planets.size; i++) {
                 tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
-                if (tempVec2.len() < planets.get(i).getRadius() + 1.5f + EPSILON ) {
+                if (tempVec2.len() < planets.get(i).getRadius() + s.getOrbitDistance()/2 + EPSILON ) {
                     cloPl = i;
                 }
             }
             for (int i = 0; i < blackHoles.size; i++) {
                 tempVec2.set(s.getPosition().cpy().sub(blackHoles.get(i).getPosition()));
-                if (tempVec2.len() < blackHoles.get(i).getRadius() + 1.5f + EPSILON ) {
+                if (tempVec2.len() < blackHoles.get(i).getRadius() + s.getOrbitDistance()/2 + EPSILON ) {
                     cloBl = i;
                 }
             }
@@ -246,7 +247,7 @@ public class AIController {
                 // tempVec1 is planet to ship
                 tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
                 tempVec2.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-                if(tempVec1.len() - 1.5f - planets.get(cloPl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
+                if(tempVec1.len() - s.getOrbitDistance()/2 - planets.get(cloPl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
                     tempVec2.set(-tempVec1.y, tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
@@ -254,7 +255,7 @@ public class AIController {
                     tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
                     s.setPosition(target.getPosition().cpy().add(tempVec1));
                 }
-                else if(tempVec1.len() < 1.5f + planets.get(cloPl).getRadius()){
+                else if(tempVec1.len() < s.getOrbitDistance()/2 + planets.get(cloPl).getRadius() && s.getType() != 2){
                     s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
                 }
                 else {

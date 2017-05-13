@@ -85,7 +85,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
-		controllers = new WorldController[29];
+		controllers = new WorldController[28];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
 		controllers[2] = new LevelSelect(25, 0);
@@ -99,11 +99,11 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[8] = new PlayMode("Ship Square"); //5
         controllers[9] = new PlayMode("Plus"); //6
         controllers[10] = new PlayMode("Sun"); //7
-        controllers[11] = new PlayMode("Sun Triangle"); //8
-        controllers[12] = new PlayMode("BH"); //9
-        controllers[13] = new PlayMode("Dipper"); //10
-        controllers[14] = new PlayMode("Mind The Gap"); //11
+        controllers[11] = new PlayMode("BH"); //8
+		controllers[12] = new PlayMode("Maze"); //9
+        controllers[13] = new PlayMode("Mind The Gap"); //10
 		//Intermediate
+		controllers[14] = new PlayMode("Mother"); //11
         controllers[15] = new PlayMode("X"); //12
 		controllers[16] = new PlayMode("Circles"); //13
 		controllers[17] = new PlayMode("Sun T"); //14
@@ -117,10 +117,8 @@ public class GDXRoot extends Game implements ScreenListener {
         controllers[24] = new PlayMode("Portal"); //21
         controllers[25] = new PlayMode("Jump Start"); //22
 		//Expert
-		controllers[26] = new PlayMode("Mother"); //23
-		controllers[27] = new PlayMode("Layers"); //24
-		controllers[28] = new PlayMode("Race"); //25
-
+		controllers[26] = new PlayMode("Layers"); //23
+		controllers[27] = new PlayMode("Race"); //24
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
