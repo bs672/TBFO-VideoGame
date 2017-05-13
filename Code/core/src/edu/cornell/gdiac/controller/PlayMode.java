@@ -2953,7 +2953,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.draw(canvas);
                 }
             }
-            canvas.drawText("Shots Taken:" + clicks, displayFont, canvas.getWidth()*0.4f, canvas.getHeight()*0.6f);
+            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()*0.4f, canvas.getHeight()*0.6f);
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()*0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
