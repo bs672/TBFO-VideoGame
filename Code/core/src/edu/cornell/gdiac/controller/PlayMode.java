@@ -128,6 +128,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SHRINK_P= "space/planets/shrinkPlanet.png";
 
     protected String LEVEL;
+    protected int LV_NUMBER;
 
     /** The texture file for the planets */
     protected static final String QUIT = "space/menus/quit.png";
@@ -877,13 +878,14 @@ public class PlayMode extends WorldController implements ContactListener {
      *
      * The game has default gravity and other settings
      */
-    public PlayMode(String level) {
+    public PlayMode(String level, int number) {
         super(DEFAULT_WIDTH,DEFAULT_HEIGHT,DEFAULT_GRAVITY);
         setDebug(false);
         setComplete(false);
         setFailure(false);
         world.setContactListener(this);
             LEVEL=level;
+            LV_NUMBER=number;
         sensorFixtures = new ObjectSet<Fixture>();
         planets = new Array<PlanetModel>();
         winPlanets = new Array<PlanetModel>();
@@ -2910,6 +2912,8 @@ public class PlayMode extends WorldController implements ContactListener {
             canvas.begin();
             canvas.draw(reset_Texture, Color.WHITE, 10, .9f*canvas.getHeight() , canvas.getWidth() / 10, canvas.getHeight() / 12);
             canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 10, .9f*canvas.getHeight(), canvas.getWidth() / 10, canvas.getHeight() / 12);
+            canvas.drawText("Level " +LV_NUMBER , displayFont, 10, 60);
+
             Vector2 toCommand = new Vector2();
             for(PlanetModel c : commandPlanets) {
                 toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);

@@ -91,34 +91,34 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[2] = new LevelSelect(25, 0);
 		controllers[3] = new PauseMenu();
 		//Tutorials
-		controllers[4] = new PlayMode("T1"); //1
-		controllers[5] = new PlayMode("T2"); //2
-		controllers[6] = new PlayMode("T3 "); //3
-		controllers[7] = new PlayMode("T4"); //4
+		controllers[4] = new PlayMode("T1", 1); //1
+		controllers[5] = new PlayMode("T2", 2); //2
+		controllers[6] = new PlayMode("T3 ", 3); //3
+		controllers[7] = new PlayMode("T4",4); //4
 		//Beginner
-		controllers[8] = new PlayMode("Ship Square"); //5
-        controllers[9] = new PlayMode("Plus"); //6
-        controllers[10] = new PlayMode("Sun"); //7
-        controllers[11] = new PlayMode("BH"); //8
-		controllers[12] = new PlayMode("Maze"); //9
-        controllers[13] = new PlayMode("Mind The Gap"); //10
+		controllers[8] = new PlayMode("Ship Square",5); //5
+        controllers[9] = new PlayMode("Plus",6); //6
+        controllers[10] = new PlayMode("Sun",7); //7
+        controllers[11] = new PlayMode("BH",8); //8
+		controllers[12] = new PlayMode("Maze",9); //9
+        controllers[13] = new PlayMode("Mind The Gap",10); //10
 		//Intermediate
-		controllers[14] = new PlayMode("Mother"); //11
-        controllers[15] = new PlayMode("X"); //12
-		controllers[16] = new PlayMode("Circles"); //13
-		controllers[17] = new PlayMode("Sun T"); //14
-        controllers[18] = new PlayMode("Grid"); //15
-		controllers[19] = new PlayMode("Looper"); //16
-		controllers[20] = new PlayMode("Clam Shell"); //17
-        controllers[21] = new PlayMode("Pinball"); //18
+		controllers[14] = new PlayMode("Mother",11); //11
+        controllers[15] = new PlayMode("X",12); //12
+		controllers[16] = new PlayMode("Circles",13); //13
+		controllers[17] = new PlayMode("Sun T",14); //14
+        controllers[18] = new PlayMode("Grid",15); //15
+		controllers[19] = new PlayMode("Looper",16); //16
+		controllers[20] = new PlayMode("Clam Shell",17); //17
+        controllers[21] = new PlayMode("Pinball",18); //18
 		//Advanced
-        controllers[22] = new PlayMode("FvS"); //19
-        controllers[23] = new PlayMode("Diamond"); //20
-        controllers[24] = new PlayMode("Portal"); //21
-        controllers[25] = new PlayMode("Jump Start"); //22
+        controllers[22] = new PlayMode("FvS",19); //19
+        controllers[23] = new PlayMode("Diamond",29); //20
+        controllers[24] = new PlayMode("Portal",21); //21
+        controllers[25] = new PlayMode("Jump Start",22); //22
 		//Expert
-		controllers[26] = new PlayMode("Layers"); //23
-		controllers[27] = new PlayMode("Race"); //24
+		controllers[26] = new PlayMode("Layers",23); //23
+		controllers[27] = new PlayMode("Race",24); //24
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
