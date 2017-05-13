@@ -397,7 +397,7 @@ public class LevelSelect extends PlayMode {
 
     public void hover() {
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
-        for (int i = 0; i < PLANETS.length; i++) {
+        for (int i = 1; i < PLANETS.length; i++) {
             int temp = i - 4 + (mode*9);
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius()*1.5f)) {

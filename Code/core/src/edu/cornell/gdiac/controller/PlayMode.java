@@ -2286,27 +2286,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     control = 1;
                 }
             }
-            if (commandPlanets.size == 0 && play) {
-                // Won the level
-                InputController.getInstance().setCenterCamera(true);
-                messageCounter = 0;
-                switchState(2);
-                for (ShipModel sh : ships) {
-                    if (sh.getName().equals("ship")) {
-                        sh.setExploding(true);
-                        if (!ship_explosion.contains(sh, false)) {
-                            ship_explosion.add(sh);
-                        }
-                        sh.set_EXP_ST(0f);
-                    }
-                }
-            }
-            if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
-                // Lost the level
-                InputController.getInstance().setCenterCamera(true);
-                messageCounter = 0;
-                switchState(1);
-            }
+
             if (currentPlanet != null) {
                 jumpTime = 0;
                 // smallestRad is the vector from current planet to Oob's center
@@ -2498,6 +2478,27 @@ public class PlayMode extends WorldController implements ContactListener {
             if (adjustCooldown > 0) {
                 adjustCooldown--;
             }
+            if (commandPlanets.size == 0 && play) {
+                // Won the level
+                InputController.getInstance().setCenterCamera(true);
+                messageCounter = 0;
+                switchState(2);
+                for (ShipModel sh : ships) {
+                    if (sh.getName().equals("ship")) {
+                        sh.setExploding(true);
+                        if (!ship_explosion.contains(sh, false)) {
+                            ship_explosion.add(sh);
+                        }
+                        sh.set_EXP_ST(0f);
+                    }
+                }
+            }
+            if (complexAvatar.getRadius() <= OOB_DEATH_RADIUS) {
+                // Lost the level
+                InputController.getInstance().setCenterCamera(true);
+                messageCounter = 0;
+                switchState(1);
+            }
         }
         else {
             if (ships.size>0) {
@@ -2521,6 +2522,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             if (gameState == 2) {complexAvatar.setLinearVelocity(new Vector2(0f, 0f));}
         }
+
     }
 
     /**
