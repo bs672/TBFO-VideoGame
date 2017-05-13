@@ -553,7 +553,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
         groundPlayerControls();
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
-        for (int i = 0; i < PLANETS.length; i++) {
+        for (int i = 0; i < PLANETS.length-2; i++) {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
                 if (lastInPlanet[i] == false) {
