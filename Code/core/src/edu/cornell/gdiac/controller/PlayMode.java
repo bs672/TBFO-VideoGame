@@ -8,6 +8,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -274,6 +275,7 @@ public class PlayMode extends WorldController implements ContactListener {
             {LEVEL26_TEXTURE, LEVEL26_HOVER_TEXTURE, LEVEL26_LOCK_TEXTURE},
             {LEVEL27_TEXTURE, LEVEL27_HOVER_TEXTURE, LEVEL27_LOCK_TEXTURE},
     };
+    protected static final String FONT_FILE = "space/fonts/Suess.ttf";
 
     /** Texture file for background image */
     protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
@@ -334,6 +336,10 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     protected TextureRegion blackHoleTexture;
+
+    protected BitmapFont displayFont;
+
+    protected int FONT_SIZE = 80;
 
     /** Planet texture */
     protected TextureRegion blue_P_1_Texture;   protected TextureRegion blue_P_2_Texture;   protected TextureRegion blue_P_3_Texture;
@@ -588,6 +594,12 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(EXPULSION_SOUND, Sound.class);     assets.add(EXPULSION_SOUND);
         manager.load(CONVERT_SOUND, Sound.class);       assets.add(CONVERT_SOUND);
 
+        FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        size2Params.fontFileName = FONT_FILE;
+        size2Params.fontParameters.size = FONT_SIZE;
+        manager.load(FONT_FILE, BitmapFont.class, size2Params);
+        assets.add(FONT_FILE);
+
         super.preLoadContent(manager);
 
     }
@@ -731,6 +743,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, SHOOTING_SOUND);
         sounds.allocate(manager, EXPULSION_SOUND);
         sounds.allocate(manager, CONVERT_SOUND);
+        displayFont = manager.get(FONT_FILE,BitmapFont.class);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
 
@@ -2940,8 +2953,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.draw(canvas);
                 }
             }
-            System.out.println(clicks);
-            canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()/2 + 100, win_text.getRegionWidth(), win_text.getRegionHeight());
+            canvas.drawText("Shots Taken:" + clicks, displayFont, canvas.getWidth()*0.4f, canvas.getHeight()*0.6f);
+            canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()*0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
         for (Obstacle obj: objects) {
