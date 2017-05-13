@@ -7,11 +7,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
@@ -2241,6 +2238,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
                 addObject(obj);
                 winPlanets.add(obj);
+
+
             }
             complexAvatar.setFlying(true);
 //            complexAvatar.setRadius((float) Math.sqrt((oldOobMass + suckSpeed / 3) / Math.PI));
@@ -2265,10 +2264,9 @@ public class PlayMode extends WorldController implements ContactListener {
             complexAvatar.setHurting(true);
         }
         complexAvatar.setBodyType(BodyDef.BodyType.StaticBody);
-        for(Obstacle b : complexAvatar.bodies)
+        for(Obstacle b : complexAvatar.getBodies()) {
             b.setBodyType(BodyDef.BodyType.StaticBody);
-
-
+        }
     }
 
     /**
@@ -2957,7 +2955,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.draw(canvas);
                 }
             }
-            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()*0.4f, canvas.getHeight()*0.6f);
+            GlyphLayout layout = new GlyphLayout();
+            layout.setText(displayFont, "Clicks Used:" + clicks);
+            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*3);
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()*0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
