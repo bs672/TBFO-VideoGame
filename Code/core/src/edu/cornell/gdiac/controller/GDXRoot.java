@@ -113,7 +113,7 @@ public class GDXRoot extends Game implements ScreenListener {
         controllers[21] = new PlayMode("Pinball",18); //18
 		//Advanced
         controllers[22] = new PlayMode("FvS",19); //19
-        controllers[23] = new PlayMode("Diamond",29); //20
+        controllers[23] = new PlayMode("Diamond",20); //20
         controllers[24] = new PlayMode("Portal",21); //21
         controllers[25] = new PlayMode("Jump Start",22); //22
 		//Expert
