@@ -1237,6 +1237,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.setTexture(command_P_Texture);
                 commandPlanets.add(obj);
                 obj.setCooldown(Math.round(PLANETS.get(ii).get(4)));
+                obj.newTime = 0;
             }
             //Poison Planets
             if (obj.getType() == 2f) {
@@ -2931,7 +2932,19 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float)Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1f/10, 1f/10);
+                    if(c.newTime != 0){
+                        //the arrow should be new
+                        c.newTime--;
+                        if((c.newTime/15)%2==1) {
+                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() / 2, arrow_Texture.getRegionHeight() / 2, toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        }
+                        else{
+                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth() / 2, arrow_Texture.getRegionHeight() / 2, toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        }
+                    }
+                    else {
+                        canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() / 2, arrow_Texture.getRegionHeight() / 2, toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                    }
                 }
             }
             canvas.end();
