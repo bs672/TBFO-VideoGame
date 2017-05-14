@@ -869,6 +869,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int jumpTime;
     //Should we play the jump sound?
     protected boolean forceJump;
+    //is the screen locked on ship?
+    protected boolean shipLock;
 
     /**
      * Creates and initialize a new instance of the platformer game
@@ -1854,6 +1856,7 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void screenLockShip(ShipModel sh) {
+        shipLock = true;
         InputController.getInstance().setCenterCamera(false);
         vecToCenter.set(canvas.getWidth() / 80f - sh.getX(), canvas.getHeight() / 80f - sh.getY());
         for (Obstacle o : objects) {
@@ -2294,6 +2297,10 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             else {
+                if(shipLock){
+                    shipLock = false;
+                    InputController.getInstance().setCenterCamera(true);
+                }
                 scrollStars(stars,LG_SPEED, LG_SCROLL_SPEED,backgroundLG,LG_S_X_START,LG_S_Y_START);
                 scrollStars(med_stars,MED_SPEED, MED_SCROLL_SPEED, backgroundMED,med_X_START,med_Y_START);
                 scrollStars(white_stars,WHITE_SPEED, WHITE_SCROLL_SPEED,backgroundWHITESTAR,white_X_START,white_Y_START);
@@ -2924,7 +2931,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float)Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1f/10, 1f/10);
+                    canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth()/2, arrow_Texture.getRegionHeight()/2, toCommand.x, toCommand.y, angle - (float)Math.PI/2, 1f/10, 1f/10);
                 }
             }
             canvas.end();
