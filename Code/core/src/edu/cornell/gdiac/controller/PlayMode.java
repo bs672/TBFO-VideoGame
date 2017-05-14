@@ -2936,14 +2936,14 @@ public class PlayMode extends WorldController implements ContactListener {
                         //the arrow should be new
                         c.newTime--;
                         if((c.newTime/15)%2==1) {
-                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() / 2, arrow_Texture.getRegionHeight() / 2, toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                         }
                         else{
-                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth() / 2, arrow_Texture.getRegionHeight() / 2, toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                         }
                     }
                     else {
-                        canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() / 2, arrow_Texture.getRegionHeight() / 2, toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                     }
                 }
             }
