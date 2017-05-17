@@ -781,8 +781,23 @@ public abstract class SimpleObstacle extends Obstacle {
 
 
 
+	/**
+	 * Sets the object texture for drawing purposes.
+	 *
+	 * In order for drawing to work properly, you MUST set the drawScale.
+	 * The drawScale converts the physics units to pixels.
+	 *
+	 * @param value  the object texture for drawing purposes.
+	 */
+	public void setFireTexture(TextureRegion value) {
+		texture = value;
+		origin.set(texture.getRegionWidth()/2.0f, texture.getRegionHeight()/4.0f);
+	}
 
-    /**
+
+
+
+	/**
      * Returns the image filmstrip for this ship
      *
      * This value should be loaded by the GameMode and set there. However, we
