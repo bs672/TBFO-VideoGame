@@ -52,7 +52,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String OOB_FLYING_FILE = "space/animations/OobBlink.png";
     protected static final String OOB_TELEPORTING_FILE = "space/animations/OobSurprised.png";
     protected static final String OOB_HURTING_FILE = "space/animations/OobSad.png";
-    protected static final String OOB_DYING_FILE = "space/animations/OobDying.png";
+    protected static final String OOB_DYING_FILE = "space/animations/oobDying.png";
     protected static final String OOB_MAX_FILE = "space/animations/OobFull.png";
 
     /** The texture file for the planets */
