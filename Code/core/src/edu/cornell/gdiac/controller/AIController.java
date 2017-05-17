@@ -42,6 +42,8 @@ public class AIController {
     /** burst delay */
     private static final int DELAY = 5;
 
+    private boolean first = true;
+
     public void setTarget(ShipModel ship, PlanetModel planet) {
         targetPlanets.put(ship, planet);
     }
@@ -325,12 +327,19 @@ public class AIController {
                 bulletData.add(s.getY() + tempVec1.y);
                 bulletData.add(tempVec1.x * 10);
                 bulletData.add(tempVec1.y * 10);
-                bulletData.add(1f);
+                if(first) {
+                    bulletData.add(1f);
+                    first = false;
+                }
+                else{
+                    bulletData.add(2f);
+                }
 
             }
             else {
                 targetPlanets.remove(s);
                 findBigPlanet(s);
+                first = true;
             }
         }
     }

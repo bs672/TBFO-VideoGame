@@ -22,6 +22,7 @@ import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.audio.Music;
 
 
 /**
@@ -290,7 +291,8 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for mass expulsion */
     protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
-
+    //Music for convert
+    protected static Music convert;
     /** The sound file for a jump */
     protected static final String JUMP_SOUND = "audio/jump.wav";
     /** The sound file for a planet explosion */
@@ -302,7 +304,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
 
-    protected static final String CONVERT_SOUND = "audio/convert.wav";
+    //protected static final String CONVERT_SOUND = "audio/convert.wav";
 
     public static final float SCROLL_SPEED = 0.5f;
 
@@ -457,7 +459,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         platformAssetState = AssetState.LOADING;
-
+        convert = Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav"));
         manager.load(OOB_NORMAL_FILE, Texture.class);   assets.add(OOB_NORMAL_FILE);
         manager.load(OOB_GROWING_FILE, Texture.class);  assets.add(OOB_GROWING_FILE);
         manager.load(OOB_COMMAND_FILE, Texture.class);  assets.add(OOB_COMMAND_FILE);
@@ -590,7 +592,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MOTHERSHIP_SOUND, Sound.class);    assets.add(MOTHERSHIP_SOUND);
         manager.load(SHOOTING_SOUND, Sound.class);      assets.add(SHOOTING_SOUND);
         manager.load(EXPULSION_SOUND, Sound.class);     assets.add(EXPULSION_SOUND);
-        manager.load(CONVERT_SOUND, Sound.class);       assets.add(CONVERT_SOUND);
+        //manager.load(CONVERT_SOUND, Sound.class);       assets.add(CONVERT_SOUND);
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         size2Params.fontFileName = FONT_FILE;
@@ -677,7 +679,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Sound mothershipSound = Gdx.audio.newSound(Gdx.files.internal(MOTHERSHIP_SOUND));
         Sound shootingSound = Gdx.audio.newSound(Gdx.files.internal(SHOOTING_SOUND));
         Sound expulsionSound = Gdx.audio.newSound(Gdx.files.internal(EXPULSION_SOUND));
-        Sound convertSound = Gdx.audio.newSound(Gdx.files.internal(CONVERT_SOUND));
+        //Sound convertSound = Gdx.audio.newSound(Gdx.files.internal(CONVERT_SOUND));
 
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
@@ -740,7 +742,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
         sounds.allocate(manager, EXPULSION_SOUND);
-        sounds.allocate(manager, CONVERT_SOUND);
+        //sounds.allocate(manager, CONVERT_SOUND);
         displayFont = manager.get(FONT_FILE,BitmapFont.class);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
@@ -1782,9 +1784,18 @@ public class PlayMode extends WorldController implements ContactListener {
                     SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 }
                 //tractor beam bullets
+                else if(aiController.bulletData.get(i+4)==1){
+                    bullet.setTexture(bullet_texture);
+                    //SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
+                    if (SoundController.getInstance().getMute()){
+                        convert.stop();
+                    }
+                    else{
+                        convert.play();
+                    }
+                }
                 else{
                     bullet.setTexture(bullet_texture);
-                    SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
                 }
                 addObject(bullet);
             }
