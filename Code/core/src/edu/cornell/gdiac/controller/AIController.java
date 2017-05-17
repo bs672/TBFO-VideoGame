@@ -22,8 +22,6 @@ public class AIController {
     private Array<PlanetModel> planets;
     /** list of black holes on the map */
     private Array<BlackHoleModel> blackHoles;
-    /** the ships that aren't in orbit */
-    private ObjectSet<ShipModel> wanderers;
     /** All the objects in the world. */
     protected Array<Float> bulletData = new Array<Float>();
     /** Oob */
@@ -43,6 +41,8 @@ public class AIController {
     private static final int BURSTCOUNT = 5;
     /** burst delay */
     private static final int DELAY = 5;
+
+    private boolean first = true;
 
     public void setTarget(ShipModel ship, PlanetModel planet) {
         targetPlanets.put(ship, planet);
@@ -95,7 +95,6 @@ public class AIController {
                 }
                 targetPlanets.put(ships.get(i), planets.get(cloPl));
             }
-        wanderers = new ObjectSet<ShipModel>();
     }
 
     /** each ship will move counter-clockwise in orbit around its
@@ -108,10 +107,7 @@ public class AIController {
             return;
         for(ShipModel s : ships) {
             if (s.getType() == 0) {
-                if(!s.getAggroed())
-                    s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
-                else
-                    s.setAggroed(Math.abs(s.getPosition().cpy().sub(avatar.getPosition()).len()) <= s.getAggroRange());
+                s.setAggroed(s.getPosition().cpy().sub(avatar.getPosition()).len() <= s.getAggroRange());
                 if (s.getAggroed()) {
                     aggroPathfind(s);
                 } else
@@ -155,11 +151,11 @@ public class AIController {
                 difference += 2*Math.PI;
             else if(difference > Math.PI)
                 difference -= 2*Math.PI;
-            if (s.getType() != 2 || !s.getInOrbit()) {
+//            if (s.getType() != 2 || !s.getInOrbit()) {
                 s.setAngle(s.getAngle() + difference / 10);
                 if (s.getAngle() >= Math.PI * 2)
                     s.setAngle(s.getAngle() - (float) Math.PI * 2);
-            }
+//            }
             s.setOldPosition(s.getPosition());
         }
     }
@@ -331,12 +327,19 @@ public class AIController {
                 bulletData.add(s.getY() + tempVec1.y);
                 bulletData.add(tempVec1.x * 10);
                 bulletData.add(tempVec1.y * 10);
-                bulletData.add(1f);
+                if(first) {
+                    bulletData.add(1f);
+                    first = false;
+                }
+                else{
+                    bulletData.add(2f);
+                }
 
             }
             else {
                 targetPlanets.remove(s);
                 findBigPlanet(s);
+                first = true;
             }
         }
     }
@@ -353,35 +356,22 @@ public class AIController {
             }
         }
         // this if statement is so that the currently spawning ships don't stop immediately and start shooting Oob
-        if(tempVec1.len() < planets.get(closestPlanet).getRadius() + s.getOrbitDistance() && planets.get(closestPlanet).getType() == 1) {
+        if(tempVec1.len() < planets.get(closestPlanet).getRadius() + s.getOrbitDistance() && targetPlanets.get(s).getType() == 1) {
             peacefulPathfind(s);
             return;
         }
         // moving towards Oob
-        if(tempVec1.len() > 4) {
+        if(s.getPosition().cpy().sub(avatar.getPosition()).len() > s.getAggroRange()/2) {
             tempVec2.set(avatar.getPosition().cpy().sub(s.getPosition()));
             tempVec1.set(planets.get(closestPlanet).getPosition().cpy().sub(s.getPosition()));
             // tempVec2 is ship to Oob, tempVec1 is ship to planet
             float vecAngle = (float)Math.acos(tempVec1.dot(tempVec2)/(tempVec1.len()*tempVec2.len()));
             // orbiting around a planet
-            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + s.getOrbitDistance() && Math.abs(vecAngle) < Math.PI / 2) {
-                float crossProd = tempVec1.x*tempVec2.y - tempVec1.y*tempVec2.x;
-                if(crossProd > 0) {
+            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + 1.5f && Math.abs(vecAngle) < 2*Math.PI / 3) {
                     tempVec2.set(-tempVec1.y,tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
-                    tempVec1.sub(planets.get(closestPlanet).getPosition());
-                    tempVec1.scl((planets.get(closestPlanet).getRadius() + s.getOrbitDistance())/tempVec1.len());
-                    s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
-                }
-                else {
-                    tempVec2.set(tempVec1.y,-tempVec1.x);
-                    tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
-                    tempVec1.set(s.getPosition().cpy().add(tempVec2));
-                    tempVec1.sub(planets.get(closestPlanet).getPosition());
-                    tempVec1.scl((planets.get(closestPlanet).getRadius() + s.getOrbitDistance())/tempVec1.len());
-                    s.setPosition(planets.get(closestPlanet).getPosition().cpy().add(tempVec1));
-                }
+                    s.setPosition(tempVec1);
             }
             // moving in space
             else {
@@ -392,8 +382,8 @@ public class AIController {
         }
         // slowing down to not ram into Oob
         else {
-            s.setVX(s.getVX()*0.7f);
-            s.setVY(s.getVY()*0.7f);
+            s.setVX(s.getVX()*0.5f);
+            s.setVY(s.getVY()*0.5f);
         }
     }
 

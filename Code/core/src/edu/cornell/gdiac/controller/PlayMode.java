@@ -22,6 +22,7 @@ import edu.cornell.gdiac.util.ScreenListener;
 import edu.cornell.gdiac.util.SoundController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.audio.Music;
 
 
 /**
@@ -291,7 +292,8 @@ public class PlayMode extends WorldController implements ContactListener {
     /** The texture file for mass expulsion */
     protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
-
+    //Music for convert
+    protected static Music convert;
     /** The sound file for a jump */
     protected static final String JUMP_SOUND = "audio/jump.wav";
     /** The sound file for a planet explosion */
@@ -303,7 +305,7 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
 
-    protected static final String CONVERT_SOUND = "audio/convert.wav";
+    //protected static final String CONVERT_SOUND = "audio/convert.wav";
 
     public static final float SCROLL_SPEED = 0.5f;
 
@@ -462,7 +464,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         platformAssetState = AssetState.LOADING;
-
+        convert = Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav"));
         manager.load(OOB_NORMAL_FILE, Texture.class);   assets.add(OOB_NORMAL_FILE);
         manager.load(OOB_GROWING_FILE, Texture.class);  assets.add(OOB_GROWING_FILE);
         manager.load(OOB_COMMAND_FILE, Texture.class);  assets.add(OOB_COMMAND_FILE);
@@ -595,7 +597,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MOTHERSHIP_SOUND, Sound.class);    assets.add(MOTHERSHIP_SOUND);
         manager.load(SHOOTING_SOUND, Sound.class);      assets.add(SHOOTING_SOUND);
         manager.load(EXPULSION_SOUND, Sound.class);     assets.add(EXPULSION_SOUND);
-        manager.load(CONVERT_SOUND, Sound.class);       assets.add(CONVERT_SOUND);
+        //manager.load(CONVERT_SOUND, Sound.class);       assets.add(CONVERT_SOUND);
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         size2Params.fontFileName = FONT_FILE;
@@ -689,7 +691,7 @@ public class PlayMode extends WorldController implements ContactListener {
         Sound mothershipSound = Gdx.audio.newSound(Gdx.files.internal(MOTHERSHIP_SOUND));
         Sound shootingSound = Gdx.audio.newSound(Gdx.files.internal(SHOOTING_SOUND));
         Sound expulsionSound = Gdx.audio.newSound(Gdx.files.internal(EXPULSION_SOUND));
-        Sound convertSound = Gdx.audio.newSound(Gdx.files.internal(CONVERT_SOUND));
+        //Sound convertSound = Gdx.audio.newSound(Gdx.files.internal(CONVERT_SOUND));
 
         sunSheet = new Texture(Gdx.files.internal(SUN_P));
 
@@ -752,7 +754,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, MOTHERSHIP_SOUND);
         sounds.allocate(manager, SHOOTING_SOUND);
         sounds.allocate(manager, EXPULSION_SOUND);
-        sounds.allocate(manager, CONVERT_SOUND);
+        //sounds.allocate(manager, CONVERT_SOUND);
         displayFont = manager.get(FONT_FILE,BitmapFont.class);
         displayFont_2 = manager.get(FONT_FILE_2,BitmapFont.class);
         super.loadContent(manager);
@@ -810,6 +812,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected  Array<BlackHoleModel> blackHoles;
     // List of command planets
     protected Array<PlanetModel> commandPlanets;
+
+    protected Array<PlanetModel> convertPlanets;
     // List of dying planets
     Array<PlanetModel> planet_explosion;
     // List of exploding ships
@@ -902,6 +906,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets = new Array<PlanetModel>();
         winPlanets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
+        convertPlanets = new Array<PlanetModel>();
         planet_explosion = new Array<PlanetModel>();
         ship_explosion = new Array<ShipModel>();
         ships = new Array<ShipModel>();
@@ -947,6 +952,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets.clear();
         winPlanets.clear();
         commandPlanets.clear();
+        convertPlanets.clear();
         planet_explosion.clear();
         ships.clear();
         text.clear();
@@ -1250,7 +1256,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.setTexture(command_P_Texture);
                 commandPlanets.add(obj);
                 obj.setCooldown(Math.round(PLANETS.get(ii).get(4)));
-                obj.newTime = 0;
             }
             //Poison Planets
             if (obj.getType() == 2f) {
@@ -1758,9 +1763,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (planets.get(i).getConvert() > CONVERT_TIME) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
+                    convertPlanets.removeValue(planets.get(i), true);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                     converted++;
+                }
+                else if(planets.get(i).getConvert()==1){
+                    convertPlanets.add(planets.get(i));
                 }
             }
         }
@@ -1788,9 +1797,18 @@ public class PlayMode extends WorldController implements ContactListener {
                     SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 }
                 //tractor beam bullets
+                else if(aiController.bulletData.get(i+4)==1){
+                    bullet.setTexture(bullet_texture);
+                    //SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
+                    if (SoundController.getInstance().getMute()){
+                        convert.stop();
+                    }
+                    else{
+                        convert.play();
+                    }
+                }
                 else{
                     bullet.setTexture(bullet_texture);
-                    SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
                 }
                 addObject(bullet);
             }
@@ -2944,18 +2962,28 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float)Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    if(c.newTime != 0){
+                    canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+
+                }
+            }
+            for(PlanetModel c : convertPlanets){
+                toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
+                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + c.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + c.getRadius()) {
+                    toCommand.nor();
+                    if (((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x) < ((float) canvas.getHeight() / 80 - 0.5f) / Math.abs(toCommand.y))
+                        toCommand.scl(((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x));
+                    else
+                        toCommand.scl(((float) canvas.getHeight() / 80 - 0.5f) / Math.abs(toCommand.y));
+                    toCommand.scl(40);
+                    float angle = (float) Math.atan2(toCommand.y, toCommand.x);
+                    toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
+                    if (c.getConvert() != 0) {
                         //the arrow should be new
-                        c.newTime--;
-                        if((c.newTime/15)%2==1) {
-                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        if ((c.getConvert() / 15) % 2 == 1) {
+                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        } else {
+                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                         }
-                        else{
-                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
-                        }
-                    }
-                    else {
-                        canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                     }
                 }
             }
