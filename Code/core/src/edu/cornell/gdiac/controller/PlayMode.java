@@ -294,7 +294,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
     //Music for convert
-    protected static Music convert;
+    protected static Array<Music> convert;
     /** The sound file for a jump */
     protected static final String JUMP_SOUND = "audio/jump.wav";
     /** The sound file for a planet explosion */
@@ -469,7 +469,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         platformAssetState = AssetState.LOADING;
-        convert = Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav"));
+        //This is so bad...
         manager.load(OOB_NORMAL_FILE, Texture.class);   assets.add(OOB_NORMAL_FILE);
         manager.load(OOB_GROWING_FILE, Texture.class);  assets.add(OOB_GROWING_FILE);
         manager.load(OOB_COMMAND_FILE, Texture.class);  assets.add(OOB_COMMAND_FILE);
@@ -917,6 +917,7 @@ public class PlayMode extends WorldController implements ContactListener {
         commandPlanets = new Array<PlanetModel>();
         convertPlanets = new Array<PlanetModel>();
         planet_explosion = new Array<PlanetModel>();
+        convert = new Array<Music>();
         ship_explosion = new Array<ShipModel>();
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
@@ -970,7 +971,12 @@ public class PlayMode extends WorldController implements ContactListener {
         white_stars.clear();
         world.dispose();
         clicks = 0;
-        convert.stop();
+        if(convert.size>0) {
+            for (Music m : convert) {
+                m.stop();
+            }
+        }
+        convert.clear();
         world = new World(gravity,false);
         world.setContactListener(this);
         setComplete(false);
@@ -1147,7 +1153,13 @@ public class PlayMode extends WorldController implements ContactListener {
      * Lays out the game geography.
      */
     private void populateLevel() {
+
+        convert = new Array<Music>();
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
         // Create Planets
+
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.size; ii++) {
             PlanetModel obj;
@@ -1758,7 +1770,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
                         continue;
                     }
-                    
+
                     if(i <= 2) {
                         s.setOrbitDistance(3.5f);
                         aiController.setTarget(c.getShips().get(i), c);
@@ -1802,6 +1814,17 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(planets.get(i).getConvert()==1){
                     convertPlanets.add(planets.get(i));
+                    if(!SoundController.getInstance().getMute()){
+                        System.out.println(convert.size);
+                        for(Music m:convert){
+                            System.out.println("what about here");
+                            if(!m.isPlaying()) {
+                                System.out.println("am i here");
+                                m.play();
+                                break;
+                            }
+                        }
+                    }
                     convert_stateTime=0f;
                 }
             }
@@ -1811,7 +1834,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Shoot bullet from ship
     public void shootBullet(){
         if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size; i += 5) {
+            for (int i = 0; i < aiController.bulletData.size; i += 4) {
                 //0 is normal, 1 is tractor beam
                 BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i + 1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1825,24 +1848,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setVY(aiController.bulletData.get(i + 3));
                 bullet.setAngle((float) (Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI / 2));
                 bullet.setName("bullet");
-                if(aiController.bulletData.get(i+4)==0) {
-                    bullet.setTexture(bullet_texture);
-                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
-                }
-                //tractor beam bullets
-                else if(aiController.bulletData.get(i+4)==1){
-                    bullet.setTexture(bullet_texture);
-                    //SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
-                    if (SoundController.getInstance().getMute()){
-                        convert.stop();
-                    }
-                    else{
-                        convert.play();
-                    }
-                }
-                else{
-                    bullet.setTexture(bullet_texture);
-                }
+                bullet.setTexture(bullet_texture);
+                SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 addObject(bullet);
             }
             aiController.bulletData.clear();
