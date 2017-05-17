@@ -2333,7 +2333,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
                 }
                 //determines mouse or keyboard controls
-                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS && (currentPlanet.getType()!=2&&gcurrentPlanet.getType()!=3)) {
+                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS && (currentPlanet.getType()!=2&&currentPlanet.getType()!=3)) {
                     currentPlanet.setDying(true);
                     //currentPlanet.setTexture(dying_P_Texture);
                     currentPlanet.set_WARN_sheet(WARN_Sheet);
