@@ -1787,7 +1787,7 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void unlockedScrollScreen() {
-        if(InputController.getInstance().getScrollUp() || InputController.getInstance().getScrollUp(150)) {
+        if(InputController.getInstance().getScrollUp()) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(0, -SCROLL_SPEED);
@@ -1795,7 +1795,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x, o.getPosition().y - SCROLL_SPEED);
             }
         }
-        else if(InputController.getInstance().getScrollDown() || InputController.getInstance().getScrollDown(canvas.getHeight() - 150)) {
+        else if(InputController.getInstance().getScrollDown()) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(0, SCROLL_SPEED);
@@ -1803,7 +1803,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x, o.getPosition().y + SCROLL_SPEED);
             }
         }
-        if(InputController.getInstance().getScrollLeft() || InputController.getInstance().getScrollLeft(150)) {
+        if(InputController.getInstance().getScrollLeft()) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(SCROLL_SPEED, 0);
@@ -1811,7 +1811,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     o.setPosition(o.getPosition().x + SCROLL_SPEED, o.getPosition().y);
             }
         }
-        else if(InputController.getInstance().getScrollRight() || InputController.getInstance().getScrollRight(canvas.getWidth() - 150)) {
+        else if(InputController.getInstance().getScrollRight()) {
             for(Obstacle o : objects) {
                 if(o.equals(complexAvatar))
                     complexAvatar.addToPosition(-SCROLL_SPEED, 0);
@@ -2387,9 +2387,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     } else {
                         rad = currentPlanet.getRadius();
                         float Oob_rad = complexAvatar.getRadius();
-                        if ((rad > DEATH_RADIUS &&
-                                ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                                        || (currentPlanet.getType() == 1f)))) {
+                        if (rad > DEATH_RADIUS && ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
+                                        || (currentPlanet.getType() == 1f))) {
                             siphonPlanet();
                         } else if (Oob_rad >= OOB_MAX_RADIUS) {
                             complexAvatar.setMax(true);
