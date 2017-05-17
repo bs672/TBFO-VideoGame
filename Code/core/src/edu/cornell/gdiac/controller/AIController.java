@@ -322,6 +322,7 @@ public class AIController {
             s.setAngularVelocity(0f);
             s.setLinearVelocity(new Vector2(0f,0f));
             if (targetPlanets.get(s).getType() != 1) {
+                s.setConverting(true);
                 targetPlanets.get(s).convert(s.getCommandSpawn(), s);
                 tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
                 tempVec1.scl(1f / tempVec1.len());
@@ -340,6 +341,7 @@ public class AIController {
 
             }
             else {
+                s.setConverting(false);
                 targetPlanets.remove(s);
                 findBigPlanet(s);
                 first = true;

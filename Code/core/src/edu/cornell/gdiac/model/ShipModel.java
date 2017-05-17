@@ -34,6 +34,7 @@ public class ShipModel extends CapsuleObstacle{
     private int delay;
     private float range;
     private float mass;
+    private boolean isConverting;
 
     private float orbitDistance;
 
@@ -74,6 +75,8 @@ public class ShipModel extends CapsuleObstacle{
     public void setCommandSpawn(float c){commandSpawn = c;}
     public boolean isExploding() {return exploding;}
     public void setExploding(boolean bool) {exploding = bool;}
+    public boolean isConverting(){return isConverting;}
+    public void setConverting(boolean convert){isConverting = convert;}
 
     private float EXP_stateTime= -1;
 
