@@ -44,6 +44,10 @@ public class AIController {
 
     private boolean first = true;
 
+    public void setPlanets(Array<PlanetModel> array){
+        planets = array;
+    }
+
     public void setTarget(ShipModel ship, PlanetModel planet) {
         targetPlanets.put(ship, planet);
     }

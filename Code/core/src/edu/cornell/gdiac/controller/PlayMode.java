@@ -948,7 +948,7 @@ public class PlayMode extends WorldController implements ContactListener {
         white_stars.clear();
         world.dispose();
         clicks = 0;
-
+        convert.stop();
         world = new World(gravity,false);
         world.setContactListener(this);
         setComplete(false);
@@ -1753,6 +1753,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     convertPlanets.removeValue(planets.get(i), true);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
+                    aiController.setPlanets(planets);
                     converted++;
                 }
                 else if(planets.get(i).getConvert()==1){
