@@ -52,6 +52,8 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String UNMUTE_TEXTURE = "space/menus/unmute.png";
     private static final String WASD_TEXTURE = "space/menus/wasd.png";
     private static final String OKL_TEXTURE = "space/menus/okl.png";
+    private static final String MUTE_TEXT = "space/menus/mute_settings_label.png";
+    private static final String SCROLL_TEXT = "space/menus/controls_settings_label.png";
 
     /** The texture file for the planets */
     private static final String COMMAND_P = "space/planets/command.png";
@@ -70,6 +72,7 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static final String BACKG_FILE_SM_STAR = "space/background/small-stars.png";
 
     private static final String SETTINGS = "space/menus/settings_text.png";
+
 
     /** Texture file for ship */
     private static final String SHIP_TEXTURE = "space/ships/ship.png";
@@ -117,8 +120,9 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private TextureRegion okl_Texture;
 
-    /** Expulsion texture */
-    private TextureRegion expulsion_Texture;
+    private TextureRegion muteText;
+
+    private TextureRegion scrollText;
 
 
     /** Background texture */
@@ -130,23 +134,14 @@ public class SettingsMode extends WorldController implements ContactListener {
 
     private TextureRegion settingsTexture;
 
+
     private boolean[] lastInPlanet;
 
-    /** Texture asset for ship */
-    private TextureRegion ship_texture;
-    /** Texture asset for bullet */
-    private TextureRegion bullet_texture;
 
-    //variables
-    private Vector2 smallestRad;
-    private float rad;
-    private float oldAvatarRad;
     //variables for player controls
     boolean jump = false;
-    private float moveDirection = 0f;
-    private Vector2 launchVec;
 
-    private boolean jumping = false;
+
 
     /** Track asset loading from all instances and subclasses */
     private AssetState platformAssetState = AssetState.EMPTY;
@@ -188,6 +183,12 @@ public class SettingsMode extends WorldController implements ContactListener {
         manager.load(OKL_TEXTURE, Texture.class);
         assets.add(OKL_TEXTURE);
 
+        manager.load(MUTE_TEXT, Texture.class);
+        assets.add(MUTE_TEXT);
+
+        manager.load(SCROLL_TEXT, Texture.class);
+        assets.add(SCROLL_TEXT);
+
         manager.load(EXPULSION_TEXTURE, Texture.class);
         assets.add(EXPULSION_TEXTURE);
 
@@ -215,6 +216,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         manager.load(SETTINGS, Texture.class);
         assets.add(SETTINGS);
 
+
         manager.load(SHIP_TEXTURE, Texture.class);
         assets.add(SHIP_TEXTURE);
         manager.load(BULLET_TEXTURE, Texture.class);
@@ -240,7 +242,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
 
         avatarTexture = createTexture(manager,OOB_FILE,false);
-        expulsion_Texture = createTexture(manager,EXPULSION_TEXTURE, false);
 
         mute_Texture = createTexture(manager,MUTE_TEXTURE,false);
         unmute_Texture = createTexture(manager, UNMUTE_TEXTURE, false);
@@ -248,6 +249,8 @@ public class SettingsMode extends WorldController implements ContactListener {
         back_hover_Texture = createTexture(manager,BACK_HOVER_TEXTURE,false);
         wasd_Texture = createTexture(manager, WASD_TEXTURE, false);
         okl_Texture = createTexture(manager, OKL_TEXTURE, false);
+        scrollText = createTexture(manager,SCROLL_TEXT, false);
+        muteText = createTexture(manager,MUTE_TEXT, false);
 
         TEXTURES[0][0] = back_Texture;    // BACK
         TEXTURES[0][1] = back_hover_Texture;
@@ -256,15 +259,18 @@ public class SettingsMode extends WorldController implements ContactListener {
         TEXTURES[2][0] = wasd_Texture;    // BACK
         TEXTURES[2][1] = okl_Texture;
 
+        TEXTURES[3][0] = muteText;    // BACK
+        TEXTURES[3][1] = muteText;    // BACK
+        TEXTURES[4][0] = scrollText;    // BACK
+        TEXTURES[4][1] = scrollText;    // BACK
+
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
         backgroundLG = createTexture(manager,BACKG_FILE_LG_STAR,false);
         backgroundMED = createTexture(manager,BACKG_FILE_MED_STAR,false);
         backgroundSM = createTexture(manager,BACKG_FILE_SM_STAR,false);
-        settingsTexture = createTexture(manager,SETTINGS, true);
+        settingsTexture = createTexture(manager,SETTINGS, false);
 
-        ship_texture = createTexture(manager, SHIP_TEXTURE, false);
-        bullet_texture = createTexture(manager, BULLET_TEXTURE, false);
 
         SoundController sounds = SoundController.getInstance();
         super.loadContent(manager);
@@ -313,7 +319,9 @@ public class SettingsMode extends WorldController implements ContactListener {
     private static float[][] PLANETS = {
             {0f, 0f, 1.1f, 3f},   // BACK
             {10f, 8f, 1.5f, 3f},  // MUTE
-            {20f, 8f, 1.5f, 3f} // left/right handed
+            {20f, 8f, 1.5f, 3f}, // left/right handed
+            {10f, 10.5f, 1.5f, 3f},  // MUTE TEXT
+            {20f, 10.5f, 1.5f, 3f} // left/right handed TEXT
     };
 
     private boolean jumpedOnce;
@@ -369,7 +377,6 @@ public class SettingsMode extends WorldController implements ContactListener {
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
         massFont.getData().setScale(2);
-        launchVec = new Vector2();
         returnToPlanetTimer = 0;
         jumpedOnce = false;
         lastInPlanet = new boolean[PLANETS.length];
@@ -546,7 +553,7 @@ public class SettingsMode extends WorldController implements ContactListener {
         }
         groundPlayerControls();
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
-        for (int i = 0; i < PLANETS.length; i++) {
+        for (int i = 0; i < PLANETS.length-2; i++) {
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius())) {
                 if (lastInPlanet[i] == false) {

@@ -46,7 +46,7 @@ public class LevelSelect extends PlayMode {
     protected int mode; // 0 = levels 1-9 , 1 = levels 10-18, 2 = levels 19 - 27
 
     public LevelSelect(int unlocked, int mode) {
-        super("MainScene");
+        super("MainScene",0);
         play = false;
         jumpTime = 0;
         lastHoverPlanet = new boolean[PLANETS.length];
@@ -397,7 +397,7 @@ public class LevelSelect extends PlayMode {
 
     public void hover() {
         Vector2 mouse = InputController.getInstance().getCursor(canvas);
-        for (int i = 0; i < PLANETS.length; i++) {
+        for (int i = 1; i < PLANETS.length; i++) {
             int temp = i - 4 + (mode*9);
             float d = (mouse.x - planets.get(i).getX()) * (mouse.x - planets.get(i).getX()) + (mouse.y - planets.get(i).getY()) * (mouse.y - planets.get(i).getY());
             if ((Math.sqrt(d) < planets.get(i).getRadius()*1.5f)) {

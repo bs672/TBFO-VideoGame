@@ -23,6 +23,8 @@ public class PlanetModel extends WheelObstacle{
 
     private int SPAWN_COOLDOWN = 100;
 
+    public int newTime = 240;
+
 
     private int totalSpawned;
 
