@@ -2925,12 +2925,14 @@ public class PlayMode extends WorldController implements ContactListener {
                 canvas.end();
             }
             if (obj.getName().equals("ship") && !((ShipModel) obj).isExploding()) {
+                Boolean fire=false;
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame;
                 if (((ShipModel) obj).getType()==2) {
                     if (convertPlanets!=null){
                         currentFrame=MOTHERSHIP_FIRE_Animation.getKeyFrame(convert_stateTime, true);
                         convert_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+                        fire=true;
                     }
                     else {
                         currentFrame = MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
@@ -2943,7 +2945,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     currentFrame=SHIP_Animation.getKeyFrame(stateTime, true);
                 }
                 canvas.begin();
-                ((ShipModel) obj).setTexture(currentFrame);
+                if (fire){
+                    ((ShipModel) obj).setFireTexture(currentFrame);
+                }
+                else{
+                    ((ShipModel) obj).setTexture(currentFrame);
+                }
+
                 obj.draw(canvas);
                 canvas.end();
             }
