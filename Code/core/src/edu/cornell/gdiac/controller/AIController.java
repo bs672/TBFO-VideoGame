@@ -194,10 +194,13 @@ public class AIController {
             }
         }
     }
+
+    //finds biggest planet that's not being converted
     public void findBigPlanet(ShipModel s) {
+        System.out.println("here");
         PlanetModel bigPlanet = planets.get(0);
         for (int j = 0; j < planets.size; j++) {
-            if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
+            if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1) && planets.get(j).getConvert()==0) {
                 bigPlanet = planets.get(j);
             }
         }
@@ -209,6 +212,10 @@ public class AIController {
      * @param s
      */
     public void moveToPlanet(ShipModel s) {
+        //PUT IT HERE
+        if (s.getType()==2){
+
+        }
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
         if (!planets.contains(targetPlanets.get(s), false)) {

@@ -2978,7 +2978,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float) Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    if (c.getConvert() != 0) {
+                    if (c.getConvert() != 0 && c.isConverting()) {
+                        c.setConverting(false);
                         //the arrow should be new
                         if ((c.getConvert() / 15) % 2 == 1) {
                             canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
