@@ -294,7 +294,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String EXPULSION_TEXTURE = "space/Oob/expulsion.png";
 
     //Music for convert
-    protected static Music convert;
+    protected static Array<Music> convert;
     /** The sound file for a jump */
     protected static final String JUMP_SOUND = "audio/jump.wav";
     /** The sound file for a planet explosion */
@@ -469,7 +469,7 @@ public class PlayMode extends WorldController implements ContactListener {
         }
 
         platformAssetState = AssetState.LOADING;
-        convert = Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav"));
+        //This is so bad...
         manager.load(OOB_NORMAL_FILE, Texture.class);   assets.add(OOB_NORMAL_FILE);
         manager.load(OOB_GROWING_FILE, Texture.class);  assets.add(OOB_GROWING_FILE);
         manager.load(OOB_COMMAND_FILE, Texture.class);  assets.add(OOB_COMMAND_FILE);
@@ -822,7 +822,7 @@ public class PlayMode extends WorldController implements ContactListener {
     // List of command planets
     protected Array<PlanetModel> commandPlanets;
 
-    protected PlanetModel convertPlanets;
+    protected Array<PlanetModel> convertPlanets;
     // List of dying planets
     Array<PlanetModel> planet_explosion;
     // List of exploding ships
@@ -915,8 +915,9 @@ public class PlayMode extends WorldController implements ContactListener {
         planets = new Array<PlanetModel>();
         winPlanets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
-        convertPlanets = null;
+        convertPlanets = new Array<PlanetModel>();
         planet_explosion = new Array<PlanetModel>();
+        convert = new Array<Music>();
         ship_explosion = new Array<ShipModel>();
         ships = new Array<ShipModel>();
         massFont = new BitmapFont();
@@ -961,7 +962,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets.clear();
         winPlanets.clear();
         commandPlanets.clear();
-        convertPlanets = null;
+        convertPlanets.clear();
         planet_explosion.clear();
         ships.clear();
         text.clear();
@@ -970,7 +971,12 @@ public class PlayMode extends WorldController implements ContactListener {
         white_stars.clear();
         world.dispose();
         clicks = 0;
-        convert.stop();
+        if(convert.size>0) {
+            for (Music m : convert) {
+                m.stop();
+            }
+        }
+        convert.clear();
         world = new World(gravity,false);
         world.setContactListener(this);
         setComplete(false);
@@ -1147,7 +1153,13 @@ public class PlayMode extends WorldController implements ContactListener {
      * Lays out the game geography.
      */
     private void populateLevel() {
+
+        convert = new Array<Music>();
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
         // Create Planets
+
         String pname = "planet";
         for (int ii = 0; ii <PLANETS.size; ii++) {
             PlanetModel obj;
@@ -1758,7 +1770,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(s.getPosition().cpy().sub(aiController.getShipTarget(s).getPosition()).len() >= s.getOrbitDistance() + aiController.getShipTarget(s).getRadius() + EPSILON) {
                         continue;
                     }
-                    
+
                     if(i <= 2) {
                         s.setOrbitDistance(3.5f);
                         aiController.setTarget(c.getShips().get(i), c);
@@ -1794,14 +1806,22 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (planets.get(i).getConvert() > CONVERT_TIME) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
-                    convertPlanets=null;
+                    convertPlanets.removeValue(planets.get(i), true);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                     aiController.setPlanets(planets);
                     converted++;
                 }
                 else if(planets.get(i).getConvert()==1){
-                    convertPlanets=(planets.get(i));
+                    convertPlanets.add(planets.get(i));
+                    if(!SoundController.getInstance().getMute()){
+                        for(Music m:convert){
+                            if(!m.isPlaying()) {
+                                m.play();
+                                break;
+                            }
+                        }
+                    }
                     convert_stateTime=0f;
                 }
             }
@@ -1811,7 +1831,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Shoot bullet from ship
     public void shootBullet(){
         if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size; i += 5) {
+            for (int i = 0; i < aiController.bulletData.size; i += 4) {
                 //0 is normal, 1 is tractor beam
                 BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i + 1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1825,24 +1845,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setVY(aiController.bulletData.get(i + 3));
                 bullet.setAngle((float) (Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI / 2));
                 bullet.setName("bullet");
-                if(aiController.bulletData.get(i+4)==0) {
-                    bullet.setTexture(bullet_texture);
-                    SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
-                }
-                //tractor beam bullets
-                else if(aiController.bulletData.get(i+4)==1){
-                    bullet.setTexture(bullet_texture);
-                    //SoundController.getInstance().play(CONVERT_SOUND, CONVERT_SOUND, false, EFFECT_VOLUME);
-                    if (SoundController.getInstance().getMute()){
-                        convert.stop();
-                    }
-                    else{
-                        convert.play();
-                    }
-                }
-                else{
-                    bullet.setTexture(bullet_texture);
-                }
+                bullet.setTexture(bullet_texture);
+                SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 addObject(bullet);
             }
             aiController.bulletData.clear();
@@ -2939,7 +2943,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame;
                 if (((ShipModel) obj).getType()==2) {
-                    if (convertPlanets!=null){
+                    if (((ShipModel) obj).isConverting()){
                         currentFrame=MOTHERSHIP_FIRE_Animation.getKeyFrame(convert_stateTime, true);
                         convert_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
                         fire=true;
@@ -3023,9 +3027,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 }
             }
-            if(convertPlanets!=null){
-                toCommand.set(convertPlanets.getX() - canvas.getWidth()/80, convertPlanets.getY() - canvas.getHeight()/80);
-                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + convertPlanets.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + convertPlanets.getRadius()) {
+            for(PlanetModel c: convertPlanets){
+                toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
+                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + c.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + c.getRadius()) {
                     toCommand.nor();
                     if (((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x) < ((float) canvas.getHeight() / 80 - 0.5f) / Math.abs(toCommand.y))
                         toCommand.scl(((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x));
@@ -3034,10 +3038,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float) Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    if (convertPlanets.getConvert() != 0 && convertPlanets.isConverting()) {
-                        convertPlanets.setConverting(false);
+                    if (c.getConvert() != 0 && c.isConverting()) {
+                        c.setConverting(false);
                         //the arrow should be new
-                        if ((convertPlanets.getConvert() / 15) % 2 == 1) {
+                        if ((c.getConvert() / 15) % 2 == 1) {
                             canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                         } else {
                             canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);

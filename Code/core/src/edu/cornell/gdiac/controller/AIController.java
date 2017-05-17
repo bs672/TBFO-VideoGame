@@ -321,24 +321,13 @@ public class AIController {
             s.setAngularVelocity(0f);
             s.setLinearVelocity(new Vector2(0f,0f));
             if (targetPlanets.get(s).getType() != 1) {
+                s.setConverting(true);
                 targetPlanets.get(s).convert(s.getCommandSpawn(), s);
                 tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
                 tempVec1.scl(1f / tempVec1.len());
-                //tractor bullets
-                bulletData.add(s.getX() + tempVec1.x);
-                bulletData.add(s.getY() + tempVec1.y);
-                bulletData.add(tempVec1.x * 10);
-                bulletData.add(tempVec1.y * 10);
-                if(first) {
-                    bulletData.add(1f);
-                    first = false;
-                }
-                else{
-                    bulletData.add(2f);
-                }
-
             }
             else {
+                s.setConverting(false);
                 targetPlanets.remove(s);
                 findBigPlanet(s);
                 first = true;
