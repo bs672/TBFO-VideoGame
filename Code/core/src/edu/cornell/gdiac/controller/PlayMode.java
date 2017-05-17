@@ -1815,11 +1815,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 else if(planets.get(i).getConvert()==1){
                     convertPlanets.add(planets.get(i));
                     if(!SoundController.getInstance().getMute()){
-                        System.out.println(convert.size);
                         for(Music m:convert){
-                            System.out.println("what about here");
                             if(!m.isPlaying()) {
-                                System.out.println("am i here");
                                 m.play();
                                 break;
                             }
