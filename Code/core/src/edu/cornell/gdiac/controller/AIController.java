@@ -299,7 +299,6 @@ public class AIController {
                             bulletData.add(s.getY() + tempVec1.y);
                             bulletData.add(tempVec1.x * 10);
                             bulletData.add(tempVec1.y * 10);
-                            bulletData.add(0f);
                         }
                         s.decBurstCount();
                         s.setDelay(DELAY);
