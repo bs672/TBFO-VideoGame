@@ -797,6 +797,8 @@ public class PlayMode extends WorldController implements ContactListener {
     protected  Array<BlackHoleModel> blackHoles;
     // List of command planets
     protected Array<PlanetModel> commandPlanets;
+
+    protected Array<PlanetModel> convertPlanets;
     // List of dying planets
     Array<PlanetModel> planet_explosion;
     // List of exploding ships
@@ -889,6 +891,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets = new Array<PlanetModel>();
         winPlanets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
+        convertPlanets = new Array<PlanetModel>();
         planet_explosion = new Array<PlanetModel>();
         ship_explosion = new Array<ShipModel>();
         ships = new Array<ShipModel>();
@@ -934,6 +937,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets.clear();
         winPlanets.clear();
         commandPlanets.clear();
+        convertPlanets.clear();
         planet_explosion.clear();
         ships.clear();
         text.clear();
@@ -1237,7 +1241,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 obj.setTexture(command_P_Texture);
                 commandPlanets.add(obj);
                 obj.setCooldown(Math.round(PLANETS.get(ii).get(4)));
-                obj.newTime = 0;
             }
             //Poison Planets
             if (obj.getType() == 2f) {
@@ -1745,9 +1748,13 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (planets.get(i).getConvert() > CONVERT_TIME) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
+                    convertPlanets.removeValue(planets.get(i), true);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                     converted++;
+                }
+                else if(planets.get(i).getConvert()==1){
+                    convertPlanets.add(planets.get(i));
                 }
             }
         }
@@ -2333,7 +2340,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     complexAvatar.addToForceVec(smallestRad.cpy().nor().scl(-17 - complexAvatar.getMass()));
                 }
                 //determines mouse or keyboard controls
-                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS && (currentPlanet.getType()!=2||currentPlanet.getType()!=3)) {
+                if (!currentPlanet.isDying() && currentPlanet.getRadius() < MIN_RADIUS && (currentPlanet.getType()!=2&&currentPlanet.getType()!=3)) {
                     currentPlanet.setDying(true);
                     //currentPlanet.setTexture(dying_P_Texture);
                     currentPlanet.set_WARN_sheet(WARN_Sheet);
@@ -2931,18 +2938,28 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float)Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    if(c.newTime != 0){
+                    canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+
+                }
+            }
+            for(PlanetModel c : convertPlanets){
+                toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
+                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + c.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + c.getRadius()) {
+                    toCommand.nor();
+                    if (((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x) < ((float) canvas.getHeight() / 80 - 0.5f) / Math.abs(toCommand.y))
+                        toCommand.scl(((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x));
+                    else
+                        toCommand.scl(((float) canvas.getHeight() / 80 - 0.5f) / Math.abs(toCommand.y));
+                    toCommand.scl(40);
+                    float angle = (float) Math.atan2(toCommand.y, toCommand.x);
+                    toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
+                    if (c.getConvert() != 0) {
                         //the arrow should be new
-                        c.newTime--;
-                        if((c.newTime/15)%2==1) {
-                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        if ((c.getConvert() / 15) % 2 == 1) {
+                            canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
+                        } else {
+                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                         }
-                        else{
-                            canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
-                        }
-                    }
-                    else {
-                        canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth() , arrow_Texture.getRegionHeight() , toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                     }
                 }
             }
