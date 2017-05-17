@@ -813,7 +813,7 @@ public class PlayMode extends WorldController implements ContactListener {
     // List of command planets
     protected Array<PlanetModel> commandPlanets;
 
-    protected Array<PlanetModel> convertPlanets;
+    protected PlanetModel convertPlanets;
     // List of dying planets
     Array<PlanetModel> planet_explosion;
     // List of exploding ships
@@ -906,7 +906,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets = new Array<PlanetModel>();
         winPlanets = new Array<PlanetModel>();
         commandPlanets = new Array<PlanetModel>();
-        convertPlanets = new Array<PlanetModel>();
+        convertPlanets = null;
         planet_explosion = new Array<PlanetModel>();
         ship_explosion = new Array<ShipModel>();
         ships = new Array<ShipModel>();
@@ -952,7 +952,7 @@ public class PlayMode extends WorldController implements ContactListener {
         planets.clear();
         winPlanets.clear();
         commandPlanets.clear();
-        convertPlanets.clear();
+        convertPlanets = null;
         planet_explosion.clear();
         ships.clear();
         text.clear();
@@ -1763,14 +1763,14 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (planets.get(i).getConvert() > CONVERT_TIME) {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
-                    convertPlanets.removeValue(planets.get(i), true);
+                    convertPlanets=null;
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                     aiController.setPlanets(planets);
                     converted++;
                 }
                 else if(planets.get(i).getConvert()==1){
-                    convertPlanets.add(planets.get(i));
+                    convertPlanets=(planets.get(i));
                 }
             }
         }
@@ -2967,9 +2967,9 @@ public class PlayMode extends WorldController implements ContactListener {
 
                 }
             }
-            for(PlanetModel c : convertPlanets){
-                toCommand.set(c.getX() - canvas.getWidth()/80, c.getY() - canvas.getHeight()/80);
-                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + c.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + c.getRadius()) {
+            if(convertPlanets!=null){
+                toCommand.set(convertPlanets.getX() - canvas.getWidth()/80, convertPlanets.getY() - canvas.getHeight()/80);
+                if(Math.abs(toCommand.x) > canvas.getWidth()/80 + convertPlanets.getRadius() || Math.abs(toCommand.y) > canvas.getHeight()/80 + convertPlanets.getRadius()) {
                     toCommand.nor();
                     if (((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x) < ((float) canvas.getHeight() / 80 - 0.5f) / Math.abs(toCommand.y))
                         toCommand.scl(((float) canvas.getWidth() / 80 - 0.5f) / Math.abs(toCommand.x));
@@ -2978,10 +2978,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     toCommand.scl(40);
                     float angle = (float) Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
-                    if (c.getConvert() != 0 && c.isConverting()) {
-                        c.setConverting(false);
+                    if (convertPlanets.getConvert() != 0 && convertPlanets.isConverting()) {
+                        convertPlanets.setConverting(false);
                         //the arrow should be new
-                        if ((c.getConvert() / 15) % 2 == 1) {
+                        if ((convertPlanets.getConvert() / 15) % 2 == 1) {
                             canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
                         } else {
                             canvas.draw(arrow_Texture, Color.WHITE, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);
