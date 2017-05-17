@@ -896,7 +896,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Should we play the jump sound?
     protected boolean forceJump;
     //is the screen locked on ship?
-    protected boolean shipLock;
+    public static boolean shipLock;
 
     /**
      * Creates and initialize a new instance of the platformer game
@@ -1776,7 +1776,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         Vector2 dist;
                         for(int j = 0; j < planets.size; j++) {
                             dist = c.getPosition().cpy().sub(planets.get((j+start) % planets.size).getPosition());
-                            if(dist.len() < 60 && planets.get((j+start) % planets.size).getType() != 1) {
+                            if(dist.len() < 60 && planets.get((j+start) % planets.size).getType() != 1 && planets.get((j+start) % planets.size).getType() != 2) {
                                 c.setLastPlanetSentTo((j + start) % planets.size);
                                 aiController.setTarget(s, planets.get((j + start) % planets.size));
                                 break;
@@ -2183,7 +2183,7 @@ public class PlayMode extends WorldController implements ContactListener {
             oobToHole = new Vector2(outHole.getX() - complexAvatar.getX(), outHole.getY() - complexAvatar.getY());
             complexAvatar.setLinearVelocity(outHole.getOutVelocity().cpy().scl(6f));
             complexAvatar.setDirection(outHole.getOutVelocity().cpy().scl(6f));
-            if(oobToHole.len() > outHole.getOldRadius() + complexAvatar.getRadius() + 0.5f) {
+            if(oobToHole.len() > outHole.getOldRadius() + complexAvatar.getRadius() || currentPlanet != null) {
                 outHole.setRadius(outHole.getOldRadius());
                 comingOut = false;
                 playerControl = true;
@@ -2384,7 +2384,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     control = 1;
                 }
             }
-
+            if (blackHoleWarp) {
+                handleBlackHole();
+            }
             if (currentPlanet != null) {
                 jumpTime = 0;
                 // smallestRad is the vector from current planet to Oob's center
@@ -2482,9 +2484,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (!play) {
                     gravity();
                 }
-                if (blackHoleWarp) {
-                    handleBlackHole();
-                }
+//                if (blackHoleWarp) {
+//                    handleBlackHole();
+//                }
                 airPlayerControls();
                 if (jump && complexAvatar.getRadius() > OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
                     float expRad = complexAvatar.getRadius() / 2;
@@ -2756,6 +2758,14 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             else if(bd2.getName().equals("expulsion") && bd1.getName().equals("black hole")) {
                 bd2.markRemoved(true);
+            }
+            if(bd1.getName().equals("black hole") && bd2.getName().equals("ship")) {
+                bd2.markRemoved(true);
+                aiController.removeShip((ShipModel)bd2);
+            }
+            else if(bd2.getName().equals("black hole") && bd1.getName().equals("ship")) {
+                bd1.markRemoved(true);
+                aiController.removeShip((ShipModel)bd1);
             }
             if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
                 //LOSE

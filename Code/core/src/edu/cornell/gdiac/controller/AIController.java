@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.controller;
 
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -77,7 +78,7 @@ public class AIController {
         tempVec2 = new Vector2();
         for(int i = 0; i < ships.size; i++)
             if (ships.get(i).getType() == 2) {
-                ships.get(i).setOrbitDistance(4.5f);
+                ships.get(i).setOrbitDistance(5.5f);
                 PlanetModel bigPlanet = planets.get(0);
                 for (int j = 0; j < planets.size; j++) {
                     if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
@@ -123,11 +124,12 @@ public class AIController {
                 shootInRange(s);
             }
             else if(s.getType() ==2){
+                if (targetPlanets.get(s).getConvert()!=0 && targetPlanets.get(s).getConverterShip()!=s)
+                    findBigPlanet(s);
                 moveToPlanet(s);
                 convertInRange(s);
             }
             // set the ship's orientation to the correct angle
-//            float desiredAngle = (float) (Math.atan2(s.getY() - s.getOldPosition().y, s.getX() - s.getOldPosition().x) - Math.PI / 2);
             Vector2 desiredVector = new Vector2(s.getX() - s.getOldPosition().x, s.getY() - s.getOldPosition().y);
 
             if(InputController.getInstance().getScrollUp()) {
@@ -143,23 +145,23 @@ public class AIController {
                 desiredVector.x += PlayMode.SCROLL_SPEED;
             }
 
-            if(desiredVector.len() < 0.01)
+            if(s.getType() == 2 && (PlayMode.shipLock || desiredVector.len() < 0.01))
+                desiredVector = targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()).nor();
+            else if(desiredVector.len() < 0.01 && s.getType() != 2)
                 desiredVector = avatar.getPosition().cpy().sub(s.getPosition());
 
-            float desiredAngle = (float)(Math.atan2(desiredVector.y, desiredVector.x) - Math.PI / 2);
+            float desiredAngle = (float) (Math.atan2(desiredVector.y, desiredVector.x) - Math.PI / 2);
 
-            if(desiredAngle < 0)
-                desiredAngle += (float)(Math.PI * 2);
+            if (desiredAngle < 0)
+                desiredAngle += (float) (Math.PI * 2);
             float difference = desiredAngle - s.getAngle();
-            if(difference < -Math.PI)
-                difference += 2*Math.PI;
-            else if(difference > Math.PI)
-                difference -= 2*Math.PI;
-//            if (s.getType() != 2 || !s.getInOrbit()) {
-                s.setAngle(s.getAngle() + difference / 10);
-                if (s.getAngle() >= Math.PI * 2)
-                    s.setAngle(s.getAngle() - (float) Math.PI * 2);
-//            }
+            if (difference < -Math.PI)
+                difference += 2 * Math.PI;
+            else if (difference > Math.PI)
+                difference -= 2 * Math.PI;
+            s.setAngle(s.getAngle() + difference / 10);
+            if (s.getAngle() >= Math.PI * 2)
+                s.setAngle(s.getAngle() - (float) Math.PI * 2);
             s.setOldPosition(s.getPosition());
         }
     }
@@ -211,9 +213,6 @@ public class AIController {
      * @param s
      */
     public void moveToPlanet(ShipModel s) {
-        if (s.getType()==2 && targetPlanets.get(s).getConvert()!=0 && targetPlanets.get(s).getConverterShip()!=s){
-                findBigPlanet(s);
-        }
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
         if (!planets.contains(targetPlanets.get(s), false)) {
@@ -256,7 +255,7 @@ public class AIController {
                     tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(target.getPosition());
-                    tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
+                    tempVec1.scl((target.getRadius() + s.getOrbitDistance()/2) / tempVec1.len());
                     s.setPosition(target.getPosition().cpy().add(tempVec1));
                 } else if (tempVec1.len() < s.getOrbitDistance() / 2 + planets.get(cloPl).getRadius() && s.getType() != 2) {
                     s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
@@ -270,14 +269,14 @@ public class AIController {
                 // tempVec1 is planet to ship
                 tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
                 tempVec2.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-                if (tempVec1.len() - 1.5f - blackHoles.get(cloBl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
+                if (tempVec1.len() - s.getOrbitDistance()/2 - blackHoles.get(cloBl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
                     tempVec2.set(-tempVec1.y, tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(target.getPosition());
-                    tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
+                    tempVec1.scl((target.getRadius() + s.getOrbitDistance()/2) / tempVec1.len());
                     s.setPosition(target.getPosition().cpy().add(tempVec1));
-                } else if (tempVec1.len() < 1.5f + blackHoles.get(cloBl).getRadius()) {
+                } else if (tempVec1.len() < s.getOrbitDistance()/2 + blackHoles.get(cloBl).getRadius()) {
                     s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
                 } else {
                     tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
