@@ -39,10 +39,14 @@ public class PlanetModel extends WheelObstacle{
 
     private boolean exploding;
 
+    private boolean converting;
+
     private int spawnCooldown = SPAWN_COOLDOWN;
 
     // the last planet we sent a ship to patrol
     private int lastPlanetSentTo;
+
+    private ShipModel converterShip;
 
     public boolean canSpawn(){
         if (type==1f) {
@@ -77,6 +81,14 @@ public class PlanetModel extends WheelObstacle{
     public int getConvert(){return becomingCommand;}
 
     public void setConvert(int x){becomingCommand = x;}
+
+    public boolean isConverting(){return converting;}
+
+    public void setConverting(boolean con){converting = con;}
+
+    public void setConverterShip(ShipModel ship){converterShip = ship;}
+
+    public ShipModel getConverterShip(){return converterShip;}
 
     public void setDying(boolean bool) {dying = bool;}
 
@@ -247,16 +259,20 @@ public class PlanetModel extends WheelObstacle{
         this.type = t;
         dying=false;
         becomingCommand = 0;
+        converting = false;
+        converterShip = null;
         this.spawnCooldown = spawnCooldown;
 
         setName("Planet");
     }
 
-    public void convert(float c) {
+    public void convert(float c, ShipModel ship) {
         if (type != 1) {
             becomingCommand++;
             spawnCooldown = (int)c;
             SPAWN_COOLDOWN = (int)c;
+            converting = true;
+            converterShip = ship;
             float oldPlanMass = getMass();
             float oldRad = getRadius();
             float suckSpeed = 0.03f;

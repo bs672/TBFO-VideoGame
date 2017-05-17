@@ -42,6 +42,12 @@ public class AIController {
     /** burst delay */
     private static final int DELAY = 5;
 
+    private boolean first = true;
+
+    public void setPlanets(Array<PlanetModel> array){
+        planets = array;
+    }
+
     public void setTarget(ShipModel ship, PlanetModel planet) {
         targetPlanets.put(ship, planet);
     }
@@ -188,10 +194,12 @@ public class AIController {
             }
         }
     }
+
+    //finds biggest planet that's not being converted
     public void findBigPlanet(ShipModel s) {
         PlanetModel bigPlanet = planets.get(0);
         for (int j = 0; j < planets.size; j++) {
-            if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1)) {
+            if ((planets.get(j).getRadius() > bigPlanet.getRadius()) && (planets.get(j).getType() != 1) && planets.get(j).getConvert()==0) {
                 bigPlanet = planets.get(j);
             }
         }
@@ -203,80 +211,77 @@ public class AIController {
      * @param s
      */
     public void moveToPlanet(ShipModel s) {
+        if (s.getType()==2 && targetPlanets.get(s).getConvert()!=0 && targetPlanets.get(s).getConverterShip()!=s){
+                findBigPlanet(s);
+        }
         tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
         s.setInOrbit(Math.abs(tempVec1.len() - targetPlanets.get(s).getRadius() - s.getOrbitDistance()) < EPSILON);
         if (!planets.contains(targetPlanets.get(s), false)) {
             s.setInOrbit(false);
-            targetPlanets.put(s, planets.get((int)(Math.random()*planets.size)));
+            targetPlanets.put(s, planets.get((int) (Math.random() * planets.size)));
         }
-        if(s.getInOrbit()) {
-            if (s.getType() != 2) {peacefulPathfind(s);}
-            else {
-                s.setLinearVelocity(new Vector2(0f,0f));
+        if (s.getInOrbit()) {
+            if (s.getType() != 2) {
+                peacefulPathfind(s);
+            } else {
+                s.setLinearVelocity(new Vector2(0f, 0f));
                 s.setAngularVelocity(0f);
             }
-        }
-        else {
+        } else {
             int cloPl = -1;
             int cloBl = -1;
             for (int i = 0; i < planets.size; i++) {
                 tempVec2.set(s.getPosition().cpy().sub(planets.get(i).getPosition()));
-                if (tempVec2.len() < planets.get(i).getRadius() + s.getOrbitDistance()/2 + EPSILON ) {
+                if (tempVec2.len() < planets.get(i).getRadius() + s.getOrbitDistance() / 2 + EPSILON) {
                     cloPl = i;
                 }
             }
             for (int i = 0; i < blackHoles.size; i++) {
                 tempVec2.set(s.getPosition().cpy().sub(blackHoles.get(i).getPosition()));
-                if (tempVec2.len() < blackHoles.get(i).getRadius() + s.getOrbitDistance()/2 + EPSILON ) {
+                if (tempVec2.len() < blackHoles.get(i).getRadius() + s.getOrbitDistance() / 2 + EPSILON) {
                     cloBl = i;
                 }
             }
             // at this point cloPl is the nearest planet we might hit
-            if(cloPl == -1 && cloBl == -1) {
-                tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+            if (cloPl == -1 && cloBl == -1) {
+                tempVec1.scl(s.getMoveSpeed() / tempVec1.len());
                 s.setPosition(s.getPosition().cpy().add(tempVec1));
-            }
-            else if(cloPl != -1) {
+            } else if (cloPl != -1) {
                 PlanetModel target = planets.get(cloPl);
                 // tempVec1 is planet to ship
                 tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
                 tempVec2.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-                if(tempVec1.len() - s.getOrbitDistance()/2 - planets.get(cloPl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
+                if (tempVec1.len() - s.getOrbitDistance() / 2 - planets.get(cloPl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
                     tempVec2.set(-tempVec1.y, tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(target.getPosition());
                     tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
                     s.setPosition(target.getPosition().cpy().add(tempVec1));
-                }
-                else if(tempVec1.len() < s.getOrbitDistance()/2 + planets.get(cloPl).getRadius() && s.getType() != 2){
+                } else if (tempVec1.len() < s.getOrbitDistance() / 2 + planets.get(cloPl).getRadius() && s.getType() != 2) {
                     s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
-                }
-                else {
+                } else {
                     tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-                    tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+                    tempVec1.scl(s.getMoveSpeed() / tempVec1.len());
                     s.setPosition(s.getPosition().cpy().add(tempVec1));
                 }
-            }
-            else if(cloBl != -1) {
+            } else if (cloBl != -1) {
                 BlackHoleModel target = blackHoles.get(cloBl);
                 // tempVec1 is planet to ship
                 tempVec1.set(s.getPosition().cpy().sub(target.getPosition()));
                 tempVec2.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-                if(tempVec1.len() - 1.5f - blackHoles.get(cloBl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
+                if (tempVec1.len() - 1.5f - blackHoles.get(cloBl).getRadius() < EPSILON && tempVec1.dot(tempVec2.cpy().scl(-1)) > 0) {
                     tempVec2.set(-tempVec1.y, tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed() / tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));
                     tempVec1.sub(target.getPosition());
                     tempVec1.scl((target.getRadius() + 1.5f) / tempVec1.len());
                     s.setPosition(target.getPosition().cpy().add(tempVec1));
-                }
-                else if(tempVec1.len() < 1.5f + blackHoles.get(cloBl).getRadius()){
+                } else if (tempVec1.len() < 1.5f + blackHoles.get(cloBl).getRadius()) {
                     s.setPosition(s.getPosition().cpy().add(tempVec1.nor().scl(s.getMoveSpeed())));
-                }
-                else {
+                } else {
                     tempVec1.set(s.getPosition().cpy().sub(targetPlanets.get(s).getPosition()).scl(-1));
-                    tempVec1.scl(s.getMoveSpeed()/tempVec1.len());
+                    tempVec1.scl(s.getMoveSpeed() / tempVec1.len());
                     s.setPosition(s.getPosition().cpy().add(tempVec1));
                 }
             }
@@ -317,7 +322,7 @@ public class AIController {
             s.setAngularVelocity(0f);
             s.setLinearVelocity(new Vector2(0f,0f));
             if (targetPlanets.get(s).getType() != 1) {
-                targetPlanets.get(s).convert(s.getCommandSpawn());
+                targetPlanets.get(s).convert(s.getCommandSpawn(), s);
                 tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
                 tempVec1.scl(1f / tempVec1.len());
                 //tractor bullets
@@ -325,12 +330,19 @@ public class AIController {
                 bulletData.add(s.getY() + tempVec1.y);
                 bulletData.add(tempVec1.x * 10);
                 bulletData.add(tempVec1.y * 10);
-                bulletData.add(1f);
+                if(first) {
+                    bulletData.add(1f);
+                    first = false;
+                }
+                else{
+                    bulletData.add(2f);
+                }
 
             }
             else {
                 targetPlanets.remove(s);
                 findBigPlanet(s);
+                first = true;
             }
         }
     }
