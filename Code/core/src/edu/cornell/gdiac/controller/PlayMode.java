@@ -275,6 +275,7 @@ public class PlayMode extends WorldController implements ContactListener {
             {LEVEL27_TEXTURE, LEVEL27_HOVER_TEXTURE, LEVEL27_LOCK_TEXTURE},
     };
     protected static final String FONT_FILE = "space/fonts/Suess.ttf";
+    protected static final String FONT_FILE_2 = "space/fonts/Suess2.ttf";
 
     /** Texture file for background image */
     protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
@@ -339,7 +340,11 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected BitmapFont displayFont;
 
+    protected BitmapFont displayFont_2;
+
     protected int FONT_SIZE = 80;
+
+    protected int FONT_SIZE_2 = 50;
 
     /** Planet texture */
     protected TextureRegion blue_P_1_Texture;   protected TextureRegion blue_P_2_Texture;   protected TextureRegion blue_P_3_Texture;
@@ -600,6 +605,13 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(FONT_FILE, BitmapFont.class, size2Params);
         assets.add(FONT_FILE);
 
+
+        FreetypeFontLoader.FreeTypeFontLoaderParameter size4Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        size4Params.fontFileName = FONT_FILE_2;
+        size4Params.fontParameters.size = FONT_SIZE_2;
+        manager.load(FONT_FILE_2, BitmapFont.class, size4Params);
+        assets.add(FONT_FILE_2);
+
         super.preLoadContent(manager);
 
     }
@@ -744,6 +756,7 @@ public class PlayMode extends WorldController implements ContactListener {
         sounds.allocate(manager, EXPULSION_SOUND);
         //sounds.allocate(manager, CONVERT_SOUND);
         displayFont = manager.get(FONT_FILE,BitmapFont.class);
+        displayFont_2 = manager.get(FONT_FILE_2,BitmapFont.class);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
 
@@ -2934,9 +2947,9 @@ public class PlayMode extends WorldController implements ContactListener {
         }
         if (play && gameState==0) {
             canvas.begin();
-            canvas.draw(reset_Texture, Color.WHITE, 10, .9f*canvas.getHeight() , canvas.getWidth() / 10, canvas.getHeight() / 12);
-            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 10 - 10, .9f*canvas.getHeight(), canvas.getWidth() / 10, canvas.getHeight() / 12);
-            canvas.drawText("Level " +LV_NUMBER , displayFont, 10, 60);
+            canvas.draw(reset_Texture, Color.WHITE, 20, .9f*canvas.getHeight() , canvas.getWidth() / 12, canvas.getHeight() / 14);
+            canvas.draw(pause_Texture, Color.WHITE, canvas.getWidth() - canvas.getWidth() / 12 - 20, .9f*canvas.getHeight(), canvas.getWidth() / 12, canvas.getHeight() / 14);
+            canvas.drawText("Level " +LV_NUMBER , displayFont_2, 20, 60);
 
             Vector2 toCommand = new Vector2();
             for(PlanetModel c : commandPlanets) {
