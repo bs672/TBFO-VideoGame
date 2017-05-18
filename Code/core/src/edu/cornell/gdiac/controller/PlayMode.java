@@ -1815,7 +1815,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Shoot bullet from ship
     public void shootBullet(){
         if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size; i += 4) {
+            for (int i = 0; i < aiController.bulletData.size; i += 5) {
                 //0 is normal, 1 is tractor beam
                 BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i + 1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1830,6 +1830,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setAngle((float) (Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI / 2));
                 bullet.setName("bullet");
                 bullet.setTexture(bullet_texture);
+                if(aiController.bulletData.get(i+4)==1f){
+                    bullet.setDamage(BULLET_DAMAGE*3);
+                }
                 SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 addObject(bullet);
             }
@@ -2427,7 +2430,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 //forced jump
-                if (currentPlanet.getRadius() < DEATH_RADIUS) {
+                if (currentPlanet.getRadius() < DEATH_RADIUS &&(currentPlanet.getType()!=2&&currentPlanet.getType()!=3)) {
                     currentPlanet.setExploding(true);
                     currentPlanet.set_sheet(EXP_Sheet);
                     currentPlanet.createEXPtex();
@@ -2673,7 +2676,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         complexAvatar.setHurting(true);
                     }
                     complexAvatar.set_Shot_Cooldown(10);
-                    changeMass(BULLET_DAMAGE);
+                    changeMass(((BulletModel)bd2).getDamage());
                 }
                 else if (bd2.getName().equals("ship")) {
                     if (((ShipModel)bd2).getType() == 2) {
@@ -2690,7 +2693,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
-                    changeMass(((WheelObstacle)bd2).getMass()/16);
+                    changeMass(((WheelObstacle)bd2).getMass()/8);
                 }
                 else if(bd2.getName().equals("black hole")) {
                     playerControl = false;
@@ -2715,7 +2718,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         complexAvatar.setHurting(true);
                     }
                     complexAvatar.set_Shot_Cooldown(10);
-                    changeMass(BULLET_DAMAGE);
+                    changeMass(((BulletModel)bd1).getDamage());
                 }
                 else if (bd1.getName().equals("ship")) {
                     if (((ShipModel)bd1).getType() == 2) {
@@ -2750,12 +2753,22 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             if(bd1.getName().equals("expulsion") && bd2.getName().equals("ship")) {
-                bd2.markRemoved(true);
-                aiController.removeShip((ShipModel)bd2);
+                if(((ShipModel)bd2).getType()==2){
+                    bd1.markRemoved(true);
+                }
+                else {
+                    bd2.markRemoved(true);
+                    aiController.removeShip((ShipModel) bd2);
+                }
             }
             else if(bd2.getName().equals("expulsion") && bd1.getName().equals("ship")) {
-                bd1.markRemoved(true);
-                aiController.removeShip((ShipModel)bd1);
+                if(((ShipModel)bd1).getType()==2){
+                    bd2.markRemoved(true);
+                }
+                else {
+                    bd1.markRemoved(true);
+                    aiController.removeShip((ShipModel) bd1);
+                }
             }
             if(bd1.getName().equals("expulsion") && bd2.getName().equals("black hole")) {
                 bd1.markRemoved(true);
@@ -2770,18 +2783,6 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(bd2.getName().equals("black hole") && bd1.getName().equals("ship")) {
                 bd1.markRemoved(true);
                 aiController.removeShip((ShipModel)bd1);
-            }
-            if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
-                //LOSE
-                listener.exitScreen(this, 0);
-                InputController.getInstance().setCenterCamera(true);
-                //reset();
-            }
-            else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
-                //LOSE
-                listener.exitScreen(this, 0);
-                InputController.getInstance().setCenterCamera(true);
-                //reset();
             }
         } catch (Exception e) {
             e.printStackTrace();
