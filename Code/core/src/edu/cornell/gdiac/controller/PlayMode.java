@@ -306,17 +306,15 @@ public class PlayMode extends WorldController implements ContactListener {
     //Music for convert
     protected static Array<Music> convert;
     /** The sound file for a jump */
-    protected static final String JUMP_SOUND = "audio/jump.wav";
+    protected static final String JUMP_SOUND = "audio/jump.mp3";
     /** The sound file for a planet explosion */
-    protected static final String EXPLOSION_SOUND = "audio/explosion.wav";
+    protected static final String EXPLOSION_SOUND = "audio/explosion.mp3";
     //Mothership sound
-    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.wav";
+    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.mp3";
     //Sound for bullet fire
-    protected static final String SHOOTING_SOUND = "audio/shooting.wav";
+    protected static final String SHOOTING_SOUND = "audio/shooting.mp3";
 
-    protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
-
-    //protected static final String CONVERT_SOUND = "audio/convert.wav";
+    protected static final String EXPULSION_SOUND = "audio/expulsion.mp3";
 
     public static final float SCROLL_SPEED = 0.5f;
 
@@ -997,7 +995,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
-        InputController.getInstance().setCenterCamera(true);
         playerControl = true;
         blackHoleWarp = false;
         comingOut = false;
@@ -1033,11 +1030,11 @@ public class PlayMode extends WorldController implements ContactListener {
         world.setContactListener(this);
         setComplete(false);
         setFailure(false);
+
+        InputController.getInstance().setCenterCamera(false);
         populateLevel();
         for(Obstacle o: objects){
-            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
-                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
-            }
+            o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f-16, canvas.getHeight()/80f-9)));
             if(o.getName()=="ship"){
                 ((ShipModel)o).setMusic(null);
             }
@@ -1048,7 +1045,7 @@ public class PlayMode extends WorldController implements ContactListener {
         jumpTime = 0;
         converted = 0;
         lastHoverPlanet = new boolean[4];
-
+        InputController.getInstance().setCenterCamera(true);
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -1210,9 +1207,9 @@ public class PlayMode extends WorldController implements ContactListener {
     private void populateLevel() {
 
         convert = new Array<Music>();
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
         for(Music m: convert){
             m.setVolume(0.5f);
         }
@@ -2532,9 +2529,11 @@ public class PlayMode extends WorldController implements ContactListener {
                         planet_explosion.get(0).set_sheet(EXP_Sheet);
                         planet_explosion.get(0).createEXPtex();
                         SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
+                        System.out.println("HERE");
                     }
                 }
                 if (planet_explosion.get(0).get_EXP_ST() > -1) {
+                    System.out.println(planet_explosion.get(0).get_EXP_ST());
                     if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
                         if (planet_explosion.get(0).getType() == 1f) {
                             for (ShipModel sh : planet_explosion.get(0).getShips()) {
@@ -2544,6 +2543,8 @@ public class PlayMode extends WorldController implements ContactListener {
                             }
                             commandPlanets.removeValue(planet_explosion.get(0), true);
                         }
+                        if(planet_explosion.get(0) == currentPlanet)
+                            currentPlanet = null;
                         planet_explosion.get(0).markRemoved(true);
                         planets.removeValue(planet_explosion.get(0), true);
                         planet_explosion.removeIndex(0);

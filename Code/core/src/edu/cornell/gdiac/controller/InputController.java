@@ -115,18 +115,6 @@ public class InputController {
 	public boolean getScrollDown() { return scrollDown; }
 	public boolean getScrollLeft() { return scrollLeft; }
 	public boolean getScrollRight() { return scrollRight; }
-	public boolean getScrollUp(int top) {
-		return Gdx.input.getY() <= top; // these are backwards because Y is switched
-	}
-	public boolean getScrollDown(int bottom) {
-		return Gdx.input.getY() >= bottom;  // these are backwards because Y is switched
-	}
-	public boolean getScrollLeft(int left) {
-		return Gdx.input.getX() <= left;
-	}
-	public boolean getScrollRight(int right) {
-		return Gdx.input.getX() >= right;
-	}
 	public boolean getWASD(){return wasd; }
 
 	//Returns whether Oob is jumping
