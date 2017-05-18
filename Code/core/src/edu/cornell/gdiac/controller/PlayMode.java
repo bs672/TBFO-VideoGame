@@ -479,6 +479,9 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int converted;
     // number of clicks
     protected int clicks;
+    // time taken
+    protected long time;
+    protected int minutes, seconds, hSeconds;
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
@@ -995,6 +998,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        time = System.currentTimeMillis();
         playerControl = true;
         blackHoleWarp = false;
         comingOut = false;
@@ -2579,6 +2583,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 // Won the level
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
+                time = System.currentTimeMillis() - time;
+                minutes = (int)(time/60000);
+                seconds = (int)((time%60000)/1000);
+                hSeconds = (int)((time%1000)/10);
+                System.out.println("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
                 switchState(2);
                 for (ShipModel sh : ships) {
                     if (sh.getName().equals("ship")) {
@@ -3093,7 +3102,9 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             GlyphLayout layout = new GlyphLayout();
             layout.setText(displayFont, "Clicks Used:" + clicks);
-            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*3);
+            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*2.7f);
+            layout.setText(displayFont, "Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
+            canvas.drawText("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*4);
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()*0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();
