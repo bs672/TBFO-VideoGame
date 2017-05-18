@@ -1036,10 +1036,7 @@ public class PlayMode extends WorldController implements ContactListener {
         InputController.getInstance().setCenterCamera(false);
         populateLevel();
         for(Obstacle o: objects){
-//            if(!o.equals(complexAvatar) &&  !o.equals(currentPlanet)){
-            System.out.println(new Vector2 (canvas.getWidth()/80f, canvas.getHeight()/80f));
-                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f-16, canvas.getHeight()/80f-9)));
-//            }
+            o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f-16, canvas.getHeight()/80f-9)));
             if(o.getName()=="ship"){
                 ((ShipModel)o).setMusic(null);
             }
@@ -2524,9 +2521,11 @@ public class PlayMode extends WorldController implements ContactListener {
                         planet_explosion.get(0).set_sheet(EXP_Sheet);
                         planet_explosion.get(0).createEXPtex();
                         SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
+                        System.out.println("HERE");
                     }
                 }
                 if (planet_explosion.get(0).get_EXP_ST() > -1) {
+                    System.out.println(planet_explosion.get(0).get_EXP_ST());
                     if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
                         if (planet_explosion.get(0).getType() == 1f) {
                             for (ShipModel sh : planet_explosion.get(0).getShips()) {
@@ -2536,6 +2535,8 @@ public class PlayMode extends WorldController implements ContactListener {
                             }
                             commandPlanets.removeValue(planet_explosion.get(0), true);
                         }
+                        if(planet_explosion.get(0) == currentPlanet)
+                            currentPlanet = null;
                         planet_explosion.get(0).markRemoved(true);
                         planets.removeValue(planet_explosion.get(0), true);
                         planet_explosion.removeIndex(0);
