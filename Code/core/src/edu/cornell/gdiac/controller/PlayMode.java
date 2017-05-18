@@ -2426,13 +2426,18 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 //forced jump
-                if (currentPlanet.getRadius() < DEATH_RADIUS && currentPlanet.get_EXP_ST() < 0) {
+                if (currentPlanet.getRadius() < DEATH_RADIUS && !currentPlanet.isExploding()) {
+                    System.out.println("HERE");
                     currentPlanet.setExploding(true);
                     currentPlanet.set_sheet(EXP_Sheet);
                     currentPlanet.createEXPtex();
                     forceJump = true;
                     jump = true;
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
+                }
+                else if(currentPlanet.getRadius() < DEATH_RADIUS) {
+                    forceJump = true;
+                    jump = true;
                 }
                 // checking to make sure he doesn't go inside out
                 complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
