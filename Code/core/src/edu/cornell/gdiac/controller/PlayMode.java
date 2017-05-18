@@ -2471,6 +2471,12 @@ public class PlayMode extends WorldController implements ContactListener {
                     forceJump = true;
                     jump = true;
                 }
+                System.out.println(complexAvatar.getLinearVelocity().len());
+                //capping his movement speed on a planet
+                if(complexAvatar.getLinearVelocity().len() > 12) {
+                    System.out.println("HERE");
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().nor().scl(12));
+                }
                 // checking to make sure he doesn't go inside out
                 complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
 
@@ -2507,6 +2513,7 @@ public class PlayMode extends WorldController implements ContactListener {
 //                    }
                 }
             } else if (currentPlanet == null) { // we’re floating in space
+                System.out.println(complexAvatar.getLinearVelocity().len());
                 complexAvatar.setFlying(true);
                 jumpTime++;
                 if ((jumpTime > 300) & !play) {
