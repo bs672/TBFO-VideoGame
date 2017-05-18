@@ -85,10 +85,10 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager,1);
 		// Initialize the three game worlds
-		controllers = new WorldController[29];
+		controllers = new WorldController[30];
 		controllers[0] = new MainMenu();
 		controllers[1] = new SettingsMode();
-		controllers[2] = new LevelSelect(25, 0);
+		controllers[2] = new LevelSelect(26, 0);
 		controllers[3] = new PauseMenu();
 		//Tutorials
 		controllers[4] = new PlayMode("T1", 1); //1
@@ -120,6 +120,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		controllers[26] = new PlayMode("Layers",23); //23
 		controllers[27] = new PlayMode("Race",24); //24
 		controllers[28] = new PlayMode("Tomb", 25); //25
+		controllers[29] = new PlayMode("Double Trouble", 26); //26
 
 		for(int ii = 0; ii < controllers.length; ii++) {
 			controllers[ii].preLoadContent(manager);
