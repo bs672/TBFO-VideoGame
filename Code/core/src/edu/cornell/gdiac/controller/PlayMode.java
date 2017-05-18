@@ -1005,6 +1005,8 @@ public class PlayMode extends WorldController implements ContactListener {
      */
     public void reset() {
         time = System.currentTimeMillis();
+        jump = false;
+        forceJump = false;
         playerControl = true;
         blackHoleWarp = false;
         comingOut = false;
@@ -1044,6 +1046,7 @@ public class PlayMode extends WorldController implements ContactListener {
         InputController.getInstance().setCenterCamera(false);
         populateLevel();
         for(Obstacle o: objects){
+
             o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f-16, canvas.getHeight()/80f-9)));
             if(o.getName()=="ship"){
                 ((ShipModel)o).setMusic(null);
@@ -1056,6 +1059,12 @@ public class PlayMode extends WorldController implements ContactListener {
         converted = 0;
         lastHoverPlanet = new boolean[4];
         InputController.getInstance().setCenterCamera(true);
+        if(planets.get(0).getPosition().cpy().sub(canvas.getWidth()/80,canvas.getHeight()/80).len() > 0.5f) {
+            planets.get(0).setPosition(canvas.getWidth()/80,canvas.getHeight()/80);
+            complexAvatar.setPosition(canvas.getWidth()/80, canvas.getHeight()/80 + 2.5f + complexAvatar.getRadius());
+            complexAvatar.setLinearVelocity(Vector2.Zero);
+            currentPlanet = planets.get(0);
+        }
     }
 
     //Reads the data from a JSON file and turns it into game data
@@ -2121,6 +2130,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
             reset();
+            return;
         }
         if(InputController.getInstance().didPause()){
             if (play) listener.exitScreen(this, 3);
@@ -2153,6 +2163,7 @@ public class PlayMode extends WorldController implements ContactListener {
     public void airPlayerControls() {
         if (InputController.getInstance().didReset()) {
             reset();
+            return;
         }
         if(InputController.getInstance().didPause()){
             if (play) listener.exitScreen(this, 3);
@@ -2431,7 +2442,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 //forced jump
-                if (currentPlanet.getRadius() < DEATH_RADIUS &&(currentPlanet.getType()!=2&&currentPlanet.getType()!=3)) {
+                if (currentPlanet.getRadius() < DEATH_RADIUS &&(currentPlanet.getType()!=2&&currentPlanet.getType()!=3) && !currentPlanet.isExploding()) {
                     currentPlanet.setExploding(true);
                     currentPlanet.set_sheet(EXP_Sheet);
                     currentPlanet.createEXPtex();
@@ -2442,42 +2453,44 @@ public class PlayMode extends WorldController implements ContactListener {
                 // checking to make sure he doesn't go inside out
                 complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
 
-                    if (jump) {
-                        if (!play) {
-                            if (clickScreenSwitch()) {
-                                return;
-                            }
-                        }
-                        if (converted > 0 || !LEVEL.equals("Mother")) {
-                            jump();
-                        }
-                    } else {
-                        rad = currentPlanet.getRadius();
-                        float Oob_rad = complexAvatar.getRadius();
-                        if (rad > DEATH_RADIUS && ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
-                                        || (currentPlanet.getType() == 1f))) {
-                            siphonPlanet();
-                        } else if (Oob_rad >= OOB_MAX_RADIUS) {
-                            complexAvatar.setMax(true);
-                            if(currentPlanet.isDying())
-                                decreasePlanetMass();
-                        }
-                        if (currentPlanet.getType() == 2f) {
-                            changeMass(POISON);
-                        }
-                        if (complexAvatar.getLinearVelocity().len() < 7) {
-                            moveAroundPlanet();
-                        }
-                        if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
-                            lastPlanet = currentPlanet;
-                            currentPlanet = null;
+                if (jump) {
+                    if (!play) {
+                        if (clickScreenSwitch()) {
+                            return;
                         }
                     }
+                    if (converted > 0 || !LEVEL.equals("Mother")) {
+                        jump();
+                    }
+                } else {
+                    rad = currentPlanet.getRadius();
+                    float Oob_rad = complexAvatar.getRadius();
+                    if (rad > DEATH_RADIUS && ((Oob_rad < OOB_MAX_RADIUS && (currentPlanet.getType() == 0f))
+                                    || (currentPlanet.getType() == 1f))) {
+                        siphonPlanet();
+                    } else if (Oob_rad >= OOB_MAX_RADIUS) {
+                        complexAvatar.setMax(true);
+                        if(currentPlanet.isDying())
+                            decreasePlanetMass();
+                    }
+                    if (currentPlanet.getType() == 2f) {
+                        changeMass(POISON);
+                    }
+                    if (complexAvatar.getLinearVelocity().len() < 7) {
+                        moveAroundPlanet();
+                    }
+//                    if (smallestRad.len() < currentPlanet.getRadius() + 0.1f) {
+//                        System.out.println(currentPlanet.getPosition());
+//                        lastPlanet = currentPlanet;
+//                        currentPlanet = null;
+//                    }
+                }
             } else if (currentPlanet == null) { // we’re floating in space
                 complexAvatar.setFlying(true);
                 jumpTime++;
                 if ((jumpTime > 300) & !play) {
                     reset();
+                    return;
                 }
 //                if ((jumpTime > 600) & play) {
 //                    gameState = 1;
@@ -2591,7 +2604,6 @@ public class PlayMode extends WorldController implements ContactListener {
                 minutes = (int)(time/60000);
                 seconds = (int)((time%60000)/1000);
                 hSeconds = (int)((time%1000)/10);
-                System.out.println("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
                 switchState(2);
                 for (ShipModel sh : ships) {
                     if (sh.getName().equals("ship")) {
