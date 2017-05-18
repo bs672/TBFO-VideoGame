@@ -306,17 +306,15 @@ public class PlayMode extends WorldController implements ContactListener {
     //Music for convert
     protected static Array<Music> convert;
     /** The sound file for a jump */
-    protected static final String JUMP_SOUND = "audio/jump.wav";
+    protected static final String JUMP_SOUND = "audio/jump.mp3";
     /** The sound file for a planet explosion */
-    protected static final String EXPLOSION_SOUND = "audio/explosion.wav";
+    protected static final String EXPLOSION_SOUND = "audio/explosion.mp3";
     //Mothership sound
-    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.wav";
+    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.mp3";
     //Sound for bullet fire
-    protected static final String SHOOTING_SOUND = "audio/shooting.wav";
+    protected static final String SHOOTING_SOUND = "audio/shooting.mp3";
 
-    protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
-
-    //protected static final String CONVERT_SOUND = "audio/convert.wav";
+    protected static final String EXPULSION_SOUND = "audio/expulsion.mp3";
 
     public static final float SCROLL_SPEED = 0.5f;
 
@@ -1210,9 +1208,9 @@ public class PlayMode extends WorldController implements ContactListener {
     private void populateLevel() {
 
         convert = new Array<Music>();
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
         for(Music m: convert){
             m.setVolume(0.5f);
         }
