@@ -1,6 +1,7 @@
 package edu.cornell.gdiac.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -35,6 +36,7 @@ public class ShipModel extends CapsuleObstacle{
     private float range;
     private float mass;
     private boolean isConverting;
+    private Music music;
 
     private float orbitDistance;
 
@@ -77,6 +79,8 @@ public class ShipModel extends CapsuleObstacle{
     public void setExploding(boolean bool) {exploding = bool;}
     public boolean isConverting(){return isConverting;}
     public void setConverting(boolean convert){isConverting = convert;}
+    public Music getMusic(){return music;}
+    public void setMusic(Music m){music = m;}
 
     private float EXP_stateTime= -1;
 
@@ -159,6 +163,7 @@ public class ShipModel extends CapsuleObstacle{
         delay=0;
         range = AGGRO_RANGE;
         orbitDistance = 3;
+        music = null;
         setCommandSpawn(cPlanetSpawn);
     }
 

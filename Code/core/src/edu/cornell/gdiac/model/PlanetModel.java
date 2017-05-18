@@ -273,6 +273,7 @@ public class PlanetModel extends WheelObstacle{
             SPAWN_COOLDOWN = (int)c;
             converting = true;
             converterShip = ship;
+            converterShip.setConverting(true);
             float oldPlanMass = getMass();
             float oldRad = getRadius();
             float suckSpeed = 0.03f;
