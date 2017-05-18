@@ -1032,6 +1032,9 @@ public class PlayMode extends WorldController implements ContactListener {
             if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
                 o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
             }
+            if(o.getName()=="ship"){
+                ((ShipModel)o).setMusic(null);
+            }
         }
         play = true;
         gameState = 0;
@@ -1204,6 +1207,10 @@ public class PlayMode extends WorldController implements ContactListener {
         convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
         convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
         convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        for(Music m: convert){
+            m.setVolume(0.5f);
+        }
+
         // Create Planets
 
         String pname = "planet";
@@ -1742,6 +1749,9 @@ public class PlayMode extends WorldController implements ContactListener {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     convertPlanets.removeValue(planets.get(i), true);
+                    planets.get(i).getConverterShip().getMusic().stop();
+                    planets.get(i).getConverterShip().setMusic(null);
+                    planets.get(i).setConverterShip(null);
                     commandPlanets.add(planets.get(i));
                     planets.get(i).setConvert(0);
                     aiController.setPlanets(planets);
@@ -1752,7 +1762,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(!SoundController.getInstance().getMute()){
                         for(Music m:convert){
                             if(!m.isPlaying()) {
-                                m.play();
+                                planets.get(i).getConverterShip().setMusic(m);
+                                planets.get(i).getConverterShip().getMusic().play();
                                 break;
                             }
                         }
@@ -2029,6 +2040,10 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setWidth(oldWidth*(sh.getMass()/oldMass));
         sh.setHeight(oldHeight*(sh.getMass()/oldMass));
         sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
+        sh.getMusic().stop();
+        aiController.getTargetPlanets().get(sh).setConverting(false);
+        aiController.getTargetPlanets().get(sh).setConvert(0);
+        sh.setConverting(false);
     }
 
     //Make Oob move around the planet
@@ -2974,7 +2989,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     float angle = (float) Math.atan2(toCommand.y, toCommand.x);
                     toCommand.add(canvas.getWidth() / 2, canvas.getHeight() / 2);
                     if (c.getConvert() != 0 && c.isConverting()) {
-                        c.setConverting(false);
                         //the arrow should be new
                         if ((c.getConvert() / 15) % 2 == 1) {
                             canvas.draw(arrow_Texture, Color.RED, arrow_Texture.getRegionWidth(), arrow_Texture.getRegionHeight(), toCommand.x, toCommand.y, angle - (float) Math.PI / 2, 1f / 10, 1f / 10);

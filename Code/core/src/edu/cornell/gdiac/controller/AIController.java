@@ -45,6 +45,8 @@ public class AIController {
 
     private boolean first = true;
 
+    public ObjectMap<ShipModel, PlanetModel> getTargetPlanets(){return targetPlanets;}
+
     public void setPlanets(Array<PlanetModel> array){
         planets = array;
     }
@@ -321,6 +323,7 @@ public class AIController {
             s.setLinearVelocity(new Vector2(0f,0f));
             if (targetPlanets.get(s).getType() != 1) {
                 s.setConverting(true);
+                targetPlanets.get(s).setConverting(true);
                 targetPlanets.get(s).convert(s.getCommandSpawn(), s);
                 tempVec1.set(targetPlanets.get(s).getPosition().cpy().sub(s.getPosition()));
                 tempVec1.scl(1f / tempVec1.len());
