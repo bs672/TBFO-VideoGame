@@ -126,7 +126,7 @@ public class AIController {
                 shootInRange(s);
             }
             else if(s.getType() ==2){
-                if (targetPlanets.get(s).getConvert()!=0 && targetPlanets.get(s).getConverterShip()!=s)
+                if ((targetPlanets.get(s).getConvert()!=0 && targetPlanets.get(s).getConverterShip()!=s)||targetPlanets.get(s).getType()==1)
                     findBigPlanet(s);
                 moveToPlanet(s);
                 convertInRange(s);

@@ -2074,7 +2074,9 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setWidth(oldWidth*(sh.getMass()/oldMass));
         sh.setHeight(oldHeight*(sh.getMass()/oldMass));
         sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
-        sh.getMusic().stop();
+        if(sh.getMusic()!=null) {
+            sh.getMusic().stop();
+        }
         aiController.getTargetPlanets().get(sh).setConverting(false);
         aiController.getTargetPlanets().get(sh).setConvert(0);
         sh.setConverting(false);

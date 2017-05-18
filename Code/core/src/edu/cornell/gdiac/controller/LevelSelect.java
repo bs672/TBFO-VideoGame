@@ -54,6 +54,8 @@ public class LevelSelect extends PlayMode {
         this.mode = mode;
     }
 
+    public void changeMode(int i){mode = i;}
+
     public void loadContent(AssetManager manager) {
         if (platformAssetState != AssetState.LOADING) {
             return;
