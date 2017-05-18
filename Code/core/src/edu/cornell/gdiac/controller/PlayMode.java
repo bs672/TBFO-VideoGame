@@ -2526,11 +2526,9 @@ public class PlayMode extends WorldController implements ContactListener {
                         planet_explosion.get(0).set_sheet(EXP_Sheet);
                         planet_explosion.get(0).createEXPtex();
                         SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
-                        System.out.println("HERE");
                     }
                 }
                 if (planet_explosion.get(0).get_EXP_ST() > -1) {
-                    System.out.println(planet_explosion.get(0).get_EXP_ST());
                     if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
                         if (planet_explosion.get(0).getType() == 1f) {
                             for (ShipModel sh : planet_explosion.get(0).getShips()) {
