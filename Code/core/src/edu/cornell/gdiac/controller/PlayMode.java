@@ -99,8 +99,18 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SHIP_TEXTURE = "space/animations/standardShip.png";
     protected static final String G_SHIP_TEXTURE = "space/animations/guardShip.png";
     protected static final String MOTHERSHIP_TEXTURE = "space/animations/mothership_sample2.png";
-    protected static final String MOTHERSHIP_FIREING = "space/animations/mothership_sample1.png";
     protected static final String SHIP_EXPLOSION = "space/animations/Ship_exp.png";
+
+
+    protected static final String MOTHERSHIP_FIREING = "space/animations/mothership1.png";
+    protected static final String MOTHERSHIP_FIREING_2 = "space/animations/mothership2.png";
+    protected static final String MOTHERSHIP_FIREING_3 = "space/animations/mothership3.png";
+    protected static final String MOTHERSHIP_FIREING_4 = "space/animations/mothership4.png";
+    protected static final String MOTHERSHIP_FIREING_5 = "space/animations/mothership5.png";
+    protected static final String MOTHERSHIP_FIREING_6 = "space/animations/mothership6.png";
+    protected static final String MOTHERSHIP_FIREING_7 = "space/animations/mothership7.png";
+    protected static final String MOTHERSHIP_FIREING_8 = "space/animations/mothership8.png";
+
 
     /** The texture file for the planets */
     protected static final String COMMAND_P = "space/planets/command.png";
@@ -330,7 +340,6 @@ public class PlayMode extends WorldController implements ContactListener {
 
     private float stateTime=0f;
 
-    private float convert_stateTime=0f;
 
 
     protected int inPause = 0;
@@ -374,8 +383,6 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture G_SHIP_Sheet;
     protected Animation<TextureRegion> MOTHERSHIP_Animation; // Must declare frame type (TextureRegion)
     protected Texture MOTHERSHIP_Sheet;
-    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet;
     protected Animation<TextureRegion> SHIP_EXP_Animation; // Must declare frame type (TextureRegion)
     protected Texture SHIP_EXP_Sheet;
     protected Texture Oob_Normal_Sheet;         protected Texture Oob_Growing_Sheet;
@@ -384,6 +391,31 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture Oob_Dying_Sheet;          protected Texture Oob_Max_Sheet;
     private Texture EXP_Sheet;
     private Texture WARN_Sheet;
+
+
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_2; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_3; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_4; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_5; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_6; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_7; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_8; // Must declare frame type (TextureRegion)
+
+
+
+    protected Array<Animation> FIRE_Array;
+
+
+    protected Texture MOTHERSHIP_FIRE_Sheet;
+    protected Texture MOTHERSHIP_FIRE_Sheet_2;
+    protected Texture MOTHERSHIP_FIRE_Sheet_3;
+    protected Texture MOTHERSHIP_FIRE_Sheet_4;
+    protected Texture MOTHERSHIP_FIRE_Sheet_5;
+    protected Texture MOTHERSHIP_FIRE_Sheet_6;
+    protected Texture MOTHERSHIP_FIRE_Sheet_7;
+    protected Texture MOTHERSHIP_FIRE_Sheet_8;
+
 
     /** Planet texture */
     protected TextureRegion command_P_Texture;
@@ -581,13 +613,22 @@ public class PlayMode extends WorldController implements ContactListener {
 
         manager.load(MOTHERSHIP_TEXTURE, Texture.class);      assets.add(MOTHERSHIP_TEXTURE);
 
-        manager.load(MOTHERSHIP_FIREING, Texture.class);      assets.add(MOTHERSHIP_FIREING);
-
         manager.load(SHIP_EXPLOSION, Texture.class);    assets.add(SHIP_EXPLOSION);
 
         manager.load(NEUTRAL_P, Texture.class);         assets.add(NEUTRAL_P);
 
         manager.load(ASTEROID, Texture.class);          assets.add(ASTEROID);
+
+
+        manager.load(MOTHERSHIP_FIREING, Texture.class);        assets.add(MOTHERSHIP_FIREING);
+        manager.load(MOTHERSHIP_FIREING_2, Texture.class);      assets.add(MOTHERSHIP_FIREING_2);
+        manager.load(MOTHERSHIP_FIREING_3, Texture.class);      assets.add(MOTHERSHIP_FIREING_3);
+        manager.load(MOTHERSHIP_FIREING_4, Texture.class);      assets.add(MOTHERSHIP_FIREING_4);
+        manager.load(MOTHERSHIP_FIREING_5, Texture.class);      assets.add(MOTHERSHIP_FIREING_5);
+        manager.load(MOTHERSHIP_FIREING_6, Texture.class);      assets.add(MOTHERSHIP_FIREING_6);
+        manager.load(MOTHERSHIP_FIREING_7, Texture.class);      assets.add(MOTHERSHIP_FIREING_7);
+        manager.load(MOTHERSHIP_FIREING_8, Texture.class);      assets.add(MOTHERSHIP_FIREING_8);
+
 
         manager.load(BACKG_FILE_MAIN, Texture.class);       assets.add(BACKG_FILE_MAIN);
         manager.load(BACKG_FILE_MAIN, Texture.class);       assets.add(BACKG_FILE_MAIN);
@@ -714,13 +755,24 @@ public class PlayMode extends WorldController implements ContactListener {
 
         MOTHERSHIP_Sheet = new Texture(Gdx.files.internal(MOTHERSHIP_TEXTURE));
 
-        MOTHERSHIP_FIRE_Sheet = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING));
-
         SHIP_EXP_Sheet = new Texture(Gdx.files.internal(SHIP_EXPLOSION));
 
         neutral_P_Texture = createTexture(manager,NEUTRAL_P,false);
 
         command_P_Texture = createTexture(manager,COMMAND_P,false);
+
+
+        MOTHERSHIP_FIRE_Sheet = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING));
+        MOTHERSHIP_FIRE_Sheet_2 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_2));
+        MOTHERSHIP_FIRE_Sheet_3 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_3));
+        MOTHERSHIP_FIRE_Sheet_4 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_4));
+        MOTHERSHIP_FIRE_Sheet_5 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_5));
+        MOTHERSHIP_FIRE_Sheet_6 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_6));
+        MOTHERSHIP_FIRE_Sheet_7 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_7));
+        MOTHERSHIP_FIRE_Sheet_8 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_8));
+
+
+
 
         backgroundMAIN = createTexture(manager,BACKG_FILE_MAIN,false);
         backgroundWHITESTAR = createTexture(manager,BACKG_FILE_WHITE_STAR,false);
@@ -1562,92 +1614,72 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void loadAnim() {
-        complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);               complexAvatar.createNormaltex();
-        complexAvatar.set_Growing_sheet(Oob_Growing_Sheet);             complexAvatar.createGrowingtex();
-        complexAvatar.set_Command_sheet(Oob_Command_Sheet);             complexAvatar.createCommandtex();
-        complexAvatar.set_Flying_sheet(Oob_Flying_Sheet);               complexAvatar.createFlyingtex();
-        complexAvatar.set_Teleporting_sheet(Oob_Teleporting_Sheet);     complexAvatar.createTeleportingtex();
-        complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);             complexAvatar.createHurtingtex();
-        complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);                 complexAvatar.createDyingtex();
-        complexAvatar.set_Max_sheet(Oob_Max_Sheet);                     complexAvatar.createMaxtex();
-        sunTex();   BHTex(); SHIPTex(); G_SHIPTex(); MOTHERSHIPTex(); MOTHERSHIP_FIRE_Tex(); SHIPEXPTex();
-    }
+        complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);
+        complexAvatar.createNormaltex();
+        complexAvatar.set_Growing_sheet(Oob_Growing_Sheet);
+        complexAvatar.createGrowingtex();
+        complexAvatar.set_Command_sheet(Oob_Command_Sheet);
+        complexAvatar.createCommandtex();
+        complexAvatar.set_Flying_sheet(Oob_Flying_Sheet);
+        complexAvatar.createFlyingtex();
+        complexAvatar.set_Teleporting_sheet(Oob_Teleporting_Sheet);
+        complexAvatar.createTeleportingtex();
+        complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);
+        complexAvatar.createHurtingtex();
+        complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);
+        complexAvatar.createDyingtex();
+        complexAvatar.set_Max_sheet(Oob_Max_Sheet);
+        complexAvatar.createMaxtex();
 
-    public void BHTex() {
-        //CREATE BLACK HOLE TEXTURE
-        // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 12, FRAME_ROWS = 1;
 
-        //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(BH_Sheet,
-                BH_Sheet.getWidth() / FRAME_COLS,
-                BH_Sheet.getHeight() / FRAME_ROWS);
+        sunAnimation = Anim_Tex(sunSheet, 8, 1, .15f);
+        BH_Animation = Anim_Tex(BH_Sheet, 12, 1, .15f);
+        SHIP_Animation = Anim_Tex(SHIP_Sheet, 8, 1, .05f);
+        G_SHIP_Animation = Anim_Tex(G_SHIP_Sheet, 8, 1, .05f);
+        MOTHERSHIP_Animation = Anim_Tex(MOTHERSHIP_Sheet, 6, 1, .05f);
+        SHIP_EXP_Animation = Anim_Tex(SHIP_EXP_Sheet, 5, 1, .05f);
 
-        //Reorder array
-        TextureRegion[] BH_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                BH_Frames[index++] = tmp[i][j];
-            }
-        }
-        // Initialize the Animation with the frame interval and array of frames
-        BH_Animation = new Animation<TextureRegion>(.15f, BH_Frames);
-    }
 
-    public void sunTex() {
-        // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
+        MOTHERSHIP_FIRE_Animation = Anim_Tex(MOTHERSHIP_FIRE_Sheet, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_2 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_2, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_3 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_3, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_4 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_4, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_5 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_5, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_6 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_6, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_7 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_7, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_8 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_8, 20, 1, .05f);
 
-        //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(sunSheet,
-                sunSheet.getWidth() / FRAME_COLS,
-                sunSheet.getHeight() / FRAME_ROWS);
 
-        //Reorder array
-        TextureRegion[] sunFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                sunFrames[index++] = tmp[i][j];
-            }
-        }
-        // Initialize the Animation with the frame interval and array of frames
-        sunAnimation = new Animation<TextureRegion>(.15f, sunFrames);
-    }
 
-    public void SHIPTex() {
-        //CREATE BLACK HOLE TEXTURE
-        // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
+        FIRE_Array=new Array<Animation>();
 
-        //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(SHIP_Sheet,
-                SHIP_Sheet.getWidth() / FRAME_COLS,
-                SHIP_Sheet.getHeight() / FRAME_ROWS);
 
-        //Reorder array
-        TextureRegion[] SHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                SHIP_Frames[index++] = tmp[i][j];
-            }
-        }
-        // Initialize the Animation with the frame interval and array of frames
-        SHIP_Animation = new Animation<TextureRegion>(.05f, SHIP_Frames);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_2);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_3);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_4);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_5);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_6);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+
     }
 
 
-    public void G_SHIPTex() {
-        //CREATE BLACK HOLE TEXTURE
+
+
+    public Animation Anim_Tex(Texture sheet, int FRAME_COLS, int FRAME_ROWS, float duration) {
+        Animation animation;
         // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 8, FRAME_ROWS = 1;
 
         //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(G_SHIP_Sheet,
-                G_SHIP_Sheet.getWidth() / FRAME_COLS,
-                G_SHIP_Sheet.getHeight() / FRAME_ROWS);
+        TextureRegion[][] tmp = TextureRegion.split(sheet,
+                sheet.getWidth() / FRAME_COLS,
+                sheet.getHeight() / FRAME_ROWS);
 
         //Reorder array
         TextureRegion[] SHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
@@ -1658,73 +1690,8 @@ public class PlayMode extends WorldController implements ContactListener {
             }
         }
         // Initialize the Animation with the frame interval and array of frames
-        G_SHIP_Animation = new Animation<TextureRegion>(.05f, SHIP_Frames);
-    }
-
-    public void MOTHERSHIPTex() {
-        //CREATE BLACK HOLE TEXTURE
-        // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 6, FRAME_ROWS = 1;
-
-        //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(MOTHERSHIP_Sheet,
-                MOTHERSHIP_Sheet.getWidth() / FRAME_COLS,
-                MOTHERSHIP_Sheet.getHeight() / FRAME_ROWS);
-
-        //Reorder array
-        TextureRegion[] MOTHERSHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                MOTHERSHIP_Frames[index++] = tmp[i][j];
-            }
-        }
-        // Initialize the Animation with the frame interval and array of frames
-        MOTHERSHIP_Animation = new Animation<TextureRegion>(.05f, MOTHERSHIP_Frames);
-    }
-
-    public void MOTHERSHIP_FIRE_Tex() {
-        //CREATE BLACK HOLE TEXTURE
-        // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 14, FRAME_ROWS = 1;
-
-        //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(MOTHERSHIP_FIRE_Sheet,
-                MOTHERSHIP_FIRE_Sheet.getWidth() / FRAME_COLS,
-                MOTHERSHIP_FIRE_Sheet.getHeight() / FRAME_ROWS);
-
-        //Reorder array
-        TextureRegion[] MOTHERSHIP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                MOTHERSHIP_Frames[index++] = tmp[i][j];
-            }
-        }
-        // Initialize the Animation with the frame interval and array of frames
-        MOTHERSHIP_FIRE_Animation = new Animation<TextureRegion>(.5f, MOTHERSHIP_Frames);
-    }
-
-    public void SHIPEXPTex() {
-        //CREATE BLACK HOLE TEXTURE
-        // Constant rows and columns of the sprite sheet
-        int FRAME_COLS = 5, FRAME_ROWS = 1;
-
-        //Split up the sheet
-        TextureRegion[][] tmp = TextureRegion.split(SHIP_EXP_Sheet,
-                SHIP_EXP_Sheet.getWidth() / FRAME_COLS,
-                SHIP_EXP_Sheet.getHeight() / FRAME_ROWS);
-
-        //Reorder array
-        TextureRegion[] SHIP_EXP_Frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
-        int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
-                SHIP_EXP_Frames[index++] = tmp[i][j];
-            }
-        }
-        // Initialize the Animation with the frame interval and array of frames
-        SHIP_EXP_Animation = new Animation<TextureRegion>(.05f, SHIP_EXP_Frames);
+        animation = new Animation<TextureRegion>(duration, SHIP_Frames);
+        return animation;
     }
 
 
@@ -1835,7 +1802,8 @@ public class PlayMode extends WorldController implements ContactListener {
                             }
                         }
                     }
-                    convert_stateTime=0f;
+                    System.out.println("SET TO ZERO");
+                    planets.get(i).getConverterShip().set_CONVERT_ST(0);
                 }
             }
         }
@@ -2108,7 +2076,9 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setWidth(oldWidth*(sh.getMass()/oldMass));
         sh.setHeight(oldHeight*(sh.getMass()/oldMass));
         sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
-        sh.getMusic().stop();
+        if(sh.getMusic()!=null) {
+            sh.getMusic().stop();
+        }
         aiController.getTargetPlanets().get(sh).setConverting(false);
         aiController.getTargetPlanets().get(sh).setConvert(0);
         sh.setConverting(false);
@@ -2960,13 +2930,34 @@ public class PlayMode extends WorldController implements ContactListener {
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame;
                 if (((ShipModel) obj).getType()==2) {
-                    if (((ShipModel) obj).isConverting()){
-                        currentFrame=MOTHERSHIP_FIRE_Animation.getKeyFrame(convert_stateTime, true);
-                        convert_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+                    if (((ShipModel) obj).get_CONVER_ST()>=0 && ((ShipModel) obj).isConverting()){
+
+                        System.out.println("FIRE ANIMATION");
+
+
+                        float convert_stateTime= ((ShipModel) obj).get_CONVER_ST();
+                        float duration=MOTHERSHIP_FIRE_Animation.getAnimationDuration();
+
+                        System.out.println("Convert State Time: "+convert_stateTime);
+                        System.out.println("Animation Duration: "+duration);
+
+
+                        float section= convert_stateTime/duration;
+                        float section_frame=convert_stateTime%duration;
+
+                        System.out.println("Section: "+(int)section);
+                        System.out.println("Section Frame: "+section_frame);
+
+                        Animation<TextureRegion> currentAnim= FIRE_Array.get((int)section);
+
+                        currentFrame=currentAnim.getKeyFrame(section_frame, false);
                         fire=true;
+                        ((ShipModel) obj).update_CONVERT_ST();
+
                     }
                     else {
                         currentFrame = MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
+                        System.out.println("FIRE NORMAL ANIMATION");
                     }
                 }
                 else if (((ShipModel) obj).getType()==1) {
