@@ -110,6 +110,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String MOTHERSHIP_FIREING_6 = "space/animations/mothership6.png";
     protected static final String MOTHERSHIP_FIREING_7 = "space/animations/mothership7.png";
     protected static final String MOTHERSHIP_FIREING_8 = "space/animations/mothership8.png";
+    protected static final String MOTHERSHIP_FIREING_9 = "space/animations/mothership9.png";
 
 
     /** The texture file for the planets */
@@ -399,6 +400,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_6; // Must declare frame type (TextureRegion)
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_7; // Must declare frame type (TextureRegion)
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_8; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_9; // Must declare frame type (TextureRegion)
 
 
 
@@ -413,6 +415,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture MOTHERSHIP_FIRE_Sheet_6;
     protected Texture MOTHERSHIP_FIRE_Sheet_7;
     protected Texture MOTHERSHIP_FIRE_Sheet_8;
+    protected Texture MOTHERSHIP_FIRE_Sheet_9;
 
 
     /** Planet texture */
@@ -626,6 +629,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MOTHERSHIP_FIREING_6, Texture.class);      assets.add(MOTHERSHIP_FIREING_6);
         manager.load(MOTHERSHIP_FIREING_7, Texture.class);      assets.add(MOTHERSHIP_FIREING_7);
         manager.load(MOTHERSHIP_FIREING_8, Texture.class);      assets.add(MOTHERSHIP_FIREING_8);
+        manager.load(MOTHERSHIP_FIREING_9, Texture.class);      assets.add(MOTHERSHIP_FIREING_9);
 
 
         manager.load(BACKG_FILE_MAIN, Texture.class);       assets.add(BACKG_FILE_MAIN);
@@ -768,6 +772,8 @@ public class PlayMode extends WorldController implements ContactListener {
         MOTHERSHIP_FIRE_Sheet_6 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_6));
         MOTHERSHIP_FIRE_Sheet_7 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_7));
         MOTHERSHIP_FIRE_Sheet_8 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_8));
+        MOTHERSHIP_FIRE_Sheet_9 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_9));
+
 
 
 
@@ -1415,7 +1421,7 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.scalePicScale(new Vector2(.2f, .2f));
             int tag = -1;
             if (sh.getType() == 2) {
-                sh.scalePicScale(new Vector2(2f, 2f));
+                sh.scalePicScale(new Vector2(4.0f, 4.0f));
             }
             else if (sh.getType() ==1) {
                 sh.scalePicScale(new Vector2(1.5f, 1.5f));
@@ -1643,6 +1649,7 @@ public class PlayMode extends WorldController implements ContactListener {
         MOTHERSHIP_FIRE_Animation_6 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_6, 20, 1, .05f);
         MOTHERSHIP_FIRE_Animation_7 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_7, 20, 1, .05f);
         MOTHERSHIP_FIRE_Animation_8 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_8, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_9 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_9, 20, 1, .05f);
 
 
 
@@ -1657,9 +1664,9 @@ public class PlayMode extends WorldController implements ContactListener {
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_6);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
 
 
 
@@ -1779,7 +1786,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     convertPlanets.removeValue(planets.get(i), true);
-                    planets.get(i).getConverterShip().scalePicScale(new Vector2(.5f,.5f));
                     planets.get(i).getConverterShip().setConverting(false);
                     planets.get(i).getConverterShip().getMusic().stop();
                     planets.get(i).getConverterShip().setMusic(null);
@@ -1800,9 +1806,7 @@ public class PlayMode extends WorldController implements ContactListener {
                             }
                         }
                     }
-                    System.out.println("SET TO ZERO");
                     planets.get(i).getConverterShip().set_CONVERT_ST(0);
-                    planets.get(i).getConverterShip().scalePicScale(new Vector2(2f, 2f));
                 }
             }
         }
@@ -2074,9 +2078,6 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setMass(oldMass - suckSpeed);
         sh.setWidth(oldWidth*(sh.getMass()/oldMass));
         sh.setHeight(oldHeight*(sh.getMass()/oldMass));
-        if (aiController.getTargetPlanets().get(sh).isConverting()) {
-            sh.scalePicScale(new Vector2(.33333f, .33333f));
-        }
         sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
         if(sh.getMusic()!=null) {
             sh.getMusic().stop();
@@ -2526,11 +2527,9 @@ public class PlayMode extends WorldController implements ContactListener {
                         planet_explosion.get(0).set_sheet(EXP_Sheet);
                         planet_explosion.get(0).createEXPtex();
                         SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
-                        System.out.println("HERE");
                     }
                 }
                 if (planet_explosion.get(0).get_EXP_ST() > -1) {
-                    System.out.println(planet_explosion.get(0).get_EXP_ST());
                     if ((planet_explosion.get(0).get_EXP_ST()) >= (planet_explosion.get(0).get_EXP_anim().getAnimationDuration())) {
                         if (planet_explosion.get(0).getType() == 1f) {
                             for (ShipModel sh : planet_explosion.get(0).getShips()) {
@@ -2938,24 +2937,12 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (((ShipModel) obj).getType()==2) {
                     if (((ShipModel) obj).get_CONVER_ST()>=0 && ((ShipModel) obj).isConverting()){
 
-                        System.out.println("FIRE ANIMATION");
-                        System.out.println(((ShipModel) obj).isConverting());
-
-
                         float convert_stateTime= ((ShipModel) obj).get_CONVER_ST();
                         float duration=MOTHERSHIP_FIRE_Animation.getAnimationDuration();
-                        //float convert_stateTime= aiController.getTargetPlanets().get(((ShipModel) obj)).getConvert();
-                        //float duration = 20;
-
-                        System.out.println("Convert State Time: "+convert_stateTime);
-                        System.out.println("Animation Duration: "+duration);
 
 
                         float section= convert_stateTime/duration;
                         float section_frame=convert_stateTime%duration;
-
-                        System.out.println("Section: "+(int)section);
-                        System.out.println("Section Frame: "+section_frame);
 
                         Animation<TextureRegion> currentAnim= FIRE_Array.get((int)section);
 
@@ -2966,7 +2953,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     else {
                         currentFrame = MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
-                        System.out.println("FIRE NORMAL ANIMATION");
                     }
                 }
                 else if (((ShipModel) obj).getType()==1) {

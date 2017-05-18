@@ -276,8 +276,8 @@ public class PlanetModel extends WheelObstacle{
             converterShip.setConverting(true);
             float oldPlanMass = getMass();
             float oldRad = getRadius();
-            float suckSpeed = 0.03f;
-            if (getRadius() > 1.2f) {
+            float suckSpeed = .15f;
+            if (getRadius() > 1.6f && getConvert()>320) {
                 setRadius((float) Math.sqrt((oldPlanMass - suckSpeed) / Math.PI));
                 scalePicScale(new Vector2(getRadius() / oldRad, getRadius() / oldRad));
             }
