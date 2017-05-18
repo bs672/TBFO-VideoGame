@@ -262,6 +262,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			}
 			else {
 				current = lastPlayScreen;
+				((PlayMode)controllers[current]).unPauseMusic();
 			}
 			if(exitCode==2){
 				if(lastPlayScreen>=22){

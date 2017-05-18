@@ -2117,12 +2117,26 @@ public class PlayMode extends WorldController implements ContactListener {
         forceJump = false;
     }
 
+    //called when we resume
+    public void unPauseMusic(){
+        for(PlanetModel p: convertPlanets){
+            if(p.getConverterShip().getMusic()!=null){
+                p.getConverterShip().getMusic().play();
+            }
+        }
+    }
+
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
             reset();
         }
         if(InputController.getInstance().didPause()){
+            for(PlanetModel p: convertPlanets){
+                if(p.getConverterShip().getMusic()!=null){
+                    p.getConverterShip().getMusic().pause();
+                }
+            }
             if (play) listener.exitScreen(this, 3);
             InputController.getInstance().setCenterCamera(true);
         }
