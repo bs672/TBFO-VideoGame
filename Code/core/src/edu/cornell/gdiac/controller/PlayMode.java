@@ -1669,9 +1669,6 @@ public class PlayMode extends WorldController implements ContactListener {
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
-
 
 
     }
@@ -2954,7 +2951,11 @@ public class PlayMode extends WorldController implements ContactListener {
                         float section= convert_stateTime/duration;
                         float section_frame=convert_stateTime%duration;
 
+                        if (section>=9){
+                            section=8;
+                        }
                         Animation<TextureRegion> currentAnim= FIRE_Array.get((int)section);
+
 
                         currentFrame=currentAnim.getKeyFrame(section_frame, false);
                         fire=true;
