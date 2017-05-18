@@ -306,17 +306,15 @@ public class PlayMode extends WorldController implements ContactListener {
     //Music for convert
     protected static Array<Music> convert;
     /** The sound file for a jump */
-    protected static final String JUMP_SOUND = "audio/jump.wav";
+    protected static final String JUMP_SOUND = "audio/jump.mp3";
     /** The sound file for a planet explosion */
-    protected static final String EXPLOSION_SOUND = "audio/explosion.wav";
+    protected static final String EXPLOSION_SOUND = "audio/explosion.mp3";
     //Mothership sound
-    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.wav";
+    protected static final String MOTHERSHIP_SOUND = "audio/motherShip.mp3";
     //Sound for bullet fire
-    protected static final String SHOOTING_SOUND = "audio/shooting.wav";
+    protected static final String SHOOTING_SOUND = "audio/shooting.mp3";
 
-    protected static final String EXPULSION_SOUND = "audio/expulsion.wav";
-
-    //protected static final String CONVERT_SOUND = "audio/convert.wav";
+    protected static final String EXPULSION_SOUND = "audio/expulsion.mp3";
 
     public static final float SCROLL_SPEED = 0.5f;
 
@@ -1209,9 +1207,9 @@ public class PlayMode extends WorldController implements ContactListener {
     private void populateLevel() {
 
         convert = new Array<Music>();
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
-        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.wav")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
+        convert.add(Gdx.audio.newMusic(Gdx.files.internal("audio/convert.mp3")));
         for(Music m: convert){
             m.setVolume(0.5f);
         }
@@ -1663,6 +1661,10 @@ public class PlayMode extends WorldController implements ContactListener {
         FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
         FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
         FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
 
     }
 
@@ -1780,6 +1782,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     convertPlanets.removeValue(planets.get(i), true);
+                    planets.get(i).getConverterShip().scalePicScale(new Vector2(.5f,.5f));
+                    planets.get(i).getConverterShip().setConverting(false);
                     planets.get(i).getConverterShip().getMusic().stop();
                     planets.get(i).getConverterShip().setMusic(null);
                     planets.get(i).setConverterShip(null);
@@ -1801,6 +1805,7 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     System.out.println("SET TO ZERO");
                     planets.get(i).getConverterShip().set_CONVERT_ST(0);
+                    planets.get(i).getConverterShip().scalePicScale(new Vector2(2f, 2f));
                 }
             }
         }
@@ -2072,6 +2077,9 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setMass(oldMass - suckSpeed);
         sh.setWidth(oldWidth*(sh.getMass()/oldMass));
         sh.setHeight(oldHeight*(sh.getMass()/oldMass));
+        if (aiController.getTargetPlanets().get(sh).isConverting()) {
+            sh.scalePicScale(new Vector2(.33333f, .33333f));
+        }
         sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
         if(sh.getMusic()!=null) {
             sh.getMusic().stop();
@@ -2932,10 +2940,13 @@ public class PlayMode extends WorldController implements ContactListener {
                     if (((ShipModel) obj).get_CONVER_ST()>=0 && ((ShipModel) obj).isConverting()){
 
                         System.out.println("FIRE ANIMATION");
+                        System.out.println(((ShipModel) obj).isConverting());
 
 
                         float convert_stateTime= ((ShipModel) obj).get_CONVER_ST();
                         float duration=MOTHERSHIP_FIRE_Animation.getAnimationDuration();
+                        //float convert_stateTime= aiController.getTargetPlanets().get(((ShipModel) obj)).getConvert();
+                        //float duration = 20;
 
                         System.out.println("Convert State Time: "+convert_stateTime);
                         System.out.println("Animation Duration: "+duration);
