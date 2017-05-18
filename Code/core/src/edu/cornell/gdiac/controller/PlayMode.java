@@ -1678,9 +1678,6 @@ public class PlayMode extends WorldController implements ContactListener {
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
-        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
-
 
 
     }
@@ -2126,6 +2123,15 @@ public class PlayMode extends WorldController implements ContactListener {
         forceJump = false;
     }
 
+    //called when we resume
+    public void unPauseMusic(){
+        for(PlanetModel p: convertPlanets){
+            if(p.getConverterShip().getMusic()!=null){
+                p.getConverterShip().getMusic().play();
+            }
+        }
+    }
+
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
@@ -2133,6 +2139,11 @@ public class PlayMode extends WorldController implements ContactListener {
             return;
         }
         if(InputController.getInstance().didPause()){
+            for(PlanetModel p: convertPlanets){
+                if(p.getConverterShip().getMusic()!=null){
+                    p.getConverterShip().getMusic().pause();
+                }
+            }
             if (play) listener.exitScreen(this, 3);
             InputController.getInstance().setCenterCamera(true);
         }
@@ -2449,6 +2460,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     forceJump = true;
                     jump = true;
                     SoundController.getInstance().play(EXPLOSION_SOUND, EXPLOSION_SOUND, false, EFFECT_VOLUME);
+                }
+                else if(currentPlanet.getRadius() < DEATH_RADIUS) {
+                    forceJump = true;
+                    jump = true;
                 }
                 // checking to make sure he doesn't go inside out
                 complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
@@ -2966,7 +2981,11 @@ public class PlayMode extends WorldController implements ContactListener {
                         float section= convert_stateTime/duration;
                         float section_frame=convert_stateTime%duration;
 
+                        if (section>=9){
+                            section=8;
+                        }
                         Animation<TextureRegion> currentAnim= FIRE_Array.get((int)section);
+
 
                         currentFrame=currentAnim.getKeyFrame(section_frame, false);
                         fire=true;
