@@ -100,14 +100,14 @@ public class GDXRoot extends Game implements ScreenListener {
         controllers[9] = new PlayMode("Plus",6); //6
         controllers[10] = new PlayMode("Sun",7); //7
         controllers[11] = new PlayMode("BH",8); //8
-		controllers[12] = new PlayMode("Maze",9); //9
-        controllers[13] = new PlayMode("Mind The Gap",10); //10
+		controllers[12] = new PlayMode("Mind The Gap",9); //9
+		controllers[13] = new PlayMode("Maze",10); //10
 		//Intermediate
 		controllers[14] = new PlayMode("Mother",11); //11
         controllers[15] = new PlayMode("X",12); //12
 		controllers[16] = new PlayMode("Circles",13); //13
-		controllers[17] = new PlayMode("Sun T",14); //14
-        controllers[18] = new PlayMode("Grid",15); //15
+		controllers[17] = new PlayMode("Grid",14); //14
+		controllers[18] = new PlayMode("Sun T",15); //15
 		controllers[19] = new PlayMode("Looper",16); //16
 		controllers[20] = new PlayMode("Clam Shell",17); //17
         controllers[21] = new PlayMode("Pinball",18); //18
