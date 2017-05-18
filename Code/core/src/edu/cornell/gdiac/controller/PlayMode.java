@@ -2111,16 +2111,22 @@ public class PlayMode extends WorldController implements ContactListener {
 
     //Make Oob jump
     public void jump(){
-        if(!forceJump) {
+        if(forceJump) {
+            forceJump = false;
+            Vector2 ejectVec = smallestRad.cpy();
+            complexAvatar.setLinearVelocity(ejectVec.cpy().nor().scl(12));
+            complexAvatar.setDirection(ejectVec.cpy().nor().scl(12));
+        }
+        else {
             clicks++;
             SoundController.getInstance().play(JUMP_SOUND, JUMP_SOUND, false, EFFECT_VOLUME - 0.7f);
+            Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
+            complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
+            complexAvatar.setDirection(mouseVec.cpy().nor().scl(12));
         }
-        Vector2 mouseVec = InputController.getInstance().getCursor(canvas).cpy().sub(complexAvatar.getPosition());
-        complexAvatar.setLinearVelocity(mouseVec.cpy().nor().scl(12));
-        complexAvatar.setDirection(mouseVec.cpy().nor().scl(12));
+
         lastPlanet = currentPlanet;
         currentPlanet = null;
-        forceJump = false;
     }
 
     //called when we resume
