@@ -261,6 +261,18 @@ public class GDXRoot extends Game implements ScreenListener {
 			else {
 				current = lastPlayScreen;
 			}
+			if(exitCode==2){
+				if(lastPlayScreen>=22){
+					((LevelSelect)controllers[current]).changeMode(2);
+				}
+				else if(lastPlayScreen>=13){
+					((LevelSelect)controllers[current]).changeMode(1);
+				}
+				else{
+					((LevelSelect)controllers[current]).changeMode(0);
+				}
+			}
+			controllers[current].reset();
 			setScreen(controllers[current]);
 			lastScreen = 3;
 		}
