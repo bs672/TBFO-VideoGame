@@ -102,14 +102,14 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String SHIP_EXPLOSION = "space/animations/Ship_exp.png";
 
 
-    protected static final String MOTHERSHIP_FIREING = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_2 = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_3 = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_4 = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_5 = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_6 = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_7 = "space/animations/mothership_full_animation_2.png";
-    protected static final String MOTHERSHIP_FIREING_8 = "space/animations/mothership_full_animation_2.png";
+    protected static final String MOTHERSHIP_FIREING = "space/animations/mothership1.png";
+    protected static final String MOTHERSHIP_FIREING_2 = "space/animations/mothership2.png";
+    protected static final String MOTHERSHIP_FIREING_3 = "space/animations/mothership3.png";
+    protected static final String MOTHERSHIP_FIREING_4 = "space/animations/mothership4.png";
+    protected static final String MOTHERSHIP_FIREING_5 = "space/animations/mothership5.png";
+    protected static final String MOTHERSHIP_FIREING_6 = "space/animations/mothership6.png";
+    protected static final String MOTHERSHIP_FIREING_7 = "space/animations/mothership7.png";
+    protected static final String MOTHERSHIP_FIREING_8 = "space/animations/mothership8.png";
 
 
     /** The texture file for the planets */
@@ -394,20 +394,26 @@ public class PlayMode extends WorldController implements ContactListener {
 
 
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_2; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet_2;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_3; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet_3;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_4; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet_4;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_5; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet_5;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_6; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet_6;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_7; // Must declare frame type (TextureRegion)
-    protected Texture MOTHERSHIP_FIRE_Sheet_7;
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_8; // Must declare frame type (TextureRegion)
+
+
+
+    protected Array<Animation> FIRE_Array;
+
+
+    protected Texture MOTHERSHIP_FIRE_Sheet;
+    protected Texture MOTHERSHIP_FIRE_Sheet_2;
+    protected Texture MOTHERSHIP_FIRE_Sheet_3;
+    protected Texture MOTHERSHIP_FIRE_Sheet_4;
+    protected Texture MOTHERSHIP_FIRE_Sheet_5;
+    protected Texture MOTHERSHIP_FIRE_Sheet_6;
+    protected Texture MOTHERSHIP_FIRE_Sheet_7;
     protected Texture MOTHERSHIP_FIRE_Sheet_8;
 
 
@@ -1606,35 +1612,61 @@ public class PlayMode extends WorldController implements ContactListener {
     }
 
     public void loadAnim() {
-        complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);               complexAvatar.createNormaltex();
-        complexAvatar.set_Growing_sheet(Oob_Growing_Sheet);             complexAvatar.createGrowingtex();
-        complexAvatar.set_Command_sheet(Oob_Command_Sheet);             complexAvatar.createCommandtex();
-        complexAvatar.set_Flying_sheet(Oob_Flying_Sheet);               complexAvatar.createFlyingtex();
-        complexAvatar.set_Teleporting_sheet(Oob_Teleporting_Sheet);     complexAvatar.createTeleportingtex();
-        complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);             complexAvatar.createHurtingtex();
-        complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);                 complexAvatar.createDyingtex();
-        complexAvatar.set_Max_sheet(Oob_Max_Sheet);                     complexAvatar.createMaxtex();
+        complexAvatar.set_Normal_sheet(Oob_Normal_Sheet);
+        complexAvatar.createNormaltex();
+        complexAvatar.set_Growing_sheet(Oob_Growing_Sheet);
+        complexAvatar.createGrowingtex();
+        complexAvatar.set_Command_sheet(Oob_Command_Sheet);
+        complexAvatar.createCommandtex();
+        complexAvatar.set_Flying_sheet(Oob_Flying_Sheet);
+        complexAvatar.createFlyingtex();
+        complexAvatar.set_Teleporting_sheet(Oob_Teleporting_Sheet);
+        complexAvatar.createTeleportingtex();
+        complexAvatar.set_Hurting_sheet(Oob_Hurting_Sheet);
+        complexAvatar.createHurtingtex();
+        complexAvatar.set_Dying_sheet(Oob_Dying_Sheet);
+        complexAvatar.createDyingtex();
+        complexAvatar.set_Max_sheet(Oob_Max_Sheet);
+        complexAvatar.createMaxtex();
 
 
-        sunAnimation=Anim_Tex(sunSheet,8, 1, .15f);
-        BH_Animation=Anim_Tex(BH_Sheet,12, 1, .15f);
-        SHIP_Animation=Anim_Tex(SHIP_Sheet,8, 1, .05f);
-        G_SHIP_Animation=Anim_Tex(G_SHIP_Sheet,8, 1, .05f);
-        MOTHERSHIP_Animation=Anim_Tex(MOTHERSHIP_Sheet,6, 1, .05f);
-        SHIP_EXP_Animation=Anim_Tex(SHIP_EXP_Sheet,5, 1, .05f);
+        sunAnimation = Anim_Tex(sunSheet, 8, 1, .15f);
+        BH_Animation = Anim_Tex(BH_Sheet, 12, 1, .15f);
+        SHIP_Animation = Anim_Tex(SHIP_Sheet, 8, 1, .05f);
+        G_SHIP_Animation = Anim_Tex(G_SHIP_Sheet, 8, 1, .05f);
+        MOTHERSHIP_Animation = Anim_Tex(MOTHERSHIP_Sheet, 6, 1, .05f);
+        SHIP_EXP_Animation = Anim_Tex(SHIP_EXP_Sheet, 5, 1, .05f);
+
+
+        MOTHERSHIP_FIRE_Animation = Anim_Tex(MOTHERSHIP_FIRE_Sheet, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_2 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_2, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_3 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_3, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_4 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_4, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_5 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_5, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_6 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_6, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_7 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_7, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_8 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_8, 20, 1, .05f);
 
 
 
-        MOTHERSHIP_FIRE_Animation=Anim_Tex(MOTHERSHIP_FIRE_Sheet,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_2=Anim_Tex(MOTHERSHIP_FIRE_Sheet_2,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_3=Anim_Tex(MOTHERSHIP_FIRE_Sheet_3,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_4=Anim_Tex(MOTHERSHIP_FIRE_Sheet_4,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_5=Anim_Tex(MOTHERSHIP_FIRE_Sheet_5,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_6=Anim_Tex(MOTHERSHIP_FIRE_Sheet_6,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_7=Anim_Tex(MOTHERSHIP_FIRE_Sheet_7,20, 1, .05f);
-        MOTHERSHIP_FIRE_Animation_8=Anim_Tex(MOTHERSHIP_FIRE_Sheet_8,20, 1, .05f);
+        FIRE_Array=new Array<Animation>();
+
+
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_2);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_3);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_4);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_5);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_6);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
 
     }
+
 
 
 
@@ -1768,6 +1800,8 @@ public class PlayMode extends WorldController implements ContactListener {
                             }
                         }
                     }
+                    System.out.println("SET TO ZERO");
+                    planets.get(i).getConverterShip().set_CONVERT_ST(0);
                 }
             }
         }
@@ -2892,14 +2926,34 @@ public class PlayMode extends WorldController implements ContactListener {
                 // Get current frame of animation for the current stateTime
                 TextureRegion currentFrame;
                 if (((ShipModel) obj).getType()==2) {
-                    if (((ShipModel) obj).isConverting()){
-                        aiController.ge
-                        currentFrame=MOTHERSHIP_FIRE_Animation.getKeyFrame(convert_stateTime, true);
-                        convert_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+                    if (((ShipModel) obj).get_CONVER_ST()>=0 && ((ShipModel) obj).isConverting()){
+
+                        System.out.println("FIRE ANIMATION");
+
+
+                        float convert_stateTime= ((ShipModel) obj).get_CONVER_ST();
+                        float duration=MOTHERSHIP_FIRE_Animation.getAnimationDuration();
+
+                        System.out.println("Convert State Time: "+convert_stateTime);
+                        System.out.println("Animation Duration: "+duration);
+
+
+                        float section= convert_stateTime/duration;
+                        float section_frame=convert_stateTime%duration;
+
+                        System.out.println("Section: "+(int)section);
+                        System.out.println("Section Frame: "+section_frame);
+
+                        Animation<TextureRegion> currentAnim= FIRE_Array.get((int)section);
+
+                        currentFrame=currentAnim.getKeyFrame(section_frame, false);
                         fire=true;
+                        ((ShipModel) obj).update_CONVERT_ST();
+
                     }
                     else {
                         currentFrame = MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
+                        System.out.println("FIRE NORMAL ANIMATION");
                     }
                 }
                 else if (((ShipModel) obj).getType()==1) {

@@ -49,6 +49,16 @@ public class ShipModel extends CapsuleObstacle{
 
     private float commandSpawn = -1;
 
+    private float CONVERT_stateTime= -1;
+
+    public void set_CONVERT_ST(float val){CONVERT_stateTime = val;}
+
+    public float get_CONVER_ST(){return CONVERT_stateTime;}
+
+    public void update_CONVERT_ST(){
+        CONVERT_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+    }
+
     public float getMass() {return  mass;}
     public void setMass(float m) {mass = m;}
     public Vector2 getOldPosition() {return oldPosition; }
