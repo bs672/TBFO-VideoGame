@@ -1657,14 +1657,11 @@ public class PlayMode extends WorldController implements ContactListener {
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_6);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
+
+
 
     }
 
