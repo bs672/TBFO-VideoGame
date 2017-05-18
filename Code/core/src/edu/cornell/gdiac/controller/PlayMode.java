@@ -1823,12 +1823,10 @@ public class PlayMode extends WorldController implements ContactListener {
                     converted++;
                 }
                 else if(planets.get(i).getConvert()==1){
-                    System.out.println("why");
                     convertPlanets.add(planets.get(i));
                     if(!SoundController.getInstance().getMute()){
                         for(Music m:convert){
                             if(!m.isPlaying()) {
-                                System.out.println("here");
                                 planets.get(i).getConverterShip().setMusic(m);
                                 planets.get(i).getConverterShip().getMusic().play();
                                 break;
