@@ -945,7 +945,6 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
-        InputController.getInstance().setCenterCamera(true);
         playerControl = true;
         blackHoleWarp = false;
         comingOut = false;
@@ -981,11 +980,14 @@ public class PlayMode extends WorldController implements ContactListener {
         world.setContactListener(this);
         setComplete(false);
         setFailure(false);
+
+        InputController.getInstance().setCenterCamera(false);
         populateLevel();
         for(Obstacle o: objects){
-            if(!o.equals(complexAvatar) &&  !o.equals(planets.get(0))){
-                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f - 16f, canvas.getHeight()/80f - 9f)));
-            }
+//            if(!o.equals(complexAvatar) &&  !o.equals(currentPlanet)){
+            System.out.println(new Vector2 (canvas.getWidth()/80f, canvas.getHeight()/80f));
+                o.setPosition(o.getPosition().cpy().add(new Vector2 (canvas.getWidth()/80f-16, canvas.getHeight()/80f-9)));
+//            }
             if(o.getName()=="ship"){
                 ((ShipModel)o).setMusic(null);
             }
@@ -996,7 +998,7 @@ public class PlayMode extends WorldController implements ContactListener {
         jumpTime = 0;
         converted = 0;
         lastHoverPlanet = new boolean[4];
-
+        InputController.getInstance().setCenterCamera(true);
     }
 
     //Reads the data from a JSON file and turns it into game data
