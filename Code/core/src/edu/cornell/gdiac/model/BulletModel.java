@@ -10,6 +10,15 @@ public class BulletModel extends CapsuleObstacle{
 
     private static final float WIDTH = 0.05f;
     private static final float HEIGHT = 0.15f;
+
+    private final float REGULAR_DAMAGE = -0.04f;
+
+    private float damage;
+
+    public float getDamage(){return damage;}
+
+    public void setDamage(float dmg){damage = dmg;}
+
     /**
      * Creates a new bullet at the given position.
      *
@@ -22,10 +31,12 @@ public class BulletModel extends CapsuleObstacle{
      * @param width		The object width in physics units
      * @param height	The object width in physics units
      */
+
+
     public BulletModel(float x, float y, float width, float height) {
         super(x,y,width,height);
         setFixedRotation(true);
-
+        setDamage(REGULAR_DAMAGE);
         setName("bullet");
     }
 
@@ -33,7 +44,7 @@ public class BulletModel extends CapsuleObstacle{
     public BulletModel(float x, float y){
         super(x, y, WIDTH, HEIGHT);
         setFixedRotation(true);
-
+        setDamage(REGULAR_DAMAGE);
         setName("bullet");
     }
 

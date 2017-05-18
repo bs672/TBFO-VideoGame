@@ -110,6 +110,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected static final String MOTHERSHIP_FIREING_6 = "space/animations/mothership6.png";
     protected static final String MOTHERSHIP_FIREING_7 = "space/animations/mothership7.png";
     protected static final String MOTHERSHIP_FIREING_8 = "space/animations/mothership8.png";
+    protected static final String MOTHERSHIP_FIREING_9 = "space/animations/mothership9.png";
 
 
     /** The texture file for the planets */
@@ -399,6 +400,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_6; // Must declare frame type (TextureRegion)
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_7; // Must declare frame type (TextureRegion)
     protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_8; // Must declare frame type (TextureRegion)
+    protected Animation<TextureRegion> MOTHERSHIP_FIRE_Animation_9; // Must declare frame type (TextureRegion)
 
 
 
@@ -413,6 +415,7 @@ public class PlayMode extends WorldController implements ContactListener {
     protected Texture MOTHERSHIP_FIRE_Sheet_6;
     protected Texture MOTHERSHIP_FIRE_Sheet_7;
     protected Texture MOTHERSHIP_FIRE_Sheet_8;
+    protected Texture MOTHERSHIP_FIRE_Sheet_9;
 
 
     /** Planet texture */
@@ -479,6 +482,9 @@ public class PlayMode extends WorldController implements ContactListener {
     protected int converted;
     // number of clicks
     protected int clicks;
+    // time taken
+    protected long time;
+    protected int minutes, seconds, hSeconds;
 
     /** Track asset loading from all instances and subclasses */
     protected AssetState platformAssetState = AssetState.EMPTY;
@@ -626,6 +632,7 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(MOTHERSHIP_FIREING_6, Texture.class);      assets.add(MOTHERSHIP_FIREING_6);
         manager.load(MOTHERSHIP_FIREING_7, Texture.class);      assets.add(MOTHERSHIP_FIREING_7);
         manager.load(MOTHERSHIP_FIREING_8, Texture.class);      assets.add(MOTHERSHIP_FIREING_8);
+        manager.load(MOTHERSHIP_FIREING_9, Texture.class);      assets.add(MOTHERSHIP_FIREING_9);
 
 
         manager.load(BACKG_FILE_MAIN, Texture.class);       assets.add(BACKG_FILE_MAIN);
@@ -768,6 +775,8 @@ public class PlayMode extends WorldController implements ContactListener {
         MOTHERSHIP_FIRE_Sheet_6 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_6));
         MOTHERSHIP_FIRE_Sheet_7 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_7));
         MOTHERSHIP_FIRE_Sheet_8 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_8));
+        MOTHERSHIP_FIRE_Sheet_9 = new Texture(Gdx.files.internal(MOTHERSHIP_FIREING_9));
+
 
 
 
@@ -995,6 +1004,7 @@ public class PlayMode extends WorldController implements ContactListener {
      * This method disposes of the world and creates a new one.
      */
     public void reset() {
+        time = System.currentTimeMillis();
         playerControl = true;
         blackHoleWarp = false;
         comingOut = false;
@@ -1415,7 +1425,7 @@ public class PlayMode extends WorldController implements ContactListener {
             sh.scalePicScale(new Vector2(.2f, .2f));
             int tag = -1;
             if (sh.getType() == 2) {
-                sh.scalePicScale(new Vector2(2f, 2f));
+                sh.scalePicScale(new Vector2(4.0f, 4.0f));
             }
             else if (sh.getType() ==1) {
                 sh.scalePicScale(new Vector2(1.5f, 1.5f));
@@ -1643,6 +1653,7 @@ public class PlayMode extends WorldController implements ContactListener {
         MOTHERSHIP_FIRE_Animation_6 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_6, 20, 1, .05f);
         MOTHERSHIP_FIRE_Animation_7 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_7, 20, 1, .05f);
         MOTHERSHIP_FIRE_Animation_8 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_8, 20, 1, .05f);
+        MOTHERSHIP_FIRE_Animation_9 = Anim_Tex(MOTHERSHIP_FIRE_Sheet_9, 20, 1, .05f);
 
 
 
@@ -1657,14 +1668,8 @@ public class PlayMode extends WorldController implements ContactListener {
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_6);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_7);
         FIRE_Array.add(MOTHERSHIP_FIRE_Animation_8);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
-        FIRE_Array.add(MOTHERSHIP_Animation); FIRE_Array.add(MOTHERSHIP_Animation);
+        FIRE_Array.add(MOTHERSHIP_FIRE_Animation_9);
+
 
     }
 
@@ -1782,7 +1787,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     planets.get(i).setType(1);
                     planets.get(i).setTexture(command_P_Texture);
                     convertPlanets.removeValue(planets.get(i), true);
-                    planets.get(i).getConverterShip().scalePicScale(new Vector2(.5f,.5f));
                     planets.get(i).getConverterShip().setConverting(false);
                     planets.get(i).getConverterShip().getMusic().stop();
                     planets.get(i).getConverterShip().setMusic(null);
@@ -1803,9 +1807,7 @@ public class PlayMode extends WorldController implements ContactListener {
                             }
                         }
                     }
-                    System.out.println("SET TO ZERO");
                     planets.get(i).getConverterShip().set_CONVERT_ST(0);
-                    planets.get(i).getConverterShip().scalePicScale(new Vector2(2f, 2f));
                 }
             }
         }
@@ -1814,7 +1816,7 @@ public class PlayMode extends WorldController implements ContactListener {
     //Shoot bullet from ship
     public void shootBullet(){
         if(aiController.bulletData.size != 0) {
-            for (int i = 0; i < aiController.bulletData.size; i += 4) {
+            for (int i = 0; i < aiController.bulletData.size; i += 5) {
                 //0 is normal, 1 is tractor beam
                 BulletModel bullet = new BulletModel(aiController.bulletData.get(i), aiController.bulletData.get(i + 1));
                 bullet.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -1829,6 +1831,9 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setAngle((float) (Math.atan2(bullet.getVY(), bullet.getVX()) - Math.PI / 2));
                 bullet.setName("bullet");
                 bullet.setTexture(bullet_texture);
+                if(aiController.bulletData.get(i+4)==1f){
+                    bullet.setDamage(BULLET_DAMAGE*3);
+                }
                 SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 addObject(bullet);
             }
@@ -2077,9 +2082,6 @@ public class PlayMode extends WorldController implements ContactListener {
         sh.setMass(oldMass - suckSpeed);
         sh.setWidth(oldWidth*(sh.getMass()/oldMass));
         sh.setHeight(oldHeight*(sh.getMass()/oldMass));
-        if (aiController.getTargetPlanets().get(sh).isConverting()) {
-            sh.scalePicScale(new Vector2(.33333f, .33333f));
-        }
         sh.scalePicScale(new Vector2(sh.getWidth()/oldWidth, sh.getHeight()/oldHeight));
         if(sh.getMusic()!=null) {
             sh.getMusic().stop();
@@ -2112,12 +2114,26 @@ public class PlayMode extends WorldController implements ContactListener {
         forceJump = false;
     }
 
+    //called when we resume
+    public void unPauseMusic(){
+        for(PlanetModel p: convertPlanets){
+            if(p.getConverterShip().getMusic()!=null){
+                p.getConverterShip().getMusic().play();
+            }
+        }
+    }
+
     //Determines whether the player is using mouse or keyboard and sets associated variables when Oob is on a planet
     public void groundPlayerControls(){
         if (InputController.getInstance().didReset()) {
             reset();
         }
         if(InputController.getInstance().didPause()){
+            for(PlanetModel p: convertPlanets){
+                if(p.getConverterShip().getMusic()!=null){
+                    p.getConverterShip().getMusic().pause();
+                }
+            }
             if (play) listener.exitScreen(this, 3);
             InputController.getInstance().setCenterCamera(true);
         }
@@ -2426,8 +2442,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
 
                 //forced jump
-                if (currentPlanet.getRadius() < DEATH_RADIUS && !currentPlanet.isExploding()) {
-                    System.out.println("HERE");
+
+                if (currentPlanet.getRadius() < DEATH_RADIUS &&(currentPlanet.getType()!=2&&currentPlanet.getType()!=3)) {
                     currentPlanet.setExploding(true);
                     currentPlanet.set_sheet(EXP_Sheet);
                     currentPlanet.createEXPtex();
@@ -2587,6 +2603,11 @@ public class PlayMode extends WorldController implements ContactListener {
                 // Won the level
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
+                time = System.currentTimeMillis() - time;
+                minutes = (int)(time/60000);
+                seconds = (int)((time%60000)/1000);
+                hSeconds = (int)((time%1000)/10);
+                System.out.println("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
                 switchState(2);
                 for (ShipModel sh : ships) {
                     if (sh.getName().equals("ship")) {
@@ -2672,7 +2693,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         complexAvatar.setHurting(true);
                     }
                     complexAvatar.set_Shot_Cooldown(10);
-                    changeMass(BULLET_DAMAGE);
+                    changeMass(((BulletModel)bd2).getDamage());
                 }
                 else if (bd2.getName().equals("ship")) {
                     if (((ShipModel)bd2).getType() == 2) {
@@ -2689,7 +2710,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
                 else if(bd2.getName().equals("expulsion")) {
                     bd2.markRemoved(true);
-                    changeMass(((WheelObstacle)bd2).getMass()/16);
+                    changeMass(((WheelObstacle)bd2).getMass()/8);
                 }
                 else if(bd2.getName().equals("black hole")) {
                     playerControl = false;
@@ -2714,7 +2735,7 @@ public class PlayMode extends WorldController implements ContactListener {
                         complexAvatar.setHurting(true);
                     }
                     complexAvatar.set_Shot_Cooldown(10);
-                    changeMass(BULLET_DAMAGE);
+                    changeMass(((BulletModel)bd1).getDamage());
                 }
                 else if (bd1.getName().equals("ship")) {
                     if (((ShipModel)bd1).getType() == 2) {
@@ -2749,12 +2770,22 @@ public class PlayMode extends WorldController implements ContactListener {
                 }
             }
             if(bd1.getName().equals("expulsion") && bd2.getName().equals("ship")) {
-                bd2.markRemoved(true);
-                aiController.removeShip((ShipModel)bd2);
+                if(((ShipModel)bd2).getType()==2){
+                    bd1.markRemoved(true);
+                }
+                else {
+                    bd2.markRemoved(true);
+                    aiController.removeShip((ShipModel) bd2);
+                }
             }
             else if(bd2.getName().equals("expulsion") && bd1.getName().equals("ship")) {
-                bd1.markRemoved(true);
-                aiController.removeShip((ShipModel)bd1);
+                if(((ShipModel)bd1).getType()==2){
+                    bd2.markRemoved(true);
+                }
+                else {
+                    bd1.markRemoved(true);
+                    aiController.removeShip((ShipModel) bd1);
+                }
             }
             if(bd1.getName().equals("expulsion") && bd2.getName().equals("black hole")) {
                 bd1.markRemoved(true);
@@ -2769,18 +2800,6 @@ public class PlayMode extends WorldController implements ContactListener {
             else if(bd2.getName().equals("black hole") && bd1.getName().equals("ship")) {
                 bd1.markRemoved(true);
                 aiController.removeShip((ShipModel)bd1);
-            }
-            if(bd1.getName().equals("asteroid") && bd2.getName().equals("Oob")){
-                //LOSE
-                listener.exitScreen(this, 0);
-                InputController.getInstance().setCenterCamera(true);
-                //reset();
-            }
-            else if(bd2.getName().equals("asteroid") && bd1.getName().equals("Oob")){
-                //LOSE
-                listener.exitScreen(this, 0);
-                InputController.getInstance().setCenterCamera(true);
-                //reset();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -2944,26 +2963,18 @@ public class PlayMode extends WorldController implements ContactListener {
                 if (((ShipModel) obj).getType()==2) {
                     if (((ShipModel) obj).get_CONVER_ST()>=0 && ((ShipModel) obj).isConverting()){
 
-                        System.out.println("FIRE ANIMATION");
-                        System.out.println(((ShipModel) obj).isConverting());
-
-
                         float convert_stateTime= ((ShipModel) obj).get_CONVER_ST();
                         float duration=MOTHERSHIP_FIRE_Animation.getAnimationDuration();
-                        //float convert_stateTime= aiController.getTargetPlanets().get(((ShipModel) obj)).getConvert();
-                        //float duration = 20;
-
-                        System.out.println("Convert State Time: "+convert_stateTime);
-                        System.out.println("Animation Duration: "+duration);
 
 
                         float section= convert_stateTime/duration;
                         float section_frame=convert_stateTime%duration;
 
-                        System.out.println("Section: "+(int)section);
-                        System.out.println("Section Frame: "+section_frame);
-
+                        if (section>=9){
+                            section=8;
+                        }
                         Animation<TextureRegion> currentAnim= FIRE_Array.get((int)section);
+
 
                         currentFrame=currentAnim.getKeyFrame(section_frame, false);
                         fire=true;
@@ -2972,7 +2983,6 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
                     else {
                         currentFrame = MOTHERSHIP_Animation.getKeyFrame(stateTime, true);
-                        System.out.println("FIRE NORMAL ANIMATION");
                     }
                 }
                 else if (((ShipModel) obj).getType()==1) {
@@ -3101,7 +3111,9 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             GlyphLayout layout = new GlyphLayout();
             layout.setText(displayFont, "Clicks Used:" + clicks);
-            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*3);
+            canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*2.7f);
+            layout.setText(displayFont, "Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
+            canvas.drawText("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*4);
             canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()*0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
         }
         canvas.end();

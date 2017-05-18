@@ -270,11 +270,24 @@ public class PauseMenu extends PlayMode {
         }
     }
 
+    public void groundPlayerControls(){
+        super.groundPlayerControls();
+        if(InputController.getInstance().didPause()){
+            listener.exitScreen(this, 100);
+            InputController.getInstance().setCenterCamera(true);
+        }
+    }
+
+    public void airPlayerControls(){
+        if(InputController.getInstance().didPause()){
+            listener.exitScreen(this, 100);
+            InputController.getInstance().setCenterCamera(true);
+        }
+        super.airPlayerControls();
+    }
+
     public void draw(float dt) {
         super.drawBackground();
-
-
-
         canvas.begin();
        // canvas.draw(pauseTitleTexture, Color.WHITE, canvas.getWidth() /4 , 5*canvas.getHeight()/8, canvas.getWidth()/2, canvas.getHeight()/3);
 
