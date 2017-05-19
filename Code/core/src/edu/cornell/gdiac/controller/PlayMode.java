@@ -1867,6 +1867,8 @@ public class PlayMode extends WorldController implements ContactListener {
                 if(aiController.bulletData.get(i+4)==1f){
                     bullet.setDamage(BULLET_DAMAGE*4);
                 }
+                else
+                    bullet.setDamage(BULLET_DAMAGE);
                 SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 addObject(bullet);
             }
@@ -2774,6 +2776,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(LV_NUMBER==27) {
                         changeMass(-0.03f);
                     }
+                    else
+                        changeMass(((BulletModel)bd2).getDamage());
                 }
                 else if (bd2.getName().equals("ship")) {
                     if (((ShipModel)bd2).getType() == 2) {
@@ -2818,6 +2822,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     if(LV_NUMBER==27) {
                         changeMass(-0.03f);
                     }
+                    else
+                        changeMass(((BulletModel)bd1).getDamage());
                 }
                 else if (bd1.getName().equals("ship")) {
                     if (((ShipModel)bd1).getType() == 2) {
