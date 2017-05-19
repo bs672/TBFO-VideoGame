@@ -288,6 +288,8 @@ public class PlayMode extends WorldController implements ContactListener {
     };
     protected static final String FONT_FILE = "space/fonts/Suess.ttf";
     protected static final String FONT_FILE_2 = "space/fonts/Suess2.ttf";
+    protected static final String FONT_FILE_3 = "space/fonts/Suess3.ttf";
+    protected static final String FONT_FILE_4 = "space/fonts/Suess4.ttf";
 
     /** Texture file for background image */
     protected static final String BACKG_FILE_MAIN = "space/background/blue-background.png";
@@ -353,9 +355,17 @@ public class PlayMode extends WorldController implements ContactListener {
 
     protected BitmapFont displayFont_2;
 
+    protected BitmapFont displayFont_3;
+
+    protected BitmapFont displayFont_4;
+
     protected int FONT_SIZE = 80;
 
     protected int FONT_SIZE_2 = 50;
+
+    protected int FONT_SIZE_3 = 40;
+
+    protected int FONT_SIZE_4 = 110;
 
     /** Planet texture */
     protected TextureRegion blue_P_1_Texture;   protected TextureRegion blue_P_2_Texture;   protected TextureRegion blue_P_3_Texture;
@@ -665,6 +675,18 @@ public class PlayMode extends WorldController implements ContactListener {
         manager.load(FONT_FILE_2, BitmapFont.class, size4Params);
         assets.add(FONT_FILE_2);
 
+        FreetypeFontLoader.FreeTypeFontLoaderParameter size6Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        size6Params.fontFileName = FONT_FILE_3;
+        size6Params.fontParameters.size = FONT_SIZE_3;
+        manager.load(FONT_FILE_3, BitmapFont.class, size6Params);
+        assets.add(FONT_FILE_3);
+
+        FreetypeFontLoader.FreeTypeFontLoaderParameter size8Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        size8Params.fontFileName = FONT_FILE_4;
+        size8Params.fontParameters.size = FONT_SIZE_4;
+        manager.load(FONT_FILE_4, BitmapFont.class, size8Params);
+        assets.add(FONT_FILE_4);
+
         super.preLoadContent(manager);
 
     }
@@ -825,6 +847,8 @@ public class PlayMode extends WorldController implements ContactListener {
         //sounds.allocate(manager, CONVERT_SOUND);
         displayFont = manager.get(FONT_FILE,BitmapFont.class);
         displayFont_2 = manager.get(FONT_FILE_2,BitmapFont.class);
+        displayFont_3 = manager.get(FONT_FILE_3, BitmapFont.class);
+        displayFont_4 = manager.get(FONT_FILE_4, BitmapFont.class);
         super.loadContent(manager);
         platformAssetState = AssetState.COMPLETE;
 
@@ -2315,13 +2339,30 @@ public class PlayMode extends WorldController implements ContactListener {
                 {centerX, centerY - 5.4f},   // LEVELS
                 {centerX + 7f, centerY - 3.3f},    // RETRY
         };
+
         gameState = state;
         complexAvatar.setPosition(centerX, centerY);
         complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
         complexAvatar.setAngle((float) Math.PI/2);
         complexAvatar.setDirection(new Vector2(0,1));
         complexAvatar.setRadius(1.5f);
-        if (state == 2) {
+        if(state==2 && LV_NUMBER==27){
+            //credits menu
+            PlanetModel obj;
+            obj = new PlanetModel(centerX, centerY - 4.5f, 1.2f, 3f);
+            obj.setName("win");
+            obj.setTexture(WIN_TEXTURES[0][0]);
+            obj.setBodyType(BodyDef.BodyType.StaticBody);
+            obj.setDensity(BASIC_DENSITY);
+            obj.setFriction(BASIC_FRICTION);
+            obj.setRestitution(BASIC_RESTITUTION);
+            obj.setDrawScale(scale);
+            obj.scalePicScale(new Vector2(.2f * obj.getRadius(), .2f * obj.getRadius()));
+            addObject(obj);
+            winPlanets.add(obj);
+            complexAvatar.setFlying(true);
+        }
+        else if (state == 2) {
             for (int i = 0; i < WIN_PLANETS.length; i++) {
                 PlanetModel obj;
                 obj = new PlanetModel(WIN_PLANETS[i][0], WIN_PLANETS[i][1], 1.2f, 3f);
@@ -3130,8 +3171,41 @@ public class PlayMode extends WorldController implements ContactListener {
             layout.setText(displayFont, "Clicks Used:" + clicks);
             canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*2.7f);
             layout.setText(displayFont, "Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
-            canvas.drawText("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*4);
-            canvas.draw(win_text, Color.WHITE, canvas.getWidth()/2 - (win_text.getRegionWidth()/2),canvas.getHeight()*0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
+            canvas.drawText("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*4.5f);
+            if(LV_NUMBER!=27) {
+                canvas.draw(win_text, Color.WHITE, canvas.getWidth() / 2 - (win_text.getRegionWidth() / 2), canvas.getHeight() * 0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
+            }
+            if(LV_NUMBER==27){
+                canvas.drawText("Convert Sound", displayFont_2, canvas.getWidth()/8f, 6*canvas.getHeight()/8f);
+                canvas.drawText("Freesound.org", displayFont_3, canvas.getWidth()/8f, 11*canvas.getHeight()/16f);
+                //canvas.drawText("https://freesound.org/people/", displayFont_3, canvas.getWidth()/8f, 11*canvas.getHeight()/16f);
+                //canvas.drawText(" LegoLunatic/sounds/151243/", displayFont_3, canvas.getWidth()/8f, 5*canvas.getHeight()/8f);
+                canvas.drawText("Explosion Sound", displayFont_2, canvas.getWidth()/8f, 4*canvas.getHeight()/8f);
+                canvas.drawText("Freesoundeffects.com", displayFont_3, canvas.getWidth()/8f, 7*canvas.getHeight()/16f);
+                //canvas.drawText("https://www.freesoundeffects.com/", displayFont_3, canvas.getWidth()/8f, 7*canvas.getHeight()/16f);
+                //canvas.drawText("free-sounds/explosion-10070/", displayFont_3, canvas.getWidth()/8f, 3*canvas.getHeight()/8f);
+                canvas.drawText("Jump Sound", displayFont_2, canvas.getWidth()/8f, 2*canvas.getHeight()/8f);
+                canvas.drawText("Soundsnap.com", displayFont_3, canvas.getWidth()/8f, 3*canvas.getHeight()/16f);
+                //canvas.drawText("https://www.soundsnap.com/", displayFont_3, canvas.getWidth()/8f, 3*canvas.getHeight()/16f);
+                //canvas.drawText("tags/jump?page=2", displayFont_3, canvas.getWidth()/8f, 1*canvas.getHeight()/8f);
+
+                canvas.drawText("Expulsion Sound", displayFont_2, 6*canvas.getWidth()/8f, 6*canvas.getHeight()/8f);
+                canvas.drawText("Blob.wikidot.com", displayFont_3, 6*canvas.getWidth()/8f, 11*canvas.getHeight()/16f);
+                //canvas.drawText("http://blob.wikidot.com/", displayFont_3, 5*canvas.getWidth()/8f, 11*canvas.getHeight()/16f);
+                //canvas.drawText("sound-effects", displayFont_3, 5*canvas.getWidth()/8f, 5*canvas.getHeight()/8f);
+                canvas.drawText("Shooting Sound", displayFont_2, 6*canvas.getWidth()/8f, 4*canvas.getHeight()/8f);
+                canvas.drawText("Freesfx.co.uk", displayFont_3, 6*canvas.getWidth()/8f, 7*canvas.getHeight()/16f);
+                //canvas.drawText("http://www.freesfx.co.uk/", displayFont_3, 5*canvas.getWidth()/8f, 7*canvas.getHeight()/16f);
+                //canvas.drawText("soundeffects/lasers_weapons/", displayFont_3, 5*canvas.getWidth()/8f, 3*canvas.getHeight()/8f);
+                canvas.drawText("Background Music", displayFont_2, 6*canvas.getWidth()/8f, 2*canvas.getHeight()/8f);
+                canvas.drawText("Melodyloops.com", displayFont_3, 6*canvas.getWidth()/8f, 3*canvas.getHeight()/16f);
+                //canvas.drawText("https://freesound.org/people/", displayFont_3, 5*canvas.getWidth()/8f, 3*canvas.getHeight()/16f);
+                //canvas.drawText("LegoLunatic/sounds/151243/", displayFont_3, 5*canvas.getWidth()/8f, 1*canvas.getHeight()/8f);
+                layout.setText(displayFont_4, "Peace has been restored!!!");
+                canvas.drawText("Peace has been restored!!!", displayFont_4, canvas.getWidth()/2-layout.width/2, canvas.getHeight()-layout.height*1.5f);
+                layout.setText(displayFont_2, "Made by: Matthew Loughney, Joshua Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner");
+                canvas.drawText("Made by: Matthew Loughney, Joshua Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner", displayFont_2, canvas.getWidth()/2-layout.width/2, 60f);
+            }
         }
         canvas.end();
         for (Obstacle obj: objects) {
