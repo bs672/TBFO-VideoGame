@@ -2086,6 +2086,9 @@ public class PlayMode extends WorldController implements ContactListener {
             suckSpeed = SIPHON*2;
         else
             suckSpeed = SIPHON*2;
+        if(LV_NUMBER==27){
+            suckSpeed = SIPHON*4;
+        }
         currentPlanet.setRadius((float)Math.sqrt((oldPlanMass - suckSpeed)/Math.PI));
         currentPlanet.scalePicScale(new Vector2(currentPlanet.getRadius() / rad, currentPlanet.getRadius() / rad));
     }
@@ -2345,7 +2348,11 @@ public class PlayMode extends WorldController implements ContactListener {
         complexAvatar.setLinearVelocity(new Vector2(0f, 0f));
         complexAvatar.setAngle((float) Math.PI/2);
         complexAvatar.setDirection(new Vector2(0,1));
-        complexAvatar.setRadius(1.5f);
+        changeMass(-complexAvatar.getMass()+(float)(Math.PI*Math.pow(1.5f, 2)));
+//        oldAvatarRad = complexAvatar.getRadius();
+//        complexAvatar.setRadius(1.5f);
+//        complexAvatar.scalePicScale(new Vector2(complexAvatar.getRadius() / oldAvatarRad, complexAvatar.getRadius() / oldAvatarRad));
+
         if(state==2 && LV_NUMBER==27){
             //credits menu
             PlanetModel obj;
@@ -2401,6 +2408,7 @@ public class PlayMode extends WorldController implements ContactListener {
             }
             complexAvatar.setHurting(true);
         }
+
         complexAvatar.setBodyType(BodyDef.BodyType.StaticBody);
         for(Obstacle b : complexAvatar.getBodies()) {
             b.setBodyType(BodyDef.BodyType.StaticBody);
@@ -2569,7 +2577,13 @@ public class PlayMode extends WorldController implements ContactListener {
 //                }
                 airPlayerControls();
                 if (jump && complexAvatar.getRadius() > OOB_DEATH_RADIUS + 0.1 && adjustCooldown == 0) {
-                    float expRad = complexAvatar.getRadius() / 2;
+                    float expRad;
+                    if(complexAvatar.getRadius()>OOB_MAX_RADIUS){
+                        expRad = complexAvatar.getRadius()/4;
+                    }
+                    else {
+                        expRad = complexAvatar.getRadius() / 2;
+                    }
                     Vector2 massLoc = complexAvatar.getPosition().cpy().sub(launchVec.cpy().nor().scl(complexAvatar.getRadius() + expRad + 1f));
                     WheelObstacle expulsion = new WheelObstacle(massLoc.x, massLoc.y, expRad);
                     expulsion.setGravityScale(0);
@@ -2670,6 +2684,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 minutes = (int)(time/60000);
                 seconds = (int)((time%60000)/1000);
                 hSeconds = (int)((time%1000)/10);
+                changeMass(-complexAvatar.getMass()+(float)(Math.PI*Math.pow(1.5f, 2)));
                 switchState(2);
                 for (ShipModel sh : ships) {
                     if (sh.getName().equals("ship")) {
@@ -2685,6 +2700,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 // Lost the level
                 InputController.getInstance().setCenterCamera(true);
                 messageCounter = 0;
+                changeMass(-complexAvatar.getMass()+(float)(Math.PI*Math.pow(1f, 2)));
                 switchState(1);
             }
         }
@@ -2755,7 +2771,9 @@ public class PlayMode extends WorldController implements ContactListener {
                         complexAvatar.setHurting(true);
                     }
                     complexAvatar.set_Shot_Cooldown(10);
-                    changeMass(((BulletModel)bd2).getDamage());
+                    if(LV_NUMBER==27) {
+                        changeMass(-0.03f);
+                    }
                 }
                 else if (bd2.getName().equals("ship")) {
                     if (((ShipModel)bd2).getType() == 2) {
@@ -2797,7 +2815,9 @@ public class PlayMode extends WorldController implements ContactListener {
                         complexAvatar.setHurting(true);
                     }
                     complexAvatar.set_Shot_Cooldown(10);
-                    changeMass(((BulletModel)bd1).getDamage());
+                    if(LV_NUMBER==27) {
+                        changeMass(-0.03f);
+                    }
                 }
                 else if (bd1.getName().equals("ship")) {
                     if (((ShipModel)bd1).getType() == 2) {
