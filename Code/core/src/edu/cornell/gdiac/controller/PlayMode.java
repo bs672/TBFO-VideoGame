@@ -3227,7 +3227,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 //canvas.drawText("LegoLunatic/sounds/151243/", displayFont_3, 5*canvas.getWidth()/8f, 1*canvas.getHeight()/8f);
                 layout.setText(displayFont_4, "Peace has been restored!!!");
                 canvas.drawText("Peace has been restored!!!", displayFont_4, canvas.getWidth()/2-layout.width/2, canvas.getHeight()-layout.height*1.5f);
-                layout.setText(displayFont_2, "Made by: Matthew Loughney, Joshua Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner");
+                layout.setText(displayFont_3, "Made by: Matthew Loughney, Joshua Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner");
                 canvas.drawText("Made by: Matt Loughney, Josh Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner", displayFont_3, canvas.getWidth()/2-layout.width/2, 60f);
             }
         }
