@@ -3195,7 +3195,7 @@ public class PlayMode extends WorldController implements ContactListener {
             layout.setText(displayFont, "Clicks Used:" + clicks);
             canvas.drawText("Clicks Used:" + clicks, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*2.7f);
             layout.setText(displayFont, "Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds);
-            canvas.drawText("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*4.5f);
+            canvas.drawText("Time taken: " + minutes + ":" + (seconds <= 10 ? "0" + seconds : seconds) + "." + hSeconds, displayFont, canvas.getWidth()/2-layout.width/2, canvas.getHeight()/2+layout.height*4.2f);
             if(LV_NUMBER!=27) {
                 canvas.draw(win_text, Color.WHITE, canvas.getWidth() / 2 - (win_text.getRegionWidth() / 2), canvas.getHeight() * 0.8f, win_text.getRegionWidth(), win_text.getRegionHeight());
             }
