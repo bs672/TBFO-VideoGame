@@ -1785,11 +1785,11 @@ public class PlayMode extends WorldController implements ContactListener {
                     }
 
                     if(i <= 2) {
-                        s.setOrbitDistance(3.5f);
+                        s.setOrbitDistance(4f);
                         aiController.setTarget(c.getShips().get(i), c);
                     }
                     else if(i <= 6 && i % 2 == 0) {
-                        s.setOrbitDistance(3.5f);
+                        s.setOrbitDistance(4f);
                         aiController.setTarget(c.getShips().get(i), c);
                     }
                     else if(i <= 14 && i % 2 == 0) {
@@ -2521,8 +2521,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     jump = true;
                 }
                 //capping his movement speed on a planet
-                if(complexAvatar.getLinearVelocity().len() > 12) {
-                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().nor().scl(12));
+                if(complexAvatar.getLinearVelocity().len() > 11) {
+                    complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().nor().scl(11));
                 }
                 // checking to make sure he doesn't go inside out
                 complexAvatar.checkForInsideOut(currentPlanet.getRadius() + complexAvatar.getRadius(), vecToCenter);
@@ -3228,7 +3228,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 layout.setText(displayFont_4, "Peace has been restored!!!");
                 canvas.drawText("Peace has been restored!!!", displayFont_4, canvas.getWidth()/2-layout.width/2, canvas.getHeight()-layout.height*1.5f);
                 layout.setText(displayFont_2, "Made by: Matthew Loughney, Joshua Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner");
-                canvas.drawText("Made by: Matthew Loughney, Joshua Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner", displayFont_2, canvas.getWidth()/2-layout.width/2, 60f);
+                canvas.drawText("Made by: Matt Loughney, Josh Chan, Noah Sterling, Bhai Singh, Sophie Li, and Adler Faulkner", displayFont_3, canvas.getWidth()/2-layout.width/2, 60f);
             }
         }
         canvas.end();

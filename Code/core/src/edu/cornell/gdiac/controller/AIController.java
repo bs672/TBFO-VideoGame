@@ -366,7 +366,7 @@ public class AIController {
             // tempVec2 is ship to Oob, tempVec1 is ship to planet
             float vecAngle = (float)Math.acos(tempVec1.dot(tempVec2)/(tempVec1.len()*tempVec2.len()));
             // orbiting around a planet
-            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + 1.5f && Math.abs(vecAngle) < 2*Math.PI / 3) {
+            if(tempVec1.len() <= planets.get(closestPlanet).getRadius() + 2 && Math.abs(vecAngle) < 2*Math.PI / 3) {
                     tempVec2.set(-tempVec1.y,tempVec1.x);
                     tempVec2.scl(s.getMoveSpeed()/tempVec2.len());
                     tempVec1.set(s.getPosition().cpy().add(tempVec2));

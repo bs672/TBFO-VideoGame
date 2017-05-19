@@ -127,7 +127,7 @@ public class ShipModel extends CapsuleObstacle{
         firingCooldown = 0;
         delay=0;
         range = AGGRO_RANGE;
-        orbitDistance = 3;
+        orbitDistance = 4f;
     }
 
     //Creates a Ship with predetermined width and height at given position.
@@ -142,7 +142,7 @@ public class ShipModel extends CapsuleObstacle{
         firingCooldown = 0;
         delay=0;
         range = AGGRO_RANGE;
-        orbitDistance = 3;
+        orbitDistance = 4f;
     }
 
     //Creates a Ship with predetermined width and height at given position.
@@ -157,7 +157,7 @@ public class ShipModel extends CapsuleObstacle{
         firingCooldown = 0;
         delay=0;
         range = AGGRO_RANGE;
-        orbitDistance = 3;
+        orbitDistance = 4f;
     }
 
     //Creates a Ship with predetermined width and height at given position.
@@ -172,7 +172,7 @@ public class ShipModel extends CapsuleObstacle{
         firingCooldown = 0;
         delay=0;
         range = AGGRO_RANGE;
-        orbitDistance = 3;
+        orbitDistance = 4f;
         music = null;
         setCommandSpawn(cPlanetSpawn);
     }
