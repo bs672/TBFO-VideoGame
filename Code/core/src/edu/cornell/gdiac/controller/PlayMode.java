@@ -1865,7 +1865,7 @@ public class PlayMode extends WorldController implements ContactListener {
                 bullet.setName("bullet");
                 bullet.setTexture(bullet_texture);
                 if(aiController.bulletData.get(i+4)==1f){
-                    bullet.setDamage(BULLET_DAMAGE*3);
+                    bullet.setDamage(BULLET_DAMAGE*4);
                 }
                 SoundController.getInstance().play(SHOOTING_SOUND, SHOOTING_SOUND, false, EFFECT_VOLUME - 0.6f);
                 addObject(bullet);
@@ -2512,10 +2512,8 @@ public class PlayMode extends WorldController implements ContactListener {
                     forceJump = true;
                     jump = true;
                 }
-                System.out.println(complexAvatar.getLinearVelocity().len());
                 //capping his movement speed on a planet
                 if(complexAvatar.getLinearVelocity().len() > 12) {
-                    System.out.println("HERE");
                     complexAvatar.setLinearVelocity(complexAvatar.getLinearVelocity().cpy().nor().scl(12));
                 }
                 // checking to make sure he doesn't go inside out
@@ -2554,7 +2552,6 @@ public class PlayMode extends WorldController implements ContactListener {
 //                    }
                 }
             } else if (currentPlanet == null) { // we’re floating in space
-                System.out.println(complexAvatar.getLinearVelocity().len());
                 complexAvatar.setFlying(true);
                 jumpTime++;
                 if ((jumpTime > 300) & !play) {

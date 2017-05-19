@@ -144,8 +144,8 @@ public class InputController {
 	public void toggleControls(){ wasd = !wasd; }
 
 	public boolean debugJustPressed() {
-		if(Gdx.input.isKeyJustPressed(Input.Keys.G))
-			return true;
+//		if(Gdx.input.isKeyJustPressed(Input.Keys.G))
+//			return true;
 		return false;
 	}
 
